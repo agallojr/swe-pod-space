@@ -750,3 +750,46 @@ and staging inside that throwaway repo, and nothing else.
 **Round 2 verdict.** Closed 6 (A5, A8, A22, A23, A24, A26; the A4 note is
 also closed), open 0, conceded 1 (A25), held 0, new 5 (A27 to A31, all
 Minor). No Critical or Important finding remains open.
+
+## Round 3: planner
+
+Plan revision 3.1 (1283 lines, down from 1285). T0 and the §4.1 checkout and
+commit rules are untouched, since the go is in effect.
+
+**A27. ACCEPT.** T15 Config: one signed-in isolated config at a fixed path,
+given only in the dispatch prompt. Before each serial run the runner resets
+it in place: it replaces the agents, skills and settings, and clears
+per-project memory and session state. Per-run copies are dropped.
+
+**A28. ACCEPT.** T15 Permission mode now allows exactly the union of the
+§2.3 role tools plus Skill (Read, Grep, Glob, Bash, Write, Edit, Agent,
+Skill), minus the stated denies, and denies the rest. Smoke-test item 4 adds
+a permitted Bash command (`ls`) that must succeed, so the `git -C` denial
+cannot pass vacuously.
+
+**A29. ACCEPT.** T20's brief also permits, for I6 only, `git init` of one
+throwaway repo in its scratch directory and staging into it, and nothing
+else. These permissions stay in the brief, not the product.
+
+**A30. ACCEPT.**
+- T1's §11 now states that a mesh executor reads the role definition its
+  task.request names before anything else.
+- T1's §11 also states that build tasks run local until the deferred
+  exception lands (§3 OD4). T5 says the same, and has the Goal of every
+  mesh task.request tell the executor to read its role definition first.
+  §2.3 states the Goal rule as well.
+- T36 step 3 has the final report record, under open questions, that R7
+  holds only for local builds until then, so T35 meets a recorded gap.
+
+**A31. ACCEPT.**
+- (a) §2.8 now uses §4.1's definition: the task's diff is its own commits,
+  found by the `Task: T<n>` trailer, plus its staged changes before the first
+  commit. The path-limited range of the shared branch is gone.
+- (b) §2.4's test-writing brief copies all of §3, operator decisions
+  included, as `## Global constraints`.
+
+Length kept down: the §9 inspection table became one paragraph; the
+questions list dropped six items now fixed in §2 or in their tasks, naming
+them in one sentence; two self-review items were merged.
+
+Tally: 5 accepted (A27 to A31), 0 partial, 0 rebutted.

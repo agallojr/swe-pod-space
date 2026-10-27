@@ -3,7 +3,7 @@
 - change: `build-swe-pod`; spec `swe-pod` revision 3, approved 2026-10-27T21:36Z
 - size: project. Planner: a fresh agent in the plan role, which never saw the
   spec conversation (spec §5.2)
-- revision: 3, after review rounds 1 and 2 (`plan-review.md`) and the
+- revision: 3.1, after review rounds 1 to 3 (`plan-review.md`) and the
   operator decisions in §3
 - base commit set (what the tests run against at base): the space's `main` at
   the commit that files this plan; swe-pod `8fc5294`; agent-mesh `8ee5364`
@@ -82,7 +82,8 @@ README.md  INSTALL.md          shipped docs; INSTALL carries the G1 to G3 text
 - **Mesh dispatch.** The `## Context` of the task.request holds at least two
   lines: `Role definition: swe-pod/agents/swe-<role>.md` (relative to the bus
   root) and `Brief: changes/<id>/tasks/T<n>-brief.md` (relative to the space).
-  Front-matter has `project: proj:<name>`. For a node that may predate the
+  The Goal tells the executor to read the role definition before anything
+  else. Front-matter has `project: proj:<name>`. For a node that may predate the
   change (T20), the Context also gives the repo URLs, the space commit that
   holds the brief, and the commit set under test, as separate lines.
 - **Where outputs go.** A local agent writes its outputs at their final
@@ -105,8 +106,8 @@ README.md  INSTALL.md          shipped docs; INSTALL carries the G1 to G3 text
   - `## Task`: the test task's own entry, verbatim. It is not a build-task
     step, so R9 allows it.
   - `## Spec` (path only).
-  - `## Interface contract`, `## Global constraints` and `## Test map`,
-    copied from the plan.
+  - `## Interface contract`, `## Global constraints` (all of §3, operator
+    decisions included) and `## Test map`, copied from the plan.
   - `## Start from`: the base commit set, and the commit set under test.
   - `## Suggestions` (the suggestions task only): the "for the tester" parts.
   - `## Result goes to`.
@@ -293,9 +294,11 @@ README.md  INSTALL.md          shipped docs; INSTALL carries the G1 to G3 text
 
 The check uses the §2.7 profile patterns, plus the owner handles in the
 space's `space.yaml`, all built at run time, so the command text holds no
-real values. It scans only the task's own added lines, `git diff <task base>
--- <task touches>`, and prints `<file>:<line> <pattern kind>` per hit, never
-the matched text. A report records only `shareability: <n> hits`.
+real values. It scans only the lines the task's diff adds, where the task's
+diff is its own commits, found by the trailer `Task: T<n>` (§4.1), plus its
+staged changes before the first commit. It prints `<file>:<line> <pattern
+kind>` per hit, never the matched text. A report records only
+`shareability: <n> hits`.
 
 ## 3. Global constraints and operator decisions
 
@@ -484,8 +487,13 @@ rule listed in the steps; no grep stands in for that.
     go from the pin, record the base, no other branch, amendments stay on
     the same branch, rebase when `main` moves, delete after the merge).
   - Cite record templates as `templates/records/<kind>.md`.
-  - In §11, state the M4 interim rule: each cycle, the lead dispatches every
-    task whose `after` tasks are all done.
+  - In §11, state three rules:
+    - the M4 interim rule: each cycle, the lead dispatches every task whose
+      `after` tasks are all done;
+    - a mesh executor reads the role definition its task.request names
+      before anything else;
+    - build tasks run local until the deferred executor git exception lands
+      (§3 OD4).
   - In §10, describe single seat: without a mesh, records are filed through
     agent-mesh's `space-librarian`.
   - Use environment classes only.
@@ -578,8 +586,10 @@ rule listed in the steps; no grep stands in for that.
     its pin, and record the base.
   - **Briefs and dispatch.** Write briefs, using the test-writing brief for
     test tasks. Dispatch per §2.3, with machine paths only in prompts and no
-    machine names in ledger lines. Dispatch ready tasks each cycle (the M4
-    interim).
+    machine names in ledger lines. A mesh task.request's Goal tells the
+    executor to read its role definition first. Build tasks stay local until
+    the deferred exception lands (§3 OD4). Dispatch ready tasks each cycle
+    (the M4 interim).
   - **Checking and filing.** Check that commits exist and that reports hold
     test output. File through the librarian only what is in the role's lane
     (test: `changes/<id>/tests/` and `changes/<id>/evidence/`; build: reports;
@@ -850,18 +860,22 @@ depends on §4.1 or §5, which the test agent never reads.
 - steps:
   - **Isolated runner** (`runner.sh`; the protocol is in `README.md`). Each
     agent under test is a separate headless Claude Code process.
-    - **Config.** At the go, the operator signs in one isolated base config.
-      Each run gets a copy of it in which only the agents, skills and
-      settings are replaced. The agents and skills are the test's
+    - **Config.** At the go, the operator signs in one isolated config at a
+      fixed path, which is given only in the dispatch prompt. Runs are
+      serial, and before each one the runner resets that config in place:
+      it replaces the agents, skills and settings, and clears per-project
+      memory and session state. The agents and skills are the test's
       `deliverables:`. There is no CLAUDE.md or other guidance. The provider
       environment is inherited from the session that starts the runner, and
-      nothing of it is written into the space.
+      none of it is written into the space.
     - **Settings.** Install the product's `hooks/git-gate.py` with no
       allowlist, so it denies every git add, commit and push wherever it
       points. Also deny `git -C`, `git branch`, `git checkout`,
       `git reset`, sudo and web tools.
-    - **Permission mode.** The mode never prompts, and denies any tool not
-      allowed; never a bypass mode.
+    - **Permission mode.** The mode never prompts, and is never a bypass
+      mode. It allows exactly the union of the §2.3 role tools plus Skill
+      (Read, Grep, Glob, Bash, Write, Edit, Agent, Skill), minus the denies
+      above, and denies everything else.
     - **Where it runs.** The cwd is a scratch copy of the fixture. The
       runner refuses to start unless `git rev-parse` fails in both the cwd
       and the config directory. Fixtures have no `.git`.
@@ -909,8 +923,9 @@ depends on §4.1 or §5, which the test agent never reads.
   3. The smoke test shows that the agent under test can start a subagent,
      which is the depth R7.S2 needs.
   4. The smoke test shows that a long run is stopped at a 30 s cap, that a
-     desk run prints a git command without running it, and that a
-     `git -C <scratch> commit` attempt is denied.
+     desk run prints a git command without running it, that a permitted
+     Bash command (`ls`) succeeds, and that a `git -C <scratch> commit`
+     attempt is denied.
   5. If sign-in or isolation fails, T15 reports BLOCKED, for the operator.
   6. Every I-test has been run at the base commit set, and each fails
      because its deliverable is absent (for I6, because `--project` is an
@@ -1009,9 +1024,11 @@ depends on §4.1 or §5, which the test agent never reads.
     - the commit set under test, which is the latest green T19's;
     - permission for read-only git (clone, fetch, archive) into a scratch
       directory outside the bus;
+    - for I6, permission to `git init` one throwaway repo there and stage
+      into it, and nothing else;
     - the instruction to read the role definition from the swe-pod commit.
 
-    This permission lives in the brief only, not in the product.
+    These permissions live in the brief only, not in the product.
   - The agent runs I5, I6 and I8 under GNU userland. Log pointers in its
     evidence are space-relative, or left out.
 - done when:
@@ -1093,8 +1110,10 @@ the ledger.
      and run verify again.
   2. **Reconcile** the spec with the deliverables, and confirm that T0's
      check (3) still holds.
-  3. **Final report**, in the §2.4 format, with OD1's sentence verbatim and
-     the nine scenarios listed, plus T20's supplementary observations.
+  3. **Final report**, in the §2.4 format. It gives OD1's sentence verbatim
+     and lists the nine scenarios, plus T20's supplementary observations.
+     Under open questions it records that R7 holds only for local builds
+     until the deferred exception lands (§3 OD4).
   4. **Overlay.** The operator applies T8's G1 to G3 text to the private
      best-practices overlay, before the merges.
   5. **Merge**, on the operator's word only: agent-mesh, then swe-pod; then
@@ -1169,20 +1188,10 @@ suite. The desk rows follow §3 OD1.
 | R23.S1 | test_R23_S1_parallel_builders_one_branch | desk (lead, build) | T17 |
 | R23.S2 | test_R23_S2_unnamed_repo_no_branch | desk (lead) | T17 |
 
-Inspection checks and the requirements they serve (§13):
-
-| Check | Serves |
-|---|---|
-| I1 | R1 to R6, R10 to R15, R18, R19, R21 to R23 |
-| I2 | R7 to R9, R17, R21, R23 |
-| I3 | R4, R5, R11, R12, R16, R18, R21, R22 |
-| I4 | R18, R20 |
-| I5 | R16, through the D3 templates |
-| I6 | R7 |
-| I7 | R7, R13, R17 |
-| I8 | R16, R17 |
-
-T15 writes all eight. Repo-wide hygiene is not a check of this change,
+Inspection checks and the requirements they serve (§13): I1 (R1 to R6,
+R10 to R15, R18, R19, R21 to R23); I2 (R7 to R9, R17, R21, R23); I3 (R4,
+R5, R11, R12, R16, R18, R21, R22); I4 (R18, R20); I5 (R16, through the D3
+templates); I6 (R7); I7 (R7, R13, R17); I8 (R16, R17). T15 writes all eight. Repo-wide hygiene is not a check of this change,
 because the spec declares no Quality section; the standard close covers it.
 
 ## 10. Dependency summary
@@ -1230,22 +1239,24 @@ because the spec declares no Quality section; the standard close covers it.
   their table. T0 serves none, because it lands an input (§3 OD5). Pass.
 - **Shared files are ordered** (§10). No build task touches `SPEC.md`, and
   the standard close checks that. Pass.
-- **Blindness.** §6 cites only §2, §3, §9 and the tests' own files. Pass.
-- **Scope.** Nothing outside spec §§13 and 14 is built. M4 and the executor
-  git exception are deferred (spec §14, §3 OD4). Pass.
-- **Shareable.** There is no hostname, agent id, home path or private record
-  id. The record ids cited are this space's. Pass.
+- **Blindness, scope, shareable.** §6 cites only §2, §3, §9 and its own
+  files. Nothing outside spec §§13 and 14 is built; M4 and the executor git
+  exception are deferred (§3 OD4). There is no hostname, agent id, home path
+  or private record id. Pass.
 
 ## Questions for the spec
 
-The questions of revisions 1 and 2 that needed the operator are settled (§3,
-OD1 to OD4), and so is the SPEC.md directive (OD5). The rest are ranked by
-the cost of a wrong guess.
+The questions that needed the operator are settled (§3, OD1 to OD5). Several
+earlier defaults are now fixed in §2 or in their tasks, and are no longer
+open: result files (§2.7); M4 deferred (§1); mesh builds deferred (§3 OD4,
+T36 step 3); results with no scenario (§2.4); no layout bump (§2.7);
+templates kept in the product (§2.1); negative fixtures built at run time
+(T15). The rest are ranked by the cost of a wrong guess.
 
 1. **(b) Can the agents under test be isolated?** T15's runner isolates them
    from the operator's guidance and git gate, and the operator signs in its
-   base config at the go. If sign-in or isolation fails, T15 is BLOCKED and
-   the question goes to the operator.
+   config at the go. If sign-in or isolation fails, T15 is BLOCKED and the
+   question goes to the operator.
 2. **(b) How does the test agent stay blind?** `AGENTS.md` sends arriving
    agents to `plan.md` and `ledger.md`. The test-brief line, swe-test and
    the template's `AGENTS.md` keep a test-writing agent to its brief and
@@ -1256,30 +1267,17 @@ the cost of a wrong guess.
    format, with an "As of" time taken from the newest record, and T7 checks
    that two regenerations are identical. A generator script would be a new
    change.
-5. **(b) How do result files travel (M3)?** As a `files:` list with sha256,
-   and bodies under `outbox/<agent-id>/<task-id>-files/`.
-6. **(b) Is M4 built?** No (spec §14). The interim rule is in PROCESS.md §11
-   and swe-lead.
-7. **(b) Are the role definitions exercised as subagent types before
-   install?** Yes: the runner installs them into each isolated config. The
+5. **(b) Are the role definitions exercised as subagent types before
+   install?** Yes: the runner installs them into its isolated config. The
    operator's config gets them at T36.
-8. **(b) Where do results with no scenario go?** Inspection results go
-   under `x-checks`, suggestion tests under `x-suggestions`, and regression
-   results under qualified scenario ids. `none-present` is not a failure.
-9. **(b) Does `spaces.yaml` need a layout bump?** No. It is optional, and
-   `LAYOUT_VERSION` stays 1.
-10. **(b) What does space-librarian check against?** Real registry and node
-    values, the home-path patterns of §2.7, and the reference fields defined
-    there. It is a Markdown skill, with no script.
-11. **(b) Where do the record templates live?** In the product; only
-    `PROCESS.md` is copied into a space (§13 D1).
-12. **(b) Where are G1 to G3 written and reviewed?** In INSTALL.md (T8,
-    reviewed by T28), applied by the operator in T36.
-13. **(b) How do fixtures hold negative content?** It is built at run time,
-    so the space's librarian accepts the fixtures.
-14. **(a) Does this change run quality checks?** No. The spec has no Quality
-    section, so verify runs none and the evidence says `none-declared`
-    (§5.1, R12.S2).
-15. **(a) Does T19 need the human's word first?** Yes. It is heavy, so the
-    lead gives the human the command, the caps and the expected wall time
-    before dispatching it (R13.S1, §5.4).
+6. **(b) What does space-librarian check against?** Real registry and node
+   values, plus the patterns and reference fields of §2.7. It is a Markdown
+   skill, with no script.
+7. **(b) Where are G1 to G3 written and reviewed?** In INSTALL.md (T8,
+   reviewed by T28), applied by the operator in T36.
+8. **(a) Does this change run quality checks?** No. The spec has no Quality
+   section, so verify runs none and the evidence says `none-declared`
+   (§5.1, R12.S2).
+9. **(a) Does T19 need the human's word first?** Yes. It is heavy, so the
+   lead gives the human the command, the caps and the expected wall time
+   before dispatching it (R13.S1, §5.4).
