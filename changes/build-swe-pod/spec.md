@@ -10,15 +10,18 @@
 - approved: agallojr 2026-10-27T21:36Z
 - Replaces two earlier drafts kept in the operator's private library: a design
   concept (revision 2, 2026-10-26) and an engineering process (draft 1,
-  2026-10-27). Both used OpenSpec and superpowers as plug-ins. This revision drops both tools and keeps what we
-  learned from them. Rules taken from them are marked (OS) or (SP).
+  2026-10-27). Both used OpenSpec and superpowers as plug-ins. This revision
+  drops both tools and keeps what we learned from them. Rules taken from them
+  are marked (OS) or (SP).
 - Build output: Markdown (§13). The SWE Pod is a process carried by documents,
   role briefs, templates and a skill that agents read. Nothing in it is
   compiled.
 - Relies on: the memory-spaces concept (Agent Mesh design, revision 2,
-  2026-10-27), restated in this space as `notes/note-20261027T2142Z-0a31-memory-spaces-design.md`, for the Project Space as a git repo mounted in the bus as a
-  submodule and loaded on request, with a shareable header profile, one
-  librarian and collision-free ids. Nothing else from it is required.
+  2026-10-27), restated in this space as
+  `notes/note-20261027T2142Z-0a31-memory-spaces-design.md`, for the Project
+  Space as a git repo mounted in the bus as a submodule and loaded on request,
+  with a shareable header profile, one librarian and collision-free ids.
+  Nothing else from it is required.
 - Diagram: `spec-process.png` (D2 source alongside)
 
 ## 1. Operator decisions (2026-10-27)
@@ -1103,7 +1106,8 @@ Defaults chosen in this draft; check these when reviewing.
 
 - Design concept, revision 2 (2026-10-26) and engineering process, draft 1
   (2026-10-27): the operator's private library; superseded by this spec.
-- Memory spaces: `notes/note-20261027T2142Z-0a31-memory-spaces-design.md` (revision 2, 2026-10-27).
+- Memory spaces: `notes/note-20261027T2142Z-0a31-memory-spaces-design.md`
+  (revision 2, 2026-10-27).
 - Learned from, not used: OpenSpec v1.15.0 (2026-10-24),
   https://github.com/Fission-AI/OpenSpec; superpowers v7.0.1 (2026-10-21),
   https://github.com/obra/superpowers.
