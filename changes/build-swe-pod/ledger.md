@@ -55,4 +55,6 @@
 2026-10-27T23:04Z dispatch T11 -> build (local, any), base agent-mesh 8ee5364
 2026-10-27T23:04Z filed changes/build-swe-pod/tasks/T1-brief.md to T6-brief.md,
                   T9-brief.md to T11-brief.md
+2026-10-27T23:25Z operator signed in the isolated runner config for T15
+2026-10-27T23:25Z dispatch T15 -> test (local, any); filed changes/build-swe-pod/tasks/T15-brief.md
 ```
