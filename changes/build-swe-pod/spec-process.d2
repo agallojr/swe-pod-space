@@ -1,0 +1,41 @@
+direction: down
+
+classes: {
+  stage: {style: {fill: "#eef4fb"; stroke: "#4a6fa5"; border-radius: 6}}
+  store: {shape: cylinder; style: {fill: "#f4f1e8"; stroke: "#8a7a4a"}}
+}
+
+human: Human {shape: person}
+
+flow: Process {
+  direction: right
+  spec: "Spec\nrole: spec, with the human\nwork to be done, testable scenarios" {class: stage}
+  plan: "Plan\nrole: plan\nevery downstream task\nwith dependencies and assignment" {class: stage}
+  build: "Build\nrole: build, review per task\ncode and unit tests, test first" {class: stage}
+  tests: "Write project-level tests\nrole: test\nfrom the spec, blind to the code" {class: stage}
+  verify: "Verify\nroles: test, review\nproject tests, unit tests and\ndeclared quality checks\nat a commit set" {class: stage}
+  integrate: "Integrate\nhuman merges; lead promotes tests,\nadvances pins, updates docs and plans" {class: stage}
+
+  spec -> plan: approved
+  plan -> build: go
+  plan -> tests: go
+  build -> verify
+  tests -> verify
+  verify -> integrate: green
+}
+
+dispatch: "Dispatch of any plan task\nlocal: fresh subagent\nmesh: role queue swe.role,\nclaimed on a local or remote node" {
+  style: {fill: "#ffffff"; stroke: "#666666"; stroke-dash: 4}
+}
+
+space: "Project Space (git repo)\nspecs, plans, ledgers, reviews\nproject-level tests, evidence\nSTATUS.md" {class: store}
+code: "Code repos\ncode and unit tests only\nbranch change/id" {class: store}
+
+human -> flow.spec: request, approval
+human -> flow.integrate: merge
+flow.plan -> dispatch: tasks
+flow.build -> code
+flow.tests -> space
+flow.verify -> space: evidence
+flow.integrate -> space: archive, pins
+flow.integrate -> code: merge

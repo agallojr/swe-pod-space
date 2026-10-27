@@ -1,0 +1,37 @@
+# Agent Mesh memory spaces: submodule mounts, librarian, visibility
+direction: right
+
+classes: {
+  private: {shape: cylinder; style: {fill: "#eef4fb"; stroke: "#4a6fa5"}}
+  shared: {shape: cylinder; style: {fill: "#fffbea"; stroke: "#8a7a4a"}}
+  mount: {style: {fill: "#ffffff"; stroke: "#666666"; stroke-dash: 3}}
+}
+
+bus: "bus repo (one mesh)" {
+  style.fill: "#f6f6f6"
+  coord: "coordination\nagents, tasks, status,\noutbox, workflows"
+  reg: "spaces.yaml\nregistry, default loads"
+  librarian: "librarian\nmanages one or more spaces\nsole mesh writer of each\nprofile + reference check"
+  mounts: "spaces/  (submodules: pointers only)" {
+    core: "spaces/core" {class: mount}
+    lore: "spaces/lore" {class: mount}
+    slore: "spaces/lore-ge-cfd" {class: mount}
+    proj: "spaces/proj-fvm-vqls" {class: mount}
+  }
+}
+
+core: "core repo\nprivate, single writer\nnotes, refs, runs, workflows" {class: private}
+plore: "personal lore repo\nprivate, single writer" {class: private}
+slore: "shared lore repo\nshared, multi-actor\nenvironment classes only" {class: shared}
+proj: "project space repo\nshared, multi-actor\nspecs, plans, records, tests" {class: shared}
+others: "Other actors\nhumans, their agents,\nother meshes" {shape: person; style.fill: "#fdf0d5"}
+
+bus.mounts.core -> core: gitlink
+bus.mounts.lore -> plore: gitlink
+bus.mounts.slore -> slore: gitlink
+bus.mounts.proj -> proj: gitlink
+bus.librarian -> bus.mounts: "commit inside, push to the space repo"
+others -> slore: "read, write"
+others -> proj: "read, write"
+plore -> slore: "may cite" {style.stroke-dash: 3}
+slore -> plore: "never cites" {style.stroke: "#c0392b"; style.stroke-dash: 5}

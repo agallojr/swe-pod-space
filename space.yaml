@@ -1,0 +1,11 @@
+space: 1
+id: proj:swe-pod
+kind: project
+title: SWE Pod development
+visibility: shared            # shared with the project's participants
+owners: [agallojr]
+writer_model: multi-actor
+categories: [notes, lore, decisions, evidence, handoffs, changes, tests]
+header_profile: shareable
+may_reference: []
+retention: until-archived

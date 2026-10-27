@@ -1,0 +1,9 @@
+pod: 1
+project: swe-pod
+process: pre-1          # PROCESS.md is deliverable D1; until it exists,
+                        # changes/build-swe-pod/spec.md sections 4 to 9 govern
+repos:
+  swe-pod:    {remote: "https://github.com/agallojr/swe-pod", pin: "8fc52948166b1ce004cc4644d1a88c823e5bd551"}
+  agent-mesh: {remote: "https://github.com/agallojr/agent-mesh", pin: "8ee53649b05230491b9d24c00df91612b6879a13"}
+depends: {swe-pod: [agent-mesh]}    # merge order: agent-mesh before swe-pod
+gates: {spec: human, plan: human-skim, merge: human}
