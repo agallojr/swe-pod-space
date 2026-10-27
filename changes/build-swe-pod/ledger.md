@@ -57,4 +57,37 @@
                   T9-brief.md to T11-brief.md
 2026-10-27T23:25Z operator signed in the isolated runner config for T15
 2026-10-27T23:25Z dispatch T15 -> test (local, any); filed changes/build-swe-pod/tasks/T15-brief.md
+2026-10-27T23:27Z operator decision: no pull requests for swe-pod; at T36 the
+                  operator's merge word means merge change/build-swe-pod
+                  into main and push
+2026-10-27T23:27Z operator decision: no pull requests for agent-mesh either; at T36
+                  each repo's change/build-swe-pod merges into its main
+                  and is pushed, agent-mesh first
+2026-10-27T23:52Z T6 DONE_WITH_CONCERNS, swe-pod ea98774..101cebb
+2026-10-27T23:52Z T6 review: spec issues; 1 Important, 5 Minor
+2026-10-27T23:52Z T6 fix round 1/5: 1 addressed, 0 open, 45572b0..d752594
+2026-10-27T23:52Z T6 review r1: spec ok; 2 Minor
+2026-10-27T23:52Z T4 DONE_WITH_CONCERNS, swe-pod 854e87c..ea98774
+2026-10-27T23:52Z T4 review: spec ok; 6 Minor
+2026-10-27T23:52Z T1 DONE_WITH_CONCERNS, swe-pod 101cebb..ab800ec
+2026-10-27T23:52Z T1 review: spec issues; 1 Important swe-pod/PROCESS.md:687
+2026-10-27T23:52Z T1 fix round 1/5: 1 addressed, 0 open, 1237519..45572b0
+2026-10-27T23:52Z T1 review r1: spec ok; 1 Minor
+2026-10-27T23:52Z T5 DONE_WITH_CONCERNS, swe-pod ab800ec..1237519
+2026-10-27T23:52Z T5 review: spec issues; 1 Important, 9 Minor
+2026-10-27T23:52Z T5 fix round 1/5: 1 addressed, 0 open, d752594..8770c1a
+2026-10-27T23:52Z T5 review r1: spec ok; 1 Minor
+2026-10-27T23:52Z T11 DONE, agent-mesh 8ee5364..e70dfc2
+2026-10-27T23:52Z T11 review: spec ok; 5 Minor
+2026-10-27T23:52Z T10 DONE, agent-mesh e70dfc2..92f1dcf
+2026-10-27T23:52Z T10 review: spec issues; 1 Important, 5 Minor
+2026-10-27T23:52Z T10 fix round 1/5: 1 addressed, 0 open, 92f1dcf..7430aeb
+2026-10-27T23:52Z T10 review r1: spec ok; 1 Minor
+2026-10-27T23:52Z T2 BLOCKED: the commit was refused by the session's permission
+                  classifier; files staged, nothing committed
+2026-10-27T23:52Z T3 BLOCKED: the commit was refused by the session's permission
+                  classifier; files staged, nothing committed
+2026-10-27T23:52Z T9 BLOCKED: the commit was refused by the session's permission
+                  classifier; files staged, nothing committed
+2026-10-27T23:52Z filed T1, T4, T5, T6, T10, T11 reports and reviews; T2, T3, T9 reports
 ```
