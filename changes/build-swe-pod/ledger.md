@@ -44,4 +44,15 @@
                   Requirements section of SPEC.md identical to spec.md
                   (305 lines); agent-mesh branch on its remote at
                   8ee5364. T0 complete
+2026-10-27T23:04Z dispatch T1 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T2 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T3 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T4 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T5 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T6 -> build (local, any), base swe-pod 854e87c
+2026-10-27T23:04Z dispatch T9 -> build (local, any), base agent-mesh 8ee5364
+2026-10-27T23:04Z dispatch T10 -> build (local, any), base agent-mesh 8ee5364
+2026-10-27T23:04Z dispatch T11 -> build (local, any), base agent-mesh 8ee5364
+2026-10-27T23:04Z filed changes/build-swe-pod/tasks/T1-brief.md to T6-brief.md,
+                  T9-brief.md to T11-brief.md
 ```
