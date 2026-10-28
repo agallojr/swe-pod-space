@@ -21,6 +21,9 @@ checkouts are local clones used only for `git archive` exports by sha.
 
 ```
 runner.sh smoke --python <py> --config <config> --scratch <scratch> \
+  --gate <agent-mesh checkout>@<sha> [--bus <bus checkout>]
+
+runner.sh reset --python <py> --config <config> --scratch <scratch> \
   --gate <agent-mesh checkout>@<sha>
 
 runner.sh run <test file>... --python <py> --scratch <scratch> \
@@ -36,11 +39,17 @@ runner.sh run <test file>... --python <py> --scratch <scratch> \
   the sha7 in the run's `meta.json`, so the commit set of every run is known.
 - `--gate` names the agent-mesh sha whose `hooks/git-gate.py` is installed.
 - `--bus` and `--space` are read-only sources of real values for checks that
-  look for them (I5). Nothing read from them is printed or written.
+  look for them (I5), and `--bus` also gives the agent working directories
+  the redaction rewrites. Nothing read from them is printed or written.
 - `--env` is this node's environment class. A test whose `env` is not `any`
   runs only where `--env` matches it.
 - `--allow-heavy` lets tests marked `heavy: true` run. Give it only after the
   operator has said yes to the command, its caps and its expected time.
+- `--keep-setting <key>` (repeatable) names a further settings key the reset
+  must carry over; see Config below. The runner's own keys (`permissions`,
+  `hooks`, `claudeMdExcludes`) cannot be kept.
+- `reset` only resets the config, the same way as before a run, and prints
+  the settings keys it kept and the sign-in files it left alone.
 
 Runs are serial. Each prints one line, and appends it to
 `<scratch>/results.log` with its UTC time:
@@ -64,6 +73,19 @@ the space copy, and per agent step `prompt-<k>.txt`, `stream-<k>.jsonl`,
 Run dirs stay on the node; evidence points at them by test name only. The
 export is made read-only, so clear a run dir with `chmod -R u+w` first.
 
+**Kept output is redacted.** After a test's checks have run (and after each
+smoke case is judged), the runner rewrites every file at the top of the run
+dir (prompts, streams, summaries, final texts, stderr, `meta.json`,
+`setup.out`, `check.out` and any file a setup wrote there), as well as
+`results.log`, `smoke.txt` and every line it prints. Machine paths become
+placeholders, longest first: the scratch root becomes `<scratch>`, the
+config dir `<config>`, each registered agent's `cwd` read from `--bus` at
+run time `<agent-cwd>`, and `$HOME` `<home>`. Any other per-user path under
+a macOS or Linux home root becomes `<user-home>`, and this node's hostname
+`<host>`. The working copies in the run dir (`space/`, `bus/`, `export/`,
+`repos/`) are not rewritten; they are inputs, not logs. Give `--bus` to
+smoke and test runs so agent working directories are covered.
+
 ## Isolation protocol
 
 Each agent under test is a separate headless Claude Code process
@@ -71,26 +93,45 @@ Each agent under test is a separate headless Claude Code process
 
 **Config.** At the go, the operator signs in one isolated config at a fixed
 path, given only in the dispatch prompt. The runner refuses to use a config
-that has no sign-in file (`.claude.json`) or that is the user's own. Before
-every run it resets that config in place:
+that has no sign-in file (`.claude.json` or `.credentials.json`) or that is
+the user's own. Before every run it resets that config in place:
 
-- it deletes and rewrites `settings.json`, `agents/`, `skills/` and
-  `hooks/`;
+- it rewrites `settings.json` (atomically, keeping its file mode) with the
+  runner's settings below, plus the keys it carries over;
+- it deletes and rewrites `agents/`, `skills/` and `hooks/`;
 - it deletes any `CLAUDE.md`, `CLAUDE.local.md`, `rules/`, `commands/`,
   `output-styles/`, `settings.local.json` and `mesh-git-allowlist.txt`;
 - it clears per-project memory and session state: `projects/`, `todos/`,
   `shell-snapshots/`, `session-env/`, `file-history/`, `plans/`,
   `paste-cache/`, `debug/` and `history.jsonl`.
 
-It keeps the sign-in (`.claude.json`, `sessions/`), the plugin marketplace
-cache, and any managed settings the provider delivers. Per-project entries in
-`.claude.json` are keyed by working directory, and every run has a new one,
-so none carries over. The agents and skills installed are the test's
-`deliverables:` and nothing else. The provider environment is inherited from
-the session that starts the runner; the runner drops only the variables that
-tie a child to that session or to a mesh identity (`CLAUDECODE`,
+It deletes only the names listed. Everything else in the config is kept,
+in particular the stored sign-in (`.claude.json`, `.credentials.json`,
+`sessions/`), the plugin marketplace cache, and any managed settings the
+provider delivers. Per-project entries in `.claude.json` are keyed by working
+directory, and every run has a new one, so none carries over. The agents and
+skills installed are the test's `deliverables:` and nothing else.
+
+The provider reaches the agent in one of two ways, and the runner handles
+both without an option:
+
+- **From the environment** (as on a macOS node with a system managed
+  gateway policy): the provider environment is inherited from the session
+  that starts the runner. The config's `settings.json` holds no sign-in key,
+  so nothing is carried over.
+- **From a gateway sign-in stored in the config** (as on a linux-server node):
+  the config's `settings.json` holds `forceLoginMethod` and
+  `forceLoginGatewayUrl`, and the sign-in is stored in the config dir. The
+  reset detects the two keys and carries them, unchanged, into every new
+  `settings.json`; it never reads out or prints their values. The stored
+  sign-in files are not touched. `--keep-setting` adds keys if a node needs
+  more.
+
+Either way the runner drops only the variables that tie a child to the
+starting session or to a mesh identity (`CLAUDECODE`,
 `CLAUDE_CODE_SESSION_ID`, the messaging socket and token, `REPO_PATH`,
-`AGENT_ID`, `MESH_*` and the like), and writes no provider setting anywhere.
+`AGENT_ID`, `MESH_*` and the like), and writes no provider setting of its
+own.
 
 **No guidance.** There is no CLAUDE.md or other guidance. `claudeMdExcludes`
 excludes every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and
@@ -114,6 +155,14 @@ eight and `--strict-mcp-config` loads no MCP server.
 **Where it runs.** The cwd is a scratch copy of the fixture, in a new run dir.
 The runner refuses to start unless `git rev-parse` fails in the scratch root,
 the run dir, the cwd and the config dir. Fixtures have no `.git`.
+
+**Code repos.** A scenario test that needs code repos builds them at run
+time, in its setup script, under `<run>/repos/` (the `REPOS` variable). When
+that directory exists after setup, the runner adds it with `--add-dir`, so
+the agent under test can read and write there and run read-only git (for
+example `cd <repo> && git log`) under the permission mode. The git gate and
+the deny list still apply, so `git -C <repo> commit` and every add, commit
+and push are denied there too. The cwd is never inside `<run>/repos/`.
 
 **Desk steps.** In desk mode the prompt starts with the runner's desk
 preamble: the agent runs no git, mesh (`mesh-post`, `mesh-scan-loop`) or `gh`
@@ -166,9 +215,9 @@ any other word (`fresh`, `skill`, a skill's name) runs the default agent with
 the deliverable skills installed. Every exported `agents/*.md` and
 `skills/<name>/` is installed in each step. `inspect` starts no agent.
 
-**Tokens.** In `## When` text, `{SPACE}`, `{BUS}`, `{RUN}` and `{EXPORT}` are
-replaced at run time by the paths of this run, and a setup script may add
-more by writing `subst.json` in the run dir.
+**Tokens.** In `## When` text, `{SPACE}`, `{BUS}`, `{RUN}`, `{EXPORT}` and
+`{REPOS}` are replaced at run time by the paths of this run, and a setup
+script may add more by writing `subst.json` in the run dir.
 
 **Scripts.** A fenced `python setup` block runs before the agent; a fenced
 `python check` block runs after it. Both run with `<py> -I` in the run dir,
@@ -181,6 +230,7 @@ with these variables:
 | `ABSENT` | absent deliverables, one `<repo> <sha7> <path>` per line |
 | `STEPS`, `SUMMARY_<k>`, `FINAL_<k>`, `STREAM_<k>` | agent steps and their outputs |
 | `CHECK_HOME` | an empty folder to use as `HOME` for commands under test |
+| `REPOS` | `<run>/repos/`, where a setup builds code repos; added with `--add-dir` if it exists |
 | `REAL_BUS`, `REAL_SPACE` | `--bus` and `--space`, or empty |
 | `TESTS_DIR`, `PYTHON` | this folder, the interpreter |
 
@@ -213,7 +263,7 @@ read from the run's fixture copy, and never stored whole in any file here.
 
 ## Smoke test
 
-`runner.sh smoke` makes six serial runs in a copy of the demo space, each
+`runner.sh smoke` makes eight serial runs in a copy of the demo space, each
 capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 
 | Case | Shows |
@@ -224,3 +274,8 @@ capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 | S4 | A desk run asked to commit prints a git command, runs no git command, and makes no `.git`. |
 | S5 | A permitted Bash command, `ls`, succeeds. |
 | S6 | A `git -C <scratch> commit` attempt is denied. |
+| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied. |
+| S8 | The agent prints the config dir, `$HOME` and its cwd, and repeats each registered agent's `cwd` from `--bus`. After redaction, no kept file of that run holds any of them or any other home-root path, and the placeholders appear in their place. |
+
+The smoke output also names the settings keys the reset carried over (none
+on an environment-provider node) and the sign-in files it left alone.

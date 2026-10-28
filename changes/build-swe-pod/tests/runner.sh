@@ -10,11 +10,13 @@ usage() {
   cat >&2 <<'EOF'
 usage: runner.sh smoke --python <py> --config <dir> --scratch <dir>
                  --gate <agent-mesh checkout>@<sha> [options]
+       runner.sh reset --python <py> --config <dir> --scratch <dir>
+                 --gate <agent-mesh checkout>@<sha> [--keep-setting <key>]...
        runner.sh run <test file>... --python <py> --scratch <dir>
                  [--config <dir>] [--gate <checkout>@<sha>]
                  [--repo <name>=<checkout>@<rev>]... [options]
 options: --env <class>  --bus <dir>  --space <dir>  --model <model>
-         --allow-heavy  --claude <cli>
+         --allow-heavy  --claude <cli>  --keep-setting <key>
 EOF
   exit 2
 }
@@ -85,10 +87,16 @@ STATE_DIRS = [
     "plans", "paste-cache", "debug",
 ]
 STATE_FILES = [
-    "settings.json", "settings.local.json", "CLAUDE.md", "CLAUDE.local.md",
-    "history.jsonl", "mesh-git-allowlist.txt",
+    "settings.local.json", "CLAUDE.md", "CLAUDE.local.md", "history.jsonl",
+    "mesh-git-allowlist.txt",
 ]
-SIGN_IN_MARKER = ".claude.json"
+# Files that hold a stored sign-in. The reset never touches them.
+SIGN_IN_FILES = [".claude.json", ".credentials.json"]
+# Settings keys a gateway sign-in keeps in the config's own settings.json.
+# When present, the reset carries them into the new settings unchanged; their
+# values are never read out or printed.
+GATEWAY_KEYS = ["forceLoginMethod", "forceLoginGatewayUrl"]
+RUNNER_KEYS = {"permissions", "hooks", "claudeMdExcludes"}
 POD_ROLES = {"spec", "plan", "lead", "build", "test", "review"}
 
 DESK_PREAMBLE = (
@@ -108,8 +116,76 @@ def utc_stamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+REDACT = [lambda text: text]
+
+
 def say(line: str) -> None:
-    print(line, flush=True)
+    print(REDACT[0](line), flush=True)
+
+
+def bus_cwds(bus: str | None) -> list:
+    """Each registered agent's working directory, read from the bus."""
+    out = []
+    if bus and (Path(bus) / "agents").is_dir():
+        for reg in sorted((Path(bus) / "agents").glob("*.yaml")):
+            m = re.search(r"^cwd:\s*(\S+)", reg.read_text(), re.M)
+            if m:
+                out.append(m.group(1).strip("'\""))
+    return out
+
+
+def make_redactor(args):
+    """Rewrite machine paths in kept output to placeholders.
+
+    Longest first: the scratch root, the config dir, each registered
+    agent's cwd, $HOME; then any other per-user path under a home root,
+    and this node's hostname.
+    """
+    pairs = []
+
+    def add(path, holder: str) -> None:
+        if not path:
+            return
+        for form in {str(path).rstrip("/"),
+                     str(Path(path).resolve()).rstrip("/")}:
+            if len(form) > 1:
+                pairs.append((form, holder))
+
+    add(args.scratch, "<scratch>")
+    add(args.config, "<config>")
+    for c in bus_cwds(args.bus):
+        add(c, "<agent-cwd>")
+    add(os.environ.get("HOME"), "<home>")
+    pairs.sort(key=lambda x: -len(x[0]))
+    roots = re.compile("(?:/" + "Us" + "ers|/" + "ho" + "me)/[A-Za-z0-9._-]*")
+    host = socket.gethostname()
+    hosts = [h for h in {host, host.split(".")[0]} if len(h) >= 4]
+    host_re = re.compile(r"(?<![\w.-])(" + "|".join(
+        re.escape(h) for h in sorted(hosts, key=len, reverse=True))
+        + r")(?![\w-])") if hosts else None
+
+    def redact(text: str) -> str:
+        for a, b in pairs:
+            text = text.replace(a, b).replace(a.replace("/", "\\/"), b)
+        text = roots.sub("<user-home>", text)
+        if host_re:
+            text = host_re.sub("<host>", text)
+        return text
+
+    return redact
+
+
+def redact_dir(run: Path) -> None:
+    """Rewrite every output and log file kept at the top of a run dir."""
+    for p in sorted(run.iterdir()):
+        if p.is_file() and not p.is_symlink():
+            try:
+                text = p.read_text()
+            except UnicodeDecodeError:
+                continue
+            new = REDACT[0](text)
+            if new != text:
+                p.write_text(new)
 
 
 class Blocked(Exception):
@@ -308,8 +384,22 @@ def lay_out(run: Path, test: dict) -> tuple:
 # -------------------------------------------------------------------- config
 
 def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
-                 desk: bool) -> None:
-    """Reset the isolated config in place: agents, skills, settings, state."""
+                 desk: bool, keep: list) -> list:
+    """Reset the isolated config in place: agents, skills, settings, state.
+
+    Keeps the stored sign-in and the settings keys named in keep; returns
+    the names of the keys it kept.
+    """
+    sp = config / "settings.json"
+    old, mode = {}, 0o644
+    if sp.is_file():
+        mode = sp.stat().st_mode & 0o777
+        try:
+            old = json.loads(sp.read_text() or "{}")
+        except json.JSONDecodeError:
+            raise Blocked("the config's settings.json is not valid JSON, so "
+                          "the keys to keep cannot be carried over")
+    kept = {k: old[k] for k in keep if k in old}
     for name in STATE_DIRS:
         p = config / name
         if p.is_symlink() or p.is_file():
@@ -345,7 +435,12 @@ def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
             {"type": "command", "command": shlex.quote(str(gate))}]}]},
         "claudeMdExcludes": MD_EXCLUDES,
     }
-    (config / "settings.json").write_text(json.dumps(settings, indent=2))
+    settings.update(kept)
+    tmp = config / ".settings.json.runner-tmp"
+    tmp.write_text(json.dumps(settings, indent=2))
+    tmp.chmod(mode)
+    os.replace(tmp, sp)
+    return sorted(kept)
 
 
 def check_config(config: Path) -> None:
@@ -354,7 +449,7 @@ def check_config(config: Path) -> None:
     home = Path(os.path.expanduser("~")).resolve()
     if config.resolve() in (home, home / ".claude"):
         raise Blocked("--config must be the isolated config, not a user one")
-    if not (config / SIGN_IN_MARKER).is_file():
+    if not any((config / f).is_file() for f in SIGN_IN_FILES):
         raise Blocked("the isolated config is not signed in")
     if in_git(config):
         raise Blocked("git rev-parse succeeds in the config dir")
@@ -512,6 +607,15 @@ def run_script(args, run: Path, code: str, name: str, env: dict,
 
 
 def run_test(args, path: Path) -> str:
+    holder = {}
+    try:
+        return _run_test(args, path, holder)
+    finally:
+        if holder.get("run"):
+            redact_dir(holder["run"])
+
+
+def _run_test(args, path: Path, holder: dict) -> str:
     test = parse_test(path)
     name = test["name"]
     if test["env"] != "any" and test["env"] != args.env:
@@ -519,6 +623,7 @@ def run_test(args, path: Path) -> str:
     run = args.scratch / "runs" / (
         f"{utc_stamp()}-{name}-{random.randrange(16 ** 4):04x}")
     run.mkdir(parents=True)
+    holder["run"] = run
     if in_git(run):
         raise Blocked("git rev-parse succeeds in the run dir")
     repos = parse_repo_args(args.repo)
@@ -561,6 +666,7 @@ def run_test(args, path: Path) -> str:
         "ABSENT": "\n".join(meta["absent"]), "TESTS_DIR": TESTS_DIR,
         "PYTHON": args.python, "REAL_BUS": args.bus or "",
         "REAL_SPACE": args.space or "", "CHECK_HOME": run / "home",
+        "REPOS": run / "repos",
     }
     (run / "home").mkdir()
     for repo, sha in shas.items():
@@ -576,7 +682,8 @@ def run_test(args, path: Path) -> str:
         if args.config is None or args.gate is None:
             raise Blocked("agent and desk tests need --config and --gate")
         subst = {"SPACE": str(space), "BUS": str(bus or ""),
-                 "RUN": str(run), "EXPORT": str(exp)}
+                 "RUN": str(run), "EXPORT": str(exp),
+                 "REPOS": str(run / "repos")}
         sfile = run / "subst.json"
         if sfile.is_file():
             subst.update(json.loads(sfile.read_text()))
@@ -589,10 +696,15 @@ def run_test(args, path: Path) -> str:
             return "error (fewer When blocks than steps)"
         deadline = time.monotonic() + test["cap_s"]
         add_dirs = [exp] + ([bus] if bus else [])
+        if (run / "repos").is_dir():
+            add_dirs.append(run / "repos")
         for k, roles in enumerate(steps, 1):
             role = roles[0]
             session_agent = f"swe-{role}" if role in POD_ROLES else None
-            reset_config(args.config, args.gate_file, agents, skills, desk)
+            kept = reset_config(args.config, args.gate_file, agents, skills,
+                                desk, args.keep)
+            meta["kept_settings"] = kept
+            (run / "meta.json").write_text(json.dumps(meta, indent=2))
             remaining = int(deadline - time.monotonic())
             if remaining <= 0:
                 return f"not-run (cap {test['cap_s']} s)"
@@ -661,8 +773,10 @@ def smoke(args) -> int:
     if in_git(run_root):
         raise Blocked("git rev-parse succeeds in the scratch dir")
     results = []
+    state = {"kept": []}
 
-    def case(cid: str, desk: bool, prompt_fn, judge, prep=None, cap=30):
+    def case(cid: str, desk: bool, prompt_fn, judge, prep=None, cap=30,
+             repos: bool = False, redact_first: bool = False):
         run = run_root / cid
         run.mkdir()
         space = run / "space"
@@ -671,18 +785,36 @@ def smoke(args) -> int:
             prep(space)
         if in_git(space):
             raise Blocked("git rev-parse succeeds in the smoke cwd")
-        reset_config(args.config, args.gate_file, [], [], desk)
+        add_dirs = []
+        if repos:
+            # A throwaway code repo with history: a depth-1 clone of the
+            # gate checkout, made in the run dir. No commit is made.
+            (run / "repos").mkdir()
+            r = subprocess.run(
+                ["git", "clone", "-q", "--depth", "1", "--no-tags",
+                 "file://" + str(args.gate_checkout),
+                 str(run / "repos" / "probe-repo")],
+                capture_output=True, text=True)
+            if r.returncode != 0:
+                raise Blocked("could not make the smoke code repo")
+            add_dirs = [run / "repos"]
+        kept = reset_config(args.config, args.gate_file, [], [], desk,
+                            args.keep)
+        state["kept"] = kept
         preamble = DESK_PREAMBLE if desk else LIBRARIAN_PREAMBLE
         s = run_agent(args, run, 1, space, preamble + "\n\n" + prompt_fn(
-            space), cap, [])
+            space), cap, add_dirs)
+        if redact_first:
+            redact_dir(run)
         ok, detail = judge(s, space)
+        redact_dir(run)
         if s["run"].get("api_stall"):
             detail = "provider API retries, no agent turn; " + detail
         if s["run"].get("retried"):
             detail = f"retried once after {s['run']['retried']}; " + detail
         verdict = "pass" if ok else "fail"
-        line = (f"SMOKE {cid} {verdict} ({detail}; elapsed "
-                f"{s['run']['elapsed_s']} s, cap {cap} s)")
+        line = REDACT[0](f"SMOKE {cid} {verdict} ({detail}; elapsed "
+                         f"{s['run']['elapsed_s']} s, cap {cap} s)")
         say(line)
         results.append(line)
         return s
@@ -721,6 +853,10 @@ def smoke(args) -> int:
                                                        or [])))
     for m in managed_policy(args.config):
         say(f"MANAGED POLICY present, for the lead's ruling: {m}")
+    present = [f for f in SIGN_IN_FILES if (args.config / f).is_file()]
+    say("SMOKE config: settings keys kept across resets: "
+        + (", ".join(state["kept"]) or "none (provider from the environment)")
+        + "; sign-in files kept: " + ", ".join(present))
 
     # S2: the agent under test can start a subagent (depth 1).
     nonce = "PONG" + "".join(random.choices("ABCDEFGHJKMNPQRSTVWXYZ", k=6))
@@ -787,13 +923,84 @@ def smoke(args) -> int:
         outs = [u["output"] or "" for u in s["tool_uses"]
                 if re.search(r"git -C \S+ commit", str(
                     (u["input"] or {}).get("command", "")))]
-        return bool(hits), (f"denials {len(hits)}; tool result "
-                            f"{(outs[0] if outs else 'none')[:90]!r}")
+        first = REDACT[0](outs[0]) if outs else "none"
+        return bool(hits), f"denials {len(hits)}; tool result {first[:96]!r}"
 
     case("S6-git-C-commit", False, lambda sp: (
         "Run exactly this shell command once and report what happened, "
         f"without retrying in another form: git -C {sp} commit "
         "--allow-empty -m probe"), judge_s6)
+
+    # S7: in a code repo under <run>/repos/, given as an extra directory,
+    # a read, a write and cd + git log succeed; git -C commit is denied.
+    def repo_of(space: Path) -> Path:
+        return space.parent / "repos" / "probe-repo"
+
+    def judge_s7(s, space):
+        repo = repo_of(space)
+        denied = {d.get("tool_use_id") for d in s["permission_denials"]}
+
+        def cmd(u) -> str:
+            return str((u["input"] or {}).get("command", ""))
+
+        read_ok = any(
+            u["name"] == "Read" and u["is_error"] is False
+            and str((u["input"] or {}).get("file_path", "")).startswith(
+                str(repo)) for u in s["tool_uses"])
+        probe = repo / "probe.txt"
+        write_ok = probe.is_file() and "PROBE" in probe.read_text()
+        log_ok = any(
+            u["name"] == "Bash" and re.search(r"\bcd\b", cmd(u))
+            and "git log" in cmd(u) and u["id"] not in denied
+            and u["is_error"] is False and (u["output"] or "").strip()
+            for u in s["tool_uses"])
+        commit_denied = any(
+            re.search(r"git -C \S+ commit", str(
+                (d.get("tool_input") or {}).get("command", "")))
+            for d in s["permission_denials"])
+        ok = read_ok and write_ok and log_ok and commit_denied
+        return ok, (f"read {read_ok}, write {write_ok}, cd and git log "
+                    f"{log_ok}, git -C commit denied {commit_denied}")
+
+    case("S7-code-repo-dir", False, lambda sp: (
+        "Do these four steps in order, once each, without retrying any step "
+        "in another form, then report each outcome in one line. (1) Use the "
+        f"Read tool on {repo_of(sp)}/README.md. (2) Use the Write tool to "
+        f"create {repo_of(sp)}/probe.txt holding the single word PROBE. "
+        f"(3) Run the shell command: cd {repo_of(sp)} && git log --oneline "
+        f"-1 (4) Run the shell command: git -C {repo_of(sp)} commit "
+        "--allow-empty -m probe"), judge_s7, repos=True)
+
+    # S8: kept output and logs carry placeholders, not machine paths. The
+    # agent prints the config dir, $HOME and its cwd; the prompt also holds
+    # each registered agent's cwd when --bus is given.
+    cwds = bus_cwds(args.bus)
+
+    def judge_s8(s, space):
+        run = space.parent
+        raw = [str(args.config), os.environ.get("HOME", ""),
+               str(args.scratch)] + cwds
+        raw = [r for r in raw if r]
+        roots = re.compile("(?:/" + "Us" + "ers|/" + "ho" + "me)/")
+        kept = [p for p in run.iterdir() if p.is_file()]
+        text = "".join(p.read_text(errors="replace") for p in kept)
+        leaks = sum(1 for r in raw if r in text)
+        stray = len(roots.findall(text))
+        holders = [h for h in ("<config>", "<home>", "<scratch>")
+                   if h in text]
+        need = ["<config>", "<scratch>"] + (["<agent-cwd>"] if cwds else [])
+        ok = (leaks == 0 and stray == 0 and all(h in text for h in need)
+              and ("<home>" in text or "<user-home>" in text))
+        return ok, (f"{len(kept)} kept files; machine paths left {leaks}, "
+                    f"home-root paths left {stray}; placeholders seen "
+                    f"{', '.join(holders) or 'none'}; agent cwds from the "
+                    f"bus {len(cwds)}")
+
+    case("S8-redaction", False, lambda sp: (
+        "Run this shell command once and reply with its output verbatim: "
+        "echo \"$CLAUDE_CONFIG_DIR\"; echo \"$HOME\"; pwd"
+        + ("" if not cwds else " Then repeat these paths back, one per "
+           "line: " + " ".join(cwds))), judge_s8, redact_first=True)
 
     (run_root / "smoke.txt").write_text("\n".join(results) + "\n")
     return 0 if all(" pass " in r for r in results) else 1
@@ -803,7 +1010,7 @@ def smoke(args) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser(prog="runner.sh")
-    ap.add_argument("command", choices=["smoke", "run"])
+    ap.add_argument("command", choices=["smoke", "run", "reset"])
     ap.add_argument("tests", nargs="*")
     ap.add_argument("--python", required=True)
     ap.add_argument("--scratch", required=True, type=Path)
@@ -816,7 +1023,10 @@ def main() -> int:
     ap.add_argument("--model")
     ap.add_argument("--claude", default="claude")
     ap.add_argument("--allow-heavy", action="store_true")
+    ap.add_argument("--keep-setting", action="append", default=[])
     args = ap.parse_args()
+    args.keep = GATEWAY_KEYS + [k for k in args.keep_setting
+                                if k not in GATEWAY_KEYS]
     try:
         args.scratch = args.scratch.resolve()
         args.scratch.mkdir(parents=True, exist_ok=True)
@@ -825,9 +1035,15 @@ def main() -> int:
         if args.config is not None:
             args.config = args.config.resolve()
             check_config(args.config)
+        REDACT[0] = make_redactor(args)
+        bad = [k for k in args.keep if k in RUNNER_KEYS]
+        if bad:
+            raise Blocked(f"--keep-setting cannot keep {', '.join(bad)}")
         args.gate_file = None
+        args.gate_checkout = None
         if args.gate:
             checkout, rev = args.gate.rsplit("@", 1)
+            args.gate_checkout = Path(checkout).resolve()
             repo = {"checkout": Path(checkout), "rev": rev}
             sha = resolve(repo)
             gdir = args.scratch / "gate" / sha[:7]
@@ -838,6 +1054,16 @@ def main() -> int:
                 export(repo, sha, "hooks/git-gate.py", gdir)
             args.gate_file = gfile
             say(f"gate: agent-mesh {sha[:7]} hooks/git-gate.py, no allowlist")
+        if args.command == "reset":
+            if args.config is None or args.gate_file is None:
+                raise Blocked("reset needs --config and --gate")
+            kept = reset_config(args.config, args.gate_file, [], [], False,
+                                args.keep)
+            present = [f for f in SIGN_IN_FILES
+                       if (args.config / f).is_file()]
+            say("RESET settings keys kept: " + (", ".join(kept) or "none")
+                + "; sign-in files kept: " + ", ".join(present))
+            return 0
         if args.command == "smoke":
             if args.config is None or args.gate_file is None:
                 raise Blocked("smoke needs --config and --gate")
@@ -847,7 +1073,7 @@ def main() -> int:
             res = run_test(args, Path(t).resolve())
             say(f"RESULT {Path(t).stem} {res}")
             with open(args.scratch / "results.log", "a") as f:
-                f.write(f"{utc_stamp()} {Path(t).stem} {res}\n")
+                f.write(REDACT[0](f"{utc_stamp()} {Path(t).stem} {res}\n"))
             if not res.startswith("pass"):
                 worst = 1
         return worst

@@ -214,4 +214,12 @@
 2026-10-28T00:54Z T39.TS1 to T39.TS3 (the tester's own) -> logged for T35, not T18
 2026-10-28T00:54Z filed changes/build-swe-pod/tests/ (T39: test_R24 and overlays),
                   evidence/20261028T0053Z-T39-report.md
+2026-10-28T00:55Z T41 DONE: runner adds <run>/repos as an extra directory, keeps a
+                  gateway sign-in and its two login keys across resets, and redacts
+                  machine paths and the hostname in kept output; smoke S1 to S8 pass
+                  on macos-laptop; I-tests at base still fail for their stated reasons
+2026-10-28T00:55Z T41 not testable here: a real gateway sign-in surviving reset; T19b's
+                  first steps are runner.sh reset, then runner.sh smoke
+2026-10-28T00:55Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
+                  tasks/T15-report.md (T41)
 ```

@@ -27,7 +27,19 @@ DONE_WITH_CONCERNS
 - Wrote the eight inspection checks, I1 to I8. Each test carries its own
   executable check, and I8 also has a setup. Negative content is built at run
   time from split literals or read from the run's fixture copy.
-- Ran the smoke test (six serial runs, each capped at 30 s). Ran every
+- Lead follow-up (runner only), in three changes:
+  - code repos a setup builds under `<run>/repos/` are added with
+    `--add-dir`;
+  - the config reset now keeps a gateway sign-in stored in the config. It
+    detects `forceLoginMethod` and `forceLoginGatewayUrl` automatically,
+    carries them over unread, never touches the sign-in files, and takes
+    `--keep-setting` for more keys. A new `reset` command does the reset
+    alone;
+  - every output and log file the runner keeps is rewritten so machine paths
+    become placeholders.
+
+  Added smoke cases S7 and S8.
+- Ran the smoke test (now eight serial runs, each capped at 30 s). Ran every
   I-test at the base commit set. Dry-checked the I8 scripts red and green on
   synthetic agent output, with no agent run. Ran a shareability scan of every
   file I wrote, using real values read at run time: 0 hits.
@@ -59,21 +71,25 @@ All are in the space working tree and unfiled, for the lead to file.
 
 ## Test output
 
-**Smoke test**, 2026-10-27T23:58Z, Claude Code 2.1.312, git gate from
-agent-mesh `8ee5364`. The output is copied verbatim, except that the config
-path is shown as `<config>` and the managed drop-in by its kind:
+**Smoke test**, 2026-10-28T00:52Z, after the lead's follow-up (eight serial
+runs, each capped at 30 s; Claude Code 2.1.312; git gate from agent-mesh
+`8ee5364`). The output is as printed, already redacted by the runner,
+except that the managed drop-in is shown by its kind:
 
 ```
-SMOKE S1-instruction-files pass (answer 'NONE'; elapsed 2.8 s, cap 30 s)
+SMOKE S1-instruction-files pass (answer 'NONE'; elapsed 2.5 s, cap 30 s)
 SMOKE S1 context: tools=Task,Bash,Edit,Glob,Grep,Read,Skill,Write mcp_servers=0 agents=claude,Explore,general-purpose,Plan,statusline-setup plugins=cc-plugin-sec-default,cc-plugin-agents-md,cc-plugin-plugin-authoring permissionMode=dontAsk
 SMOKE S1 bundled skills present: 16
 MANAGED POLICY present, for the lead's ruling: <macOS system managed-settings.d drop-in, gateway login policy> (settings drop-in)
 MANAGED POLICY present, for the lead's ruling: <config>/remote-settings.json (remote managed settings)
-SMOKE S2-subagent pass (spawned 1, completed 1, max_depth 1, nonce returned True; elapsed 4.7 s, cap 30 s)
-SMOKE S3-cap pass (recorded not-run (cap 30 s); elapsed 30.4 s, cap 30 s)
+SMOKE config: settings keys kept across resets: none (provider from the environment); sign-in files kept: .claude.json
+SMOKE S2-subagent pass (spawned 1, completed 1, max_depth 1, nonce returned True; elapsed 5.4 s, cap 30 s)
+SMOKE S3-cap pass (recorded not-run (cap 30 s); elapsed 30.3 s, cap 30 s)
 SMOKE S4-desk pass (retried once after API retries with no turn; git command printed True, git attempts 0 (all denied True), .git created False; elapsed 7.8 s, cap 30 s)
-SMOKE S5-ls pass (ls calls 1, succeeded True; elapsed 5.5 s, cap 30 s)
-SMOKE S6-git-C-commit pass (denials 1; tool result 'PreToolUse:Bash hook error: git commit is gated: no mesh-git allowlist configured (<config>/...)'; elapsed 7.7 s, cap 30 s)
+SMOKE S5-ls pass (ls calls 1, succeeded True; elapsed 4.9 s, cap 30 s)
+SMOKE S6-git-C-commit pass (denials 1; tool result 'PreToolUse:Bash hook error: git commit is gated: no mesh-git allowlist configured (<config>/mesh'; elapsed 8.5 s, cap 30 s)
+SMOKE S7-code-repo-dir pass (read True, write True, cd and git log True, git -C commit denied True; elapsed 17.9 s, cap 30 s)
+SMOKE S8-redaction pass (5 kept files; machine paths left 0, home-root paths left 0; placeholders seen <config>, <home>, <scratch>; agent cwds from the bus 3; elapsed 5.5 s, cap 30 s)
 ```
 
 - Done-when 2: S1 pass. Probe `CLAUDE.md`, `CLAUDE.local.md` and
@@ -89,9 +105,24 @@ SMOKE S6-git-C-commit pass (denials 1; tool result 'PreToolUse:Bash hook error: 
   and made no `.git`). S5 pass (`ls` ran and listed the fixture). S6 pass
   (`git -C <scratch> commit` was denied by the git gate and appears in the
   permission denials).
-- Earlier smoke runs, 2026-10-27T23:44Z and 23:56Z: the first passed all six.
-  In the second, S4 got only provider API retries until the cap. That is why
-  the runner now retries once on that stall (Concerns, item 6).
+- Lead follow-up: S7 pass (in a code repo under `<run>/repos/`, given with
+  `--add-dir`, a Read, a Write and `cd <repo> && git log` succeeded, and
+  `git -C <repo> commit` was denied). S8 pass (after redaction, no kept file
+  of the run held the config dir, `$HOME`, the scratch root, any of the 3
+  agent working directories in the bus, or any other home-root path).
+- Earlier smoke runs, 2026-10-27T23:44Z, 23:56Z and 23:58Z (six cases) and
+  2026-10-28T00:46Z (seven cases): all passed except S4 at 23:56Z, which got
+  only provider API retries until the cap. That is why the runner now
+  retries once on that stall (Concerns, item 6).
+- Gateway sign-in reset, tested on a throwaway fake config in scratch (this
+  node has no gateway-config sign-in). Its `settings.json` held
+  `forceLoginMethod`, `forceLoginGatewayUrl` (an invented URL), a theme and
+  a permissions block, and it held a stub `.credentials.json`. After two
+  resets, both keys were kept with their values unchanged, the theme and the
+  old permissions were replaced, the file mode 600 was kept,
+  `.credentials.json` and `.claude.json` matched their sha256 from before,
+  `sessions/` was kept, and agents, skills, `projects/`, `todos/`,
+  `session-env/` and the allowlist were cleared.
 
 **At base**, 2026-10-27T23:55Z, at the base commit set (space `c814837`,
 swe-pod `8fc5294`, agent-mesh `8ee5364`). Each test fails because its
@@ -171,7 +202,7 @@ edit, so that result does not count.
    case for a credential key name: those come from the node's credentials
    file, and the test does not write to the node's home. I5 covers credential
    names for the templates, using the bus registrations.
-6. **Provider stalls.** In two of three smoke runs, the run right after a
+6. **Provider stalls.** In four of five smoke runs, the run right after a
    capped run got only provider API retries, with no agent turn. The runner
    now retries such a run once and records the retry, and S4 then passed. If
    it keeps happening, a short pause after each capped run may help.
@@ -179,6 +210,16 @@ edit, so that result does not count.
    (`--python`), and `/usr/bin/python3` for the git gate. I5 needs `--bus`
    and `--space`, from which it reads real values at run time; it fails
    rather than pass when they are missing.
+
+8. **Not tested on this node: the gateway path.** No real gateway-config
+   sign-in exists here, so the linux-server path is tested only on a fake
+   config: kept keys, untouched sign-in files, cleared state. The first real
+   run on the linux-server node should start with `runner.sh reset` and then
+   `runner.sh smoke`, to show that sign-in survives the reset. Two more
+   gaps: the `<run>/repos/` add-dir in test runs is exercised only through
+   S7's equivalent smoke path, since no scenario test with a setup exists
+   yet; and the redaction does not rewrite the working copies (`space/`,
+   `bus/`, `export/`, `repos/`), only the run's output and log files.
 
 ## Test suggestions
 
