@@ -742,4 +742,11 @@
 2026-10-28T09:45Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T09:45Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T09:45Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-28T10:55Z T19b DONE_WITH_CONCERNS: ev-20261028T0950Z-T19b, linux-server, round 4 at space
+                  a2bbb6d, swe-pod 4d5bfc7, agent-mesh bbd19a2; smoke 8 of 8; 44 pass, 3 fail,
+                  0 not-run of 47, every scenario passing; wall 3123 s; the result's 64 files
+                  match their sha256
+2026-10-28T10:55Z T19b R7.S1 live: Then items 1 to 7 pass at a2bbb6d
+2026-10-28T10:55Z filed changes/build-swe-pod/evidence/20261028T0950Z-T19b.md, its -runs/ and
+                  its -report.md, from the remote node's result
 ```
