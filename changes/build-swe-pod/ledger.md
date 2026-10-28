@@ -673,4 +673,11 @@
                   lead rightly handed the human the commands; the fixtures shift back one
                   month and the three checks are fixed; cost if wrong: one more round
 2026-10-28T07:27Z dispatch T18 -> test (local, any): fixture dates and three checks from round 2
+2026-10-28T07:40Z T41 DONE_WITH_CONCERNS: the gate hook runs under the runner's --python; smoke
+                  S6 and S7 pass only on the gate's own denial; a gate that exits 1 or 2 fails
+                  S6; smoke 8 of 8 in two runs on macos-laptop
+2026-10-28T07:40Z Ruling: S6 taking S7's probe wording and its bounded retry is the 03:23Z
+                  probe hardening applied to one more case; cost if wrong: none
+2026-10-28T07:40Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
+                  evidence/20261028T0739Z-T41-report.md
 ```
