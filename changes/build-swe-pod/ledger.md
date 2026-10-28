@@ -164,4 +164,22 @@
                   joins the operator ask before the verify shards
 2026-10-28T00:43Z filed changes/build-swe-pod/tests/ (T16: test_R1 to test_R11 and their
                   overlays), tasks/T16-report.md
+2026-10-28T00:46Z T17 DONE_WITH_CONCERNS: 18 scenario tests R12.S1 to R23.S2, overlays
+                  for 16
+2026-10-28T00:46Z T17 at base: all 18 tests fail for the stated reason (deliverable
+                  absent, or the ledger template absent for test_R16_S1); no agent
+                  started
+2026-10-28T00:46Z Ruling: test_R20_S1 (skill, then skill) and test_R23_S2 (lead, then
+                  lead) run as two steps; roles unchanged; cost if wrong: none
+2026-10-28T00:46Z Ruling: the test-scaffolding words T17 lists in its prompts are
+                  accepted; none states the expected behavior; cost if wrong: a
+                  scenario is exercised less directly
+2026-10-28T00:46Z Ruling: the strict checks of test_R18_S1, test_R19_S1 and test_R20_S1
+                  stand, as those scenarios read; cost if wrong: false fails to judge
+2026-10-28T00:46Z Ruling: shared overlays and passing the desk rule to subagents are
+                  deferred; cost if wrong: duplicated fixtures only
+2026-10-28T00:46Z heavy noted: T17 tests estimated 3962 s serial (caps 15360 s);
+                  test_R16_S1 runs last with the same scratch as the others
+2026-10-28T00:46Z filed changes/build-swe-pod/tests/ (T17: test_R12 to test_R23 and
+                  their overlays), tasks/T17-report.md
 ```
