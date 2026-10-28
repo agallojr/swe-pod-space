@@ -145,4 +145,23 @@
 2026-10-28T00:31Z plan to be revised for R24: verify sharded across a local and a
                   linux-server test role holder; shard rules into PROCESS.md and the
                   lead, plan and test role definitions; tests for R24
+2026-10-28T00:43Z T16 DONE_WITH_CONCERNS: 17 scenario tests R1.S1 to R11.S1, 13 overlay
+                  fixtures
+2026-10-28T00:43Z T16 at base: all 17 tests fail (deliverable absent: swe-pod 8fc5294
+                  agents); no agent started
+2026-10-28T00:43Z Ruling: test_R4_S1 runs desk as two steps, build then lead, so the
+                  lead's merge is exercised; cost if wrong: one test rewrite
+2026-10-28T00:43Z Ruling: the scenario shortcuts T16 names in each test's Given are
+                  accepted (approval in the step prompt; brief without dispatch; a
+                  pre-recorded done task; a single swe.test holder in the demo bus);
+                  cost if wrong: a scenario is exercised less directly
+2026-10-28T00:43Z Ruling: test_R6_S2 reporting GIVEN not reached is judged by the lead
+                  against the plan the agent wrote; cost if wrong: a false fail
+2026-10-28T00:43Z Ruling: T15's runner adds the per-run code repos as an extra
+                  directory, with a smoke case; returned to the test role as a T15
+                  follow-up; cost if wrong: repo steps prompt and are denied
+2026-10-28T00:43Z heavy noted: T16 tests estimated 7080 s serial in all (caps 19500 s);
+                  joins the operator ask before the verify shards
+2026-10-28T00:43Z filed changes/build-swe-pod/tests/ (T16: test_R1 to test_R11 and their
+                  overlays), tasks/T16-report.md
 ```
