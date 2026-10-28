@@ -251,4 +251,76 @@
 2026-10-28T01:46Z T14 review: spec ok; 4 Minor
 2026-10-28T02:22Z dispatch T37 -> build (local, any), base swe-pod 6f8ed78
 2026-10-28T02:22Z filed changes/build-swe-pod/tasks/T37-brief.md
+2026-10-28T02:27Z Ruling: a suggestion whose behavior the spec states, in a requirement or
+                  an M item of spec section 14, with the plan's interface contract
+                  giving the detail, is routed to test; T5.TS4 (the interim local-only
+                  build rule), T12.TS4 (block-style registry entries) and T13.TS3 (the
+                  archiver sweep of result files) state behavior the spec does not and
+                  go to spec; no suggestion carries a computed value, and none is
+                  internal only; cost if wrong: a few suggestions reach the tester that
+                  a stricter reading would send to the spec author
+2026-10-28T02:27Z T1.TS1 -> test
+2026-10-28T02:27Z T1.TS2 -> test
+2026-10-28T02:27Z T1.TS3 -> test
+2026-10-28T02:27Z T1.TS4 -> test
+2026-10-28T02:27Z T1.TS5 -> test
+2026-10-28T02:27Z T1.TS6 -> test
+2026-10-28T02:27Z T2.TS1 -> test
+2026-10-28T02:27Z T2.TS2 -> test
+2026-10-28T02:27Z T2.TS3 -> test
+2026-10-28T02:27Z T2.TS4 -> test
+2026-10-28T02:27Z T3.TS1 -> test
+2026-10-28T02:27Z T3.TS2 -> test
+2026-10-28T02:27Z T3.TS3 -> test
+2026-10-28T02:27Z T4.TS1 -> test
+2026-10-28T02:27Z T4.TS2 -> test
+2026-10-28T02:27Z T4.TS3 -> test
+2026-10-28T02:27Z T4.TS4 -> test
+2026-10-28T02:27Z T4.TS5 -> test
+2026-10-28T02:27Z T5.TS1 -> test
+2026-10-28T02:27Z T5.TS2 -> test
+2026-10-28T02:27Z T5.TS3 -> test
+2026-10-28T02:27Z T5.TS4 -> spec
+2026-10-28T02:27Z T5.TS5 -> test
+2026-10-28T02:27Z T5.TS6 -> test
+2026-10-28T02:27Z T6.TS1 -> test
+2026-10-28T02:27Z T6.TS2 -> test
+2026-10-28T02:27Z T6.TS3 -> test
+2026-10-28T02:27Z T6.TS4 -> test
+2026-10-28T02:27Z T6.TS5 -> test
+2026-10-28T02:27Z T7.TS1 -> test
+2026-10-28T02:27Z T7.TS2 -> test
+2026-10-28T02:27Z T7.TS3 -> test
+2026-10-28T02:27Z T7.TS4 -> test
+2026-10-28T02:27Z T8.TS1 -> test
+2026-10-28T02:27Z T8.TS2 -> test
+2026-10-28T02:27Z T8.TS3 -> test
+2026-10-28T02:27Z T9.TS1 -> test
+2026-10-28T02:27Z T9.TS2 -> test
+2026-10-28T02:27Z T9.TS3 -> test
+2026-10-28T02:27Z T10.TS1 -> test
+2026-10-28T02:27Z T10.TS2 -> test
+2026-10-28T02:27Z T10.TS3 -> test
+2026-10-28T02:27Z T10.TS4 -> test
+2026-10-28T02:27Z T10.TS5 -> test
+2026-10-28T02:27Z T10.TS6 -> test
+2026-10-28T02:27Z T10.TS7 -> test
+2026-10-28T02:27Z T10.TS8 -> test
+2026-10-28T02:27Z T11.TS1 -> test
+2026-10-28T02:27Z T11.TS2 -> test
+2026-10-28T02:27Z T11.TS3 -> test
+2026-10-28T02:27Z T11.TS4 -> test
+2026-10-28T02:27Z T11.TS5 -> test
+2026-10-28T02:27Z T11.TS6 -> test
+2026-10-28T02:27Z T11.TS7 -> test
+2026-10-28T02:27Z T12.TS1 -> test
+2026-10-28T02:27Z T12.TS2 -> test
+2026-10-28T02:27Z T12.TS3 -> test
+2026-10-28T02:27Z T12.TS4 -> spec
+2026-10-28T02:27Z T13.TS1 -> test
+2026-10-28T02:27Z T13.TS2 -> test
+2026-10-28T02:27Z T13.TS3 -> spec
+2026-10-28T02:27Z T14.TS1 -> test
+2026-10-28T02:27Z T14.TS2 -> test
+2026-10-28T02:27Z T14.TS3 -> test
 ```
