@@ -369,4 +369,7 @@
                   T41 follow-up; cost if wrong: one more short test task before verify
 2026-10-28T02:59Z dispatch T41 -> test (local, any)
 2026-10-28T02:59Z filed changes/build-swe-pod/tasks/T41-brief.md
+2026-10-28T03:01Z operator decision: the space-librarian id finding from the T37 review is
+                  fixed by a new agent-mesh build task, T42, with its review, T43, before
+                  T19a and T19b; the plan is revised by a fresh planner to add them
 ```
