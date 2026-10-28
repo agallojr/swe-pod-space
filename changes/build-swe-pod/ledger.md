@@ -90,4 +90,27 @@
 2026-10-27T23:52Z T9 BLOCKED: the commit was refused by the session's permission
                   classifier; files staged, nothing committed
 2026-10-27T23:52Z filed T1, T4, T5, T6, T10, T11 reports and reviews; T2, T3, T9 reports
+2026-10-28T00:05Z T15 DONE_WITH_CONCERNS: runner, fixtures, I1 to I8; smoke tests pass
+                  (no instruction file reaches the agent under test, subagent at
+                  depth 1, 30 s cap, desk prints only, ls allowed, git -C commit
+                  denied)
+2026-10-28T00:05Z T15 at base: test_I1 fail (PROCESS.md absent), test_I2 fail (role
+                  definitions absent), test_I3 fail (templates absent), test_I4 fail
+                  (skill absent), test_I5 fail (templates absent), test_I6 fail
+                  (--project unknown argument), test_I7 fail (no project: field),
+                  test_I8 fail (space-librarian absent)
+2026-10-28T00:05Z Ruling: the node's managed settings (gateway login, provider
+                  environment) are accepted under test isolation; they add no
+                  instruction file and loosen no fence; cost if wrong: a scenario
+                  result reflects node policy, caught at T20 on another node
+2026-10-28T00:05Z Ruling: the test agent may read the space's memory-spaces note for
+                  the 11 manifest keys (I3); it is a relied-on spec input, not a
+                  plan, brief, report, review or diff; cost if wrong: none to
+                  blindness, the keys are not implementation
+2026-10-28T00:05Z Ruling: T16 and T17 briefs state that no instruction file reaches
+                  an agent under test, so a scenario needing AGENTS.md has the agent
+                  read it with a tool (R18.S1); cost if wrong: one test rewrite
+2026-10-28T00:05Z heavy noted: test_I8 expected 240 s, cap 600 s; it joins the
+                  operator ask before T19
+2026-10-28T00:05Z filed changes/build-swe-pod/tests/ (T15), tasks/T15-report.md
 ```

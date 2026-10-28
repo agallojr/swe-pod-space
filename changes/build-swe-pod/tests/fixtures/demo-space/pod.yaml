@@ -1,0 +1,9 @@
+pod: 1
+project: demo
+process: swe-pod-process@1
+repos:
+  alpha: {remote: "https://example.invalid/demo/alpha.git", pin: "a1a1a1a"}
+  beta:  {remote: "https://example.invalid/demo/beta.git", pin: "b2b2b2b"}
+  gamma: {remote: "https://example.invalid/demo/gamma.git", pin: "c3c3c3c"}
+depends: {beta: [alpha]}            # merge order: alpha before beta
+gates: {spec: human, plan: human-skim, merge: human}

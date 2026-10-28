@@ -1,0 +1,14 @@
+schema_version: 1
+agent_id: demo-linux-01
+agent_name: demo-server
+context: linux-server
+roles: [swe.build, swe.test]
+hostname: demo-linux-01.example.invalid
+platform: "Linux (demo fixture)"
+cwd: {{LINUX_HOME}}/demo-runner/demo-bus
+repo_commit: 0000000
+model: demo-model
+poll_interval_sec: 300
+credentials_available: []
+registered_at: 2026-11-01T08:00:00Z
+session_started: 2026-11-01T08:00:00Z

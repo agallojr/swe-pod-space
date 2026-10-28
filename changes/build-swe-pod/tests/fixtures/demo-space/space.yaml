@@ -1,0 +1,14 @@
+# Memory-space manifest of the demo Project Space (test fixture). Keys as the
+# space manifest of the memory-spaces design note, section 3.1; every value
+# is an invented placeholder.
+space: 1
+id: proj:demo
+kind: project
+title: Demo project for the SWE Pod tests
+visibility: shared
+owners: [demo-owner]
+writer_model: multi-actor
+categories: [notes, lore, decisions, evidence, handoffs, changes, tests]
+header_profile: shareable
+may_reference: [core]
+retention: until-archived
