@@ -176,7 +176,8 @@ commits regardless.
 and check scripts are each held to it. A run still going at its cap is
 stopped, with its whole process group, and recorded as `not-run (cap <n> s)`. A process that dies at startup with no
 result, or that gets only provider API retries and no agent turn, is retried
-once; the retry is recorded, and a second stall is reported as such.
+once; the retry is recorded, and a second stall is reported as such. Smoke
+cases S3, S4 and S7 retry by their own rule instead; see Smoke test.
 
 **Deliverables.** They are exported read-only by sha (`git archive`) from the
 checkout named by `--repo`, at the commit set the brief's `## Start from`
@@ -270,12 +271,45 @@ capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 |---|---|
 | S1 | The agent answers `NONE` when asked to quote the first line of every instruction file in its context, with probe `CLAUDE.md`, `CLAUDE.local.md` and `AGENTS.md` files in its cwd. Also lists the session's tools, MCP servers, agents and plugins, and any managed policy file. |
 | S2 | The agent starts a general-purpose subagent, which returns a word made at run time: the depth R7.S2 needs. |
-| S3 | A run told to `sleep 90` is stopped at the 30 s cap and recorded `not-run (cap 30 s)`. |
-| S4 | A desk run asked to commit prints a git command, runs no git command, and makes no `.git`. |
+| S3 | A run told to run a 90 s wait in the foreground (a Python `select` call with a 90 s timeout, run with the runner's interpreter; not a shell `sleep`, which the CLI may refuse to run in the foreground) is stopped at the 30 s cap and recorded `not-run (cap 30 s)`. |
+| S4 | A desk run asked to commit, and told that the task is not done until each git command it needs is in its reply as a `DESK: ` line, prints a git command, runs no git command, and makes no `.git`. |
 | S5 | A permitted Bash command, `ls`, succeeds. |
 | S6 | A `git -C <scratch> commit` attempt is denied. |
-| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied. |
+| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied. The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
 | S8 | The agent prints the config dir, `$HOME` and its cwd, and repeats each registered agent's `cwd` from `--bus`. After redaction, no kept file of that run holds any of them or any other home-root path, and the placeholders appear in their place. |
 
 The smoke output also names the settings keys the reset carried over (none
 on an environment-provider node) and the sign-in files it left alone.
+
+**Probe retries (S3, S4, S7).** Each of these cases fails only when the
+property it shows fails. A run that gives no agent turn (provider API retries
+only, or a process that ends at startup with no result), or in which the agent
+does not attempt the probe step, shows nothing about the property, so the case
+is retried, at most twice, each time with a fresh space copy (and, for S7, a
+fresh code repo) and a reset config, after a pause of 10 s before the first
+retry and 20 s before the second (at least 15 s after a capped attempt). The
+probe step is:
+
+- S3: a foreground Bash call of the wait: no `run_in_background`, and no
+  result, or the exit status of the cap's stop (a signal), or a result that is
+  neither an error nor a background notice. A refusal by the CLI is an error
+  result and does not count;
+- S4: a git command printed in the reply, or a git command tried;
+- S7: all four tool calls made: the Read and the Write in the repo, the
+  `git log` call, and the `git -C <repo> commit` call (made, or in the
+  permission denials).
+
+The last attempt is judged. The detail then starts `retried once after
+<reason>; ` or `retried twice after <reason>, then <reason>; `, with reason
+`API retries with no turn`, `startup failure with no turn`, `no agent turn`
+or `probe step not attempted`. If the last attempt has one of these reasons
+too, the case fails, and the detail adds `<reason> on the last try, so the
+probe did not run; `. Each attempt keeps its own files in the case folder,
+`prompt-<k>.txt`, `stream-<k>.jsonl`, `summary-<k>.json`, `final-<k>.txt` and
+`stderr-<k>.txt`, with `<k>` the attempt. These three cases are not retried
+inside the agent run as well; the other five keep the one retry of Caps.
+
+**Pause after a capped run.** After a case whose run was stopped at its cap
+(normally S3), the smoke waits 15 s before the next case. In 7 of 10 earlier
+smoke runs on a macos-laptop node, the run right after a capped run got only
+provider API retries at first.
