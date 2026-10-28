@@ -222,4 +222,18 @@
                   first steps are runner.sh reset, then runner.sh smoke
 2026-10-28T00:55Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
                   tasks/T15-report.md (T41)
+2026-10-28T01:32Z T3 DONE, swe-pod 8770c1a..0ee5f01; review: spec ok; 5 Minor
+2026-10-28T01:32Z T2 DONE_WITH_CONCERNS, swe-pod 0ee5f01..aa84b73; review: spec ok; 7 Minor
+2026-10-28T01:32Z T9 DONE, agent-mesh 7430aeb..97b35a2; review: spec ok; 4 Minor
+2026-10-28T01:32Z T7 DONE_WITH_CONCERNS, swe-pod 74d23f1..32db546
+2026-10-28T01:32Z T7 review: spec issues; 3 Important, 6 Minor
+2026-10-28T01:32Z T7 fix round 1/5: 3 addressed, 0 open, 32db546..5aacf3f
+2026-10-28T01:32Z T7 review r1: spec ok; 2 Minor
+2026-10-28T01:32Z T12 DONE, agent-mesh 97b35a2..859679a; review: spec ok; 4 Minor
+2026-10-28T01:32Z T13 DONE, agent-mesh 859679a..c6aa593; review: spec ok; 7 Minor
+2026-10-28T01:32Z T14 DONE, agent-mesh c6aa593..e0f6af0; review: spec ok; 4 Minor
+2026-10-28T01:32Z T8 DONE, swe-pod 5aacf3f..6f8ed78; review: spec ok; 7 Minor
+2026-10-28T01:32Z build tasks T1 to T14 all done and review-clean; the wave-1 and
+                  wave-2 role definitions were read from swe-pod 8770c1a
+2026-10-28T01:32Z filed wave 2 reports and reviews (T2, T7, T8, T12, T13, T14)
 ```

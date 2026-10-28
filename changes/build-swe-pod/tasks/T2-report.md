@@ -5,14 +5,13 @@
 - actor: <handle>/build
 
 ## Status
-BLOCKED
+DONE_WITH_CONCERNS
 
-The content is done, and done-when (1) to (3) pass. Done-when (4) is not
-met: the permission classifier refused the commit, so nothing is committed
-or pushed. The ten files are staged by pathspec in the shared swe-pod
-checkout, and no other task's files were touched. To finish, someone allowed
-to commit runs the commit and push lines under Concerns, then the close
-checks again.
+Done-when (1) to (3) and the local parts of (4) pass: the ten files are
+committed by pathspec with both trailers and pushed to
+`change/build-swe-pod`, and the shareability check gives 0 hits. The task
+review is still to come. The one item for the lead is the spec state-line
+concern under Concerns, which bears on T7's status skill.
 
 ## What I did
 - Wrote the done-when checks as one shell script (below) and ran it before
@@ -57,9 +56,19 @@ checks again.
 - Extra, not in the done-when: the front matter of `evidence.md` and
   `review.md` loads as YAML, placeholders included.
 - Staged the ten paths by pathspec and ran the shareability check: 0 hits.
-  The commit was then refused (see Status), and the check still gives 0 hits.
+  The commit was then refused, and the check still gave 0 hits.
+- A second builder, after the commit was permitted: checked the ten staged
+  files against plan 2.4 and the steps, and changed none of them. Folded
+  check (3) into the script, re-ran it (47 ok, 1 FAIL, the commit check
+  only), ran the shareability check (0 hits), committed the ten paths by
+  pathspec, fetched, found the remote head already in the branch so skipped
+  the rebase, pushed, and ran the script (50 ok, 0 FAIL) and the
+  shareability check (0 hits) again.
 
 ## Files
+Commit range: `swe-pod 0ee5f01..aa84b73` (one commit, `aa84b73`, on
+`change/build-swe-pod`, trailers `Change: build-swe-pod` and `Task: T2`).
+
 - swe-pod/templates/records/spec.md: created, spec record
 - swe-pod/templates/records/plan.md: created, plan record
 - swe-pod/templates/records/brief.md: created, build or review brief
@@ -73,8 +82,11 @@ checks again.
 
 ## Test output
 
-### Checks (1), (2) and the local parts of (4)
-- command: the script below, run as `bash -s` from `<checkout>`
+### Checks (1) to (3) and the local parts of (4)
+- command: the script below, run with `bash` against `<checkout>`. The
+  first builder's script lacked the `== (3)` section; the second builder
+  added it, so the red run below predates it (see the Check (3) section for
+  its red).
 
 ```
 cd <checkout> || exit 2
@@ -213,6 +225,13 @@ echo "== extra: no trailing whitespace"
 if ls $R/*.md >/dev/null 2>&1 && ! grep -nE '[[:space:]]$' $R/*.md
 then ok "no trailing whitespace"; else no "files missing or trailing whitespace"; fi
 
+echo "== (3) closing line of test-brief.md"
+CLOSE='Do not read plan.md, ledger.md, any other brief, report or review, or any code-repo diff or implementation body.'
+if grep -qxF -- "$CLOSE" $R/test-brief.md 2>/dev/null
+then ok "(3) closing line present, exactly"; else no "(3) closing line absent"; fi
+if [ "$(tail -n 1 $R/test-brief.md 2>/dev/null)" = "$CLOSE" ]
+then ok "(3) closing line is the last line"; else no "(3) closing line is not the last line"; fi
+
 echo "== (4) standard close, local parts"
 base=$(git log --format=%h -1 -E --grep='^Task: T0$' HEAD)
 if [ -n "$base" ] && [ -z "$(git diff $base -- SPEC.md 'spec-process.*')" ]
@@ -294,7 +313,7 @@ FAIL no commit with trailer Task: T2
 == total: 1 ok, 45 FAIL
 ```
 
-- green, after the content (the commit check stays red; see Status):
+- first builder, after the content, before any commit (commit check red):
 
 ```
 == (1) all 10 files exist
@@ -350,6 +369,84 @@ FAIL no commit with trailer Task: T2
 == total: 45 ok, 1 FAIL
 ```
 
+- second builder, staged files unchanged, before the commit: sections (1),
+  (2) and the extra as above, all ok; then
+
+```
+== (3) closing line of test-brief.md
+ok   (3) closing line present, exactly
+ok   (3) closing line is the last line
+== (4) standard close, local parts
+ok   SPEC.md and spec-process.* unchanged since 854e87c
+FAIL no commit with trailer Task: T2
+== total: 47 ok, 1 FAIL
+```
+
+- green, after the commit and push:
+
+```
+== (1) all 10 files exist
+ok   templates/records/spec.md exists
+ok   templates/records/plan.md exists
+ok   templates/records/brief.md exists
+ok   templates/records/test-brief.md exists
+ok   templates/records/report.md exists
+ok   templates/records/review.md exists
+ok   templates/records/evidence.md exists
+ok   templates/records/ledger.md exists
+ok   templates/records/handoff.md exists
+ok   templates/records/final-report.md exists
+ok   templates/records holds exactly 10 files
+== (2) headings and front-matter keys, one grep per item
+ok   templates/records/spec.md line: 6/6 found
+ok   templates/records/spec.md: ## headings in the given order
+ok   templates/records/spec.md start: 3/3 found
+ok   templates/records/spec.md start: 7/7 found
+ok   templates/records/plan.md line: 15/15 found
+ok   templates/records/plan.md: ## headings in the given order
+ok   templates/records/plan.md start: 11/11 found
+ok   templates/records/brief.md line: 6/6 found
+ok   templates/records/brief.md: ## headings in the given order
+ok   templates/records/test-brief.md line: 9/9 found
+ok   templates/records/test-brief.md: ## headings in the given order
+ok   templates/records/test-brief.md start: 1/1 found
+ok   templates/records/test-brief.md carries no reviewer part
+ok   templates/records/report.md line: 7/7 found
+ok   templates/records/report.md: ## headings in the given order
+ok   templates/records/report.md start: 2/2 found
+ok   templates/records/report.md has: 5/5 found
+ok   templates/records/review.md fm: 3/3 found
+ok   templates/records/review.md line: 3/3 found
+ok   templates/records/review.md: ## headings in the given order
+ok   templates/records/review.md start: 4/4 found
+ok   templates/records/evidence.md fm: 11/11 found
+ok   templates/records/evidence.md fmhas: 2/2 found
+ok   templates/records/evidence.md has: 2/2 found
+ok   templates/records/ledger.md blk: 16/16 found
+ok   templates/records/ledger.md: one fenced block
+ok   templates/records/ledger.md: every block line is an event or an 18-space continuation
+ok   templates/records/handoff.md line: 4/4 found
+ok   templates/records/handoff.md: ## headings in the given order
+ok   templates/records/final-report.md line: 6/6 found
+ok   templates/records/final-report.md: ## headings in the given order
+ok   templates/records/final-report.md start: 1/1 found
+== extra: no trailing whitespace
+ok   no trailing whitespace
+== (3) closing line of test-brief.md
+ok   (3) closing line present, exactly
+ok   (3) closing line is the last line
+== (4) standard close, local parts
+ok   SPEC.md and spec-process.* unchanged since 854e87c
+ok   T2 commit aa84b73 has both trailers
+ok   T2 commits touch exactly the 10 files
+ok   T2 commit is on origin/change/build-swe-pod
+== total: 50 ok, 0 FAIL
+```
+
+- push: the fetch found `origin/change/build-swe-pod` at `8770c1a`, already
+  an ancestor of HEAD (merge-base exit 0), so no rebase; the push gave
+  `8770c1a..aa84b73  change/build-swe-pod -> change/build-swe-pod`.
+
 ### Check (3), the closing line of test-brief.md
 - command:
 
@@ -384,12 +481,23 @@ ok   (3) templates/records/test-brief.md: closing line is the last line
 ok   (3) file ends with a newline after the closing line
 ```
 
-### Check (4), shareability (plan 2.8)
-- after staging, before the attempted commit: `shareability: 0 hits`
-- again after the refused commit: `shareability: 0 hits`
+  The third line came from a check the command above does not show. The
+  second builder's runs of (3) are the `== (3)` lines of the script runs
+  above, and it confirmed the red again at the T0 base tree:
+  `FAIL (3) 854e87c:templates/records/test-brief.md: file absent at the T0 base tree`.
 
-The staged scan also covered another task's files staged in the shared
-index at the time.
+### Check (4), shareability (plan 2.8)
+- first builder, after staging, before the refused commit: `shareability: 0 hits`
+- first builder, after the refused commit: `shareability: 0 hits`
+- second builder, after staging, before the commit: `shareability: 0 hits`
+- second builder, after the commit and push: `shareability: 0 hits`
+
+The first builder's staged scan also covered another task's files staged in
+the shared index at the time.
+
+### Unit suite
+swe-pod has no unit suite: it is Markdown only, with no test code or test
+runner. No `unit <p>/<n> pass` line applies.
 
 ### Extra: front matter loads as YAML
 
@@ -398,14 +506,19 @@ templates/records/evidence.md: parsed, keys id,change,commit_set,env,actor,scena
 templates/records/review.md: parsed, keys task,diff,verdict
 ```
 
+This was the first builder's run; the second builder did not re-run it (no
+YAML parser in its environment), and the files are unchanged since.
+
 ## Concerns
-- **Commit and push not done.** The permission classifier refused this
-  commit, so done-when (4) is open: no `Task: T2` commit, nothing pushed,
-  and the task cannot go to review yet. The ten files are staged by pathspec
-  in the shared swe-pod checkout. To finish, run these from the checkout,
-  each on its own line, then re-run the close checks:
-  - `git -C <checkout> commit -m "Add the ten record templates" --trailer "Change: build-swe-pod" --trailer "Task: T2" --trailer "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- templates/records/spec.md templates/records/plan.md templates/records/brief.md templates/records/test-brief.md templates/records/report.md templates/records/review.md templates/records/evidence.md templates/records/ledger.md templates/records/handoff.md templates/records/final-report.md`
-  - `git -C <checkout> push origin change/build-swe-pod`
+- **Commit and push done, by a second builder.** The first builder's commit
+  was refused; once it was permitted, a second builder committed the staged
+  files unchanged as `aa84b73` and pushed. Done-when (4) now waits only on
+  the task review.
+- **The push also carried T3's commit.** T3's builder committed `0ee5f01`
+  (`Task: T3`) on the shared local branch just before T2's commit and had not
+  pushed it, so the T2 push took `8770c1a..aa84b73` and put `0ee5f01` on the
+  remote too. T3's own push will find nothing new to send. T2's diff by its
+  trailer is still only `aa84b73`.
 - **Spec state lines sit in a comment.** In `spec.md` the three state lines
   are inside the HTML comment, starting at column 0, so a line grep can find
   them. If a spec author keeps that comment, a status reader that greps
