@@ -817,3 +817,26 @@ task.request and the dispatch line in the space commit it was given. It
 cannot see the filing of its own returned files, which is the THEN of
 R17.S1. That live check therefore goes to T35, which confirms the filings
 against test_R17_S1's Then items. The final report cites both.
+
+## Planner note: OD7 (R24, parallel by default, sharded verify)
+
+R24 was approved as a spec amendment, and the operator set parallel-by-default
+as a standing rule. The plan, now revision 4, changes as follows:
+- **§3.** New OD7; OD1 and OD6 now name T19b.
+- **Verify.** It is split into T19a (local, macos-laptop, serial) and T19b
+  (mesh, linux-server, up to 4 runs at a time). Tests are divided by
+  `expected_s`, with about a fifth of the total going to T19a.
+  `test_R16_S1` runs in both shards. Each shard files its own evidence, and
+  verified is decided per R24.
+- **T37 (new build task).** It adds role scaling to PROCESS.md §4, §7 and
+  §11, and to swe-plan, swe-lead and swe-test. It also changes the swe-pod
+  skill's verified rule, since the skill reads state for the lead (R24.S2);
+  that file goes beyond the lead's list. It runs after T1, T4, T5, T6 and T7.
+- **T38.** The review of T37.
+- **T39 (new test task).** Blind tests for R24.S1 and R24.S2, after T15.
+  T16 and T17 keep their scenarios.
+- **Ordering.** T18 now runs after T37. T35 runs after T19a and T19b, and T36
+  after both shards and T35. §9 lists 37 scenarios, and §10 and the
+  self-review are updated.
+
+The longest chain is still 13 tasks, and the plan has 40.
