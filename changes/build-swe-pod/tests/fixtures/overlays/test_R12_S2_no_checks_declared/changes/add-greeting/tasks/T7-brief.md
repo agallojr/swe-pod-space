@@ -52,4 +52,4 @@ None.
 ## Result goes to
 
 - the evidence record: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>.md
-- the T7 report: changes/add-greeting/tasks/T7-report.md
+- the T7 report: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7-report.md

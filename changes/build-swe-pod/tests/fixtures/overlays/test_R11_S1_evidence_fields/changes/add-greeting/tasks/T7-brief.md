@@ -68,4 +68,4 @@ None.
 
 - the evidence record: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>.md,
   with the keys of templates/records/evidence.md
-- the T7 report: changes/add-greeting/tasks/T7-report.md
+- the T7 report: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7-report.md

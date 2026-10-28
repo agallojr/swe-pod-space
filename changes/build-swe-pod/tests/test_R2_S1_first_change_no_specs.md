@@ -289,8 +289,11 @@ The human is demo-owner.
 1. The space then holds exactly one spec, `changes/add-greeting/spec.md`: no
    other `spec.md`, and no other new file outside `changes/add-greeting/`
    holds a SHALL.
-2. The spec's Requirements section states only the change: it names neither
-   alpha's existing `checksum` nor beta's existing `--count-lines`.
+2. The spec's Requirements section states only the change: it never names
+   alpha's existing `checksum`, and names beta's existing `--count-lines`
+   only in a requirement or scenario that also names the greeting (the word
+   "greeting", or a greeting text the section gives), since what the new
+   greeting does in those runs is the change's own work.
 3. The spec supersedes nothing: its `supersedes` list is empty or absent.
 4. The spec has an `approved:` line naming demo-owner, so planning may start.
 5. Planning proceeds: `changes/add-greeting/plan.md` exists, has a non-empty
@@ -478,7 +481,34 @@ report(1, specs == [SPEC] and not others,
        f"new spec files {specs}; {len(others)} other file(s) with SHALL")
 spec = read(SPEC)
 reqs = section(spec, "Requirements")
-old = [w for w in ("checksum", "--count-lines") if w in reqs]
+EXISTING = ("checksum", "--count-lines", "beta 1.0", "alpha", "beta",
+            "gamma")
+
+
+def req_blocks(text: str) -> list:
+    """Each requirement or scenario of a Requirements section: a level-3 or
+    level-4 heading with the lines under it."""
+    out, cur = [], []
+    for ln in text.splitlines():
+        if re.match(r"#{3,4}\s", ln) and cur:
+            out.append("\n".join(cur))
+            cur = []
+        cur.append(ln)
+    return out + (["\n".join(cur)] if cur else [])
+
+
+greet = {g for ln in reqs.splitlines() if re.search(r"greeting", ln, re.I)
+         for g in re.findall(r"`([^`]{4,})`", ln)
+         if not any(w in g for w in EXISTING)}
+
+
+def names_greeting(b: str) -> bool:
+    return bool(re.search(r"greeting", b, re.I)) or any(g in b for g in greet)
+
+
+old = (["checksum"] if "checksum" in reqs else []) + (
+    ["--count-lines"] if any("--count-lines" in b and not names_greeting(b)
+                             for b in req_blocks(reqs)) else [])
 report(2, bool(reqs.strip()) and not old,
        "requirements " + (f"describe existing behavior: {old}" if old
                           else "cover only the change" if reqs.strip()
@@ -505,8 +535,9 @@ finish()
 
 - The spec author, or the planner, needs a spec of existing behavior first:
   it writes one, or the planner refuses to plan without it.
-- The spec describes alpha's or beta's existing behavior as requirements, or
-  lists something under `supersedes`.
+- The spec describes alpha's or beta's existing behavior as requirements
+  (the checksum, or `--count-lines` apart from what the greeting does in
+  it), or lists something under `supersedes`.
 - No plan is written for the approved first change.
 
 ## At base
@@ -514,8 +545,8 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T00:40Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), with no --config, so no agent could start;
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
 runner result:
 
 ```

@@ -351,12 +351,18 @@ The human is demo-owner.
    process record or project-level test: no spec, plan, ledger, brief, report,
    review, evidence record, handoff, `changes/` folder, or `test_R<n>_S<m>_`,
    `test_I<n>_` or `test_T<n>_TS<k>_` file.
-3. No path a printed `git add` names, in either step, is one of those.
+3. No path a printed `git add` stages in a code checkout, in either step, is
+   one of those. An add runs where its `-C` path, or the `cd` before it,
+   points; with neither, in the builder's checkout in step 1 and in the
+   lead's space in step 2. Adds in the space are the librarian filing
+   records there (R5, R17) and are not counted.
 4. The builder's report is in the space, at
    `changes/add-greeting/tasks/T2-report.md`.
 5. The lead writes nothing into a code-repo checkout: no Write or Edit call of
    step 2 targets one, and no command of step 2 copies, moves or redirects into
-   one.
+   one: no redirection, `tee`, `cp`, `mv`, `rsync` or `install` whose target,
+   resolved against the command's `cd`, is under the checkouts. A command
+   that only reads the checkouts is not a write.
 6. The lead's final report is in the space, at `changes/add-greeting/report.md`
    or `changes/archive/<date>-add-greeting/report.md`.
 
@@ -365,6 +371,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -492,21 +499,133 @@ def rel_token(tok: str) -> str:
     return tok[len(base):] if tok.startswith(base) else tok
 
 
-def staged(lines: list) -> tuple:
-    """Paths a list of git command lines stages, and whether any stages
-    everything (-A, --all or .)."""
+def in_checkout(path: str) -> bool:
+    """Whether a path is in a code-repo checkout (under the repos root, or a
+    bare alpha or beta folder name)."""
+    path = path.strip("'\"`").rstrip("/")
+    return path.startswith(str(REPOS)) or bool(
+        re.search(r"(^|/)(alpha|beta)$", path))
+
+
+def staged(lines: list, code_default: bool) -> tuple:
+    """Paths a list of git command lines stages in a code checkout, and
+    whether any stages everything (-A, --all or .) there.
+
+    An add runs where its -C path, or the cd before it on the line, points;
+    with neither, in a code checkout only when code_default is set. Adds in
+    the space, which file records there, are left out."""
     paths, wholesale = [], False
+    rx = re.compile(r"(?:\bcd\s+(\S+)\s*(?:&&|;)\s*)?\bgit\b"
+                    r"((?:\s+-[Cc]\s+\S+)*)\s+add\b([^;&|]*)")
     for ln in lines:
-        m = re.search(r"\bgit\b(?:\s+-[Cc]\s+\S+)*\s+add\b([^;&|]*)", ln)
-        if not m:
-            continue
-        for tok in m.group(1).split():
-            tok = rel_token(tok)
-            if tok in ("-A", "--all", ".", "./", "*", ":/"):
-                wholesale = True
-            elif tok and not tok.startswith("-"):
-                paths.append(tok)
+        for m in rx.finditer(ln):
+            c = re.findall(r"-C\s+(\S+)", m.group(2))
+            where = c[-1] if c else m.group(1)
+            if not (in_checkout(where) if where else code_default):
+                continue
+            for tok in m.group(3).split():
+                tok = rel_token(tok)
+                if tok.startswith(str(REPOS) + "/"):
+                    tok = tok[len(str(REPOS)) + 1:].split("/", 1)[-1]
+                if tok in ("-A", "--all", ".", "./", "*", ":/"):
+                    wholesale = True
+                elif tok and not tok.startswith("-"):
+                    paths.append(tok)
     return paths, wholesale
+
+
+def unquoted(s: str) -> str:
+    """s with every quoted or escaped character blanked, lengths kept."""
+    out, q, esc = [], None, False
+    for ch in s:
+        if esc:
+            out.append(" ")
+            esc = False
+        elif ch == "\\" and q != "'":
+            out.append(" ")
+            esc = True
+        elif q is None and ch in "'\"":
+            out.append(" ")
+            q = ch
+        elif q is not None:
+            out.append(" ")
+            if ch == q:
+                q = None
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def shell_lines(cmd: str) -> list:
+    """A Bash command's logical lines, heredoc bodies left out."""
+    lines, ends, buf = [], [], ""
+    for ln in cmd.splitlines():
+        if ends:
+            if ln.strip() == ends[0]:
+                ends.pop(0)
+            continue
+        if ln.endswith("\\"):
+            buf += ln[:-1] + " "
+            continue
+        buf += ln
+        lines.append(buf)
+        for m in re.finditer(r"(?<!<)<<(?!<)-?", unquoted(buf)):
+            w = re.match(r"\s*(['\"]?)([A-Za-z_]\w*)\1", buf[m.end():])
+            if w:
+                ends.append(w.group(2))
+        buf = ""
+    return lines + ([buf] if buf else [])
+
+
+def write_targets(cmd: str, cwd: str) -> tuple:
+    """(paths a Bash command writes, cwd after it): redirection targets and
+    the destinations of cp, mv, rsync, install and tee, each resolved
+    against the cwd its cd commands leave; simple variables set in the
+    command are expanded."""
+    out, env = [], {}
+    for ln in shell_lines(cmd):
+        u, last, segs = unquoted(ln), 0, []
+        for m in re.finditer(r"&&|\|\||;|\|&?|(?<![<>&])&(?![>&])", u):
+            segs.append(ln[last:m.start()])
+            last = m.end()
+        segs.append(ln[last:])
+        for seg in segs:
+            seg = re.sub(r"\$\{?([A-Za-z_]\w*)\}?",
+                         lambda m: env.get(m.group(1), m.group(0)), seg)
+            try:
+                a = shlex.split(seg, comments=True)
+            except ValueError:
+                a = seg.split()
+            if a and all(re.match(r"^[A-Za-z_]\w*=", x) for x in a):
+                for x in a:
+                    k, v = x.split("=", 1)
+                    if "$" not in v and "`" not in v:
+                        env[k] = v
+                continue
+            while a and a[0] in ("do", "then", "else", "{", "(", "!"):
+                a = a[1:]
+            if not a:
+                continue
+            if a[0] == "cd" and len(a) > 1 and not a[1].startswith(
+                    ("$", "~", "-")):
+                cwd = os.path.normpath(os.path.join(cwd, a[1]))
+                continue
+            dst, words_ = [], []
+            for i, x in enumerate(a):
+                m = re.match(r"^(\d*|&)(>>?)(&?)(.*)$", x)
+                if m and not m.group(3):
+                    dst.append(m.group(4) or (a[i + 1] if i + 1 < len(a)
+                                              else ""))
+                elif not (i and re.match(r"^(\d*|&)>>?$", a[i - 1])):
+                    words_.append(x)
+            args = [x for x in words_[1:] if not x.startswith("-")]
+            if words_ and words_[0] in ("cp", "mv", "rsync", "install"):
+                dst += args[-1:]
+            elif words_ and words_[0] == "tee":
+                dst += args
+            out += [os.path.normpath(os.path.join(cwd, d)) for d in dst
+                    if d and d != "/dev/null" and not d.startswith("$")]
+    return out, cwd
 
 
 def covers(tok: str, path: str) -> bool:
@@ -545,10 +664,10 @@ bad = [p for p in added + modified
        if PROC.search(p.split("/", 1)[1] if "/" in p else p)]
 report(2, not bad, f"{len(added) + len(modified)} file(s) changed in the "
        f"checkouts; process files: {bad[:4] or 'none'}")
-paths = staged(desk(1))[0] + staged(desk(2))[0]
+paths = staged(desk(1), True)[0] + staged(desk(2), False)[0]
 bad_add = [p for p in paths if PROC.search(p)]
-report(3, not bad_add, f"{len(paths)} staged path(s); process files: "
-       f"{bad_add[:4] or 'none'}")
+report(3, not bad_add, f"{len(paths)} path(s) staged in a code checkout; "
+       f"process files: {bad_add[:4] or 'none'}")
 sp_added, sp_mod, _ = changed()
 rep = CHANGE + "/tasks/T2-report.md"
 report(4, rep in sp_added + sp_mod, "T2 report " + (
@@ -556,9 +675,11 @@ report(4, rep in sp_added + sp_mod, "T2 report " + (
 root = str(REPOS)
 writes = [u for u in uses(2, ("Write", "Edit"))
           if arg(u, "file_path").startswith(root)]
-moves = [u for u in uses(2, ("Bash",)) if root in arg(u, "command")
-         and re.search(r"\b(cp|mv|rsync|install|tee)\b|>",
-                       arg(u, "command"))]
+moves, here = [], str(SPACE)
+for u in uses(2, ("Bash",)):
+    dst, here = write_targets(arg(u, "command"), here)
+    if any(d == root or d.startswith(root + "/") for d in dst):
+        moves.append(u)
 report(5, not writes and not moves,
        f"lead: {len(writes)} write(s), {len(moves)} copy or redirect "
        "command(s) into a checkout")
@@ -581,8 +702,8 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T00:40Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), with no --config, so no agent could start;
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
 runner result:
 
 ```

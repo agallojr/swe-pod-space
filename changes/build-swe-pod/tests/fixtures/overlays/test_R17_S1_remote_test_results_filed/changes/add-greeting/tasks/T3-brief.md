@@ -56,6 +56,6 @@ changes/add-greeting/spec.md
 ## Result goes to
 
 - changes/add-greeting/tests/: one test file per scenario
-- the T3 report: changes/add-greeting/tasks/T3-report.md
+- the T3 report: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T3-report.md
 
 Do not read plan.md, ledger.md, any other brief, report or review, or any code-repo diff or implementation body.

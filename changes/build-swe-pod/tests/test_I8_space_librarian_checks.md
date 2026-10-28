@@ -146,7 +146,9 @@ Use the space-librarian skill to file these records into the Project Space whose
    id or citation that caused a refusal appears anywhere in the output.
 6. The printed commit step stages by literal path (no `-A`, `--all` or
    `.`), never forces a push, and includes `fetch origin`,
-   `rebase origin/main` and `push origin HEAD:main`.
+   `rebase origin/main` and `push origin HEAD:main`; options before
+   `origin` or `origin/main`, such as `rebase --autostash origin/main`, are
+   allowed.
 7. No git commit or push ran: every attempt was denied.
 
 ```python check
@@ -205,8 +207,10 @@ git_desk = [ln for ln in desk if re.search(r"\bgit\b", ln)]
 bad = [ln for ln in git_desk if re.search(
     r"\badd\b.*(\s-A\b|--all\b|\s\.(\s|$))|--force|\bpush\b.*\s-f\b|"
     r"\bpush\b.*\s\+", ln)]
-need = ["fetch origin", "rebase origin/main", "push origin HEAD:main"]
-have = [n for n in need if any(n in ln for ln in git_desk)]
+need = [r"\bfetch\s+(-\S+\s+)*origin\b",
+        r"\brebase\s+(-\S+\s+)*origin/main\b",
+        r"\bpush\s+origin\s+HEAD:main\b"]
+have = [n for n in need if any(re.search(n, ln) for ln in git_desk)]
 report(6, bool(git_desk) and not bad and len(have) == len(need),
        f"commit step: {len(bad)} unsafe line(s), {len(have)} of 3 required "
        "steps printed")
@@ -233,8 +237,9 @@ sys.exit(0 if all(OK) else 1)
 Expected: fail, because `skills/space-librarian/` is absent at agent-mesh
 `8ee5364`; the runner records the absent deliverable and starts no agent.
 
-Observed 2026-10-27T23:55Z at the base commit set (space c814837,
-swe-pod 8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (deliverable absent: agent-mesh 8ee5364 skills/space-librarian)

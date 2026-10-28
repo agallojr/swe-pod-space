@@ -45,12 +45,14 @@ the check below on it and on the ledgers of the other runs. No agent is run.
 
 1. The template holds at least one dispatch line, and each is in the contract
    form `dispatch T<n> -> <role> (<local|mesh>, <env class|any>)[, base <repo>
-   <sha7>]`, as placeholders or filled in.
+   <sha7>]`, as placeholders or filled in. The task id may be a shard id,
+   `T<n>a` (plan §2.5).
 2. At least one dispatch line in the other runs' ledgers (or in the space's
    own) was written by an agent.
-3. Every dispatch line read is in that form: a pod role, `local` or `mesh`, an
-   environment class (lower-case words joined by hyphens) or `any`, then only
-   `base` repo and sha7 pairs.
+3. Every agent-written dispatch line read is in that form: a task or shard
+   id, a pod role, `local` or `mesh`, an environment class (lower-case words
+   joined by hyphens) or `any`, then only `base` repo and sha7 pairs. Fixture
+   lines, which a run's overlay put there, are not judged, as in check 2.
 4. No dispatch line holds a machine value: no hostname, agent id, mesh task
    id, home path or credential name. Each hit is printed as `<source>:<line>
    <kind>`, never the matched text.
@@ -106,8 +108,8 @@ import socket
 TESTS = Path(os.environ["TESTS_DIR"])
 POD = {"spec", "plan", "lead", "build", "test", "review"}
 ENV = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*$")
-LINE = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z) dispatch (T\d+) -> "
-                  r"(\S+) \(([^,()]*), ([^()]*)\)(.*)$")
+LINE = re.compile(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z) dispatch "
+                  r"(T\d+[a-z]?) -> (\S+) \(([^,()]*), ([^()]*)\)(.*)$")
 REST = re.compile(r"^(, base [A-Za-z0-9][\w.-]* [0-9a-f]{7}"
                   r"(, [A-Za-z0-9][\w.-]* [0-9a-f]{7})*)?$")
 FORM = ("dispatch T<n> -> <role> (<local|mesh>, <env class|any>)")
@@ -220,10 +222,9 @@ lines += [(f"swe-pod {sha}:templates/records/ledger.md", n, e, False)
 agent = [x for x in lines if x[3]]
 report(2, bool(agent), f"{len(agent)} agent-written dispatch line(s) in "
        f"{len(sources)} ledger(s) of {nruns} other run(s)")
-bad = [x for x in lines if not x[0].startswith("swe-pod ")
-       and not form_ok(x[2])]
-report(3, not bad, f"{len(bad)} dispatch line(s) not in the form" + "".join(
-    f"; {x[0]}:{x[1]}" for x in bad[:3]))
+bad = [x for x in lines if x[3] and not form_ok(x[2])]
+report(3, not bad, f"{len(bad)} agent-written dispatch line(s) not in the "
+       "form" + "".join(f"; {x[0]}:{x[1]}" for x in bad[:3]))
 PAT = [(re.compile("/" + "Us" + r"ers/[^/\s]+|/" + "ho" + r"me/[^/\s]+"),
         "home path"),
        (re.compile(r"\b\d{8}T\d{4}-\d{4}\b"), "mesh task id"),
@@ -258,8 +259,9 @@ sys.exit(0 if OK and all(OK) else 1)
 Expected: fail, because `templates/records/ledger.md` is absent at swe-pod
 `8fc5294`.
 
-Observed 2026-10-28T00:43Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (check R16.S1.1: swe-pod 8fc5294: templates/records/ledger.md absent)

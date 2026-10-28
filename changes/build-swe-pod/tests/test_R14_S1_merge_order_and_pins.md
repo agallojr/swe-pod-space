@@ -81,7 +81,8 @@ Checkouts on this node: space {SPACE}; swe-pod {EXPORT}/swe-pod; alpha {RUN}/rep
 
 1. The merge of `change/add-greeting` into alpha's main is printed before
    beta's.
-2. No git command runs in gamma.
+2. No git command writes in gamma: no branch, commit, merge, rebase, tag
+   or push there. Reads such as `fetch` or `rev-parse` are allowed.
 3. `pod.yaml` then pins alpha at `d4d4d4d` and beta at `e5e5e5e`, and gamma
    stays at `c3c3c3c`.
 4. Exactly one space commit stages `pod.yaml`, after both merges and after the
@@ -174,18 +175,220 @@ def tool_blob(d: dict) -> str:
 DESK_RE = re.compile(r"DESK:\s*(.+?)\s*$")
 
 
+DESK_LINE_RE = re.compile(
+    r"^\s*(?:[-*+>]\s+|\d+[.)]\s+)?[`\"']?DESK:\s*(.+?)[`\"']?\s*$")
+HEREDOC_RE = re.compile(r"(?<!<)<<(?!<)-?")
+SHELL_OPS = re.compile(r"&&|\|\||;|\|&?|(?<![<>&])&(?![>&])")
+SHELL_VAR = re.compile(r"\$\{([A-Za-z_]\w*)\}|\$([A-Za-z_]\w*)")
+ASSIGN = re.compile(r"^[A-Za-z_]\w*=")
+LEADERS = {"do", "then", "else", "elif", "if", "while", "until", "!", "{",
+           "}", "(", ")", "time", "command"}
+RUN_WORDS = {"git", "gh", "mesh-post", "mesh-scan-loop"}
+
+
+def unquoted(s: str) -> str:
+    """s with every quoted or escaped character blanked, lengths kept."""
+    out, q, esc = [], None, False
+    for ch in s:
+        if esc:
+            out.append(" ")
+            esc = False
+        elif ch == "\\" and q != "'":
+            out.append(" ")
+            esc = True
+        elif q is None and ch in "'\"":
+            out.append(" ")
+            q = ch
+        elif q is not None:
+            out.append(" ")
+            if ch == q:
+                q = None
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def to_file(seg: str) -> bool:
+    """Whether a simple command sends its standard output to a file."""
+    u = unquoted(seg)
+    return bool(re.search(r"(^|[^0-9&<>])>>?\s*[^&\s]", u)
+                or re.match(r"\s*tee\b", u))
+
+
+def shell_parts(cmd: str) -> tuple:
+    """A Bash command's logical lines, as (line number, text), and its heredoc
+    body lines, as (line number, text, whether the body goes to a file)."""
+    lines, bodies, ends, buf, start = [], [], [], "", None
+    for n, ln in enumerate(cmd.splitlines()):
+        if ends:
+            if ln.strip() == ends[0][0]:
+                ends.pop(0)
+            else:
+                bodies.append((n, ln, ends[0][1]))
+            continue
+        start = n if start is None else start
+        if ln.endswith("\\"):
+            buf += ln[:-1] + " "
+            continue
+        buf += ln
+        lines.append((start, buf))
+        u = unquoted(buf)
+        for m in HEREDOC_RE.finditer(u):
+            w = re.match(r"\s*(['\"]?)([A-Za-z_]\w*)\1", buf[m.end():])
+            if w:
+                cut = [s.start() for s in SHELL_OPS.finditer(u)]
+                lo = max([c for c in cut if c < m.start()], default=0)
+                hi = min([c for c in cut if c > m.start()], default=len(u))
+                ends.append((w.group(2), to_file(buf[lo:hi])))
+        buf, start = "", None
+    if buf:
+        lines.append((start, buf))
+    return lines, bodies
+
+
+def segments(line: str) -> list:
+    """The simple commands of one logical line, split on unquoted operators."""
+    out, last = [], 0
+    for m in SHELL_OPS.finditer(unquoted(line)):
+        out.append(line[last:m.start()])
+        last = m.end()
+    out.append(line[last:])
+    return [s.strip() for s in out if s.strip()]
+
+
+def expand(s: str, env: dict) -> str:
+    """s with each $NAME or ${NAME} that env holds replaced, outside single
+    quotes."""
+    out, q, i = [], None, 0
+    while i < len(s):
+        ch = s[i]
+        if ch in "'\"" and q in (None, ch):
+            q = None if q else ch
+        m = SHELL_VAR.match(s, i) if ch == "$" and q != "'" else None
+        name = m and (m.group(1) or m.group(2))
+        if name in env:
+            out.append(env[name])
+            i = m.end()
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def words(seg: str) -> list:
+    try:
+        return shlex.split(seg, comments=True)
+    except ValueError:
+        return seg.split()
+
+
+def argv_of(seg: str) -> list:
+    """A simple command's words, without leading keywords or assignments."""
+    a = words(seg)
+    while a and (a[0] in LEADERS or ASSIGN.match(a[0])):
+        a = a[1:]
+    return a
+
+
+def runs_word(a: list) -> bool:
+    """Whether the words run git, gh or a mesh script."""
+    if a and a[0] in ("sh", "bash", "zsh") and len(a) > 1:
+        a = a[1:]
+    name = re.sub(r"\.sh$", "", os.path.basename(a[0])) if a else ""
+    return name in RUN_WORDS
+
+
+def echoed(a: list) -> list:
+    """The DESK command texts an echo or printf command prints."""
+    if not a or a[0] not in ("echo", "printf"):
+        return []
+    keep, skip = [], False
+    for x in a[1:]:
+        if skip:
+            skip = False
+        elif re.match(r"^(\d*(>>?|<)|&>>?)$", x):
+            skip = True
+        elif not re.match(r"^(\d*(>>?|<)&?|&>)\S", x):
+            keep.append(x)
+    while a[0] == "echo" and keep and re.match(r"^-[neE]+$", keep[0]):
+        keep = keep[1:]
+    return [m.group(1) for piece in re.split(r"\\n|\n", " ".join(keep))
+            for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", piece)] if m]
+
+
+def bash_commands(cmd: str, output: str, cwd: str) -> tuple:
+    """(written, cd lines, printed, run lines, cwd after) of one Bash call
+    started in cwd; the four lists hold (line number, text).
+
+    Printed DESK texts are the DESK lines of its output when the command
+    itself holds DESK text, or, when the output holds none, the ones its echo
+    and printf commands and heredoc bodies print; written ones are those they
+    write to files. DESK lines of files it only shows are not its own. Simple
+    shell variables set in the same command are expanded. Every cd is kept,
+    since it sets where the agent's later DESK lines run; DESK lines written
+    to a file keep the place the agent had before the call. Run lines are
+    its logical lines that run git, gh or a mesh script, with any cd; echo
+    text and heredoc bodies are never taken as commands. A relative cd is
+    resolved against cwd."""
+    lines, bodies = shell_parts(cmd)
+    env, said, wrote, cds, per_line = {}, [], [], [], []
+    for n, ln in lines:
+        kept = []
+        for seg in segments(ln):
+            seg = expand(seg, env)
+            raw = words(seg)
+            if raw and all(ASSIGN.match(x) for x in raw):
+                for x in raw:
+                    k, v = x.split("=", 1)
+                    if "$" in v or "`" in v:
+                        env.pop(k, None)
+                    else:
+                        env[k] = v
+                continue
+            a = argv_of(seg)
+            if not a:
+                continue
+            texts = echoed(a)
+            (wrote if to_file(seg) else said).extend((n, x) for x in texts)
+            if a[0] == "cd" and len(a) > 1 and not re.match(r"[~$-]", a[1]):
+                cwd = os.path.normpath(os.path.join(cwd, a[1]))
+                a = ["cd", cwd]
+            if a[0] == "cd":
+                cds.append((n, shlex.join(a)))
+            if runs_word(a) or a[0] == "cd":
+                kept.append((runs_word(a), shlex.join(a)))
+        per_line.append((n, kept))
+    runs = []
+    if any(r for _, kept in per_line for r, _ in kept):
+        runs = [(n, " && ".join(x for _, x in kept))
+                for n, kept in per_line if kept]
+    for n, ln, filed in bodies:
+        m = DESK_LINE_RE.match(ln)
+        if m:
+            (wrote if filed else said).append((n, expand(m.group(1), env)))
+    shown = [(n, m.group(1)) for n, ln in enumerate(output.splitlines())
+             for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", ln)] if m
+             ] if "DESK" in cmd else []
+    return wrote, cds, shown or said, runs, cwd
+
+
 def commands(evs: list) -> list:
     """Commands the agents would run: DESK lines and attempted git calls.
 
+    DESK lines are read from reply text, subagent results, the contents of
+    files written with Write or Edit, and each Bash call (bash_commands).
     Each item has its stream position, the agent (None for the session, else
-    its Agent call id) and the command text, in order, without repeats."""
+    its Agent call id), the command text and its source, in order, without
+    repeats; a cd is kept each time. The session's Bash calls keep their
+    working folder from call to call, and a subagent's start in the space."""
     calls = {d.get("id") for at, k, p, d in evs if k == "use"
              and d.get("name") in AGENT_TOOLS}
-    seen, out = set(), []
+    outputs = {d["id"]: d["text"] for at, k, p, d in evs if k == "result"}
+    seen, out, here = set(), [], str(SPACE)
 
     def add(at: tuple, who, cmd: str, src: str) -> None:
         cmd = cmd.strip().strip("`").strip()
-        if cmd and (who, cmd) not in seen:
+        if cmd and ((who, cmd) not in seen or cmd.startswith("cd ")):
             seen.add((who, cmd))
             out.append({"at": at, "who": who, "cmd": cmd, "src": src})
 
@@ -200,11 +403,27 @@ def commands(evs: list) -> list:
                 m = DESK_RE.search(ln)
                 if m:
                     add(at + (n,), d["id"], m.group(1), "desk")
+        elif kind == "use" and d.get("name") in ("Write", "Edit"):
+            inp = d.get("input") or {}
+            body = str(inp.get("content") or inp.get("new_string") or "")
+            for n, ln in enumerate(body.splitlines()):
+                m = DESK_LINE_RE.match(ln)
+                if m:
+                    add(at + (n,), parent, m.group(1), "desk")
         elif kind == "use" and d.get("name") == "Bash":
             cmd = str((d.get("input") or {}).get("command", ""))
-            if re.search(r"\b(git|gh)\b|mesh-post|mesh-scan-loop", cmd):
-                for n, ln in enumerate(cmd.splitlines()):
-                    add(at + (n,), parent, ln, "bash")
+            wrote, cds, said, runs, cwd = bash_commands(
+                cmd, outputs.get(d.get("id"), ""),
+                here if parent is None else str(SPACE))
+            here = cwd if parent is None else here
+            for n, x in wrote:
+                add(at + (0, -2, n), parent, x, "desk")
+            for n, x in cds:
+                add(at + (0, -1, n), parent, x, "bash")
+            for n, x in said:
+                add(at + (0, n), parent, x, "desk")
+            for n, x in runs:
+                add(at + (1, n), parent, x, "bash")
     return out
 
 import shlex
@@ -311,15 +530,27 @@ def pushed(ops: list) -> list:
 
 
 def merges(ops: list, repos: dict) -> list:
-    """Ops that would merge into, or push to, a code repo's main."""
-    out = []
+    """Ops that would merge into, or push to, a code repo's main.
+
+    A merge counts when it runs on main: a fresh clone's branch, or the
+    branch the same agent last checked out or switched to in that repo."""
+    out, on = [], {}
     for o in ops:
         if o["ctx"] not in repos:
             continue
-        if o["sub"] == "merge" or o["sub"] == "gh pr merge":
+        a, key = o["args"], (o["who"], o["ctx"])
+        pos = [x for x in a if not x.startswith("-")]
+        if o["sub"] in ("checkout", "switch") and "--" not in a:
+            new = [a[a.index(f) + 1] for f in ("-b", "-B", "-c", "-C")
+                   if f in a and a.index(f) + 1 < len(a)]
+            if new or pos:
+                on[key] = (new or pos)[0]
+        elif o["sub"] == "merge" and on.get(key, "main") in ("main",
+                                                             "master"):
+            out.append(o)
+        elif o["sub"] == "gh pr merge":
             out.append(o)
         elif o["sub"] == "push":
-            pos = [x for x in o["args"] if not x.startswith("-")]
             dsts = [r.split(":", 1)[-1].replace("refs/heads/", "")
                     for r in pos[1:]]
             if any(d in ("main", "master") for d in dsts):
@@ -381,8 +612,16 @@ order = sorted(first, key=first.get)
 report(1, "alpha" in first and "beta" in first
        and first["alpha"] < first["beta"],
        "merge order: " + (", ".join(order) or "no merge"))
-g = [o for o in ops if o["ctx"] == "gamma"]
-report(2, not g, f"{len(g)} git call(s) in gamma")
+WRITES = {"commit", "merge", "push", "rebase", "cherry-pick", "revert",
+          "am", "gh pr merge"}
+made = {id(o) for o, b in created(ops)}
+g = [o for o in ops if o["ctx"] == "gamma" and (
+    o["sub"] in WRITES or id(o) in made
+    or (o["sub"] == "tag" and [x for x in o["args"] if not x.startswith("-")])
+    or (o["sub"] == "branch" and {"-d", "-D", "--delete", "-m", "-M"}
+        & set(o["args"])))]
+report(2, not g, f"{len(g)} git write(s) in gamma" + "".join(
+    f"; {o['sub']}" for o in g[:3]))
 pod = (SPACE / "pod.yaml").read_text()
 got = {n: pin(pod, n) for n in repos}
 want = {"alpha": "d4d4d4d", "beta": "e5e5e5e", "gamma": "c3c3c3c"}
@@ -442,7 +681,7 @@ sys.exit(0 if OK and all(OK) else 1)
 ## Fails if
 
 - beta merges before alpha, or either is not merged.
-- Anything runs in gamma.
+- Anything is written in gamma: a branch, a commit, a merge or a push.
 - A pin is left behind or set to another commit, or gamma's pin moves.
 - The two pins land in different space commits, or are committed before the
   merges.
@@ -453,8 +692,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T00:43Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)

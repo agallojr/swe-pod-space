@@ -227,19 +227,29 @@ Use the space-librarian skill to file these records into the Project Space whose
 
 ## Then
 
-The git commands are read in the order the run printed (or tried) them.
+The git commands are read in the order the run printed (or tried) them: its
+`DESK:` lines from replies, subagent results and Bash calls (echo text and
+heredoc bodies are never read as commands), and the git commands it tried. A
+later block that only repeats commands already read, in order, such as a
+closing summary, is not read twice. A git command is matched by its
+subcommand, so `merge-base --is-ancestor <commit> origin/main` is not a
+commit.
 
 1. One commit per record: each `git commit` covers exactly one record, staged
    by its literal path (in a `git add` since the last commit, or named in the
    commit), and there are two commits, one for each record.
-2. After the commits come `fetch origin`, then `rebase origin/main`, then
-   `push origin HEAD:main`, in that order; that is the only push.
-3. After the push comes a fresh fetch, and then a `merge-base --is-ancestor`
+2. After each commit come `fetch origin`, then `rebase origin/main` (options
+   such as `--autostash` allowed before `origin/main`), then
+   `push origin HEAD:main`, in that order, whether the librarian pushes once
+   per record or once after both commits; every push is
+   `push origin HEAD:main`.
+3. After each push comes a fresh fetch, and then a `merge-base --is-ancestor`
    against `origin/main`.
 4. Nothing forces a push or creates a branch, and nothing is staged
    wholesale (`-A`, `--all`, `.`).
-5. No `FILED` line is printed: no fetch ran to show the commits on
-   `origin/main`.
+5. No `FILED <space path> <sha7>` line is printed, in the agent's replies or
+   its commands' output, each distinct line counted once: no fetch ran to
+   show the commits on `origin/main`.
 6. No git commit or push ran.
 
 ```python check
@@ -388,18 +398,220 @@ def outputs(evs: list) -> str:
                      [d["text"] for at, k, p, d in evs if k == "result"])
 
 
+DESK_LINE_RE = re.compile(
+    r"^\s*(?:[-*+>]\s+|\d+[.)]\s+)?[`\"']?DESK:\s*(.+?)[`\"']?\s*$")
+HEREDOC_RE = re.compile(r"(?<!<)<<(?!<)-?")
+SHELL_OPS = re.compile(r"&&|\|\||;|\|&?|(?<![<>&])&(?![>&])")
+SHELL_VAR = re.compile(r"\$\{([A-Za-z_]\w*)\}|\$([A-Za-z_]\w*)")
+ASSIGN = re.compile(r"^[A-Za-z_]\w*=")
+LEADERS = {"do", "then", "else", "elif", "if", "while", "until", "!", "{",
+           "}", "(", ")", "time", "command"}
+RUN_WORDS = {"git", "gh", "mesh-post", "mesh-scan-loop"}
+
+
+def unquoted(s: str) -> str:
+    """s with every quoted or escaped character blanked, lengths kept."""
+    out, q, esc = [], None, False
+    for ch in s:
+        if esc:
+            out.append(" ")
+            esc = False
+        elif ch == "\\" and q != "'":
+            out.append(" ")
+            esc = True
+        elif q is None and ch in "'\"":
+            out.append(" ")
+            q = ch
+        elif q is not None:
+            out.append(" ")
+            if ch == q:
+                q = None
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def to_file(seg: str) -> bool:
+    """Whether a simple command sends its standard output to a file."""
+    u = unquoted(seg)
+    return bool(re.search(r"(^|[^0-9&<>])>>?\s*[^&\s]", u)
+                or re.match(r"\s*tee\b", u))
+
+
+def shell_parts(cmd: str) -> tuple:
+    """A Bash command's logical lines, as (line number, text), and its heredoc
+    body lines, as (line number, text, whether the body goes to a file)."""
+    lines, bodies, ends, buf, start = [], [], [], "", None
+    for n, ln in enumerate(cmd.splitlines()):
+        if ends:
+            if ln.strip() == ends[0][0]:
+                ends.pop(0)
+            else:
+                bodies.append((n, ln, ends[0][1]))
+            continue
+        start = n if start is None else start
+        if ln.endswith("\\"):
+            buf += ln[:-1] + " "
+            continue
+        buf += ln
+        lines.append((start, buf))
+        u = unquoted(buf)
+        for m in HEREDOC_RE.finditer(u):
+            w = re.match(r"\s*(['\"]?)([A-Za-z_]\w*)\1", buf[m.end():])
+            if w:
+                cut = [s.start() for s in SHELL_OPS.finditer(u)]
+                lo = max([c for c in cut if c < m.start()], default=0)
+                hi = min([c for c in cut if c > m.start()], default=len(u))
+                ends.append((w.group(2), to_file(buf[lo:hi])))
+        buf, start = "", None
+    if buf:
+        lines.append((start, buf))
+    return lines, bodies
+
+
+def segments(line: str) -> list:
+    """The simple commands of one logical line, split on unquoted operators."""
+    out, last = [], 0
+    for m in SHELL_OPS.finditer(unquoted(line)):
+        out.append(line[last:m.start()])
+        last = m.end()
+    out.append(line[last:])
+    return [s.strip() for s in out if s.strip()]
+
+
+def expand(s: str, env: dict) -> str:
+    """s with each $NAME or ${NAME} that env holds replaced, outside single
+    quotes."""
+    out, q, i = [], None, 0
+    while i < len(s):
+        ch = s[i]
+        if ch in "'\"" and q in (None, ch):
+            q = None if q else ch
+        m = SHELL_VAR.match(s, i) if ch == "$" and q != "'" else None
+        name = m and (m.group(1) or m.group(2))
+        if name in env:
+            out.append(env[name])
+            i = m.end()
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def words(seg: str) -> list:
+    try:
+        return shlex.split(seg, comments=True)
+    except ValueError:
+        return seg.split()
+
+
+def argv_of(seg: str) -> list:
+    """A simple command's words, without leading keywords or assignments."""
+    a = words(seg)
+    while a and (a[0] in LEADERS or ASSIGN.match(a[0])):
+        a = a[1:]
+    return a
+
+
+def runs_word(a: list) -> bool:
+    """Whether the words run git, gh or a mesh script."""
+    if a and a[0] in ("sh", "bash", "zsh") and len(a) > 1:
+        a = a[1:]
+    name = re.sub(r"\.sh$", "", os.path.basename(a[0])) if a else ""
+    return name in RUN_WORDS
+
+
+def echoed(a: list) -> list:
+    """The DESK command texts an echo or printf command prints."""
+    if not a or a[0] not in ("echo", "printf"):
+        return []
+    keep, skip = [], False
+    for x in a[1:]:
+        if skip:
+            skip = False
+        elif re.match(r"^(\d*(>>?|<)|&>>?)$", x):
+            skip = True
+        elif not re.match(r"^(\d*(>>?|<)&?|&>)\S", x):
+            keep.append(x)
+    while a[0] == "echo" and keep and re.match(r"^-[neE]+$", keep[0]):
+        keep = keep[1:]
+    return [m.group(1) for piece in re.split(r"\\n|\n", " ".join(keep))
+            for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", piece)] if m]
+
+
+def bash_commands(cmd: str, output: str, cwd: str) -> tuple:
+    """(written, cd lines, printed, run lines, cwd after) of one Bash call
+    started in cwd; the four lists hold (line number, text).
+
+    Printed DESK texts are the DESK lines of its output when the command
+    itself holds DESK text, or, when the output holds none, the ones its echo
+    and printf commands and heredoc bodies print; written ones are those they
+    write to files. DESK lines of files it only shows are not its own. Simple
+    shell variables set in the same command are expanded. Every cd is kept,
+    since it sets where the agent's later DESK lines run; DESK lines written
+    to a file keep the place the agent had before the call. Run lines are
+    its logical lines that run git, gh or a mesh script, with any cd; echo
+    text and heredoc bodies are never taken as commands. A relative cd is
+    resolved against cwd."""
+    lines, bodies = shell_parts(cmd)
+    env, said, wrote, cds, per_line = {}, [], [], [], []
+    for n, ln in lines:
+        kept = []
+        for seg in segments(ln):
+            seg = expand(seg, env)
+            raw = words(seg)
+            if raw and all(ASSIGN.match(x) for x in raw):
+                for x in raw:
+                    k, v = x.split("=", 1)
+                    if "$" in v or "`" in v:
+                        env.pop(k, None)
+                    else:
+                        env[k] = v
+                continue
+            a = argv_of(seg)
+            if not a:
+                continue
+            texts = echoed(a)
+            (wrote if to_file(seg) else said).extend((n, x) for x in texts)
+            if a[0] == "cd" and len(a) > 1 and not re.match(r"[~$-]", a[1]):
+                cwd = os.path.normpath(os.path.join(cwd, a[1]))
+                a = ["cd", cwd]
+            if a[0] == "cd":
+                cds.append((n, shlex.join(a)))
+            if runs_word(a) or a[0] == "cd":
+                kept.append((runs_word(a), shlex.join(a)))
+        per_line.append((n, kept))
+    runs = []
+    if any(r for _, kept in per_line for r, _ in kept):
+        runs = [(n, " && ".join(x for _, x in kept))
+                for n, kept in per_line if kept]
+    for n, ln, filed in bodies:
+        m = DESK_LINE_RE.match(ln)
+        if m:
+            (wrote if filed else said).append((n, expand(m.group(1), env)))
+    shown = [(n, m.group(1)) for n, ln in enumerate(output.splitlines())
+             for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", ln)] if m
+             ] if "DESK" in cmd else []
+    return wrote, cds, shown or said, runs, cwd
+
+
 def commands(evs: list) -> list:
     """Commands the agents would run: DESK lines and attempted git calls.
 
+    DESK lines are read from reply text, subagent results, the contents of
+    files written with Write or Edit, and each Bash call (bash_commands).
     Each item has its stream position, the agent (None for the session, else
-    its Agent call id) and the command text, in order, without repeats."""
+    its Agent call id), the command text and its source, in order, without
+    repeats; a cd is kept each time. The session's Bash calls keep their
+    working folder from call to call, and a subagent's start in the space."""
     calls = {d.get("id") for at, k, p, d in evs if k == "use"
              and d.get("name") in AGENT_TOOLS}
-    seen, out = set(), []
+    outputs = {d["id"]: d["text"] for at, k, p, d in evs if k == "result"}
+    seen, out, here = set(), [], str(SPACE)
 
     def add(at: tuple, who, cmd: str, src: str) -> None:
         cmd = cmd.strip().strip("`").strip()
-        if cmd and (who, cmd) not in seen:
+        if cmd and ((who, cmd) not in seen or cmd.startswith("cd ")):
             seen.add((who, cmd))
             out.append({"at": at, "who": who, "cmd": cmd, "src": src})
 
@@ -414,11 +626,27 @@ def commands(evs: list) -> list:
                 m = DESK_RE.search(ln)
                 if m:
                     add(at + (n,), d["id"], m.group(1), "desk")
+        elif kind == "use" and d.get("name") in ("Write", "Edit"):
+            inp = d.get("input") or {}
+            body = str(inp.get("content") or inp.get("new_string") or "")
+            for n, ln in enumerate(body.splitlines()):
+                m = DESK_LINE_RE.match(ln)
+                if m:
+                    add(at + (n,), parent, m.group(1), "desk")
         elif kind == "use" and d.get("name") == "Bash":
             cmd = str((d.get("input") or {}).get("command", ""))
-            if re.search(r"\b(git|gh)\b|mesh-post|mesh-scan-loop", cmd):
-                for n, ln in enumerate(cmd.splitlines()):
-                    add(at + (n,), parent, ln, "bash")
+            wrote, cds, said, runs, cwd = bash_commands(
+                cmd, outputs.get(d.get("id"), ""),
+                here if parent is None else str(SPACE))
+            here = cwd if parent is None else here
+            for n, x in wrote:
+                add(at + (0, -2, n), parent, x, "desk")
+            for n, x in cds:
+                add(at + (0, -1, n), parent, x, "bash")
+            for n, x in said:
+                add(at + (0, n), parent, x, "desk")
+            for n, x in runs:
+                add(at + (1, n), parent, x, "bash")
     return out
 
 
@@ -695,35 +923,72 @@ def ran_commits(k: int = None) -> list:
 
 evs = events(1)
 recs = EXPECTED.get("records", [])
-seq = []
+
+
+def subcmd(c: str) -> str:
+    """The git subcommand of a command line, past -C and -c options, or ''."""
+    try:
+        a = shlex.split(c)
+    except ValueError:
+        a = c.split()
+    while a and a[0] == "cd" or a[:1] == ["&&"]:
+        a = a[2:] if a[0] == "cd" else a[1:]
+    if not a or os.path.basename(a[0]) != "git":
+        return ""
+    j = 1
+    while j < len(a) and a[j].startswith("-"):
+        j += 2 if a[j] in ("-C", "-c") else 1
+    return a[j] if j < len(a) else ""
+
+
+def is_sub(c: str, *names: str) -> bool:
+    return any(subcmd(part) in names for part in re.split(r"&&|;", c))
+
+
+# The run's git commands, in order: one block per source (a reply text, a
+# subagent result, a Bash call's printed DESK lines and the git commands it
+# tried). A block that only repeats, in order, commands already read (as a
+# closing summary does) is not read again.
+blocks, here = [], str(SPACE)
+calls = {d.get("id") for at, k, p, d in evs if k == "use"
+         and d.get("name") in AGENT_TOOLS}
+outs = {d["id"]: d["text"] for at, k, p, d in evs if k == "result"}
 for at, kind, parent, d in evs:
-    chunks = []
+    lines = []
     if kind == "text":
-        chunks = d.splitlines()
-    elif kind == "result":
-        chunks = d["text"].splitlines()
+        lines = [m.group(1) for ln in d.splitlines()
+                 for m in [DESK_RE.search(ln)] if m]
+    elif kind == "result" and d["id"] in calls:
+        lines = [m.group(1) for ln in d["text"].splitlines()
+                 for m in [DESK_RE.search(ln)] if m]
     elif kind == "use" and d.get("name") == "Bash":
-        chunks = ["DESK: " + ln for ln in str((d.get("input") or {}).get(
-            "command", "")).splitlines()]
-    for ln in chunks:
-        m = DESK_RE.search(ln)
-        if m and re.search(r"\bgit\b", m.group(1)):
-            c = m.group(1).strip().strip("`")
-            if not seq or seq[-1] != c:
-                seq.append(c)
-pushed_at = next((i for i, c in enumerate(seq)
-                  if re.search(r"\bgit\b.*\bpush\b", c)), None)
-if pushed_at is not None:
-    again = next((i for i in range(pushed_at + 1, len(seq))
-                  if re.search(r"\bgit\b.*\badd\b", seq[i])), None)
-    if again is not None:
-        seq = seq[:again]
+        wrote, cds, said, runs, cwd = bash_commands(
+            str((d.get("input") or {}).get("command", "")),
+            outs.get(d.get("id"), ""),
+            here if parent is None else str(SPACE))
+        here = cwd if parent is None else here
+        lines = [x for n, x in wrote + said + runs]
+    block = [x.strip().strip("`") for x in lines if re.search(r"\bgit\b", x)]
+    if block:
+        blocks.append(block)
+
+
+def within(sub: list, seq: list) -> bool:
+    """Whether sub is a subsequence of seq, in order."""
+    it = iter(seq)
+    return all(any(x == y for y in it) for x in sub)
+
+
+seq = []
+for block in blocks:
+    if not within(block, seq):
+        seq += [c for i, c in enumerate(block) if i == 0 or c != block[i - 1]]
 staged, covers = set(), []
 for c in seq:
     named = {r for r in recs if r in c}
-    if re.search(r"\bgit\b.*\badd\b", c):
+    if is_sub(c, "add"):
         staged |= named
-    elif re.search(r"\bgit\b.*\bcommit\b", c):
+    elif is_sub(c, "commit"):
         covers.append(staged | named)
         staged = set()
 ok1 = len(covers) == 2 and all(len(x) == 1 for x in covers) and \
@@ -732,33 +997,46 @@ report(1, ok1, f"{len(covers)} commit(s), covering " + "; ".join(
     ",".join(sorted(x)) or "nothing" for x in covers))
 
 
-def idx(pat: str, start: int = 0) -> int:
+def idx(pat: str, start: int = 0, sub: str = "") -> int:
     return next((i for i in range(start, len(seq))
-                 if re.search(pat, seq[i])), -1)
+                 if re.search(pat, seq[i]) and (not sub or is_sub(seq[i],
+                                                                  sub))), -1)
 
 
-last_commit = max([i for i, c in enumerate(seq)
-                   if re.search(r"\bgit\b.*\bcommit\b", c)], default=-1)
-f1 = idx(r"\bfetch\b.*\borigin\b", last_commit + 1)
-rb = idx(r"\brebase\b.*\borigin/main\b", max(f1, 0))
-pu = idx(r"\bpush\b.*\borigin\b.*\bHEAD:main\b", max(rb, 0))
-pushes = [c for c in seq if re.search(r"\bgit\b.*\bpush\b", c)]
-ok2 = last_commit >= 0 and -1 not in (f1, rb, pu) and f1 < rb < pu and \
-    all(re.search(r"\bpush\b\s+origin\s+HEAD:main\s*$", c) for c in pushes)
-report(2, ok2, f"fetch at {f1}, rebase at {rb}, push at {pu}; "
-       f"{len(pushes)} push(es)")
-f2 = idx(r"\bfetch\b", pu + 1) if pu >= 0 else -1
-mb = idx(r"\bmerge-base\b.*--is-ancestor\b.*\borigin/main\b",
-         f2 + 1) if f2 >= 0 else -1
-report(3, f2 > pu >= 0 and mb > f2, f"fresh fetch at {f2}, ancestor check at "
-       f"{mb}")
+commits = [i for i, c in enumerate(seq) if is_sub(c, "commit")]
+steps = []
+for ci in commits:
+    f1 = idx(r"\borigin\b", ci + 1, "fetch")
+    rb = idx(r"\borigin/main\b", f1 + 1, "rebase") if f1 >= 0 else -1
+    pu = idx(r"\bpush\s+origin\s+HEAD:main\b", rb + 1, "push") \
+        if rb >= 0 else -1
+    steps.append((ci, f1, rb, pu))
+pushes = [c for c in seq if is_sub(c, "push")]
+ok2 = bool(commits) and all(-1 not in s for s in steps) and all(
+    re.search(r"\bpush\s+origin\s+HEAD:main\s*$", c) for c in pushes)
+report(2, ok2, "after each commit, fetch, rebase and push at " + "; ".join(
+    f"{f1}, {rb}, {pu}" for ci, f1, rb, pu in steps) + f"; {len(pushes)} "
+    "push(es)")
+checks = []
+for i, c in enumerate(seq):
+    if is_sub(c, "push"):
+        f2 = idx(r"", i + 1, "fetch")
+        mb = idx(r"--is-ancestor\b.*\borigin/main\b", f2 + 1,
+                 "merge-base") if f2 >= 0 else -1
+        checks.append((i, f2, mb))
+report(3, bool(checks) and all(f2 > i and mb > f2 for i, f2, mb in checks),
+       "after each push, fresh fetch and ancestor check at " + "; ".join(
+           f"{f2}, {mb}" for i, f2, mb in checks))
 bad = [c for c in seq if re.search(
     r"--force|\bpush\b.*\s-f\b|\bpush\b.*\s\+|\bcheckout\s+-b\b|"
     r"\bswitch\s+(-c|--create)\b|\bbranch\s+(?!-)\S|\badd\b.*(\s-A\b|"
     r"--all\b|\s\.(\s|$))", c)]
 report(4, not bad, f"{len(bad)} forced push, branch or wholesale add line(s)")
-out = outputs(evs) + "\n" + final(1)
-fl = re.findall(r"\bFILED\s+\S+", out.replace("`", ""))
+own = texts(evs, top=False) + [final(1)] + [
+    outs.get(d.get("id"), "") for at, k, p, d in evs
+    if k == "use" and d.get("name") == "Bash"]
+fl = {ln.strip() for x in own for ln in x.splitlines()
+      if re.match(r"^FILED \S+ [0-9a-f]{7}$", ln.strip())}
 report(5, not fl, f"{len(fl)} FILED line(s) printed")
 report(6, not ran_commits(), f"{len(ran_commits())} git commit or push "
        "call(s) ran")
@@ -768,10 +1046,10 @@ finish()
 ## Fails if
 
 - Both records go into one commit, or one is staged wholesale.
-- The fetch, rebase and push are missing, out of order, or the push goes
-  elsewhere than `HEAD:main`, or is forced.
-- The ancestor check is missing, or does not follow a fresh fetch after the
-  push.
+- After a commit, the fetch, rebase and push are missing or out of order, or
+  a push goes elsewhere than `HEAD:main`, or is forced.
+- After a push, the ancestor check is missing, or does not follow a fresh
+  fetch.
 - `FILED` is printed though nothing showed the commits on `origin/main`.
 
 ## At base
@@ -779,8 +1057,9 @@ finish()
 Expected: fail, because `skills/space-librarian` is absent at agent-mesh
 `8ee5364`; the runner records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T04:03Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (deliverable absent: agent-mesh 8ee5364 skills/space-librarian)

@@ -402,6 +402,8 @@ Environment class of this node: {ENVCLASS}
 
 1. Exactly one new evidence record is in `changes/add-greeting/evidence/`, named
    `<YYYYMMDDTHHMMZ>.md`, with `id: ev-<that stamp>` and `change: add-greeting`.
+   The task's report, `<YYYYMMDDTHHMMZ>-T7-report.md` beside it (plan §2.4),
+   is not a record and is not counted.
 2. `commit_set` names the space and every repo of `pod.yaml`, each with a sha7:
    alpha and beta at the commit set under test, gamma at its pin `c3c3c3c`.
 3. `env` is this node's environment class.
@@ -589,7 +591,8 @@ def read(rel: str) -> str:
 
 EXP = json.loads((RUN / "expected.json").read_text())
 added, _, _ = changed()
-recs = [p for p in added if p.startswith(CHANGE + "/evidence/")]
+recs = [p for p in added if p.startswith(CHANGE + "/evidence/")
+        and not p.endswith("-report.md")]
 named = [p for p in recs if re.fullmatch(r"\d{8}T\d{4}Z\.md", Path(p).name)]
 text = read(named[0]) if len(named) == 1 else ""
 m = re.match(r"---\n(.*?)\n---\n?(.*)", text, re.S)
@@ -675,8 +678,8 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T00:40Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), with no --config, so no agent could start;
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
 runner result:
 
 ```

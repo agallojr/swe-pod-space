@@ -160,7 +160,9 @@ trees.
 ## Then
 
 1. Exactly one evidence record is written under
-   `changes/add-greeting/evidence/`.
+   `changes/add-greeting/evidence/`, counted by record name
+   (`<YYYYMMDDTHHMMZ>.md`, or `<YYYYMMDDTHHMMZ>-<shard id>.md`); the task's
+   report, `<YYYYMMDDTHHMMZ>-T7-report.md` (plan §2.4), is not a record.
 2. Its front-matter says `quality: none-declared`.
 3. No lint, format or type-check tool is run.
 4. The record has a result for each of R1.S1, R1.S2 and R2.S1, so verify did
@@ -312,7 +314,8 @@ def pin(pod: str, name: str):
 
 CHG = "changes/add-greeting/"
 added, mod, gone = changed()
-ev = [p for p in added if p.startswith(CHG + "evidence/") and p.endswith(".md")]
+ev = [p for p in added if p.startswith(CHG + "evidence/") and re.fullmatch(
+    r"\d{8}T\d{4}Z(-T\d+[a-z]?)?\.md", p.rsplit("/", 1)[-1])]
 report(1, len(ev) == 1, f"{len(ev)} evidence record(s) written")
 fm = front_text((SPACE / ev[0]).read_text()) if ev else ""
 q = re.search(r"^quality:\s*(.*)$", fm, re.M)
@@ -345,8 +348,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T00:43Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents/swe-test.md)

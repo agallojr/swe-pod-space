@@ -33,6 +33,10 @@ as R23.S2 is (§3 OD1). Heavy: one lead run of about 4 min.
   mesh, and a ledger holding only the spec's approval (as in
   `test_R23_S2_unnamed_repo_no_branch`).
 - The setup makes empty folders for the alpha and beta checkouts.
+- The go's words state this deployment's G1 guidance (spec §14), as plan §3
+  OD2 does for this change: the lead may create and push `change/<id>` in
+  the code repos the spec names, so the lead under test need not hand the
+  branch commands to the human; if it does hand them over, that counts.
 
 ```python setup
 import hashlib
@@ -237,6 +241,9 @@ finish_setup({"keys": keys})
 
 ```text
 I've skimmed the plan for add-greeting. Go.
+This deployment's guidance lets the lead create `change/add-greeting`
+in each code repo the spec names, at the go, and push it; build agents
+commit to and push only that branch.
 Checkouts on this node: space {SPACE}; swe-pod {EXPORT}/swe-pod; alpha {RUN}/repos/alpha; beta {RUN}/repos/beta; mesh bus {BUS}
 This session is the lead of proj:demo, on the node registered in the bus as
 {LEAD_NODE}.
@@ -244,8 +251,8 @@ This session is the lead of proj:demo, on the node registered in the bus as
 
 ## Then
 
-1. `change/add-greeting` is made in alpha and in beta, by a printed branch or
-   push command.
+1. The lead makes `change/add-greeting` in alpha and in beta, by a printed
+   branch or push command, or hands those commands over in its reply.
 2. No command creates a branch anywhere but alpha and beta, or names the
    placeholder repo (its key, or `<url>`).
 3. The go line in the ledger names alpha and beta, and not the placeholder
@@ -399,18 +406,220 @@ def outputs(evs: list) -> str:
                      [d["text"] for at, k, p, d in evs if k == "result"])
 
 
+DESK_LINE_RE = re.compile(
+    r"^\s*(?:[-*+>]\s+|\d+[.)]\s+)?[`\"']?DESK:\s*(.+?)[`\"']?\s*$")
+HEREDOC_RE = re.compile(r"(?<!<)<<(?!<)-?")
+SHELL_OPS = re.compile(r"&&|\|\||;|\|&?|(?<![<>&])&(?![>&])")
+SHELL_VAR = re.compile(r"\$\{([A-Za-z_]\w*)\}|\$([A-Za-z_]\w*)")
+ASSIGN = re.compile(r"^[A-Za-z_]\w*=")
+LEADERS = {"do", "then", "else", "elif", "if", "while", "until", "!", "{",
+           "}", "(", ")", "time", "command"}
+RUN_WORDS = {"git", "gh", "mesh-post", "mesh-scan-loop"}
+
+
+def unquoted(s: str) -> str:
+    """s with every quoted or escaped character blanked, lengths kept."""
+    out, q, esc = [], None, False
+    for ch in s:
+        if esc:
+            out.append(" ")
+            esc = False
+        elif ch == "\\" and q != "'":
+            out.append(" ")
+            esc = True
+        elif q is None and ch in "'\"":
+            out.append(" ")
+            q = ch
+        elif q is not None:
+            out.append(" ")
+            if ch == q:
+                q = None
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def to_file(seg: str) -> bool:
+    """Whether a simple command sends its standard output to a file."""
+    u = unquoted(seg)
+    return bool(re.search(r"(^|[^0-9&<>])>>?\s*[^&\s]", u)
+                or re.match(r"\s*tee\b", u))
+
+
+def shell_parts(cmd: str) -> tuple:
+    """A Bash command's logical lines, as (line number, text), and its heredoc
+    body lines, as (line number, text, whether the body goes to a file)."""
+    lines, bodies, ends, buf, start = [], [], [], "", None
+    for n, ln in enumerate(cmd.splitlines()):
+        if ends:
+            if ln.strip() == ends[0][0]:
+                ends.pop(0)
+            else:
+                bodies.append((n, ln, ends[0][1]))
+            continue
+        start = n if start is None else start
+        if ln.endswith("\\"):
+            buf += ln[:-1] + " "
+            continue
+        buf += ln
+        lines.append((start, buf))
+        u = unquoted(buf)
+        for m in HEREDOC_RE.finditer(u):
+            w = re.match(r"\s*(['\"]?)([A-Za-z_]\w*)\1", buf[m.end():])
+            if w:
+                cut = [s.start() for s in SHELL_OPS.finditer(u)]
+                lo = max([c for c in cut if c < m.start()], default=0)
+                hi = min([c for c in cut if c > m.start()], default=len(u))
+                ends.append((w.group(2), to_file(buf[lo:hi])))
+        buf, start = "", None
+    if buf:
+        lines.append((start, buf))
+    return lines, bodies
+
+
+def segments(line: str) -> list:
+    """The simple commands of one logical line, split on unquoted operators."""
+    out, last = [], 0
+    for m in SHELL_OPS.finditer(unquoted(line)):
+        out.append(line[last:m.start()])
+        last = m.end()
+    out.append(line[last:])
+    return [s.strip() for s in out if s.strip()]
+
+
+def expand(s: str, env: dict) -> str:
+    """s with each $NAME or ${NAME} that env holds replaced, outside single
+    quotes."""
+    out, q, i = [], None, 0
+    while i < len(s):
+        ch = s[i]
+        if ch in "'\"" and q in (None, ch):
+            q = None if q else ch
+        m = SHELL_VAR.match(s, i) if ch == "$" and q != "'" else None
+        name = m and (m.group(1) or m.group(2))
+        if name in env:
+            out.append(env[name])
+            i = m.end()
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def words(seg: str) -> list:
+    try:
+        return shlex.split(seg, comments=True)
+    except ValueError:
+        return seg.split()
+
+
+def argv_of(seg: str) -> list:
+    """A simple command's words, without leading keywords or assignments."""
+    a = words(seg)
+    while a and (a[0] in LEADERS or ASSIGN.match(a[0])):
+        a = a[1:]
+    return a
+
+
+def runs_word(a: list) -> bool:
+    """Whether the words run git, gh or a mesh script."""
+    if a and a[0] in ("sh", "bash", "zsh") and len(a) > 1:
+        a = a[1:]
+    name = re.sub(r"\.sh$", "", os.path.basename(a[0])) if a else ""
+    return name in RUN_WORDS
+
+
+def echoed(a: list) -> list:
+    """The DESK command texts an echo or printf command prints."""
+    if not a or a[0] not in ("echo", "printf"):
+        return []
+    keep, skip = [], False
+    for x in a[1:]:
+        if skip:
+            skip = False
+        elif re.match(r"^(\d*(>>?|<)|&>>?)$", x):
+            skip = True
+        elif not re.match(r"^(\d*(>>?|<)&?|&>)\S", x):
+            keep.append(x)
+    while a[0] == "echo" and keep and re.match(r"^-[neE]+$", keep[0]):
+        keep = keep[1:]
+    return [m.group(1) for piece in re.split(r"\\n|\n", " ".join(keep))
+            for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", piece)] if m]
+
+
+def bash_commands(cmd: str, output: str, cwd: str) -> tuple:
+    """(written, cd lines, printed, run lines, cwd after) of one Bash call
+    started in cwd; the four lists hold (line number, text).
+
+    Printed DESK texts are the DESK lines of its output when the command
+    itself holds DESK text, or, when the output holds none, the ones its echo
+    and printf commands and heredoc bodies print; written ones are those they
+    write to files. DESK lines of files it only shows are not its own. Simple
+    shell variables set in the same command are expanded. Every cd is kept,
+    since it sets where the agent's later DESK lines run; DESK lines written
+    to a file keep the place the agent had before the call. Run lines are
+    its logical lines that run git, gh or a mesh script, with any cd; echo
+    text and heredoc bodies are never taken as commands. A relative cd is
+    resolved against cwd."""
+    lines, bodies = shell_parts(cmd)
+    env, said, wrote, cds, per_line = {}, [], [], [], []
+    for n, ln in lines:
+        kept = []
+        for seg in segments(ln):
+            seg = expand(seg, env)
+            raw = words(seg)
+            if raw and all(ASSIGN.match(x) for x in raw):
+                for x in raw:
+                    k, v = x.split("=", 1)
+                    if "$" in v or "`" in v:
+                        env.pop(k, None)
+                    else:
+                        env[k] = v
+                continue
+            a = argv_of(seg)
+            if not a:
+                continue
+            texts = echoed(a)
+            (wrote if to_file(seg) else said).extend((n, x) for x in texts)
+            if a[0] == "cd" and len(a) > 1 and not re.match(r"[~$-]", a[1]):
+                cwd = os.path.normpath(os.path.join(cwd, a[1]))
+                a = ["cd", cwd]
+            if a[0] == "cd":
+                cds.append((n, shlex.join(a)))
+            if runs_word(a) or a[0] == "cd":
+                kept.append((runs_word(a), shlex.join(a)))
+        per_line.append((n, kept))
+    runs = []
+    if any(r for _, kept in per_line for r, _ in kept):
+        runs = [(n, " && ".join(x for _, x in kept))
+                for n, kept in per_line if kept]
+    for n, ln, filed in bodies:
+        m = DESK_LINE_RE.match(ln)
+        if m:
+            (wrote if filed else said).append((n, expand(m.group(1), env)))
+    shown = [(n, m.group(1)) for n, ln in enumerate(output.splitlines())
+             for m in [re.match(r"\s*DESK:\s*(.+?)\s*$", ln)] if m
+             ] if "DESK" in cmd else []
+    return wrote, cds, shown or said, runs, cwd
+
+
 def commands(evs: list) -> list:
     """Commands the agents would run: DESK lines and attempted git calls.
 
+    DESK lines are read from reply text, subagent results, the contents of
+    files written with Write or Edit, and each Bash call (bash_commands).
     Each item has its stream position, the agent (None for the session, else
-    its Agent call id) and the command text, in order, without repeats."""
+    its Agent call id), the command text and its source, in order, without
+    repeats; a cd is kept each time. The session's Bash calls keep their
+    working folder from call to call, and a subagent's start in the space."""
     calls = {d.get("id") for at, k, p, d in evs if k == "use"
              and d.get("name") in AGENT_TOOLS}
-    seen, out = set(), []
+    outputs = {d["id"]: d["text"] for at, k, p, d in evs if k == "result"}
+    seen, out, here = set(), [], str(SPACE)
 
     def add(at: tuple, who, cmd: str, src: str) -> None:
         cmd = cmd.strip().strip("`").strip()
-        if cmd and (who, cmd) not in seen:
+        if cmd and ((who, cmd) not in seen or cmd.startswith("cd ")):
             seen.add((who, cmd))
             out.append({"at": at, "who": who, "cmd": cmd, "src": src})
 
@@ -425,13 +634,47 @@ def commands(evs: list) -> list:
                 m = DESK_RE.search(ln)
                 if m:
                     add(at + (n,), d["id"], m.group(1), "desk")
+        elif kind == "use" and d.get("name") in ("Write", "Edit"):
+            inp = d.get("input") or {}
+            body = str(inp.get("content") or inp.get("new_string") or "")
+            for n, ln in enumerate(body.splitlines()):
+                m = DESK_LINE_RE.match(ln)
+                if m:
+                    add(at + (n,), parent, m.group(1), "desk")
         elif kind == "use" and d.get("name") == "Bash":
             cmd = str((d.get("input") or {}).get("command", ""))
-            if re.search(r"\b(git|gh)\b|mesh-post|mesh-scan-loop", cmd):
-                for n, ln in enumerate(cmd.splitlines()):
-                    add(at + (n,), parent, ln, "bash")
+            wrote, cds, said, runs, cwd = bash_commands(
+                cmd, outputs.get(d.get("id"), ""),
+                here if parent is None else str(SPACE))
+            here = cwd if parent is None else here
+            for n, x in wrote:
+                add(at + (0, -2, n), parent, x, "desk")
+            for n, x in cds:
+                add(at + (0, -1, n), parent, x, "bash")
+            for n, x in said:
+                add(at + (0, n), parent, x, "desk")
+            for n, x in runs:
+                add(at + (1, n), parent, x, "bash")
     return out
 
+
+
+def handed(text: str) -> list:
+    """Git and cd commands a reply hands over for someone to run: lines that
+    start with one, and inline code spans that hold one, outside DESK lines.
+    Items are shaped as commands() items, for the session."""
+    out = []
+    for n, ln in enumerate(text.splitlines()):
+        if "DESK:" in ln:
+            continue
+        s = re.sub(r"^\s*(?:[-*+>]\s+|\d+[.)]\s+|\$\s+)*`*", "", ln)
+        found = re.findall(r"`((?:cd|git)\s[^`]+)`", ln)
+        if not found and re.match(r"(cd|git)\s", s):
+            found = [s.rstrip("`").strip()]
+        for x in found:
+            out.append({"at": (10 ** 6, n), "who": None, "cmd": x,
+                        "src": "reply"})
+    return out
 
 def where(path: str, repos: dict, default: str) -> str:
     """The repo a path names: a code checkout's name, space, or default."""
@@ -711,14 +954,19 @@ ops = git_ops(cmds, repos)
 B = "change/add-greeting"
 
 
+lead = [o for o in ops if o["who"] is None] + git_ops(handed(final(1)),
+                                                       repos)
+
+
 def made(repo: str) -> bool:
-    return bool([o for o, b in created(ops) if o["ctx"] == repo and b == B]
-                or [o for o, d, f in pushed(ops)
+    return bool([o for o, b in created(lead) if o["ctx"] == repo and b == B]
+                or [o for o, d, f in pushed(lead)
                     if o["ctx"] == repo and B in d])
 
 
 report(1, made("alpha") and made("beta"),
-       f"branch made in alpha {made('alpha')}, beta {made('beta')}")
+       f"branch made by the lead in alpha {made('alpha')}, beta "
+       f"{made('beta')}")
 keys = EXPECTED.get("keys", [])
 other = [b for o, b in created(ops) if o["ctx"] not in repos]
 named = [c for c in cmds if any(k and k in c["cmd"] for k in keys)
@@ -738,6 +986,8 @@ finish()
 
 ## Fails if
 
+- The lead neither makes `change/add-greeting` in alpha and beta at the go
+  nor hands over the commands that make it.
 - The go creates a branch for, clones, or runs anything in the placeholder
   repo.
 - The go records a branch for the placeholder repo.
@@ -748,8 +998,9 @@ finish()
 Expected: fail, because `agents` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T04:03Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)

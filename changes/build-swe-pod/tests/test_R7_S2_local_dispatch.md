@@ -280,7 +280,9 @@ The human is demo-owner.
 2. That brief exists and holds no machine path: none of this run's paths and no
    home path.
 3. The subagent reads that brief.
-4. T3's report lands at `changes/add-greeting/tasks/T3-report.md`, with a
+4. T3's report lands at the path a test task's report has whichever way it
+   runs, in its lane (plan §2.4):
+   `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T3-report.md`, with a
    `## Status` section.
 5. The ledger gains `dispatch T3 -> test (local, <env class or any>)`.
 6. No mesh post is run or printed.
@@ -480,9 +482,13 @@ reads = [u for u in uses(1, ("Read",), sub=True)
 reads += [u for u in uses(1, ("Bash",), sub=True)
           if "T3-brief.md" in arg(u, "command")]
 report(3, bool(reads), f"subagent read the brief {len(reads)} time(s)")
-rep = read(CHANGE + "/tasks/T3-report.md")
+found = sorted((SPACE / CHANGE / "evidence").glob("*-T3-report.md"))
+found = [q for q in found if re.fullmatch(r"\d{8}T\d{4}Z-T3-report\.md",
+                                          q.name)]
+rep = found[-1].read_text() if found else ""
 report(4, re.search(r"^## Status", rep, re.M) is not None,
-       "T3 report " + ("at its path" if rep else "absent"))
+       "T3 report " + ("absent" if not rep else "at its path" if re.search(
+           r"^## Status", rep, re.M) else "at its path, no ## Status"))
 line = [e for e in new_events()
         if re.search(r"\bdispatch T3 -> test \(local, [a-z-]+\)", e)]
 report(5, bool(line), f"{len(line)} local dispatch line(s) for T3")
@@ -495,7 +501,8 @@ finish()
 
 - The lead runs T3 in its own session, or starts a subagent without the
   brief's path, or puts a machine path in the brief.
-- The report does not land at `changes/add-greeting/tasks/T3-report.md`.
+- The report does not land at
+  `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T3-report.md`.
 - The ledger line differs in shape from the mesh one, or the task goes to
   the mesh.
 
@@ -504,8 +511,8 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T00:40Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), with no --config, so no agent could start;
+Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
 runner result:
 
 ```
