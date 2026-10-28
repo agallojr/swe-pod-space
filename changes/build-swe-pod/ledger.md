@@ -341,4 +341,10 @@
                   inside the overlay's limits for agent test and verify runs (about
                   3 h per run, about 6 h in all); the heavy ask still comes before
                   either shard; cost if wrong: longer shards
+2026-10-28T02:51Z T37 review: spec issues; 4 Important, 5 Minor
+2026-10-28T02:51Z filed changes/build-swe-pod/tasks/T37-review.md
+2026-10-28T02:51Z Ruling: T37 fix round 1 takes the three Important findings in swe-pod;
+                  the fourth, the space-librarian id check refusing shard evidence ids,
+                  is in agent-mesh, outside T37's touches, and goes to the operator
+                  before T19a and T19b; cost if wrong: verify waits on one more task
 ```
