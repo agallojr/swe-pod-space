@@ -749,4 +749,20 @@
 2026-10-28T10:55Z T19b R7.S1 live: Then items 1 to 7 pass at a2bbb6d
 2026-10-28T10:55Z filed changes/build-swe-pod/evidence/20261028T0950Z-T19b.md, its -runs/ and
                   its -report.md, from the remote node's result
+2026-10-28T11:06Z T19a DONE_WITH_CONCERNS: ev-20261028T0947Z-T19a, macos-laptop, round 4 at space
+                  a2bbb6d, swe-pod 4d5bfc7, agent-mesh bbd19a2; smoke 8 of 8; 41 pass, 2 fail,
+                  1 not-run (a provider safeguard stopped T13.TS1's executor) of 44; wall 4378 s
+2026-10-28T11:06Z filed changes/build-swe-pod/evidence/20261028T0947Z-T19a.md, its -runs/ and
+                  its -report.md
+2026-10-28T11:06Z Ruling: of round 4's six failures, one is deliverable: swe-lead's heavy
+                  rule lets a lead judge a check heavy from a task's total or a test's cap;
+                  it goes back to T5 (swe-lead.md) and T1 (PROCESS.md Fences), each starting
+                  a new fix loop for this verify finding; five are test-side and go to the
+                  test role (T10.TS6's runner preamble, T7.TS3's wording, R19.S1's question
+                  count, R23.S2's gamma match, T13.TS1's link item and its safeguard-tripping
+                  name); cost if wrong: one more round
+2026-10-28T11:06Z dispatch T5 -> build (local, any), base swe-pod 4d5bfc7
+2026-10-28T11:06Z dispatch T1 -> build (local, any), base swe-pod 4d5bfc7
+2026-10-28T11:06Z dispatch T18 -> test (local, any)
+2026-10-28T11:06Z dispatch T41 -> test (local, any)
 ```
