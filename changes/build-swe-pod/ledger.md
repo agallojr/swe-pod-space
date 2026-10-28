@@ -347,4 +347,26 @@
                   the fourth, the space-librarian id check refusing shard evidence ids,
                   is in agent-mesh, outside T37's touches, and goes to the operator
                   before T19a and T19b; cost if wrong: verify waits on one more task
+2026-10-28T02:59Z T37 fix round 1/5: 3 addressed, 1 open, 882cd09..1cecea0
+2026-10-28T02:59Z filed changes/build-swe-pod/tasks/T37-report.md
+2026-10-28T02:59Z pre-flight, at the operator's word to set up the remote node: runner.sh
+                  reset and smoke at space 223998d, gate agent-mesh e0f6af0. linux-server:
+                  reset kept the gateway sign-in; smoke 7 of 8 pass, S3 not exercised (the
+                  CLI refused a standalone foreground sleep). macos-laptop, two runs: 7 of
+                  8 pass each, S4 then S7 not exercised (no turn after API retries; the
+                  agent printed the commit step instead of attempting it). No isolation
+                  property failed. Read-only clones of the three repos and a scratch root
+                  were made on the linux-server node, outside its bus
+2026-10-28T02:59Z Ruling: the managed policy the smoke reports on both nodes, a gateway
+                  settings drop-in (macos-laptop) and the gateway's remote managed settings
+                  (both), is accepted under test isolation as the 00:05Z ruling accepted the
+                  node's managed settings: it pins the model, adds denials, sets gateway
+                  variables and limits MCP servers, adds no instruction file, and loosens
+                  no fence (S1: no instruction file, no MCP server); cost if wrong: a
+                  scenario result reflects node policy
+2026-10-28T02:59Z Ruling: smoke cases that fail without their property failing would stop
+                  both shards as BLOCKED, so S3, S4 and S7 go back to the test role as a
+                  T41 follow-up; cost if wrong: one more short test task before verify
+2026-10-28T02:59Z dispatch T41 -> test (local, any)
+2026-10-28T02:59Z filed changes/build-swe-pod/tasks/T41-brief.md
 ```
