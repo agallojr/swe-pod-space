@@ -49,10 +49,16 @@ the check below on it and on the ledgers of the other runs. No agent is run.
    `T<n>a` (plan §2.5).
 2. At least one dispatch line in the other runs' ledgers (or in the space's
    own) was written by an agent.
-3. Every agent-written dispatch line read is in that form: a task or shard
-   id, a pod role, `local` or `mesh`, an environment class (lower-case words
-   joined by hyphens) or `any`, then only `base` repo and sha7 pairs. Fixture
-   lines, which a run's overlay put there, are not judged, as in check 2.
+3. Every agent-written dispatch line read names a role, `local` or
+   `mesh`, and an environment class (spec R16.S1):
+   `dispatch <task ids> -> <role> (<local|mesh>, <env class|any>)`. The
+   task ids are one or more task or shard ids (`T2, T3, T9`), and a note
+   may follow them before the arrow (`again`). The role is a pod role, or
+   several (`build and test`). The class is lower-case words joined by
+   hyphens, or `any`. Any text may follow the parenthesis, such as `base`
+   pairs or a note; check 4 judges the whole line for machine values.
+   Fixture lines, which a run's overlay put there, are not judged, as in
+   check 2.
 4. No dispatch line holds a machine value: no hostname, agent id, mesh task
    id, home path or credential name. Each hit is printed as `<source>:<line>
    <kind>`, never the matched text.
@@ -120,6 +126,23 @@ def form_ok(e: str) -> bool:
     return bool(m) and m.group(3) in POD and m.group(4) in (
         "local", "mesh") and (m.group(5) == "any" or bool(
             ENV.match(m.group(5)))) and bool(REST.match(m.group(6)))
+
+
+IDS = r"T\d+[a-z]?(?:(?:,\s*|,?\s+and\s+)T\d+[a-z]?)*"
+ROLES = r"[a-z]+(?:(?:,\s*|,?\s+and\s+)[a-z]+)*"
+SPEC_LINE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z dispatch (" + IDS
+                       + r")(?:\s+[^()>]*?)?\s+-> (" + ROLES
+                       + r") \(([^,()]*), ([^()]*)\)(.*)$")
+
+
+def spec_ok(e: str) -> bool:
+    """A dispatch line names one or more task ids, a pod role (or several),
+    local or mesh, and an environment class or any; any text may follow."""
+    m = SPEC_LINE.match(e)
+    return bool(m) and all(
+        r in POD for r in re.split(r",\s*|,?\s+and\s+", m.group(2))) and (
+        m.group(3) in ("local", "mesh")) and (
+        m.group(4) == "any" or bool(ENV.match(m.group(4))))
 
 
 def numbered(text: str) -> list:
@@ -222,7 +245,7 @@ lines += [(f"swe-pod {sha}:templates/records/ledger.md", n, e, False)
 agent = [x for x in lines if x[3]]
 report(2, bool(agent), f"{len(agent)} agent-written dispatch line(s) in "
        f"{len(sources)} ledger(s) of {nruns} other run(s)")
-bad = [x for x in lines if x[3] and not form_ok(x[2])]
+bad = [x for x in lines if x[3] and not spec_ok(x[2])]
 report(3, not bad, f"{len(bad)} agent-written dispatch line(s) not in the "
        "form" + "".join(f"; {x[0]}:{x[1]}" for x in bad[:3]))
 PAT = [(re.compile("/" + "Us" + r"ers/[^/\s]+|/" + "ho" + r"me/[^/\s]+"),
@@ -251,17 +274,17 @@ sys.exit(0 if OK and all(OK) else 1)
 - The template is absent, or shows a dispatch line in another form.
 - No agent-written dispatch line is found: the test ran before the others, or
   in another scratch root.
-- A dispatch line names a node, host, path, task id or credential, or carries
-  text past the form.
+- A dispatch line names a node, host, path, task id or credential, or lacks
+  its role, `local` or `mesh`, or environment class.
 
 ## At base
 
 Expected: fail, because `templates/records/ledger.md` is absent at swe-pod
 `8fc5294`.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (check R16.S1.1: swe-pod 8fc5294: templates/records/ledger.md absent)

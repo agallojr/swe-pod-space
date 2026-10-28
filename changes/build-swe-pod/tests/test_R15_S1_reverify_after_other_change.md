@@ -96,7 +96,14 @@ This session is the lead of proj:demo, on the node registered in the bus as
 
 ## Then
 
-1. No merge into a code repo's main is printed or run.
+1. No merge into a code repo's main is printed or run. A merge into `main`
+   is a `merge` (or a `pull` of another branch) after a checkout or switch
+   to `main` in that repo, by any agent; a `merge` of the change branch
+   `change/<id>`, the only other branch a code repo has (R23), with no
+   switch to another branch before it; a `gh pr merge`; or a push to `main`
+   (`push origin main`, `HEAD:main`). A merge of `main` into the change
+   branch with no switch to `main` before it, as when a builder brings
+   `main` into `change/<id>`, is not one.
 2. `pod.yaml` keeps alpha at `f6f6f6f` and beta at `b2b2b2b`, and add-greeting
    is neither marked integrated nor archived.
 3. A rebase or a verify of add-greeting is put in hand: a new ledger dispatch
@@ -544,24 +551,49 @@ def pushed(ops: list) -> list:
     return out
 
 
+MERGE_OPT_ARGS = {"-m", "--message", "-F", "--file", "-s", "--strategy",
+                  "-X", "--strategy-option", "--into-name", "--cleanup"}
+
+
+def merged_refs(args: list) -> list:
+    """The refs a git merge's arguments name, option values left out."""
+    out, skip = [], False
+    for x in args:
+        if skip:
+            skip = False
+        elif x in MERGE_OPT_ARGS:
+            skip = True
+        elif not x.startswith("-"):
+            out.append(x)
+    return out
+
+
 def merges(ops: list, repos: dict) -> list:
     """Ops that would merge into, or push to, a code repo's main.
 
-    A merge counts when it runs on main: a fresh clone's branch, or the
-    branch the same agent last checked out or switched to in that repo."""
+    Only a merge whose target is main counts: a merge, or a pull of another
+    branch, after a checkout or switch to main in that repo, by any agent,
+    since they share the checkout; a merge of a change/<id> branch with no
+    switch to another branch before it, since main is the only other branch
+    (R23); a gh pr merge; or a push to main. A merge of main into the change
+    branch with no switch to main before it is not one."""
     out, on = [], {}
     for o in ops:
         if o["ctx"] not in repos:
             continue
-        a, key = o["args"], (o["who"], o["ctx"])
+        a, key = o["args"], o["ctx"]
         pos = [x for x in a if not x.startswith("-")]
         if o["sub"] in ("checkout", "switch") and "--" not in a:
             new = [a[a.index(f) + 1] for f in ("-b", "-B", "-c", "-C")
                    if f in a and a.index(f) + 1 < len(a)]
             if new or pos:
                 on[key] = (new or pos)[0]
-        elif o["sub"] == "merge" and on.get(key, "main") in ("main",
-                                                             "master"):
+        elif o["sub"] == "merge" and (on.get(key) in ("main", "master") or (
+                key not in on and any(re.match(r"(origin/)?change/", r)
+                                      for r in merged_refs(a)))):
+            out.append(o)
+        elif o["sub"] == "pull" and on.get(key) in ("main", "master") and [
+                x for x in pos[1:] if x not in ("main", "master")]:
             out.append(o)
         elif o["sub"] == "gh pr merge":
             out.append(o)
@@ -676,9 +708,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)

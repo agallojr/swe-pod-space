@@ -82,11 +82,14 @@ reads the last line for each key, with Markdown emphasis removed.
    not beta `e5e5e5e`, and, if it names the space commit, `8b8b8b8`, not
    `7a7a7a7`.
 4. Both shard records were read with a tool (Read on the file, or a Bash or
-   Grep call on the evidence folder).
+   Grep call on the evidence folder). A Bash call that only prints
+   (`echo`, `printf`, or `cat` of a heredoc) reads nothing.
 5. Nothing was dispatched, filed or committed: no subagent was started for a
    pod task, no mesh command ran, no git commit or push ran, no `.git` was
    made, and the spec, the plan and both shard records are byte for byte as
-   given, with no new evidence record. In particular, T7a's record still
+   given, with no new evidence record. A Bash call that only prints
+   runs nothing, so a printed desk line is not a mesh command or a
+   commit that ran. In particular, T7a's record still
    names beta `e5e5e5e`.
 6. If the run regenerated `STATUS.md`, its `## add-greeting   state:` line
    does not say `verified`.
@@ -96,8 +99,185 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import sys
 from pathlib import Path
+
+
+# How a Bash call is read. A simple command that only prints (echo, printf,
+# or cat of a heredoc) runs and reads nothing, and a heredoc body is text,
+# unless an interpreter reads it; po_acts gives what is left to match on.
+PO_PRINT = {"echo", "printf", ":", "true"}
+PO_SKIP = {"do", "then", "else", "elif", "if", "while", "until", "!", "{",
+           "}", "done", "fi", "esac", "time", "command", "builtin", "exec",
+           "nohup", "env", "timeout", "nice"}
+PO_CODE = re.compile(r"(ba|z|da|k)?sh|python[\d.]*|perl|ruby|node|osascript|"
+                     r"source|\.|eval|xargs")
+PO_OPS = re.compile(r"&&|\|\||;;|\|&|[;|()\n]|(?<![<>&])&(?![>&])")
+PO_DOC = re.compile(r"(?<!<)<<(?!<)-?")
+PO_REDIR = re.compile(r"^(\d|&)?(>>?|<<?-?|<<<)(.*)$")
+
+
+def po_scan(s: str) -> tuple:
+    """(s with quoted, escaped and comment characters blanked, s with only
+    comments blanked, the quote left open at the end or None)."""
+    mask, keep, q, esc, rem = [], [], None, False, False
+    for i, ch in enumerate(s):
+        if rem and ch != "\n":
+            mask.append(" ")
+            keep.append(" ")
+            continue
+        rem = False
+        keep.append(ch)
+        if esc:
+            mask.append(" ")
+            esc = False
+        elif ch == "\\" and q != "'":
+            mask.append(" ")
+            esc = True
+        elif q:
+            mask.append(" ")
+            q = None if ch == q else q
+        elif ch in "'\"":
+            mask.append(" ")
+            q = ch
+        elif ch == "#" and (i == 0 or s[i - 1] in " \t\n;|&()"):
+            mask.append(" ")
+            keep[-1] = " "
+            rem = True
+        else:
+            mask.append(ch)
+    return "".join(mask), "".join(keep), q
+
+
+def po_parts(cmd: str) -> tuple:
+    """A Bash command's logical lines, each as (text without comments, its
+    mask), and its heredoc bodies, each as (body, line index, position)."""
+    phys, lines, bodies, i = cmd.split("\n"), [], [], 0
+    while i < len(phys):
+        buf = phys[i]
+        i += 1
+        while i < len(phys):
+            mask, keep, q = po_scan(buf)
+            if q is None and not re.search(r"(?<!\\)(\\\\)*\\$", buf):
+                break
+            buf += "\n" + phys[i]
+            i += 1
+        mask, keep, q = po_scan(buf)
+        lines.append((keep, mask))
+        for m in PO_DOC.finditer(mask):
+            w = re.match(r"\s*(['\"]?)([A-Za-z_][\w.-]*)\1", buf[m.end():])
+            if not w:
+                continue
+            body = []
+            while i < len(phys) and phys[i].strip() != w.group(2):
+                body.append(phys[i])
+                i += 1
+            i += 1
+            bodies.append(("\n".join(body), len(lines) - 1, m.start()))
+    return lines, bodies
+
+
+def po_words(seg: str) -> list:
+    """A simple command's words, past keywords, assignments and wrappers."""
+    try:
+        a = shlex.split(seg)
+    except ValueError:
+        a = seg.split()
+    while a and (a[0] in PO_SKIP or re.match(r"[A-Za-z_]\w*=", a[0])):
+        w = a.pop(0)
+        while w in ("timeout", "nice", "env") and a and re.match(
+                r"-|\d|[A-Za-z_]\w*=", a[0]):
+            a.pop(0)
+    return a
+
+
+def po_operands(a: list) -> tuple:
+    """(operands, output targets) of a simple command's words."""
+    ops, outs, skip = [], [], None
+    for x in a[1:]:
+        if skip:
+            if skip == ">":
+                outs.append(x)
+            skip = None
+            continue
+        m = PO_REDIR.match(x)
+        if m:
+            if m.group(3):
+                if m.group(2).startswith(">") and not m.group(3).startswith(
+                        "&"):
+                    outs.append(m.group(3))
+            else:
+                skip = ">" if m.group(2).startswith(">") else "<"
+        elif not x.startswith("-"):
+            ops.append(x)
+    return ops, [t for t in outs if t != "/dev/null"]
+
+
+def po_acts(cmd: str, writes: bool = False) -> str:
+    """What a Bash command runs or reads, as text to match on.
+
+    A simple command that only prints runs nothing and reads nothing, so it
+    is left out: echo, printf, : and true, and cat with no file operand and
+    no input redirect, as when it prints a heredoc. So are comments and
+    heredoc bodies, which are text. A print that pipes into an interpreter
+    (sh, python, xargs and the like), or holds a command substitution, is
+    kept, and so is the body of a heredoc an interpreter reads, judged by the
+    same rule when a shell reads it. With writes, a print redirected into a
+    file other than /dev/null is kept too, as the write it is."""
+    lines, bodies = po_parts(cmd)
+    out, segs = [], []
+    for n, (keep, mask) in enumerate(lines):
+        cut = [(m.start(), m.end(), m.group(0)) for m in PO_OPS.finditer(mask)]
+        starts = [0] + [e for s, e, o in cut]
+        ends = [s for s, e, o in cut] + [len(keep)]
+        opsafter = [o for s, e, o in cut] + [""]
+        row = []
+        for s, e, op in zip(starts, ends, opsafter):
+            a = po_words(keep[s:e])
+            name = os.path.basename(a[0]) if a else ""
+            row.append({"s": s, "e": e, "op": op, "a": a, "name": name,
+                        "text": keep[s:e].strip(), "mask": mask[s:e]})
+        for k, g in enumerate(row):
+            feeds = False
+            for h in row[k:]:
+                if h is not g and PO_CODE.fullmatch(h["name"] or "-"):
+                    feeds = True
+                if h["op"] not in ("|", "|&"):
+                    break
+            g["code"] = bool(PO_CODE.fullmatch(g["name"] or "-")) or feeds
+        segs.append(row)
+        for g in row:
+            if not g["a"]:
+                continue
+            opers, outs = po_operands(g["a"])
+            prints = g["name"] in PO_PRINT or (
+                g["name"] == "cat" and not opers
+                and not re.search(r"(?<![<>])<(?![<(])", g["mask"]))
+            if (prints and not g["code"] and "$(" not in g["text"]
+                    and "`" not in g["text"]):
+                if writes and outs:
+                    out.append(g["text"])
+                continue
+            out.append(g["text"])
+    for body, n, pos in bodies:
+        g = next((x for x in segs[n] if x["s"] <= pos <= x["e"]), None)
+        if not g or not g["code"]:
+            continue
+        shell = re.fullmatch(r"(ba|z|da|k)?sh|source|\.", g["name"] or "-")
+        out.append(po_acts(body, writes) if shell else body)
+    return "\n".join(x for x in out if x)
+
+
+def po_blob(d: dict, writes: bool = False) -> str:
+    """A tool call's paths and text, its Bash command read by po_acts."""
+    inp = dict(d.get("input") or {})
+    if d.get("name") == "Bash":
+        inp["command"] = po_acts(str(inp.get("command", "")), writes)
+    return " ".join(str(inp.get(k, "")) for k in (
+        "file_path", "path", "command", "pattern", "glob", "content",
+        "new_string"))
+
 
 TAG = "R24.S2"
 OK = []
@@ -178,7 +358,9 @@ def was_read(name: str) -> bool:
         if u.get("name") == "Read" and str(
                 inp.get("file_path", "")).endswith("evidence/" + name):
             return True
-        if u.get("name") in ("Bash", "Grep") and "evidence" in json.dumps(inp):
+        if u.get("name") == "Grep" and "evidence" in json.dumps(inp):
+            return True
+        if u.get("name") == "Bash" and "evidence" in po_acts(command(u)):
             return True
     return False
 
@@ -193,9 +375,9 @@ pod = [u for u in uses if u.get("name") in ("Agent", "Task") and (
     str((u.get("input") or {}).get("subagent_type", "")).startswith("swe-")
     or "-brief.md" in json.dumps(u.get("input") or {}))]
 mesh = [u for u in uses if u.get("name") == "Bash"
-        and re.search(r"mesh-post|mesh-scan-loop", command(u))]
+        and re.search(r"mesh-post|mesh-scan-loop", po_acts(command(u)))]
 git = [u for u in uses if u.get("name") == "Bash"
-       and re.search(r"\bgit\b.*\b(commit|push)\b", command(u))
+       and re.search(r"\bgit\b.*\b(commit|push)\b", po_acts(command(u)))
        and u.get("id") not in denied and u.get("is_error") is False]
 pairs = [(chg / "spec.md", fixtures / "demo-space" / "changes" / CHANGE
           / "spec.md"), (chg / "plan.md", src / "plan.md")]
@@ -237,8 +419,9 @@ sys.exit(0 if all(OK) else 1)
 Expected: fail, because the deliverables are absent at swe-pod `8fc5294`;
 the runner records the first absent deliverable and starts no agent.
 
-Observed 2026-10-28T00:52Z at the base commit set (space c814837,
-swe-pod 8fc5294, agent-mesh 8ee5364), runner result, with no agent started:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents/swe-lead.md)

@@ -312,7 +312,10 @@ alpha: {REPOS}/alpha
 ## Then
 
 1. The code repos are unchanged: no file added, changed or removed, the same
-   HEAD, and nothing staged or modified in either work tree.
+   HEAD, and nothing staged or modified in either work tree. Untracked
+   Python caches (`__pycache__/`, `*.pyc`), which a read-only run of the
+   code leaves, are not content of what is reviewed and are left out; any
+   other change fails.
 2. The reviewer writes nothing in the space: no file is added, changed or
    removed there, `changes/add-greeting/tasks/T4-review.md` included.
 3. The final message holds the review record's text: a `verdict:` line, pass
@@ -989,8 +992,23 @@ def ran_commits(k: int = None) -> list:
 
 ra, rm, rg = changed("repos")
 heads = {n: git_out(REPOS / n, "rev-parse", "HEAD") for n in ("alpha", "beta")}
-dirty = [n for n in ("alpha", "beta")
-         if git_out(REPOS / n, "status", "--porcelain")]
+
+
+def dirt(repo: Path) -> list:
+    """Porcelain status lines of a work tree, untracked Python caches
+    (__pycache__/ and *.pyc) left out."""
+    out = []
+    for ln in git_out(repo, "status", "--porcelain",
+                      "--untracked-files=all").splitlines():
+        p = ln[3:].strip('"')
+        if ln.startswith("??") and (re.search(r"(^|/)__pycache__(/|$)", p)
+                                     or p.endswith(".pyc")):
+            continue
+        out.append(ln)
+    return out
+
+
+dirty = [n for n in ("alpha", "beta") if dirt(REPOS / n)]
 ok1 = not (ra or rm or rg) and heads == EXPECTED.get("heads") and not dirty
 report(1, ok1, f"repos: {len(ra + rm + rg)} file(s) touched, HEAD "
        f"{'same' if heads == EXPECTED.get('heads') else 'moved'}, "
@@ -1016,9 +1034,9 @@ finish()
 Expected: fail, because `agents` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)

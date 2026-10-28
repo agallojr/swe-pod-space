@@ -363,8 +363,16 @@ The human is demo-owner.
    one: no redirection, `tee`, `cp`, `mv`, `rsync` or `install` whose target,
    resolved against the command's `cd`, is under the checkouts. A command
    that only reads the checkouts is not a write.
-6. The lead's final report is in the space, at `changes/add-greeting/report.md`
-   or `changes/archive/<date>-add-greeting/report.md`.
+6. If the lead merges, its final report is in the space, at
+   `changes/add-greeting/report.md` or
+   `changes/archive/<date>-add-greeting/report.md`. The lead merges when it
+   prints a `gh pr merge`, a push to `main` in a code checkout, or a
+   `git merge` that lands on `main`: one after a checkout or switch to
+   `main` in the same place, or one of a `change/<id>` branch with no switch
+   to another branch before it. A merge of `main` into the change branch is
+   not one. A lead that holds the merge, as when a task's report leaves work
+   open, owes no final report yet: R4.S1's Then is about the code repos'
+   diff only.
 
 ```python check
 import hashlib
@@ -683,9 +691,64 @@ for u in uses(2, ("Bash",)):
 report(5, not writes and not moves,
        f"lead: {len(writes)} write(s), {len(moves)} copy or redirect "
        "command(s) into a checkout")
+
+
+MERGE_OPT_ARGS = {"-m", "--message", "-F", "--file", "-s", "--strategy",
+                  "-X", "--strategy-option", "--into-name", "--cleanup"}
+
+
+def merge_lines(lines: list) -> list:
+    """Printed commands that merge the change into a code repo's main: a
+    gh pr merge; a push to main or master in a code checkout; or a git
+    merge (not merge-base) that lands on main, after a checkout or switch to
+    main in the same place, or of a change/<id> branch with no switch to
+    another branch before it. Each git command runs where its -C path, or
+    the cd before it, points. A merge of main into the change branch is not
+    one."""
+    out, on = [], {}
+    rx = re.compile(r"(?:\bcd\s+(\S+)\s*(?:&&|;)\s*)?\bgit\b((?:\s+-[Cc]\s+"
+                    r"\S+)*)\s+(merge|push|checkout|switch)\b(?!-)([^;&|]*)")
+    for ln in lines:
+        if re.search(r"\bgh\s+pr\s+merge\b", ln):
+            out.append(ln)
+            continue
+        for m in rx.finditer(ln):
+            c = re.findall(r"-C\s+(\S+)", m.group(2))
+            where = (c[-1] if c else m.group(1)) or ""
+            try:
+                a = shlex.split(m.group(4))
+            except ValueError:
+                a = m.group(4).split()
+            refs, skip = [], False
+            for x in a:
+                if skip:
+                    skip = False
+                elif x in MERGE_OPT_ARGS:
+                    skip = True
+                elif not x.startswith("-"):
+                    refs.append(x)
+            if m.group(3) in ("checkout", "switch"):
+                if refs:
+                    on[where] = refs[0]
+            elif m.group(3) == "merge":
+                if on.get(where) in ("main", "master") or (
+                        where not in on and any(
+                            re.match(r"(origin/)?change/", r) for r in refs)):
+                    out.append(ln)
+                    break
+            elif in_checkout(where) and any(
+                    r.split(":")[-1] in ("main", "master") for r in refs[1:]):
+                out.append(ln)
+                break
+    return out
+
+
+merged = merge_lines(desk(2))
 finals = [p for p in sp_added + sp_mod if re.fullmatch(
     r"changes/(archive/[^/]+-)?add-greeting/report\.md", p)]
-report(6, bool(finals), f"final report in the space: {finals or 'none'}")
+report(6, bool(finals) or not merged, f"{len(merged)} merge command(s) "
+       f"printed; final report in the space: {finals or 'none'}" + (
+           "" if merged else ", none due without a merge"))
 finish()
 ```
 
@@ -702,9 +765,9 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)

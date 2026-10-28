@@ -290,7 +290,11 @@ beta = dict(BETA_BASE)
 beta.update(BETA_T2)
 plain_repo("alpha", alpha)
 plain_repo("beta", beta)
-finish_setup()
+HAS = "\n".join(beta.values())
+finish_setup({"beta_has": sorted(
+    set(re.findall(r"--[a-z][a-z0-9-]+", HAS)) | set(
+        x for x in re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", HAS)
+        if "_" in x or "NAME" in x))})
 ```
 
 ## When
@@ -315,9 +319,11 @@ The human is demo-owner.
 3. It has a `## Open calls` section with at least one item.
 4. How beta gets the name is listed as a default under Open calls: every
    command-line flag (`--<word>`) or environment variable the Requirements
-   section names for it also appears under Open calls; with none named, Open
-   calls speaks of how the name is given (a flag, option, argument,
-   environment variable, prompt or input).
+   section introduces for it also appears under Open calls. Flags and
+   variables beta already has at the start, in its README or code (such as
+   `--count-lines`), are not introduced for the name and are not counted.
+   With none introduced, Open calls speaks of how the name is given (a flag,
+   option, argument, environment variable, prompt or input).
 
 ```python check
 TAG = "T4.TS5"
@@ -999,9 +1005,10 @@ oc = section(text, "Open calls")
 items = re.findall(r"^\s*(?:\d+\.|[-*])\s+\S", oc, re.M)
 report(3, bool(items), f"Open calls items: {len(items)}")
 req = section(text, "Requirements")
-flags = set(re.findall(r"--[a-z][a-z0-9-]+", req))
+has = set(EXPECTED.get("beta_has") or [])
+flags = set(re.findall(r"--[a-z][a-z0-9-]+", req)) - has
 envs = set(x for x in re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", req)
-           if "_" in x or "NAME" in x)
+           if "_" in x or "NAME" in x) - has
 missing = sorted(x for x in flags | envs if x not in oc)
 if flags or envs:
     ok4 = not missing
@@ -1028,9 +1035,9 @@ finish()
 Expected: fail, because `agents/swe-spec.md` is absent at swe-pod `8fc5294`;
 the runner records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents/swe-spec.md)

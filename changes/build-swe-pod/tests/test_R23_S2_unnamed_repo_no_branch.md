@@ -110,7 +110,15 @@ This session is the lead of proj:demo, on the node registered in the bus as
 3. The go line in the ledger names alpha and beta, and not gamma.
 4. The T7 brief's Start from section gives gamma at its pin, `c3c3c3c`, with
    alpha `d4d4d4d` and beta `e5e5e5e`.
-5. The T7 brief names no branch for gamma.
+5. The T7 brief names no branch for gamma: no clause of it gives gamma a
+   branch name `change/<id>`. A clause is cut at sentence ends, commas,
+   semicolons, table bars, brackets and new lines, and before an `and`,
+   `but`, `while` or `whereas` that brings in a repo. A clause that is only
+   a repo name joins the clause before it when a comma or `and` links it to
+   one ending in a repo name (`in alpha, beta and gamma`), and otherwise the
+   next one (`gamma and beta on ...`). Prose that says gamma has no
+   branch, or a negated clause (`no`, `not`, `none`, `never`, `without`),
+   gives none.
 
 ```python check
 TAG = "R23.S2"
@@ -686,7 +694,34 @@ ok4 = (bool(re.search(r"\bgamma\b[^\n,;]{0,30}c3c3c3c", start))
 report(4, ok4, "T7 brief " + ("absent" if not bt else "Start from " + (
     "gives the commit set with gamma at its pin" if ok4 else
     "lacks gamma's pin or a branch head")))
-gb = re.search(r"gamma[^\n]{0,40}change/|change/[^\n]{0,40}\bgamma\b", bt)
+
+
+def gamma_branch(text: str) -> list:
+    """Clauses of text that give gamma a change/<id> branch name."""
+    repo = r"`?(?:alpha|beta|gamma)`?"
+    bits = re.split(r"((?<=[.!?])\s+|[,;|{}()\[\]\n]|\s+(?:and|but|while|"
+                    r"whereas)\s+(?=" + repo + r"\b))", text)
+    clauses, carry = [], ""
+    for i in range(0, len(bits), 2):
+        p, sep = bits[i].strip(), bits[i - 1].strip() if i else ""
+        if not p:
+            continue
+        if not re.fullmatch(r"[-*\s]*" + repo + r"[:.]?", p):
+            clauses.append((carry + " " + p).strip())
+            carry = ""
+        elif sep in (",", "and") and clauses and not carry and re.search(
+                repo + r"\W*$", clauses[-1]):
+            clauses[-1] += " " + p
+        else:
+            carry = (carry + " " + p).strip()
+    clauses += [carry] if carry else []
+    return [c for c in clauses if re.search(r"\bgamma\b", c)
+            and re.search(r"\bchange/[\w.-]+", c)
+            and not re.search(r"\b(no|not|none|never|without)\b|n't\b", c,
+                              re.I)]
+
+
+gb = gamma_branch(bt)
 report(5, bool(bt) and not gb, "T7 brief " + (
     "absent" if not bt else "names a branch for gamma" if gb else
     "names no branch for gamma"))
@@ -708,9 +743,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents)
