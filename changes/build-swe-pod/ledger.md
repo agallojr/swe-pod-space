@@ -725,4 +725,21 @@
                   and T4.TS5 are triaged against the deliverables; the lead's own dispatch
                   lines keep to the template form from here on; cost if wrong: one more round
 2026-10-28T09:09Z dispatch T18 -> test (local, any)
+2026-10-28T09:45Z T18 DONE_WITH_CONCERNS: nine test-side findings from round 3 fixed in 28 tests
+                  (one shared print-only rule in 21); re-judged offline, every flagged check
+                  passes; R17.S2's fix confirmed in a dry run
+2026-10-28T09:45Z T18 at base: all 28 changed tests fail for their stated reasons, no agent
+                  started, 0 pass
+2026-10-28T09:45Z filed changes/build-swe-pod/tests/ (T18 round 3 fixes),
+                  evidence/20261028T0943Z-T18-report.md
+2026-10-28T09:45Z Ruling: the commit set has moved through the tests (now at ef0ef5b), so both
+                  shards are briefed again and run again, round 4, with the same split and
+                  caps; cost if wrong: none, a full re-run
+2026-10-28T09:45Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T09:45Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T09:45Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T09:45Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T09:45Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
