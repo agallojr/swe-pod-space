@@ -383,4 +383,16 @@
                   suggestions get a review instead of a test
 2026-10-28T03:07Z dispatch T42 -> build (local, any), base agent-mesh e0f6af0
 2026-10-28T03:07Z filed changes/build-swe-pod/tasks/T42-brief.md
+2026-10-28T03:09Z T37 review r1: spec issues; 2 Important, 3 Minor
+2026-10-28T03:09Z filed changes/build-swe-pod/tasks/T37-review-r1.md
+2026-10-28T03:09Z Ruling: T37 open findings parked: the space-librarian id check
+                  (agent-mesh/skills/space-librarian/SKILL.md:290), moved to T42 by the
+                  03:01Z operator decision, and integrate's one space commit
+                  (swe-pod/PROCESS.md:613, agents/swe-lead.md:420), text from T1 and T5
+                  that T37 did not touch, held for T35 and T36 before the first
+                  integrate; both are outside T37's touches, and the three findings in
+                  them are closed; cost if wrong: the integrate rule is settled at T36
+                  instead of now
+2026-10-28T03:09Z dispatch T18 -> test (local, any)
+2026-10-28T03:09Z filed changes/build-swe-pod/tasks/T18-brief.md
 ```
