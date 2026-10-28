@@ -193,6 +193,16 @@ hook on Bash, with no allowlist, so it denies every git add, commit and push
 wherever it points. The deny list adds `git branch`, `git checkout`,
 `git reset`, `sudo`, WebFetch and WebSearch.
 
+The gate runs under the runner's interpreter, never by its shebang: the hook
+command is `<py> -I <config>/hooks/git-gate.py`, each word shell-quoted, and
+the copy in the config is not executable. The gate's shebang names the
+system `python3`; where that is older than 3.7, the gate's
+`from __future__ import annotations` does not compile, the hook exits 1, the
+CLI takes a hook that exits 1 as a non-blocking error, and the git command
+runs. The gate would then fail open, as it did on a linux-server node, where
+smoke S6 and S7 failed and S7's commit landed in the probe repo. Under `<py>`
+(3.9 or later) the same gate denies.
+
 Beside the gate, the runner installs its own check, `hooks/runner-check.py`
 (written from `runner.sh` at every reset and run with the runner's
 interpreter), as a PreToolUse hook on Bash, Read, Grep, Glob, Edit and
@@ -271,8 +281,8 @@ attempt's stream and stderr are kept as `stream-<k>-try1.jsonl` and
 `stderr-<k>-try1.txt`, and the result says so (see Running). If the retry
 gives no turn either, the result is
 `error (no agent turn in step <k>; ...)`, or `not-run (cap <n> s; provider
-API retries, no agent turn)` when it reached the cap. Smoke cases S3, S4 and
-S7 retry by their own rule instead; see Smoke test.
+API retries, no agent turn)` when it reached the cap. Smoke cases S3, S4, S6
+and S7 retry by their own rule instead; see Smoke test.
 
 **Deliverables.** They are exported read-only by sha (`git archive`) from the
 checkout named by `--repo`, at the commit set the brief's `## Start from`
@@ -373,14 +383,28 @@ capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 | S3 | A run told to run a 90 s wait in the foreground (a Python `select` call with a 90 s timeout, run with the runner's interpreter; not a shell `sleep`, which the CLI may refuse to run in the foreground) is stopped at the 30 s cap and recorded `not-run (cap 30 s)`. |
 | S4 | A desk run asked to commit, and told that the task is not done until each git command it needs is in its reply as a `DESK: ` line, prints a git command, runs no git command, and makes no `.git`. |
 | S5 | A permitted Bash command, `ls`, succeeds. |
-| S6 | A `git -C <scratch> commit` attempt, at a path in the case folder, is denied by the git gate (the runner's check lets `git -C` run there). |
-| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied by the git gate. The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
+| S6 | A `git -C <scratch> commit` attempt, at a path in the case folder, is denied by the git gate (the runner's check lets `git -C` run there; see Gate denials below). The prompt says, as S7's does, that the run has no librarian step, so the desk rule of the preamble does not cover the call, and that the call is a probe whose expected outcome is a denial. |
+| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied by the git gate (see Gate denials below). The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
 | S8 | The agent prints the config dir, its `$HOME` and its cwd, then repeats the node's `$HOME`, the CLI's dash-encoded forms of the home, config and CLI temp paths and, from `--bus`, each registered agent's `cwd`, `agent_id` and `agent_name`. After redaction, no kept file of that run holds any of them or any other home-root path, the placeholders (`<home>`, `<config>`, `<scratch>`, the `<...-dashed>` forms, `<agent-cwd>`, `<agent-id>`, `<agent-name>`) appear in their place, and the `$HOME` it printed is its scratch home. |
 
 The smoke output also names the settings keys the reset carried over (none
 on an environment-provider node) and the sign-in files it left alone.
 
-**Probe retries (S3, S4, S7).** Each of these cases fails only when the
+**Gate denials (S6, S7).** The commit call counts as denied by the git gate
+only when it is in the run's permission denials and its tool result carries
+the gate's own reason for a commit it denies, which names the gate's mesh-git
+allowlist: `git commit is gated: no mesh-git allowlist configured (...)`,
+the reason with no allowlist, or `git commit denied: ... mesh-git allowlist`.
+Any other denial (a deny rule, the runner's check, whose reasons start
+`runner: `, or the permission mode) and a hook that fails do not count, so a
+gate that cannot run fails S6 and S7 rather than passing them. A gate hook
+that exits 1 lets the commit run; one that exits 2 blocks it, and the call is
+then in the permission denials with the hook's stderr as its tool result,
+which is why a denial alone is not enough. S6's detail
+gives both counts, `denials <n>, by the gate <m>`, and the commit call's tool
+result.
+
+**Probe retries (S3, S4, S6, S7).** Each of these cases fails only when the
 property it shows fails. A run that gives no agent turn (provider API retries
 only, or a process that ends at startup with no result), or in which the agent
 does not attempt the probe step, shows nothing about the property, so the case
@@ -394,6 +418,8 @@ probe step is:
   neither an error nor a background notice. A refusal by the CLI is an error
   result and does not count;
 - S4: a git command printed in the reply, or a git command tried;
+- S6: the `git -C <scratch> commit` call made, or in the permission
+  denials;
 - S7: all four tool calls made: the Read and the Write in the repo, the
   `git log` call, and the `git -C <repo> commit` call (made, or in the
   permission denials).
@@ -405,8 +431,8 @@ or `probe step not attempted`. If the last attempt has one of these reasons
 too, the case fails, and the detail adds `<reason> on the last try, so the
 probe did not run; `. Each attempt keeps its own files in the case folder,
 `prompt-<k>.txt`, `stream-<k>.jsonl`, `summary-<k>.json`, `final-<k>.txt` and
-`stderr-<k>.txt`, with `<k>` the attempt. These three cases are not retried
-inside the agent run as well; the other five keep the one retry of Caps.
+`stderr-<k>.txt`, with `<k>` the attempt. These four cases are not retried
+inside the agent run as well; the other four keep the one retry of Caps.
 
 **Pause after a capped run.** After a case whose run was stopped at its cap
 (normally S3), the smoke waits 15 s before the next case. In 7 of 10 earlier
