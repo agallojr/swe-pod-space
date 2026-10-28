@@ -666,4 +666,11 @@
 2026-10-28T07:23Z dispatch T41 -> test (local, any): run the gate under --python
 2026-10-28T07:23Z filed changes/build-swe-pod/evidence/20261028T0704Z-T19b-report.md and its
                   -runs/, from the remote node's result; their 9 files match their sha256
+2026-10-28T07:27Z Ruling: the four T19a round 2 failures are on the test side: R11.S1 counts a
+                  log as a record; R14.S1 meets a fixture world dated after the run, so the
+                  spec agent rightly refused an integration before the approval; R20.S1
+                  matches STATUS.md in a printed commit message; R22.S1 states no G1, so the
+                  lead rightly handed the human the commands; the fixtures shift back one
+                  month and the three checks are fixed; cost if wrong: one more round
+2026-10-28T07:27Z dispatch T18 -> test (local, any): fixture dates and three checks from round 2
 ```
