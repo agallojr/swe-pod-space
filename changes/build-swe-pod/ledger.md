@@ -328,4 +328,9 @@
 2026-10-28T02:30Z T5.TS4 outcome: dropped
 2026-10-28T02:30Z T12.TS4 outcome: dropped
 2026-10-28T02:30Z T13.TS3 outcome: dropped
+2026-10-28T02:36Z T37 DONE, swe-pod 6f8ed78..882cd09
+2026-10-28T02:36Z filed changes/build-swe-pod/tasks/T37-report.md
+2026-10-28T02:36Z T37.TS1 -> test
+2026-10-28T02:36Z T37.TS2 -> test
+2026-10-28T02:36Z T37.TS3 -> test
 ```
