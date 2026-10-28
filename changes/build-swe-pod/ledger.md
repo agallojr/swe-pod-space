@@ -650,4 +650,20 @@
 2026-10-28T06:59Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T06:59Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T06:59Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-28T07:23Z T19b BLOCKED: runner.sh smoke on linux-server failed S6 and S7; the installed
+                  gate ran by its shebang under a Python older than 3.7, exited on a syntax
+                  error, and the CLI let the git command through (a commit landed in the
+                  throwaway probe clone, nothing pushed); 0 of 47 tests run; R7.S1 live
+                  passes 7 of 7 against the round 2 task.request and dispatch line
+2026-10-28T07:23Z Ruling: round 1's S6 and S7 passes on linux-server came from the runner's
+                  old blanket deny, not the gate; the runner is to run the gate under its own
+                  --python and pass S6 and S7 only on the gate's own denial; that changes the
+                  tests folder, so T19a, running, is stopped and both shards run again after
+                  the fix; the gate failing open on a node with an old Python is logged for
+                  T35 and the operator; cost if wrong: one more verify round
+2026-10-28T07:23Z T19a BLOCKED: stopped by the lead after 12 of 44 tests (8 pass, 4 fail), to
+                  re-run with T19b after the runner fix; no record written
+2026-10-28T07:23Z dispatch T41 -> test (local, any): run the gate under --python
+2026-10-28T07:23Z filed changes/build-swe-pod/evidence/20261028T0704Z-T19b-report.md and its
+                  -runs/, from the remote node's result; their 9 files match their sha256
 ```
