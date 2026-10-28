@@ -182,4 +182,11 @@
                   test_R16_S1 runs last with the same scratch as the others
 2026-10-28T00:46Z filed changes/build-swe-pod/tests/ (T17: test_R12 to test_R23 and
                   their overlays), tasks/T17-report.md
+2026-10-28T00:48Z plan.md revision 4.1 filed after delta review round 3 and planner
+                  round 4 (A32 to A42: 9 accepted, 2 partial)
+2026-10-28T00:48Z Ruling: the T15, T16 and T17 reports stay under tasks/ where they were
+                  filed; test-task reports from now on go under evidence/ as
+                  <UTC>-<task id>-report.md (A39); cost if wrong: three records sit
+                  outside the test lane by one folder
+2026-10-28T00:48Z T39 re-briefed with the R24 evidence contract of plan section 2.4
 ```

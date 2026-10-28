@@ -840,3 +840,265 @@ as a standing rule. The plan, now revision 4, changes as follows:
   self-review are updated.
 
 The longest chain is still 13 tasks, and the plan has 40.
+
+## Round 3: reviewer (delta, rev 4)
+
+A delta review of plan revision 4 (space `40709f2`, 1383 lines) against
+spec `2d8d8f7` (R24), the ledger, and the T15 runner as filed. Line numbers
+refer to revision 4. Findings A32 to A37 are Important and A38 to A42 are
+Minor.
+
+**A32. Important.** T19b runs "up to 4 runs at a time" (L1117-1118), and
+the split, the 120-min shard caps and the 20 to 45 min heavy estimate all
+rest on that (L1062-1073). The runner as built cannot do it:
+- It runs in one signed-in config that it resets in place before every run
+  (`runner.sh` header; README "Isolation protocol"). Its README says "Runs
+  are serial". The operator signs in one config per node (L917-920, OD6).
+- Four runner processes on that config would delete and rewrite each
+  other's `agents/`, `skills/` and `settings.json` mid-run, giving
+  contaminated results.
+- No task in revision 4 changes the runner, and T15 is closed.
+
+Fix, either one:
+- Run T19b serially, re-split the tests about half and half, and re-state
+  the estimate and caps in the heavy ask.
+- Add a test task before T19b that gives the runner one signed-in config per
+  parallel slot and a locked `results.log`, with a smoke test at 4 slots.
+
+Either way, state that each config serves one runner process at a time.
+
+**A33. Important.** T19b return on a node whose product predates M3
+(L1115-1116, L1121-1124, done-when 1). On that node, the poller writes the
+result file and owns its front-matter. Its executor instruction says to
+return "artifact pointers ... never payloads" (`poller-prompt.md:261-264`
+at the pin). The brief "carries the §2.7 result-files format" but never
+says three things:
+- who writes the file bodies, the executor or the old poller;
+- where they go, since §2.7's path needs the mesh task id, which the lead
+  cannot put in the body before mesh-post assigns it;
+- where the `files:` list lives, given the old poller writes the
+  front-matter.
+
+Done-when (1) checks a `files:` list that the old poller will not write. Fix:
+for a pre-M3 node, the brief says the executor writes each body under
+`outbox/<its agent id>/T19b-files/<space path>`, which the old poller's
+whole-bus sync carries. It puts the `files:` list, with sha256, in the
+result body, and done-when (1) reads it from there.
+
+**A34. Important.** The remote fence blocks T19b. The remote executor loads
+the bus guidance chain, which includes the operator overlay. That overlay
+bars long-running tests without the operator's express permission, and it
+exempts only operator-posted mesh tasks. T19b is posted by the lead, from
+this node's identity (L1098-1101). G3, which would count it as
+operator-posted, enters the overlay only at T36 (OD2, L354). An unattended
+executor that follows its guidance will stop at the first test over 60 s.
+That covers I8 and most agent runs, so T19b stalls. Fix: the operator posts
+T19b after the heavy ask, or the Context quotes the operator's approval
+(the `heavy:` ledger line, caps and expected time) as the express
+permission for this task. Record which, and have the remote tester cite it.
+
+**A35. Important.** Isolation is unverified on the remote node (T19
+prerequisite, L1056-1058). T15's smoke test ran only on this node. It
+checked that no instruction file reaches the agent, that the cap and desk
+mode work, and that git is denied, and it listed the managed policy. The
+ledger ruling of 2026-10-28T00:05Z accepted this node's managed settings
+with "cost if wrong ... caught at T20 on another node". In revision 4 each
+test runs on one node only, so nothing cross-checks a node's policy, and
+about four fifths of the suite now runs on a node that was never
+smoke-tested. Fix: T19b's brief makes `runner.sh smoke` its first step. Any
+failure, or any managed policy file, stops the shard as BLOCKED for a
+ruling before a test runs, and the evidence body records the smoke result.
+Re-word or re-rule the 00:05Z ruling, since its mitigation is gone.
+
+**A36. Important.** The R24 contract is too thin for T37 and T39 to build
+the same rule (§2.4 L133-149, L1076-1081, T37 L882-885 and L893-894, T39
+L1029-1030):
+- **No shard identity.** Evidence records carry no shard id and no list of
+  the tests they ran. The skill cannot tell two shards from a full run plus
+  a partial re-run, or find "the out-of-date shard" (R24.S2).
+- **Same-minute collisions.** Ids are minute-granular (`ev-<UTC>`), and the
+  split aims both shards to finish together (L1063-1064). Two evidence
+  files can then collide.
+- **Masked failures.** `test_R16_S1` runs in both shards (L1067), and a
+  re-run at the same commit set leaves two records. R24's "together hold a
+  passing result" then lets a pass mask a fail.
+- **Two builds, one gap.** T39 is already dispatched, so its blind fixtures
+  and T37's skill rule will each fill the gap differently.
+
+Fix:
+- Add `shard: <task id>` and `tests: [<test name>, ...]` to the §2.4
+  evidence keys and to the evidence template; T37 then touches
+  `templates/records/evidence.md` after T2.
+- Name shard records `<UTC>-<shard id>`.
+- Define verified as: at the current commit set, take each named shard's
+  latest record; every result in every one of those records passes; and
+  together they cover every scenario, unit suite and declared check.
+- Re-brief T39 with this.
+
+**A37. Important.** T35 and T36 do not gate on R24:
+- T35 runs after "their first green runs" (L1167). Two shards can each be
+  green at different commit sets, which R24 says is not verified. T35 reads
+  "the latest evidence", singular (L1173).
+- The space sha in each shard's commit set moves with every filing. The
+  plan pins only T19b's to "that space commit" (L1098-1104), so T19a can
+  record another sha and fail the equality.
+- After T35's fix wave, "verify is re-run" (L1182-1183) does not say both
+  shards.
+- T36 step 1 re-verifies only if `tests/` or a pin moved (L1199-1200), not
+  if the branch heads moved after the verified pair.
+
+Fix: one space commit files both shard briefs and dispatch lines, and both
+shards run at it. T35 waits for the first R24-verified pair and reads both
+records. Any re-run re-runs both shards. T36's done-when adds: both shards'
+latest records are at the exact heads being merged.
+
+**A38. Minor.** T37 internals (L878-897):
+- Done-when (1) greps for a bare `R24` in PROCESS.md. That file is copied
+  into every space, where `R24` means that project's own requirement (spec
+  §5.1: ids are local, and qualified outside the spec). Use `swe-pod/R24` or
+  plain words.
+- T37's §11 "local and mesh together" conflicts with T1's "build tasks run
+  local until the deferred exception lands" (L518-519). Fix: say that build
+  shards stay local under OD4.
+- STATUS.md shows "the latest evidence" (§2.6 L221). Fix: §2.6 and
+  `status-format.md` (in T37's touches) show each shard's latest record.
+
+**A39. Minor.** T19a and T19b touch `tasks/T19a-report.md` and
+`T19b-report.md` (L1086-1087, L1095-1096). The test lane in T5 (L617-619)
+and spec R8.S1 is `tests/` and `evidence/` only, so the lead's own rule
+refuses those reports. T15's report was already filed this way. Fix: put
+test-task reports under `evidence/` (for example
+`evidence/<UTC>-<shard id>-report.md`), or widen the lane in both the plan
+and swe-lead and record a ruling.
+
+**A40. Minor.** T19b mechanics:
+- The installed mesh-post at the pin has no `--project` flag, so the
+  `project: proj:swe-pod` post (L1100-1101) fails "unknown arg". Name the
+  branch's mesh-post with an explicit bus `--repo`, or drop the field: the
+  old poller ignores it.
+- The runner rewrites only the scratch root in output files (L941-942). A
+  config path or `$HOME` that reaches an output file is refused at filing,
+  and its evidence pointer then dangles. Rewrite both.
+
+**A41. Minor.** OD1 and OD6 (L340-345, L371-373), and T36 step 3
+(L1203-1205), call R7.S1 and R17.S1 "verified live". What T19b observes is
+a lead driven by this plan, posting to a node on the pre-change product
+(no M2 or M3). That is good evidence for the process, but it is not a run
+of the deliverables. The desk runs are kept (§9), so this is a wording
+issue. Fix: say "observed live at T19b (pre-change remote product);
+desk-verified against the deliverables", and keep both scenarios on the
+pilot's live list unless the operator rules otherwise.
+
+**A42. Minor.** T8 (L699). T8's brief was filed at 00:20Z with T7's, before
+T7 had output. The lead's message says T8 is running while T7 is open, which
+would break T8's `after: [T1 to T7]`. T8 is also not after T37, though its
+README covers mesh use. Fix: confirm T8 was dispatched only after T27
+closed, with its `## Start from` refreshed. If it was not, hold or re-brief
+it, and have T38 check that the README's process summary still matches
+after T37.
+
+**Round 3 verdict.** Important 6 (A32 to A37), Minor 5 (A38 to A42),
+Critical 0. The in-flight build (T7, T8, T12 to T14) can continue. Revision
+4 is not fit to dispatch T19a or T19b, or to close T37 or T39, until A32 to
+A37 are fixed. A36 needs T39 re-briefed now.
+
+## Round 4: planner
+
+Plan revision 4.1 (1474 lines, up from 1383). T0 and the §4.1 rules are
+untouched. Two choices are left with the operator and have defaults: PC1
+(A32) and PC2 (A34) in §3. A third, PC3 (A41), is also there.
+
+**A32. ACCEPT**, as a choice for the operator (§3 PC1). Confirmed:
+`tests/runner.sh` resets one config in place before each run, and
+`tests/README.md` line 45 says "Runs are serial".
+- (a), the default: T19b runs serially; the split is about half and half
+  by `expected_s`; caps are 600 s per run and 150 min per shard; expected
+  wall time 45 to 75 min.
+- (b): new conditional task T40 gives the runner one signed-in config per
+  slot (each a separate gateway device-flow sign-in on that node) and a
+  locked `results.log`, smoke-tested at 4 slots; T19b runs 4 at a time and
+  T19a takes about a fifth; expected 20 to 45 min, and 120 min per shard.
+
+T15 now states that each config serves one runner process at a time.
+
+**A33. ACCEPT.** T19b's "Return on a pre-M3 node" step: the executor
+itself writes each body under `outbox/<its agent id>/T19b-files/<space
+path>`, which the old poller's whole-bus sync carries, and puts the `files:`
+list with sha256 in the result body. Done-when (1) reads `files:` from the
+result body, and the filing step checks the sha256 values against it.
+
+**A34. ACCEPT**, as a choice for the operator (§3 PC2).
+- (i), the default: the operator approves the heavy ask, the lead records
+  the `heavy:` line, T19b's Context quotes the approval with its caps and
+  expected time, and the remote tester cites it in its report. This option
+  carries a stated risk: an executor may still decline a permission it
+  cannot verify.
+- (ii): the operator posts T19b, so the remote overlay counts it as
+  operator-posted.
+
+**A35. ACCEPT.** The first step of both shards is `runner.sh smoke` on the
+shard's own node. Any failure, or any managed policy file, stops the shard
+as BLOCKED for a lead ruling before any test runs, and the evidence body
+records the smoke result. T19a runs it too, because the runner gains
+features in the T15 follow-up: the gateway-config reset option, code repos
+as an extra directory, and the A40 rewrite. T19 notes that the lead
+re-records the 00:05Z ruling, since its T20 mitigation is gone.
+
+**A36. ACCEPT.**
+- §2.4 evidence gains `shard: <task id>` and `tests: [...]`, with shard
+  records named `<UTC>-<shard id>` (id `ev-<UTC>-<shard id>`).
+- §2.4 adds the verified rule for a sharded verify: the current commit set
+  (the branch heads now, with the space commit holding the latest shard
+  briefs), each named shard's latest record, every result passing, and
+  joint coverage. An out-of-date shard is re-run.
+- T37 now also touches `templates/records/evidence.md` (after T2) and
+  `status-format.md`.
+- The test map's R24 rows point at this contract.
+
+The re-brief text for T39 is given to the lead in the planner's reply.
+
+**A37. ACCEPT.**
+- One space commit files both shard briefs and both dispatch lines, and
+  both shards run at that space commit and the same heads.
+- T35 waits for the first pair that is verified by the §2.4 rule, reads
+  both shards' latest records, and re-runs both shards after a fix wave.
+- T36 step 1 also re-verifies when a branch head moved, and its done-when
+  requires both shards' latest records at the exact heads being merged.
+
+**A38. ACCEPT.**
+- T37's done-when greps for `shard`, and for no bare `R24`, in PROCESS.md,
+  which never cites a bare requirement id.
+- §11 says build shards stay local under OD4.
+- §2.6 and `status-format.md` show each shard's latest record.
+
+**A39. ACCEPT.** A test task's report goes in its lane, as
+`evidence/<UTC>-<task id>-report.md` (§2.4). This is consistent with R8.S1,
+which is a Requirement, so widening the lane was not an option. T19a, T19b
+and swe-test (through T37) follow it. Reports already filed under `tasks/`
+(T15, and any from T16 and T17) need a lead ruling; the plan does not
+re-file them.
+
+**A40. ACCEPT.**
+- T19b is posted with the branch's mesh-post from the agent-mesh build
+  checkout, with an explicit bus `--repo`, since the installed mesh-post has
+  no `--project`.
+- The runner rewrites the scratch root, the config path and `$HOME` in
+  output files. That rewrite is listed among the T15 follow-up features.
+
+**A41. PARTIAL.** Accepted: the wording now reads "desk-verified against
+the deliverables, and also observed live at T19b's own dispatch, on the
+pre-change remote product" in OD1, and the §9 rows read "desk; observed
+live". Not changed: OD1's count of 7 and its verbatim report sentence,
+which are the operator's (ledger, OD6). Whether the pilot still runs R7.S1
+and R17.S1 live is PC3, defaulting to yes.
+
+**A42. PARTIAL.** Rebutted on ordering. The ledger line of
+2026-10-28T00:20Z reads "dispatch T7, T12, T13, T14, T8 -> build (local,
+any), each when its after list closes", and the lead confirms that T8 is
+dispatched only after T27 closes. Filing a brief early does not start the
+task. Accepted: T8 is not after T37, so T38 now also checks that the swe-pod
+README's process summary still matches after T37. Noted for the lead: re-file
+T8's brief with a fresh `## Start from` at dispatch if it still carries the
+00:20Z commit set.
+
+Tally: 9 accepted (A32 to A40), 2 partial (A41, A42), 0 rebutted.
