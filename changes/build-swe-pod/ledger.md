@@ -549,4 +549,26 @@
                   not as the contract section 2.3 line; a lead error, fixed at the re-post
 2026-10-28T05:49Z filed changes/build-swe-pod/evidence/20261028T0418Z-T19b.md, its -runs/ and
                   its -report.md, from the remote node's result
+2026-10-28T06:00Z Ruling: the lead's triage of the 25 failures and 1 not-run across both shards:
+                  deliverable, back to builders: swe-pod status for an unreadable remote and
+                  zero finding counts (R20.S1, T7.TS1), the skill's regression tests (T7.TS4)
+                  and words of completion and review dispatch (T7.TS3), owner T7; the go's
+                  branch step under G1 (R23.S2, T3.TS3), owners T5 and T1; the push-main
+                  contradiction, owner T5; the test brief's report line (R7.S2), owner T2;
+                  agent-mesh space-librarian's script text broken by skill arguments, owner
+                  T10. Test and fixture, back to the test role: the desk-command reader (R14.S1,
+                  R17.S1, R22.S1, R23.S1, R23.S2, T3.TS3), rebase options (I8, R17.S2), report
+                  paths (R7.S2, R11.S1, R12.S2, R17.S1), and R2.S1, R4.S1, R16.S1, T9.TS2,
+                  T10.TS6, T11.TS6 with T14.TS2, T13.TS1, T7.TS1. Harness, back to the test
+                  role as T41: the mesh-post deny on paths and the git -C deny (R7.S1,
+                  T12.TS3), the wait loop (T2.TS2), the gateway startup retry, and HOME
+                  isolation with redaction; cost if wrong: a fix lands on the wrong side and
+                  the re-run shows it
+2026-10-28T06:00Z Ruling: the test role fixes its tests from the shards' run evidence and the
+                  triage's test-side findings; run evidence is not an implementation body,
+                  diff, builder report or build-task step; cost if wrong: none to blindness
+2026-10-28T06:00Z dispatch T1, T2, T5, T7 -> build (local, any), base swe-pod 1cecea0: verify fixes
+2026-10-28T06:00Z dispatch T10 -> build (local, any), base agent-mesh 1367f65: verify fix
+2026-10-28T06:00Z dispatch T41 -> test (local, any): runner fixes from verify
+2026-10-28T06:00Z dispatch T18 -> test (local, any): test and fixture fixes from verify
 ```
