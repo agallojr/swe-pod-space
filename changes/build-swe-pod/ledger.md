@@ -780,4 +780,18 @@
 2026-10-28T11:19Z T1 fix round 2/5: 1 addressed, 0 open, b8a796c..9884cd1
 2026-10-28T11:19Z T8 fix round 1/5: 1 addressed, 0 open, 9884cd1..a9296c5
 2026-10-28T11:19Z filed changes/build-swe-pod/tasks/V3-review.md, handoffs/20261028T1118Z-build-swe-pod.md
+2026-10-28T11:26Z T5 review r5: spec issues; 1 Important
+2026-10-28T11:26Z T1 review r7: spec issues; 1 Important
+2026-10-28T11:26Z T8 review r2: spec ok; 1 Minor
+2026-10-28T11:26Z Ruling: a check that records no expected run time takes it from its brief or
+                  its last run's record when either gives one and is heavy only when that time
+                  is over 60 s; with no known time it is not heavy for the lead's ask, and the
+                  running agent's own fence still binds the run; this narrows round 2's 'with
+                  neither, treat it as heavy', which went past R13 and held the verify T1.TS4
+                  expects dispatched; cost if wrong: a long unmeasured check runs without the
+                  ask, under the agent's fence
+2026-10-28T11:26Z filed changes/build-swe-pod/tasks/V3-review-r1.md
+2026-10-28T11:26Z dispatch T5 -> build (local, any), base swe-pod a9296c5
+2026-10-28T11:26Z dispatch T1 -> build (local, any), base swe-pod a9296c5
+2026-10-28T11:26Z dispatch T8 -> build (local, any), base swe-pod a9296c5
 ```
