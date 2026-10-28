@@ -1,0 +1,12 @@
+I've read the space before asking. Here's how I understand your request and what I found.
+
+**Your request:** when someone starts `beta`, it should greet them by name, for example `hello, Ana`, and not the fixed `hello, demo`.
+
+**What I found:**
+- An approved change, `add-greeting`, is still in progress and not yet integrated. It already has `alpha` (the shared library) accept a name, with a limit of 64 characters. But it has `beta` print only the fixed `hello, demo` (its requirement R2), so `beta` never passes a name on to `alpha`.
+- So most of the work may already be in `alpha`. What's missing is `beta` getting a name and passing it along. Because `add-greeting` isn't finished, there may be a cheaper path: refine that change and skip opening a new one. That depends on your answer below.
+- I couldn't open the `alpha` and `beta` code itself because it isn't checked out here. My picture of today's behavior comes from the approved spec only.
+
+**My question:** where should `beta` get the person's name? For example: typed on the command line when they start it, taken from the login name of the user running it, read from a setting, or something else?
+
+I haven't written a spec yet, so I printed no `DESK:` lines and have none to repeat.

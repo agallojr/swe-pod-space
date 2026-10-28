@@ -1,0 +1,29 @@
+Commit step (desk step, none of these were run):
+
+DESK: git -C . add STATUS.md
+DESK: git -C . commit -m "Regenerate STATUS.md"
+DESK: git -C . fetch origin
+DESK: git -C . rebase origin/main
+DESK: git -C . push origin HEADI've regenerated `STATUS.md` and written it at the space root, but it isn't filed. The space folder isn't a git repository and no librarian skill is available here, so there's no `FILED` or `REFUSED` line.
+
+**What I had to work around:**
+- **Records:** with no git, I read them from the working tree, not as committed. There was also no committed `STATUS.md` to compare against.
+- **Branch heads:** neither the alpha nor the beta remote could be reached (`example.invalid` does not resolve). So I took the heads from the ledger: alpha `d4d4d4d` from T1's range, and beta `b2b2b2b` from the go line.
+
+**What the new file says** (as of 2026-10-02T08:00Z; open changes: approved 1, building 1):
+- **add-farewell** is approved but has no plan yet. Next is the plan, by the plan role. Its task table has only the header row, because there are no plan tasks yet.
+- **add-greeting** is building.
+  - Done: T1 (build), T3 (scenario tests) and T4 (review of T1).
+  - Ready: T2, beta prints the greeting. That is the next task: T2 -> build (local, any).
+  - Waiting: T5 to T9.
+  - No evidence yet, and no open findings.
+
+As asked, the commit step was a desk step: I printed these git commands and ran none of them. The branch name `main` in the rebase line is my guess.
+
+DESK: git -C . add STATUS.md
+DESK: git -C . commit -m "Regenerate STATUS.md"
+DESK: git -C . fetch origin
+DESK: git -C . rebase origin/main
+DESK: git -C . push origin HEAD
+
+File: `<scratch>/runs/20261028T100403Z-test_R20_S1_status_rebuild_matches-e583/space/STATUS.md`

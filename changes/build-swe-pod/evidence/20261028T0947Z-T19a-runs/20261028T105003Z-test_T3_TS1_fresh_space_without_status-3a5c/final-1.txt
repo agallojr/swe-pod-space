@@ -1,0 +1,38 @@
+**Where things stand in `proj:demo`**
+
+There is one open change, `add-greeting`, and it is **approved**. Its spec has been signed off but it has no plan yet.
+
+- **Spec:** `changes/add-greeting/spec.md`. The owner is demo-owner, who approved it at 2026-10-01T09:00Z. It covers repos `alpha` and `beta` and has requirements R1 (with scenarios R1.S1 and R1.S2) and R2 (with R2.S1).
+- **Plan, ledger, evidence:** none yet. So no tasks have been dispatched, no go has been given and no `change/add-greeting` branches have been made. There is nothing blocked and no open findings.
+- **Next:** the plan role writes the plan. After the human skims it, the next gate is the human's go.
+
+**`STATUS.md` is missing.** There is no file at `<scratch>/runs/20261028T105003Z-test_T3_TS1_fresh_space_without_status-3a5c/space/STATUS.md`. I worked out its content from the records instead. Rebuilt to the format, it would read:
+
+```
+# Status: proj:demo
+
+Generated from the records; never edited by hand. As of 2026-10-01T09:00Z.
+
+- pins: alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c
+- open changes: 1 (approved: 1)
+
+## add-greeting   state: approved   owner: demo-owner
+
+- gates: spec demo-owner 2026-10-01T09:00Z
+- branches: none yet
+- tasks: waiting 0, ready 0, dispatched 0, done 0, blocked 0
+
+| task | role | runs | state | latest |
+|---|---|---|---|---|
+
+- latest evidence: none
+- open findings: Critical 0, Important 0, Minor 0
+- next: the plan, by the plan role
+```
+
+**Caveat:** the space directory is not a git repository, so I couldn't read the records "as committed" at `HEAD`. I read them from the working files, and these state conclusions rest on files that the process doesn't yet count as filed records.
+
+Answering "where are we" files nothing, so the librarian's commit step never ran and I printed no `DESK:` lines. If you want `STATUS.md` created, say "regenerate STATUS.md". That step goes through the librarian, which in this run would print the git commands as `DESK:` lines without running them.
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role

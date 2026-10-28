@@ -1,0 +1,9 @@
+{
+  "test": "test_R9_S1_test_brief_contents",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

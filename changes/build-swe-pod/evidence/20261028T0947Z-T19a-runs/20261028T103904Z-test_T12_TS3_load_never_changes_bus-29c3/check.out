@@ -1,0 +1,5 @@
+T12.TS3.1 pass space at the tip
+T12.TS3.2 pass bus HEAD same; staged False; edits False
+T12.TS3.3 pass space commits of the session: 0
+T12.TS3.4 pass clone in place True; loaded after drop 'none'
+T12.TS3.5 pass 0 git commit or push call(s) ran

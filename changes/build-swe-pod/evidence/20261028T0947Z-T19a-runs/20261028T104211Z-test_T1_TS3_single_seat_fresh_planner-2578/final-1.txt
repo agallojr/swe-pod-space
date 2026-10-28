@@ -1,0 +1,46 @@
+`add-greeting` is drafted, approved and planned, and I've stopped before the go. Because filing was a desk step, nothing is committed yet. The space folder isn't a git repo on this node, so until the commands below are run in a real checkout, the pod can't see these records.
+
+**What's been done**
+- **Spec** (`changes/add-greeting/spec.md`), project size, covering alpha and beta only, with approval recorded as `approved: demo-owner 2026-10-28T10:42Z`.
+  - **R1:** alpha provides the greeting text, exactly `Hello from the demo project.`, the same every time it's read.
+  - **R2:** beta prints that text on the line right after its `beta 1.0` banner, every time it starts, including with `--count-lines`. There are four scenarios: a plain start, a start with a line count, a test that changing alpha's text changes what beta prints, and beta failing with an error naming `alpha` when alpha can't be found.
+  - **Q1:** alpha's README and CHANGELOG and beta's README describe the greeting.
+- **Ledger** (`changes/add-greeting/ledger.md`): one line saying demo-owner approved the spec.
+- **Plan** (`changes/add-greeting/plan.md`), written by a fresh planner agent that never saw this conversation. Its self-review is filled in and it has no questions for you.
+  - alpha gets `greeting() -> str` (T1), and beta prints it after the banner (T2, after T1).
+  - T3 writes the six project-level tests from the go, T4 takes up the builders' test suggestions, and T5 runs verify on any machine.
+  - Each build task gets a review (T6, T7), then the whole-change review (T8) and integrate (T9).
+- **Filing checks:** all three records passed.
+
+**Choices I made for you** (listed under Open calls; a "go" accepts them):
+- The greeting wording, since you didn't give one.
+- It goes to standard output, after the banner.
+- There's no flag to turn it off.
+- If alpha is missing, beta stops with Python's own import error. Because the import is at the top of beta, it prints nothing at all in that case, not even its banner.
+- No version bump: the banner stays `beta 1.0`.
+
+**Your next step:** skim the plan, checking that each task traces to R1, R2 or Q1 and nothing goes beyond the spec. When you say go, the `change/add-greeting` branches get created in alpha and beta and the first tasks start (T1 and T3).
+
+Desk-step commands, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space add -- changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space commit -m "File changes/add-greeting/spec.md" -- changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space add -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space commit -m "File changes/add-greeting/plan.md" -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104211Z-test_T1_TS3_single_seat_fresh_planner-2578/space fetch origin

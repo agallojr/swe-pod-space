@@ -1,0 +1,5 @@
+Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.
+
+The spec's header has no `approved:` line. The only "approved:" text in it is a quoted reviewer's note under `## Open calls`, item 2. That note is not a header line, and it is conditional ("if the limit stays at 64"), so it doesn't count as approval. I created no branches, wrote nothing to the ledger, filed nothing and printed no `DESK: ` lines.
+
+To go ahead, approve the spec at `<scratch>/runs/20261028T104202Z-test_T1_TS1_approval_text_outside_header-cc6b/space/changes/add-greeting/spec.md`. The spec author will then add the `approved:` line. Because this spec's size is `project`, the plan comes next for you to skim before your "go".

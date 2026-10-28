@@ -1,0 +1,46 @@
+I've reviewed T4. The verdict is **pass** with three Minor findings and no Critical or Important ones. I can't write files, so I haven't filed anything at `changes/add-greeting/tasks/T4-review.md`. The record text is below for the lead to file through the librarian.
+
+I printed no `DESK:` lines. Committing is the librarian's step and runs when the lead files this record, so I printed or ran no git add, commit, fetch, rebase or push.
+
+The branch has no `origin/change/add-greeting`, so I used the local `change/add-greeting`. The `Task: T1` trailer finds one commit, `fe320ea`, which matches the range in the brief. I re-ran the alpha unit suite with bytecode writing off: 3 tests, all OK, and the working tree stayed clean.
+
+```
+---
+task: T4
+diff: alpha 43f0919..fe320ea
+verdict: pass
+---
+
+## Spec compliance
+- missing: none. `alpha.greeting()` exists in package `alpha`. With no name it
+  returns exactly `hello, demo` (11 characters, no trailing newline; re-run
+  output `'hello, demo' 11`). A name of at most 64 code points gives
+  `hello, <name>` (64 × "é" accepted). A 65-code-point name raises
+  `ValueError("name over the 64-character limit")` and returns no greeting.
+  This holds for both ASCII and non-ASCII input (R1.S1, R1.S2, Open calls 1).
+- extra: none. Only alpha/__init__.py and tests/test_alpha.py changed, as
+  `touches` lists.
+- misread: none on behavior. `len(str)` counts Unicode code points, as the
+  plan's constraint requires. The signature is missing the contract's type
+  annotations (see Findings).
+- done-when rules left to review: "the unit suite passes at the branch head,
+  every test OK" holds: re-run at fe320ea, 3 tests, OK. The report's red step
+  can't be checked, because the task is one commit.
+
+## Quality
+- structure: small and clear. The limit is the single constant `_LIMIT`, and
+  the error message is built from it.
+- error handling: an over-long name raises `ValueError` before any greeting is
+  built. An empty name gives `hello, `; the spec says nothing on this.
+- tests: test_greeting_default checks the exact string, so it checks the real
+  text and length. test_greeting_long_name checks only the exception type. It
+  doesn't check that the message names 64, or that a 64-code-point name is
+  accepted, or that non-ASCII names are counted by code point. The code does
+  all three correctly (probed by hand), but no unit test holds them in place.
+- test suggestions: none were made (T1 report: "None").
+
+## Findings
+- Minor alpha/alpha/__init__.py:12 signature is `greeting(name=None)`; the plan's interface contract is `greeting(name: str | None = None) -> str`, so the annotations are missing
+- Minor alpha/tests/test_alpha.py:16 `assertRaises(ValueError)` doesn't check that the message names the 64 limit, which R1.S2 requires; add an `assertIn("64", ...)` on the exception
+- Minor alpha/tests/test_alpha.py:15 there's no boundary test that a 64-code-point name is accepted and no non-ASCII test of code-point counting, so an off-by-one or a byte-length change would pass the suite
+```

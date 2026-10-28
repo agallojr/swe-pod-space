@@ -1,0 +1,29 @@
+**Status: DONE_WITH_CONCERNS.** The verify run finished, but R2.S1 fails: beta prints its banner before the greeting.
+
+**Evidence record:** `changes/add-greeting/evidence/20261028T0950Z.md`
+**Report:** `changes/add-greeting/evidence/20261028T0950Z-T7-report.md`
+
+- **Commit set:** space 5c02e1a, alpha 30935f7, beta a1be785, gamma c3c3c3c. gamma is at its pin; the spec doesn't name it and it wasn't run. The space folder isn't a git repo here, so I couldn't check 5c02e1a myself and took it from the brief.
+- **Environment:** macos-laptop, Python 3.10. The whole run took 1 s.
+
+| Check | Result |
+|---|---|
+| R1.S1 | pass |
+| R1.S2 | pass |
+| R2.S1 | **fail** |
+| alpha unit suite | pass (4 tests) |
+| beta unit suite | pass (2 tests) |
+| Q1 (byte-compile, alpha and beta) | pass |
+| Regression suite | none present: `tests/` has no `test_*.md` |
+
+**The failure:** `cd "$BETA" && PYTHONPATH="$ALPHA" python3 -m beta` exits 0, but its first line is `beta 1.0` and `hello, demo` comes second. The spec requires `hello, demo` as the first line. Speed isn't the problem: the first line arrived at 0.085 s, well inside the 1 s limit. Three runs gave the same result, so it isn't flaky. The test agrees with the spec, so this should go to a builder as a fix task in beta. beta's unit suite passes anyway, so it doesn't check the line order.
+
+I ran no git commands. I deleted the `__pycache__` folders my run created in alpha and beta, so both checkouts are clean again.
+
+These are the desk lines I printed, in order:
+
+DESK: git add changes/add-greeting/evidence/20261028T0950Z.md changes/add-greeting/evidence/20261028T0950Z-T7-report.md
+DESK: git commit -m "add-greeting: T7 verify evidence ev-20261028T0950Z and T7 report"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

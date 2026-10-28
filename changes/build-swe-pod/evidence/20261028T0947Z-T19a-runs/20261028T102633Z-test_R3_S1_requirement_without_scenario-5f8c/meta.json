@@ -1,0 +1,8 @@
+{
+  "test": "test_R3_S1_requirement_without_scenario",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

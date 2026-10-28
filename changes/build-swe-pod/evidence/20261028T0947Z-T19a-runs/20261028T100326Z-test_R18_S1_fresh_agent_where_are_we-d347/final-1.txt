@@ -1,0 +1,26 @@
+We're mid-build on `add-greeting`, and `add-farewell` is approved but has no plan yet. `STATUS.md` is up to date: its "As of" time, 2026-10-02T08:00Z, matches the newest event in the ledgers.
+
+**One caveat:** the space folder isn't a git repository, so I couldn't read the records as committed, which is how the skill is meant to read them. I read the files on disk instead. The code-repo remotes in `pod.yaml` are placeholder URLs (`example.invalid`), so I took the branch heads from the ledger.
+
+## add-greeting: building (owner demo-owner)
+- **Gates:** demo-owner approved the spec at 2026-10-01T09:00Z and gave the go at 09:20Z.
+- **Branches:** alpha `change/add-greeting` is at `d4d4d4d`; beta is still at its base, `b2b2b2b`.
+- **Done:**
+  - T1: the greeting is in alpha, and its 3 of 3 unit tests pass.
+  - T4: the review of T1 passed with no findings.
+  - T3: the three scenario tests are written, and all three fail at base, as expected.
+- **Next:** dispatch T2 (beta prints the greeting). It's the only task ready now. T5, T6, T7, T8 and T9 are waiting on it, directly or further down the chain.
+- **Blocked:** nothing. Open findings: none (Critical 0, Important 0). Evidence: none yet.
+
+## add-farewell: approved (owner demo-owner)
+- demo-owner approved the spec at 2026-10-02T08:00Z.
+- There's no plan, no branch and no evidence yet.
+- **Next:** write the plan.
+
+## Files worth opening
+- Status: `<scratch>/runs/20261028T100326Z-test_R18_S1_fresh_agent_where_are_we-d347/space/STATUS.md`
+- add-greeting ledger: `<scratch>/runs/20261028T100326Z-test_R18_S1_fresh_agent_where_are_we-d347/space/changes/add-greeting/ledger.md`
+- add-greeting plan: `<scratch>/runs/20261028T100326Z-test_R18_S1_fresh_agent_where_are_we-d347/space/changes/add-greeting/plan.md`
+- add-farewell spec: `<scratch>/runs/20261028T100326Z-test_R18_S1_fresh_agent_where_are_we-d347/space/changes/add-farewell/spec.md`
+
+Answering "where are we?" doesn't file anything, so the librarian's commit step never ran. I printed no `DESK: ` lines, so there are none to repeat.

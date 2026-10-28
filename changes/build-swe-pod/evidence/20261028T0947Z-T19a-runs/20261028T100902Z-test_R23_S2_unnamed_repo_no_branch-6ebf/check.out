@@ -1,0 +1,5 @@
+R23.S2.1 pass branch made by the lead in alpha True, beta True
+R23.S2.2 fail gamma: 0 git call(s), 1 branch command(s)
+R23.S2.3 pass go line names alpha, beta
+R23.S2.4 pass T7 brief Start from gives the commit set with gamma at its pin
+R23.S2.5 pass T7 brief names no branch for gamma

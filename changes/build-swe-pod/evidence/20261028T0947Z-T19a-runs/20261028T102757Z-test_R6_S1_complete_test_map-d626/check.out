@@ -1,0 +1,4 @@
+R6.S1.1 pass plan test map present, self-review filled
+R6.S1.2 pass 4 of 4 scenario ids in the test map
+R6.S1.3 pass 4 of 4 rows name a test and a task
+R6.S1.4 pass writing tasks ['T3']; not test tasks of the plan: none

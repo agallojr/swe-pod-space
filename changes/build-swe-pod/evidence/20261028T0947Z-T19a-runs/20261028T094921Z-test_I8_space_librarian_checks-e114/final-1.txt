@@ -1,0 +1,29 @@
+This was a desk run, so I ran the read-only checks but none of the git commands, and nothing was filed. One of the 12 records passed the checks; the other 11 were refused.
+
+```
+REFUSED notes/note-20261001T1201Z-0a01-mac-home.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a02-linux-home.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a03-agent-id.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a04-agent-host.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a05-task-id.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a06-local-host.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a07-home.md: profile line 11
+REFUSED notes/note-20261001T1202Z-0b08-dead-ref.md: reference line 8
+REFUSED notes/note-20261001T1202Z-0b09-cross-space.md: reference line 11
+REFUSED notes/note-2026-10-01-bad-id-form.md: id line 3
+REFUSED notes/note-20261001T1100Z-a0b1-duplicate.md: id line 3
+```
+
+The record that passed is `notes/note-20261001T1200Z-c1e4-clean-record.md`. A desk run prints no `FILED` line, so it has none. These are the commands that would file it, printed in this order:
+
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo add -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo commit -m "File notes/note-20261001T1200Z-c1e4-clean-record.md" -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T094921Z-test_I8_space_librarian_checks-e114/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

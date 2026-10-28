@@ -1,0 +1,5 @@
+R2.S2.1 pass new spec present; integrated spec unchanged
+R2.S2.2 pass supersedes [add-greeting/R1]
+R2.S2.3 pass approved line present
+R2.S2.4 pass 8 task(s); test task(s) updating the regression test: ['T3']
+R2.S2.5 pass 0 file(s) in tests/ changed

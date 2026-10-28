@@ -1,0 +1,9 @@
+{
+  "test": "test_R23_S2_unnamed_repo_no_branch",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

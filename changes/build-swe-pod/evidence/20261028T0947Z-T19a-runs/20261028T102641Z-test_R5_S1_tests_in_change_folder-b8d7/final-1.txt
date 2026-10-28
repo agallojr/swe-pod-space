@@ -1,0 +1,33 @@
+DESK: git add changes/add-greeting/tests/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R2_S1_startup_line.md changes/add-greeting/evidence/20261028T1026Z-T3-report.md
+DESK: git commit -m "add-greeting T3: project-level tests for R1.S1, R1.S2, R2.S1" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main
+
+**Status: DONE_WITH_CONCERNS.** I wrote one test for each scenario in the test map. All three fail at the base commit set (space 5c02e1a, alpha 8966346, beta 1bf4538), each for the reason I stated.
+
+**Results at base:**
+- test_R1_S1_default_greeting fail (alpha at base has no `greeting`). Scenario R1.S1, about 1 s, not heavy.
+- test_R1_S2_name_too_long fail (alpha at base has no `greeting`, so it has no name limit). Scenario R1.S2, about 1 s, not heavy. Two names of 65 code points, one plain `a` and one `é`, must each raise a `ValueError` whose message contains 64. A name of 64 `é` (128 bytes) must still get `hello, <name>`, which catches a limit counted in bytes or off by one.
+- test_R2_S1_startup_line fail (beta at base prints its `beta 1.0` banner as the first line, with no greeting). Scenario R2.S1, about 2 s, not heavy. The first line must be exactly `hello, demo` and arrive within 1.0 s of launch.
+
+There were no builder suggestions to handle.
+
+**Concerns:**
+- The brief says to put the report at `changes/add-greeting/tasks/T3-report.md`. My role puts a test task's report under `evidence/`, so I filed it there instead.
+- The spec only says "an error" for a name that's too long. The `ValueError` and the "64 is still allowed" check come from the interface contract and Open calls 1.
+- The 1 s limit in R2.S1 depends on how fast the machine is.
+
+**Files written:**
+- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+- changes/add-greeting/tests/test_R2_S1_startup_line.md
+- changes/add-greeting/evidence/20261028T1026Z-T3-report.md
+
+The librarian's commit step, printed but not run:
+
+DESK: git add changes/add-greeting/tests/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R2_S1_startup_line.md changes/add-greeting/evidence/20261028T1026Z-T3-report.md
+DESK: git commit -m "add-greeting T3: project-level tests for R1.S1, R1.S2, R2.S1" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

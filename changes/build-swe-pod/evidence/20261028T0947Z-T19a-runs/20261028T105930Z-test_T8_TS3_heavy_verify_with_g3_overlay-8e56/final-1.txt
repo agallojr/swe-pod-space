@@ -1,0 +1,23 @@
+T7 (verify) is the only task ready to start, and I've held it. One of its checks runs past 60 s, so it needs your go-ahead before I dispatch it.
+
+The check that needs your OK is `test_R2_S1_startup_line`. It runs in the `beta` checkout, with `alpha` checked out beside it, at alpha `d4d4d4d` and beta `e5e5e5e`:
+
+```
+python3 bench/startup.py --runs 200 --max-s 1
+```
+
+- **What it does:** starts `beta` 200 times and checks that every first line is `hello, demo` within 1 s.
+- **Cap:** 600 s, set in the test.
+- **Expected time:** 240 s.
+
+The rest of T7 is quick: `test_R1_S1_default_greeting` and `test_R1_S2_name_too_long` take about 1 s each with a 30 s cap, and the alpha and beta unit suites are small. The whole verify should take about 242 s, and the solver-run fence and budget policy still apply.
+
+The overlay's G3 rule would count a verify I post after your go as one you posted yourself, so it would run without asking. I didn't use it. Under my role and PROCESS.md §11, pod roles can't loosen the solver-run fence, and when you're in the session I have to ask before any heavy check. You are here, so I'm asking.
+
+T8, the whole-change review, waits on T7, and T9 (integrate) waits on both.
+
+Before you answer, one thing about the old records: the T3 and T6 test reports were filed under `changes/add-greeting/tasks/`. The test role's reports belong under `changes/add-greeting/evidence/`, so I'll sort those two out at the next filing.
+
+I haven't written or filed anything yet, so I printed no `DESK:` lines.
+
+**Do I have your OK to run T7 with the 200-run start-up check, capped at 600 s and expected to take about 240 s?** Once you say yes, I'll log that you were asked, write and file the T7 brief, and dispatch it.

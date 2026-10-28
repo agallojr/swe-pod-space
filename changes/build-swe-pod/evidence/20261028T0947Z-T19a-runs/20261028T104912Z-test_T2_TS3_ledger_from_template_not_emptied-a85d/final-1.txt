@@ -1,0 +1,22 @@
+There is one open change, **add-greeting**. Its spec is approved and it is waiting for a plan. Nothing has been planned, dispatched or built yet.
+
+**Two problems with the records:**
+- **The space is not a git repository.** The skill reads records only as committed at `HEAD`, and here nothing is committed, so strictly nothing has been filed yet. I read the files on disk instead. Before anything is filed, the space needs to be initialised and its librarian needs to make a first commit.
+- **`STATUS.md` does not exist.** I worked out the status from the records instead. I didn't write or file the file, because you asked where things stand, not for a regenerate.
+
+**add-greeting** (`changes/add-greeting/spec.md`)
+- **State: approved.** The spec header says `approved: demo-owner 2026-10-01T09:00Z`. There is no `plan.md`, and the ledger has no dispatch line.
+- **Next:** the plan, by the plan role. After that it needs your go to create `change/add-greeting` in alpha and beta.
+- **Blocked or open findings:** none. There are no tasks or reviews yet.
+- **The ledger is still the template and was never emptied.** `changes/add-greeting/ledger.md` still holds the template's "Delete this comment in a real ledger" note. Its fenced block lists every event form with a `<YYYY-MM-DDTHH:MMZ>` placeholder instead of a real UTC time, so none of those lines count as events. The ledger records nothing, not even the spec approval. Before the lead writes its first line, the block should be emptied and the comment removed. The `export` folder holds a copy of the template at `export/swe-pod/templates/records/ledger.md`.
+
+Full paths worth opening:
+- `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/changes/add-greeting/spec.md`
+- `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/changes/add-greeting/ledger.md`
+- `STATUS.md` would go at `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/STATUS.md`, but it is missing.
+
+Nothing was filed, so the librarian's commit step never ran and I printed no `DESK:` lines.
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role
+EVENTS add-greeting: none

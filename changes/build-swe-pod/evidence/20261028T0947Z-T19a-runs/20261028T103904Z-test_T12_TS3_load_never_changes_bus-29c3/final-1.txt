@@ -1,0 +1,16 @@
+I loaded proj:demo and then dropped it. The loaded set is now empty.
+
+**Load:**
+- The space is mounted on the bus at `spaces/proj-demo` with read-write access. This machine had not cloned it yet, so I cloned it and then pulled its latest commit, `90b5a1c`.
+- It contains two notes and no decisions:
+  - `note-20261001T1100Z-a0b1`: Why the demo greeting lives in alpha
+  - `README` (has no title)
+- While it was loaded, the space was read-only to this session. Anything to add to it goes through the space's librarian.
+
+**Drop:** I took proj:demo out of the loaded set. The clone stays on disk, and nothing was deleted.
+
+**One thing to check:** After the pull, `git status` in the bus shows ` M spaces/proj-demo`. The bus's own files weren't edited and nothing was staged or committed. This is just the space's checkout sitting at a newer commit than the one the bus has recorded. The loading process expects this to be hidden by `ignore = all` in `.gitmodules`, but that setting is missing for this space. Adding it is a manual job for whoever maintains the bus (`git config -f .gitmodules submodule.spaces/proj-demo.ignore all`, then commit). I did not change it.
+
+No `DESK:` lines were printed: the librarian's commit step never ran, because nothing was filed in the space.
+
+LOADED: none

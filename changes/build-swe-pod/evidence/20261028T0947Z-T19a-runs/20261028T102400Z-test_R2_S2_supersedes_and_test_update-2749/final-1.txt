@@ -1,0 +1,31 @@
+I've drafted the spec, and it's at:
+`<scratch>/runs/20261028T102400Z-test_R2_S2_supersedes_and_test_update-2749/space/changes/raise-name-limit/spec.md`
+
+I recorded your approval from your message as `approved: demo-owner 2026-10-28T10:24Z`.
+
+**What it says:** only alpha changes. Names of up to 128 characters get `hello, <name>`. A name over 128 is refused with an error that names 128, and the error no longer mentions 64. The checks cover:
+- a 65-character name, which used to be refused and is now greeted;
+- a name of exactly 128 characters;
+- 128 `é` characters, to show the limit counts characters, not bytes;
+- 129 characters, refused;
+- 200 characters, where the error must name 128 and not 64.
+
+**It replaces part of the earlier greeting change.** That change's requirement for the greeting text (`add-greeting/R1`) includes a check that a 65-character name is refused. This change makes that check wrong, so the spec lists `add-greeting/R1` as replaced. The matching test, `tests/add-greeting/test_R1_S2_name_too_long.md`, has to be updated to the new limit as part of this work.
+
+**Choices I made for you, worth checking first (all listed under Open calls):**
+1. The limit still counts Unicode characters (code points), as the 64 limit does today, not bytes.
+2. The greeting with no name stays `hello, demo`.
+3. beta and gamma don't change, so I sized this as small.
+4. The error is raised the same way as now; only the number and the message change.
+5. An empty name is left out of this change.
+
+I considered letting callers set their own limit, or removing the limit, and picked simply raising it to 128.
+
+Neither repo keeps a `SPEC.md` copy, so there was nothing to re-copy. The spec is approved and ready to file.
+
+The filing commands, printed and not run:
+DESK: git add changes/raise-name-limit/spec.md
+DESK: git commit -m "spec: raise-name-limit (approved)"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

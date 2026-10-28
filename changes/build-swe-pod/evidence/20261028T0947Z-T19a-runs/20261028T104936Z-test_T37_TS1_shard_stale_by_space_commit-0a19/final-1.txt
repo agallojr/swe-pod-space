@@ -1,0 +1,32 @@
+**add-greeting is not verified.** It is in verify, and one of its two verify shards, T7a, has to run again.
+
+**Where it stands**
+- The spec was approved by demo-owner at 2026-10-01T09:00Z. The go came at 10:30Z, with branches made on alpha (a1a1a1a) and beta (b2b2b2b).
+- T1, the alpha build, finished with alpha at d4d4d4d and 3 of 3 unit tests passing. Its review, T4, found one Minor.
+- T2, the beta build, finished at e5e5e5e. Its review, T5, found one Important issue, which fix round 1/5 addressed, moving beta to f6f6f6f.
+- T3 wrote the three scenario tests, and all three failed on the original code, as they should. T6 (the builders' test suggestions) is done.
+- T8, the whole-change review, passed with one Minor (`alpha/greeting.py:9`, the limit 64 written as a bare number). That Minor is deferred to the final report.
+
+**Why it isn't verified**
+- Both shards were first dispatched from the commit that filed both briefs. T7a ran there, at space commit 7a7a7a7, and passed.
+- T7b stopped BLOCKED. At 14:35Z its brief was filed again with a ruling: run beta's unit suite with alpha on `PYTHONPATH`.
+- That re-filing became the latest commit holding the shard briefs, so the shards' space commit moved. T7b then ran at space commit 8b8b8b8 and passed.
+- T7a's only record is still at 7a7a7a7, so it is out of date. The two records were never green at the same commit set, so the change is not verified.
+- The code branches and the tests have not changed since the 14:35Z filing. The fix is therefore to dispatch T7a again from its existing brief, at the same space commit, with no new briefs. T7b's record stands.
+
+**Gaps in the records**
+1. T8 was dispatched before the shards were green together. That is earlier than the process allows. It reviewed the same diffs (alpha a1a1a1a..d4d4d4d, beta b2b2b2b..f6f6f6f), which have not changed. I'd let it stand and record a ruling saying so. If T7a's rerun moves anything, T8 has to run again.
+2. After T2's fix round, the ledger has no review of the fix diff (e5e5e5e..f6f6f6f), though each fix round should end with one. T8 covered beta's whole diff and found nothing Critical or Important, so this is a missing record rather than a known open finding.
+3. There is no `STATUS.md` in the space. It should be regenerated with the `swe-pod` skill at the next filing.
+
+I dispatched, filed and committed nothing in this run, so the librarian printed no `DESK:` lines.
+
+Files worth opening:
+- <scratch>/runs/20261028T104936Z-test_T37_TS1_shard_stale_by_space_commit-0a19/space/changes/add-greeting/ledger.md
+- <scratch>/runs/20261028T104936Z-test_T37_TS1_shard_stale_by_space_commit-0a19/space/changes/add-greeting/evidence/20261001T1412Z-T7a.md
+- <scratch>/runs/20261028T104936Z-test_T37_TS1_shard_stale_by_space_commit-0a19/space/changes/add-greeting/evidence/20261001T1500Z-T7b.md
+
+STATE add-greeting: verify, not verified: T7b's record is current, T7a's is out of date (it ran at space commit 7a7a7a7, before the 14:35Z re-filing of the T7b brief)
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

@@ -1,0 +1,28 @@
+The plan for add-greeting is written at `changes/add-greeting/plan.md`. The spec is approved by demo-owner and each of its two requirements has scenarios: R1 has three, R2 has one. I committed nothing. The filing commands are printed below as desk lines, and none were run.
+
+**What the plan builds**
+- **T1 (alpha):** adds `greeting(name: str = "demo") -> str`, which returns `"hello, " + name`. A name over 64 code points raises `ValueError` with the message `name exceeds the 64-character limit`. It also adds 5 unit tests, a CHANGELOG line and a README line.
+- **T2 (beta, after T1):** `main` prints `alpha.greeting()` first, so the existing `beta 1.0` banner becomes line 2. It adds 2 unit tests and a README note. `alpha` is found through `PYTHONPATH`.
+- **T3:** writes four project-level tests, one per scenario (R1.S1, R1.S2, R1.S3, R2.S1), and starts at the go.
+- **The rest:** T4 takes up builder test suggestions. T5 is verify, run local on `macos-laptop`. T6 and T7 review T1 and T2, T8 is the whole-change review, and T9 integrates in the order alpha, then beta.
+- **Order:** T1 and T3 run in parallel. The longest chain is T1 → T6 → T2 → T7 → T4 → T5 → T8 → T9. No two tasks touch the same file.
+- **Out of scope:** `gamma` stays at its pin.
+
+**Defaults I chose (for the spec's Open calls)**
+1. The error is a `ValueError`. Tests check only that its message contains `64`.
+2. "No name" means calling `greeting()` with its default, `"demo"`.
+3. The `beta 1.0` banner stays, as the second line.
+4. `beta` finds `alpha` through `PYTHONPATH`; no packaging is added, since neither repo has any.
+5. An empty name is accepted: `greeting("")` returns `"hello, "`.
+6. The 1 s limit is measured once, from process start to the first line read, on `macos-laptop`.
+7. The code uses nothing newer than Python 3.8.
+
+**Base commits:** none of the checkouts here (space, alpha, beta) is a git repo. The plan therefore takes the repo commits from the pins in `pod.yaml` (alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c). The space commit is left for the lead to fill in at filing.
+
+No questions for the human.
+
+DESK: git add changes/add-greeting/plan.md
+DESK: git commit -m "plan: add-greeting" -m "Change: add-greeting" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

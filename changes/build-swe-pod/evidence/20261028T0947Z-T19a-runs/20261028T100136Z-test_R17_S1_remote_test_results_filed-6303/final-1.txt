@@ -1,0 +1,101 @@
+Every file passed the checks. These are the commands I would have run (desk run, none were executed):
+
+DESK lines, in order — full list repeated in final reply. Let me compose the final reply.
+
+I filed T3's mesh result for add-greeting. This was a desk run, so none of the git commands below actually ran. The files are written in the space checkout and passed the librarian's checks, but nothing is committed or pushed. No `FILED` sha exists yet.
+
+**Checking the result**
+- The result lists four files. All four match their `files:` entries: the sha256 is the same, they are plain ASCII text, and each is under 600 bytes. All four are in the test role's lane, so nothing was refused:
+  - `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+  - `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+  - `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+  - `changes/add-greeting/evidence/20261001T1020Z-T3-report.md`
+- There is one test per scenario, matching the plan's test map. The T3 report says all three fail at the base commit set for their stated reason (alpha has no greeting; beta prints nothing), which is T3's done-when. The report has no concerns and no test suggestions.
+- All four files, the ledger and STATUS.md passed the profile, reference and id checks.
+
+**Ledger lines added** (`changes/add-greeting/ledger.md`)
+```
+2026-10-28T10:02Z T3 DONE
+2026-10-28T10:02Z T3 at base: test_R1_S1_default_greeting fail (no greeting in alpha),
+                  test_R1_S2_name_too_long fail (no greeting in alpha),
+                  test_R2_S1_startup_line fail (beta prints nothing)
+2026-10-28T10:02Z filed changes/add-greeting/tests/test_R1_S1_default_greeting.md,
+                  changes/add-greeting/tests/test_R1_S2_name_too_long.md,
+                  changes/add-greeting/tests/test_R2_S1_startup_line.md,
+                  changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+```
+
+**STATUS.md, regenerated** (`<scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo/STATUS.md`)
+- add-greeting is in state building. T3 is done and T1 is dispatched; the other seven tasks are waiting. No task is ready, there is no evidence yet, and there are no open findings.
+- The remotes in `pod.yaml` are placeholder URLs, so the branch heads come from the go line: alpha a1a1a1a, beta b2b2b2b.
+
+**Decision for you:** T1 is a build task, and the earlier ledger line dispatched it to the mesh. Build tasks have to run local until mesh executors may commit to `change/add-greeting`, and there is no ruling saying so. I changed nothing here. Do you want me to re-dispatch T1 local and record the ruling?
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File changes/add-greeting/evidence/20261001T1020Z-T3-report.md" -- changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/evidence/20261001T1020Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100136Z-test_R17_S1_remote_test_results_filed-6303/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

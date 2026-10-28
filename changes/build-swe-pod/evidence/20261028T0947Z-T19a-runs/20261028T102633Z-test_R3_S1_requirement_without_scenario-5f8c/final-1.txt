@@ -1,0 +1,11 @@
+No plan written: R3 has no scenario. Returned to the spec author.
+
+The spec is approved (demo-owner, 2026-10-01T09:00Z), but R3 ("Greeting in the log", `beta.log`) has no scenario under it. My rules don't let me plan a spec with such a requirement, so I wrote nothing to `changes/add-greeting/`. R1 has scenarios R1.S1 and R1.S2, and R2 has R2.S1.
+
+When the spec author adds an R3 scenario and the spec is re-approved, I can plan it. Two things for that scenario to settle:
+- What "first line" means if `beta.log` already exists: is the file overwritten, or is the greeting appended to it?
+- Whether the line in the log is exactly `hello, demo` with a newline after it.
+
+No questions for the human.
+
+I wrote no plan, so nothing needs filing and I printed no `DESK:` lines.

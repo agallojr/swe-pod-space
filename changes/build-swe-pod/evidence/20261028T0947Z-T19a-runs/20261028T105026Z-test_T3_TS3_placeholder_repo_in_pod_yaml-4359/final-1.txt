@@ -1,0 +1,85 @@
+I've done the go for add-greeting and dispatched the two starting tasks, T1 and T3. T1's result can't be accepted yet: the builder made no commits.
+
+**What happened**
+- **Spec:** it has its `approved:` line (demo-owner, 2026-10-01T09:00Z), so dispatching was allowed.
+- **Branches:** `change/add-greeting` is made from each repo's pin, but only in the repos the spec names: alpha at `a1a1a1a` and beta at `b2b2b2b`.
+- **Ledger:** records the go, the dispatches and one ruling. The plan says T1 runs on the mesh, but build tasks run local until mesh agents may commit and push to the change branch.
+- **T1 (greeting text in alpha):** went to a local builder, with the brief at `changes/add-greeting/tasks/T1-brief.md`.
+- **T3 (blind scenario tests):** posted to the mesh test role, with the brief at `changes/add-greeting/tasks/T3-brief.md`. No result yet.
+- **STATUS.md:** regenerated at `<scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo/STATUS.md`. It shows the change as building, with T1 and T3 dispatched and the other 7 tasks waiting.
+- **Filing:** all records passed the librarian's checks. Their commits are only printed below, since this is a desk run. The briefs say "space: main at the commit that files this brief" in place of a sha, because I ran no git command to read it.
+
+**T1 is going back to its builder**
+- The builder says its 6 of 6 unit tests pass, but it made no commits and printed none as DESK lines either. So there is nothing on `change/add-greeting` to check against its report.
+- I have not recorded a T1 status, filed `T1-report.md` or dispatched its review (T4). It goes back to the builder to commit with the `Change: add-greeting` and `Task: T1` trailers.
+- Two of its concerns are still open:
+  - **Extra file:** it added `tests/__init__.py`, which is outside the task's file list. It says the plan's test command can't find the tests on Python 3.10 without it.
+  - **Name format:** it chose `hello, <name>` for a given name, which the spec doesn't define. That goes to the spec author as a proposed scenario.
+
+**Decision for you:** `pod.yaml` still lists two placeholder repos, `<repo-a>` and `<repo-b>`, with no real address or pin. The spec doesn't name them, so they get no branch, and I left them off STATUS.md's pins line. But verify checks every other repo in `pod.yaml` at its pin, and those two have none. Should the spec author's side remove those two entries from `pod.yaml`, or are they meant to become real repos?
+
+DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/repos/alpha branch change/add-greeting a1a1a1a
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/repos/alpha push origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/repos/beta branch change/add-greeting b2b2b2b
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/repos/beta push origin change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rev-parse --short HEAD
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T1-brief.md" -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: mesh-post --to role:swe.test --type task.request --project proj:demo --timeout-min 60 --goal "Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T3 of change add-greeting from its brief." --context "Role definition: swe-pod/agents/swe-test.md | Brief: changes/add-greeting/tasks/T3-brief.md | Repos: alpha https://example.invalid/demo/alpha.git, beta https://example.invalid/demo/beta.git | Commit set under test: alpha a1a1a1a, beta b2b2b2b, space at the commit that files T3-brief.md" --done-when "three test files exist, one per scenario, and each fails at the base commit set for its stated reason" --on-failure "return BLOCKED or NEEDS_CONTEXT with the reason, and any test files written so far"
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T105026Z-test_T3_TS3_placeholder_repo_in_pod_yaml-4359/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

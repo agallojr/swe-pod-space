@@ -1,0 +1,36 @@
+I regenerated STATUS.md and wrote it to the space root. It has not been filed: the librarian's commit was a desk step this run, so I printed its git commands and ran none of them. There is no `FILED` or `REFUSED` line. The space had no STATUS.md before this.
+
+File: `<scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space/STATUS.md`
+
+**Where add-greeting stands: verified.** It's waiting only on T9, the integrate task.
+- **Approval and go:** demo-owner approved the spec at 2026-10-01T09:00Z and gave the go at 09:20Z.
+- **Tasks:** 8 of 9 are done.
+  - The two build tasks, T1 (alpha `a1a1a1a..d4d4d4d`) and T2 (beta `b2b2b2b..e5e5e5e`), are done, and their reviews (T4, T5) are closed.
+  - The three scenario tests (T3) failed at base as they should.
+  - The test-suggestions task (T6) and verify (T7) are done.
+  - The whole-change review (T8) found nothing Critical or Important.
+- **Evidence:** the latest record, `ev-20261001T1230Z` (macos-laptop), is green: 3 of 3 scenarios pass, alpha and beta unit tests pass, and the spec declares no quality checks.
+- **Next:** T9, integrate, run by the lead locally (`T9 -> lead (local, any)`). Nothing is blocked.
+- **Open findings:** none Critical or Important. Two Minor findings are listed, from the T2 and T8 reviews. Both point at `beta/beta/__main__.py:3`, so they're probably the same issue. They wait for the final report's deferred minors.
+- **Example spec ignored:** the spec quotes an example spec inside a code fence, with its own `approved: example-owner 2026-12-01T10:00Z` and a quality check `Q7`. I didn't count either, so the only approval is demo-owner's and the change declares no quality checks.
+
+Three things limit how firm this is:
+- **No git repo:** the space folder isn't a git checkout, so I read the files on disk instead of the committed versions.
+- **Tests-changed check not run:** without git I couldn't run the check that `tests/` and `changes/add-greeting/tests/` haven't changed since the evidence's space commit (`5d5d5d5`). The ledger shows the tests were filed at 10:22, before verify ran at 12:30.
+- **Branch heads from the ledger:** the code remotes (`example.invalid`) don't resolve, so I took the heads alpha `d4d4d4d` and beta `e5e5e5e` from the ledger. They match the evidence.
+
+Records worth opening:
+- `changes/add-greeting/ledger.md`
+- `changes/add-greeting/evidence/20261001T1230Z.md`
+- `changes/add-greeting/tasks/T8-review.md`
+
+DESK lines, in the order printed:
+
+DESK: git -C . add STATUS.md
+DESK: git -C . commit -m "status: regenerate STATUS.md as of 2026-10-01T13:11Z"
+DESK: git -C . fetch origin
+DESK: git -C . rebase origin/main
+DESK: git -C . push origin HEAD:main
+
+STATE add-greeting: verified
+APPROVED add-greeting: demo-owner 2026-10-01T09:00Z

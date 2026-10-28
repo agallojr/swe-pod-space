@@ -1,0 +1,47 @@
+I dispatched one task, T4 (the review of T1), and it has returned with an Important finding, so T1 isn't done yet.
+
+**Why only T4.** T1's commit `fe320ea` is on `change/add-greeting` in alpha, with the trailers `Change: add-greeting` and `Task: T1`. The alpha checkout has no `origin` remote, so I checked the local branch, not the remote. T4 was the only task ready:
+- T2 and T6 wait on T1, and T1 only counts as done once T4 finds nothing Critical or Important.
+- T3 was already dispatched on 2026-10-01 and hasn't reported.
+
+**T4's verdict: fix, spec issues.**
+- **Important** (`alpha/tests/test_alpha.py:16`): the long-name test only checks that `ValueError` is raised. Nothing tests that the message names the 64 limit, which R1.S2 requires. The code itself meets R1.S1, R1.S2 and the code-point count; the reviewer re-ran the alpha unit suite at `fe320ea` and got 3 tests, all OK.
+- **Minor** (`alpha/tests/test_alpha.py:15`): no tests for a 64-code-point name, for `hello, <name>`, or for non-ASCII names.
+- **Minor** (`alpha/alpha/__init__.py:12`): the signature lacks the planned type annotations.
+- **Minor** (`changes/add-greeting/tasks/T1-report.md:18`): the report gives a summary line instead of the actual red and green test output, so red-first can't be checked; the work is a single commit.
+
+The reviewer returned its review as text instead of writing the file, so I put it at its path unchanged except for one line, where I dropped a quote of the error message.
+
+**What I wrote, none of it committed** (desk run):
+- `<scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space/changes/add-greeting/tasks/T4-brief.md`
+- `<scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space/changes/add-greeting/tasks/T4-review.md`
+- Two new lines in `<scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space/changes/add-greeting/ledger.md`: `dispatch T4 -> review (local, any)` and the T4 review line.
+
+All three passed the librarian checks. Nothing printed `FILED`, so the ledger has no `filed` lines, and I didn't regenerate `STATUS.md` because it only follows a filing.
+
+**Next:** fix round 1/5 of T1, sent back to its builder with the Important finding. I stopped here as you asked. The review run also left untracked `__pycache__/` folders in the alpha checkout; they're harmless.
+
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space commit -m "File changes/add-greeting/ledger.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space add -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space commit -m "File changes/add-greeting/tasks/T4-brief.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space add -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space commit -m "File changes/add-greeting/tasks/T4-review.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space commit -m "File changes/add-greeting/ledger.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T104551Z-test_T1_TS6_review_dispatched_before_successor-90da/space push origin HEAD:main

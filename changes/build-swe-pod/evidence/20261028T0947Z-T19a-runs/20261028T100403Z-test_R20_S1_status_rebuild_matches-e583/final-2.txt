@@ -1,0 +1,25 @@
+I rebuilt the status from the records and wrote it to `space/x-rebuild/STATUS.md`. I didn't open the space's own `STATUS.md`, so I haven't compared the two. That comparison is yours to make.
+
+**What it shows**
+- **As of** `2026-10-02T08:00Z`, the time add-farewell's spec was approved. That is the newest timestamp in the records.
+- **Open changes:** 2 (approved: 1, building: 1).
+- **add-farewell is approved.** It has no plan or go yet, so its task table has headers but no rows. Next: the plan, by the plan role.
+- **add-greeting is building.**
+  - T1, T3 and T4 are done. T4 is T1's review, which found nothing.
+  - T2 is ready, and T5 through T9 are waiting.
+  - There is no evidence yet and no open findings.
+  - Next: `T2 -> build (local, any)`.
+
+**Things that may make the two files differ**
+- **Branch heads came from the records.** The `alpha` and `beta` remotes are placeholder URLs at `example.invalid`, which don't resolve. So I used the last commit range in the ledger for alpha (`d4d4d4d`) and the go line for beta (`b2b2b2b`).
+- **The space isn't a git repository.** I couldn't read files "as committed at HEAD" as the skill asks, so I read the files on disk.
+- **A judgement call:** I gave add-farewell an empty task table rather than leaving the table out. The format rules don't say what to do for a change with no plan.
+
+**Commit step (printed only, nothing run)**
+I don't have the librarian skill in this session, so these are the usual add, commit, fetch, rebase and push commands. The `main` branch is my assumption. They aren't the librarian's own text, and filing produced no `FILED` or `REFUSED` line.
+
+DESK: git add x-rebuild/STATUS.md
+DESK: git commit -m "status: rebuild STATUS.md into x-rebuild/ for comparison" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

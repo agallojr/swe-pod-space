@@ -1,0 +1,9 @@
+{
+  "test": "test_T3_TS3_placeholder_repo_in_pod_yaml",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

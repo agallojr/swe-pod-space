@@ -1,0 +1,26 @@
+**add-greeting is not verified.** Both builds are in, but the two verify shards ran at different commit sets, so their records are not green together.
+
+**Current commit set.** alpha is at `d4d4d4d` (T1), beta at `f6f6f6f` (after T2's fix round 1), and gamma at its pin `c3c3c3c`, since the spec doesn't name it. The shards' space commit is the one that filed the T7b brief again at 13:29; the T7b record names it as `8b8b8b8`. That sha comes from the records only: this copy has no git history to check it against.
+
+**The two shard records:**
+- **T7b** (`evidence/20261001T1426Z-T7b.md`) ran at space `8b8b8b8`, alpha `d4d4d4d`, beta `f6f6f6f`, gamma `c3c3c3c`. That is the current commit set, and every result is a pass (R2.S1, beta's unit suite).
+- **T7a** (`evidence/20261001T1238Z-T7a.md`) ran at space `7a7a7a7`, beta `e5e5e5e`. That was before T2's fix moved beta to `f6f6f6f`. Its passes for R1.S1, R1.S2 and alpha's unit suite are real, but they are at an old commit set, so the record is out of date.
+
+**How this happened.** When T7b came back BLOCKED, only its brief was written again with the new beta head. T7a's brief still says beta `e5e5e5e`, and T7a was never dispatched again. Once the commit set moved, both briefs should have been rewritten and both shards run again.
+
+**The whole-change review (T8)** passed: spec ok, one Minor at `alpha/greeting.py:9` (64 is a bare number; a named constant would read better). But it was dispatched before the shards were green together. Its "no open Critical or Important finding" holds; it just doesn't make up for the out-of-date T7a.
+
+**Other gaps in the ledger:**
+- T2 fix round 1 claims "1 addressed, 0 open", but no review of the fix diff `e5e5e5e..f6f6f6f` was dispatched or recorded. The rules require one before T2 counts as done.
+- The T4 and T5 review records and the T1 and T2 build reports are not filed in the space.
+- The ledger doesn't say why T7b was blocked.
+- `STATUS.md` doesn't exist; it should be regenerated with the swe-pod skill at the next filing.
+
+**Next steps.** Run T7a again at the current commit set, and dispatch the missing review of T2's fix. I'd give T7a the current set in its dispatch prompt. Rewriting its brief would also work, but that filing would become the new shards' space commit, and T7b would then have to run again too. After that, integrate (T9) can wait on the human's word.
+
+Nothing was dispatched, filed or committed in this run, so I printed no `DESK:` lines.
+
+STATE add-greeting: building done, verify in progress and not verified — T7b green at the current commit set, T7a out of date (ran at space 7a7a7a7 and beta e5e5e5e); T8 whole-change review passed with 1 Minor; T2's fix-round re-review not recorded; integrate (T9) not started
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

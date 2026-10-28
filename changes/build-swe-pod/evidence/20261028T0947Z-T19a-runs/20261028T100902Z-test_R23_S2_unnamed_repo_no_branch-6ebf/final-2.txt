@@ -1,0 +1,51 @@
+The ledger passed the check too. Its commit and push, printed:
+
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/mainI wrote the brief for T7, add-greeting's verify task: `<scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md`. Nothing was dispatched. It passed the librarian's checks, and I added a `filed` line for it to the ledger.
+
+**What the brief says:**
+- **Layout:** it follows the test-brief layout used for T3 and T6. It copies the plan's T7 entry word for word, along with the plan's interface contract, constraints and test map, and gives the spec's path. It ends with the fixed line that keeps the tester out of the plan, ledger, reports and diffs.
+- **What it runs against:** alpha d4d4d4d and beta e5e5e5e, each on `change/add-greeting`. Gamma runs at its `pod.yaml` pin, c3c3c3c: the spec's `repos:` list doesn't include gamma, so it gets no branch. The space commit is "the commit that files this brief", as in the T3 and T6 briefs. The baseline is alpha a1a1a1a, beta b2b2b2b and gamma c3c3c3c.
+- **Environment:** any.
+- **Unit tests:** alpha's and beta's suites run.
+- **Quality checks:** the spec declares none, so the record says `quality: none-declared`.
+- **Slow tests:** none over 60 s are planned. Any test that expects to take longer is reported `not-run (cap)`, naming the 60 s limit.
+- **Results go to:** an evidence record at `changes/add-greeting/evidence/<UTC>.md` and a report at `changes/add-greeting/evidence/<UTC>-T7-report.md`.
+
+**Before you rely on it:**
+- **T3 and T6 aren't finished.** The brief is written for the state you described, but in the ledger both are still only dispatched. T7 can't be dispatched until they finish and the branch heads really are d4d4d4d and e5e5e5e.
+- **Clock behind the ledger.** This machine's clock read 10:22Z, earlier than the ledger's last line at 10:26Z. I dated the new `filed` line 10:26Z so the ledger stays in time order.
+- **`STATUS.md` not regenerated.** The process calls for this after each filing. I haven't done it yet.
+
+DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T7-brief.md" -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T100902Z-test_R23_S2_unnamed_repo_no_branch-6ebf/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

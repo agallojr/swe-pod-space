@@ -1,0 +1,3 @@
+T11.TS5.1 pass skeleton .gitmodules names spaces False; 0 file(s) under spaces/
+T11.TS5.2 pass spaces.yaml empty
+T11.TS5.3 pass PROTOCOL 1 paragraph(s) or row(s) say an absent registry mounts nothing

@@ -1,0 +1,29 @@
+I wrote the brief for T6, the suggestions task, and did not dispatch it. It passed the librarian's checks, but nothing is filed yet: in this desk run none of the git commands ran.
+
+**The brief:** `<scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space/changes/add-greeting/tasks/T6-brief.md`
+
+- **What it holds:** the T6 plan entry, the spec path, and the interface contract, global constraints and test map copied word for word from the plan. It ends with the required "Do not read …" line, and it contains no code, diff, builder report or build steps.
+- **Start from:** the new tests first run at the base commit set (space 5c02e1a, alpha a1a1a1a, beta b2b2b2b). They are then tested at alpha d4d4d4d and beta e5e5e5e, the T1 and T2 branch heads. For the space, the brief names "the space commit that files this brief", because that commit doesn't exist yet. The space checkout here isn't a git repo, so I couldn't look up a real sha.
+- **Suggestions:** the brief carries one, T1.TS1, with only its "for the tester" part. It covers a name of exactly 64 two-byte characters such as `é`, which may be refused even though the spec counts the limit in code points. It gives no value the code computed and no code, and it is spec-covered behavior on an input no scenario tests, so it goes to the test agent. The "for the reviewer" part is kept for the whole-change review. T2 and T3 made no suggestions.
+
+**The ledger:** `<scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space/changes/add-greeting/ledger.md` now ends with `2026-10-28T10:37Z T1.TS1 -> test`.
+
+**Still to do:**
+- When you say go on T6, I'll record the dispatch line `dispatch T6 -> test (local, any)` and start the test agent.
+- The `filed` lines go into the ledger once the commits really run.
+- `STATUS.md` isn't regenerated yet; that happens after filing.
+
+The desk step's git commands, in the order I printed them:
+
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103638Z-test_R9_S1_test_brief_contents-f43c/space push origin HEAD:main

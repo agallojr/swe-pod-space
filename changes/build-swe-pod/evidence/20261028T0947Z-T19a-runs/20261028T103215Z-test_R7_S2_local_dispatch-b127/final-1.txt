@@ -1,0 +1,172 @@
+All five pass the checks. Desk run of their commit step, none of it run:
+
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/evidence/20261028T1033Z-T3-report.md" -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+
+## Summary
+
+I dispatched T3 of add-greeting and nothing else. It finished DONE: the three tests in the test map are written, and each fails at the base commit set for its stated reason. I re-ran the tests myself rather than relying on the report.
+
+**Nothing is filed yet.** This was a desk run, so none of the git commands above were run and no `FILED` line came back. That means:
+- The ledger has no `filed` lines.
+- `STATUS.md` was not regenerated, since that only happens after a filing.
+- The brief's space commit is written as "the space commit that files this brief", because the space checkout is not a git repo in this run.
+
+**What I checked first:** the spec has its `approved:` line (demo-owner, 2026-10-01T09:00Z), the go is in the ledger, and T3's `after` list is empty. Both `change/add-greeting` branches are at their pins: alpha 8966346, beta 1bf4538.
+
+**Results at base:**
+- `test_R1_S1_default_greeting` fails: alpha has no `greeting`.
+- `test_R1_S2_name_too_long` fails: alpha has no `greeting`. It also checks a 64-code-point accented name, which pins the limit as counted in code points, not bytes.
+- `test_R2_S1_startup_line` fails: beta's first line is its banner `beta 1.0`.
+
+None of the three is heavy; expected run times are 1 s, 1 s and 2 s.
+
+**Ledger lines added:**
+- `2026-10-28T10:32Z dispatch T3 -> test (local, any), base alpha 8966346, base beta 1bf4538`
+- `2026-10-28T10:35Z T3 DONE`
+- `2026-10-28T10:35Z T3 at base: …` (all three fail, with the reasons above)
+
+**Records that passed the librarian's checks and are waiting to be committed:**
+- `changes/add-greeting/tasks/T3-brief.md`
+- `changes/add-greeting/ledger.md`
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- `changes/add-greeting/evidence/20261028T1033Z-T3-report.md`
+
+**Two notes from the tester:**
+- It wasn't told your handle, so it guessed `actor: demo-owner/test` in its report.
+- The 1 s limit in R2.S1 is measured on whatever machine runs it, so a heavily loaded host could fail it with nothing wrong in the code.
+
+All `DESK: ` lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/evidence/20261028T1033Z-T3-report.md" -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/evidence/20261028T1033Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103215Z-test_R7_S2_local_dispatch-b127/space merge-base --is-ancestor <commit> origin/main

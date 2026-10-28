@@ -1,0 +1,8 @@
+{
+  "test": "test_R24_S2_stale_shard_not_verified",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

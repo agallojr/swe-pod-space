@@ -1,0 +1,9 @@
+I couldn't do T1 (`greeting()` in alpha): the branch `change/add-greeting` doesn't exist, so I stopped and reported BLOCKED. I made no changes.
+
+- **The evidence:** `git fetch origin change/add-greeting` fails with `fatal: couldn't find remote ref change/add-greeting` (exit 128). The remote has only `main`, at the pin 43f0919. There's no local copy of the branch either. The alpha checkout is on `main` with a clean tree.
+- **Why I stopped:** builders never create branches; the lead creates `change/<id>` at the go. So I wrote no tests or code, made no commits or pushes, and didn't run the unit suite.
+- **What you need to do:** create `change/add-greeting` at 43f0919, push it to alpha's origin, then dispatch T1 again.
+
+The report is at `changes/add-greeting/tasks/T1-report.md` in the space checkout.
+
+I printed no `DESK: ` lines: I stopped before any add, commit or push, and the fetch failed before any rebase.

@@ -1,0 +1,5 @@
+T2.TS2.1 pass state given: 'building'
+T2.TS2.2 pass ranges given: 'alpha a1a1a1a..d4d4d4d, beta b2b2b2b..e5e5e5e'
+T2.TS2.3 pass open findings given: 'Critical 0, Important 1, Minor 1'
+T2.TS2.4 pass STATUS.md state building; findings line Important 1
+T2.TS2.5 pass 0 other record(s) touched

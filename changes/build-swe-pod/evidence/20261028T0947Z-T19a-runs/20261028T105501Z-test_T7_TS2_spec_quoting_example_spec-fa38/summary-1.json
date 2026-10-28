@@ -1,0 +1,194 @@
+{
+  "result": "I regenerated STATUS.md and wrote it to the space root. It has not been filed: the librarian's commit was a desk step this run, so I printed its git commands and ran none of them. There is no `FILED` or `REFUSED` line. The space had no STATUS.md before this.\n\nFile: `<scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space/STATUS.md`\n\n**Where add-greeting stands: verified.** It's waiting only on T9, the integrate task.\n- **Approval and go:** demo-owner approved the spec at 2026-10-01T09:00Z and gave the go at 09:20Z.\n- **Tasks:** 8 of 9 are done.\n  - The two build tasks, T1 (alpha `a1a1a1a..d4d4d4d`) and T2 (beta `b2b2b2b..e5e5e5e`), are done, and their reviews (T4, T5) are closed.\n  - The three scenario tests (T3) failed at base as they should.\n  - The test-suggestions task (T6) and verify (T7) are done.\n  - The whole-change review (T8) found nothing Critical or Important.\n- **Evidence:** the latest record, `ev-20261001T1230Z` (macos-laptop), is green: 3 of 3 scenarios pass, alpha and beta unit tests pass, and the spec declares no quality checks.\n- **Next:** T9, integrate, run by the lead locally (`T9 -> lead (local, any)`). Nothing is blocked.\n- **Open findings:** none Critical or Important. Two Minor findings are listed, from the T2 and T8 reviews. Both point at `beta/beta/__main__.py:3`, so they're probably the same issue. They wait for the final report's deferred minors.\n- **Example spec ignored:** the spec quotes an example spec inside a code fence, with its own `approved: example-owner 2026-12-01T10:00Z` and a quality check `Q7`. I didn't count either, so the only approval is demo-owner's and the change declares no quality checks.\n\nThree things limit how firm this is:\n- **No git repo:** the space folder isn't a git checkout, so I read the files on disk instead of the committed versions.\n- **Tests-changed check not run:** without git I couldn't run the check that `tests/` and `changes/add-greeting/tests/` haven't changed since the evidence's space commit (`5d5d5d5`). The ledger shows the tests were filed at 10:22, before verify ran at 12:30.\n- **Branch heads from the ledger:** the code remotes (`example.invalid`) don't resolve, so I took the heads alpha `d4d4d4d` and beta `e5e5e5e` from the ledger. They match the evidence.\n\nRecords worth opening:\n- `changes/add-greeting/ledger.md`\n- `changes/add-greeting/evidence/20261001T1230Z.md`\n- `changes/add-greeting/tasks/T8-review.md`\n\nDESK lines, in the order printed:\n\nDESK: git -C . add STATUS.md\nDESK: git -C . commit -m \"status: regenerate STATUS.md as of 2026-10-01T13:11Z\"\nDESK: git -C . fetch origin\nDESK: git -C . rebase origin/main\nDESK: git -C . push origin HEAD:main\n\nSTATE add-greeting: verified\nAPPROVED add-greeting: demo-owner 2026-10-01T09:00Z",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01HUbhaJmqKsfiGKAa1fdJGV",
+      "name": "Skill",
+      "input": {
+        "skill": "swe-pod",
+        "args": "Regenerate STATUS.md, then report where add-greeting stands."
+      },
+      "is_error": false,
+      "output": "Launching skill: swe-pod",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01DHfUhY6CZLdUyNxFwzxR89",
+      "name": "Bash",
+      "input": {
+        "command": "git status --short; git log --oneline | head; git ls-tree -r --name-only HEAD; ls -la ../export; ls <config>/skills/swe-pod",
+        "description": "Inspect space repo and files"
+      },
+      "is_error": false,
+      "output": "fatal: not a git repository (or any of the parent directories): .git\nfatal: not a git repository (or any of the parent directories): .git\nfatal: not a git repository (or any of the parent directories): .git\ntotal 0\ndr-xr-xr-x@  3 agallojr  staff   96 Oct 28 06:55 .\ndrwxr-xr-x@ 16 agallojr  staff  512 Oct 28 06:55 ..\ndr-xr-xr-x@  4 agallojr  staff  128 Oct 28 06:55 swe-pod\nSKILL.md\nstatus-format.md",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01MysC5XML2jW3M2LUHj2ZNU",
+      "name": "Bash",
+      "input": {
+        "command": "pwd; find . -type f | head -100; find ../export | head -50",
+        "description": "List space and export files"
+      },
+      "is_error": false,
+      "output": "<scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space\n./PROCESS.md\n./space.yaml\n./changes/add-greeting/tasks/T1-review.md\n./changes/add-greeting/tasks/T3-report.md\n./changes/add-greeting/tasks/T2-report.md\n./changes/add-greeting/tasks/T1-report.md\n./changes/add-greeting/tasks/T8-review.md\n./changes/add-greeting/tasks/T7-report.md\n./changes/add-greeting/tasks/T2-review.md\n./changes/add-greeting/tasks/T6-report.md\n./changes/add-greeting/evidence/20261001T1230Z.md\n./changes/add-greeting/tests/test_R2_S1_startup_line.md\n./changes/add-greeting/tests/test_R1_S2_name_too_long.md\n./changes/add-greeting/tests/test_R1_S1_default_greeting.md\n./changes/add-greeting/plan.md\n./changes/add-greeting/spec.md\n./changes/add-greeting/ledger.md\n./lore/.gitkeep\n./tests/.gitkeep\n./decisions/.gitkeep\n./README.md\n./notes/note-20261001T1100Z-a0b1-demo-context.md\n./handoffs/.gitkeep\n./pod.yaml\n../export\n../export/swe-pod\n../export/swe-pod/PROCESS.md\n../export/swe-pod/skills\n../export/swe-pod/skills/swe-pod\n../export/swe-pod/skills/swe-pod/status-format.md\n../export/swe-pod/skills/swe-pod/SKILL.md",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01VtCgMQ7mVdr6oCuhUWKvXx",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space; for f in pod.yaml space.yaml README.md notes/*.md changes/add-greeting/spec.md changes/add-greeting/plan.md changes/add-greeting/ledger.md changes/add-greeting/evidence/*.md changes/add-greeting/tests/*.md; do echo \"=== $f\"; cat \"$f\"; done",
+        "description": "Print space records"
+      },
+      "is_error": false,
+      "output": "=== pod.yaml\npod: 1\nproject: demo\nprocess: swe-pod-process@1\nrepos:\n  alpha: {remote: \"https://example.invalid/demo/alpha.git\", pin: \"a1a1a1a\"}\n  beta:  {remote: \"https://example.invalid/demo/beta.git\", pin: \"b2b2b2b\"}\n  gamma: {remote: \"https://example.invalid/demo/gamma.git\", pin: \"c3c3c3c\"}\ndepends: {beta: [alpha]}            # merge order: alpha before beta\ngates: {spec: human, plan: human-skim, merge: human}\n=== space.yaml\n# Memory-space manifest of the demo Project Space (test fixture). Keys as the\n# space manifest of the memory-spaces design note, section 3.1; every value\n# is an invented placeholder.\nspace: 1\nid: proj:demo\nkind: project\ntitle: Demo project for the SWE Pod tests\nvisibility: shared\nowners: [demo-owner]\nwriter_model: multi-actor\ncategories: [notes, lore, decisions, evidence, handoffs, changes, tests]\nheader_profile: shareable\nmay_reference: [core]\nretention: until-archived\n=== README.md\n# demo Project Space\n\nThe Project Space of `proj:demo`, a test fixture. Its code repos are `alpha`,\n`beta` and `gamma` (see `pod.yaml`); `beta` depends on `alpha`. The one change\nin flight, `add-greeting`, names `alpha` and `beta` and not `gamma`.\n=== notes/note-20261001T1100Z-a0b1-demo-context.md\n---\nschema_version: 1\nid: note-20261001T1100Z-a0b1\ntitle: Why the demo greeting lives in alpha\ncategory: notes\ncontexts: [macos-laptop]\ntags: [demo, greeting]\nrelated: []\n---\n\nThe greeting text lives in `alpha` because `beta` and future tools share it.\nRecorded by demo-owner.\n=== changes/add-greeting/spec.md\n# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n- approved: demo-owner 2026-10-01T09:00Z\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\nThe format the team copied from, quoted as it was given:\n\n```markdown\n# add-farewell: let alpha produce a farewell\n\n- size: small\n- owner: example-owner\n- repos: [alpha]\n- approved: example-owner 2026-12-01T10:00Z\n\n## Requirements\n### R9 Farewell text\n`alpha` SHALL provide the farewell `goodbye, demo`.\n\n#### R9.S1 Default farewell\n- GIVEN alpha\n- WHEN a caller asks for the farewell\n- THEN it gets `goodbye, demo`\n\n## Quality\n### Q7 Docs build\nThe docs SHALL build with the strict flag.\n- check: `demo-docs --strict`; passing is exit status 0\n```\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.\n=== changes/add-greeting/plan.md\n# add-greeting plan\n\n- change: add-greeting\n- spec: changes/add-greeting/spec.md\n\n## 1 Goal and approach\n\nPut the greeting text in `alpha` behind one function, and have `beta` print\nit on start-up. Two build tasks, one per repo, with `beta`'s after `alpha`'s.\n\n## 2 Interface contract\n\n- `alpha`: `greeting(name: str | None = None) -> str`, in `alpha/greeting.py`.\n  With no name it returns `hello, demo`. A name of more than 64 code points\n  raises `ValueError`, whose message names the 64-character limit.\n- `beta`: `python3 -m beta`, run in the `beta` checkout with the `alpha`\n  checkout beside it, prints `greeting()` as its first line.\n\n## 3 Global constraints\n\n- \"The name limit is 64 characters, counted as Unicode code points.\" (spec,\n  Open calls 1)\n- \"its first line of standard output is `hello, demo`, within 1 s of start\n  (wall time)\" (spec, R2.S1)\n- Every number carries its unit.\n\n## 4 File map\n\n- alpha: `alpha/greeting.py` (the greeting and the name limit),\n  `tests/test_greeting.py`.\n- beta: `beta/__main__.py` (the start-up line), `tests/test_main.py`.\n\n## 5 Tasks\n\n### T1 Greeting text in alpha\n- role: build\n- repo: alpha\n- after: []\n- runs: mesh\n- needs: any\n- serves: [R1]\n- touches: alpha/greeting.py, tests/test_greeting.py\n- produces: greeting(name: str | None = None) -> str\n- steps: failing test, watch it fail, minimal code, watch it pass, commit\n- done when: `python3 -m unittest discover -s tests -t .` passes in\n  alpha at the branch head, and the T4 review has no Critical or\n  Important finding\n\n### T2 beta prints the greeting\n- role: build\n- repo: beta\n- after: [T1]\n- runs: mesh\n- needs: any\n- serves: [R2]\n- touches: beta/__main__.py, tests/test_main.py\n- consumes: greeting() from T1\n- steps: failing test, watch it fail, minimal code, watch it pass, commit\n- done when: `python3 -m unittest discover -s tests -t .` passes in\n  beta at the branch head, and the T5 review has no Critical or\n  Important finding\n\n## 6 Test tasks\n\n### T3 Scenario tests R1.S1 to R2.S1\n- role: test\n- repo: space\n- after: []\n- runs: mesh\n- needs: any\n- serves: [R1, R2]\n- touches: changes/add-greeting/tests/\n- done when: three test files exist, one per scenario, and each\n  fails at the base commit set for its stated reason\n\n### T6 Test suggestions\n- role: test\n- repo: space\n- after: [T1, T2]\n- runs: mesh\n- needs: any\n- serves: [R1, R2]\n- done when: every suggestion routed to the test agent is tested or\n  declined with a reason\n\n### T7 Verify\n- role: test\n- repo: space\n- after: [T1, T2, T3, T6]\n- runs: mesh\n- needs: any\n- serves: [R1, R2]\n- steps: run every project-level test in changes/add-greeting/tests/\n  and tests/, each affected repo's unit tests, and every quality\n  check the spec declares, at the commit set of the brief\n- done when: an evidence record is filed with a result for every\n  scenario, unit suite and declared quality check\n\n## 7 Review tasks\n\n### T4 Review of T1\n- role: review\n- repo: alpha\n- after: [T1]\n- runs: local\n- needs: any\n- serves: [R1]\n- done when: changes/add-greeting/tasks/T1-review.md holds a verdict\n\n### T5 Review of T2\n- role: review\n- repo: beta\n- after: [T2]\n- runs: local\n- needs: any\n- serves: [R2]\n- done when: changes/add-greeting/tasks/T2-review.md holds a verdict\n\n### T8 Whole-change review\n- role: review\n- repo: space\n- after: [T7]\n- runs: local\n- needs: any\n- serves: [R1, R2]\n- done when: changes/add-greeting/tasks/T8-review.md holds a verdict\n\n## 8 Integrate task\n\n### T9 Integrate\n- role: lead\n- repo: space\n- after: [T7, T8]\n- runs: local\n- needs: any\n- serves: [R1, R2]\n- docs: the README of alpha and of beta; no open plan depends on this\n  change\n- done when: merged in depends order, tests promoted, pins advanced,\n  final report filed\n\n## 9 Test map\n\n| Scenario | Test | Mode | Writes it |\n|---|---|---|---|\n| R1.S1 | test_R1_S1_default_greeting | inspect | T3 |\n| R1.S2 | test_R1_S2_name_too_long | inspect | T3 |\n| R2.S1 | test_R2_S1_startup_line | inspect | T3 |\n\n## 10 Dependency summary\n\nT1 and T3 start at the go. T2 waits for T1. The longest chain is T1, T2, T6,\nT7, T8, T9. No two tasks touch a common file.\n\n## Self-review\n\nEvery requirement maps to a build task (R1 to T1, R2 to T2). Every scenario\nmaps to a test. No step says TBD. Names and types agree across tasks. Every\ntask has role, after, runs and done-when.\n\n## Questions for the spec\n\nNone.\n=== changes/add-greeting/ledger.md\n# Ledger: add-greeting\n\n```\n2026-10-01T09:00Z spec approved by demo-owner\n2026-10-01T09:20Z go by demo-owner; branches change/add-greeting: alpha a1a1a1a, beta b2b2b2b\n2026-10-01T09:21Z dispatch T1 -> build (mesh, any), base alpha a1a1a1a\n2026-10-01T09:21Z dispatch T3 -> test (mesh, any)\n2026-10-01T09:55Z T1 DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass\n2026-10-01T09:56Z filed changes/add-greeting/tasks/T1-report.md\n2026-10-01T09:56Z dispatch T4 -> review (local, any)\n2026-10-01T10:05Z T1 review: spec ok; 0 Important\n2026-10-01T10:06Z filed changes/add-greeting/tasks/T1-review.md\n2026-10-01T10:20Z T3 DONE\n2026-10-01T10:21Z T3 at base: test_R1_S1_default_greeting fail (no greeting in alpha),\n                  test_R1_S2_name_too_long fail (no greeting in alpha), test_R2_S1_startup_line\n                  fail (beta prints nothing)\n2026-10-01T10:22Z filed changes/add-greeting/tests/test_R1_S1_default_greeting.md,\n                  changes/add-greeting/tests/test_R1_S2_name_too_long.md,\n                  changes/add-greeting/tests/test_R2_S1_startup_line.md, changes/add-greeting/tasks/T3-report.md\n2026-10-01T10:30Z dispatch T2 -> build (mesh, any), base beta b2b2b2b\n2026-10-01T11:05Z T2 DONE, beta b2b2b2b..e5e5e5e, unit 2/2 pass\n2026-10-01T11:06Z filed changes/add-greeting/tasks/T2-report.md\n2026-10-01T11:06Z dispatch T5 -> review (local, any)\n2026-10-01T11:15Z T2 review: spec ok; 1 Minor beta/beta/__main__.py:3\n2026-10-01T11:16Z filed changes/add-greeting/tasks/T2-review.md\n2026-10-01T11:16Z dispatch T6 -> test (mesh, any)\n2026-10-01T11:25Z T6 DONE\n2026-10-01T11:26Z filed changes/add-greeting/tasks/T6-report.md\n2026-10-01T11:30Z dispatch T7 -> test (mesh, any)\n2026-10-01T12:30Z T7 DONE\n2026-10-01T12:31Z filed changes/add-greeting/evidence/20261001T1230Z.md, changes/add-greeting/tasks/T7-report.md\n2026-10-01T12:35Z dispatch T8 -> review (local, any)\n2026-10-01T13:10Z T8 review: spec ok; 1 Minor beta/beta/__main__.py:3\n2026-10-01T13:11Z filed changes/add-greeting/tasks/T8-review.md\n```\n=== changes/add-greeting/evidence/20261001T1230Z.md\n---\nid: ev-20261001T1230Z\nchange: add-greeting\ncommit_set: {space: 5d5d5d5, alpha: d4d4d4d, beta: e5e5e5e, gamma: c3c3c3c}\nenv: macos-laptop\nactor: demo-owner/test\nscenarios: {R1.S1: pass, R1.S2: pass, R2.S1: pass}\nunit: {alpha: pass, beta: pass}\nquality: none-declared\nwall_time_s: 41\n---\n\nEvery project-level test and unit suite passed. The regression suite\n`tests/` was empty. Run logs: the run dirs of the three tests above, kept on\nthe node, named by test.\n=== changes/add-greeting/tests/test_R1_S1_default_greeting.md\n---\nscenario: R1.S1\nmode: inspect\nexpected_s: 1\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R1.S1 Default greeting\n\n## Given\n\n`alpha` at the commit set under test.\n\n## When\n\nIn the `alpha` checkout:\n\n    python3 -c \"from alpha.greeting import greeting; print(repr(greeting()))\"\n\n## Then\n\n1. It prints `'hello, demo'` (11 characters, no trailing newline in the value) and exits 0.\n\n## Fails if\n\n- The text differs by any character, or the call raises.\n=== changes/add-greeting/tests/test_R1_S2_name_too_long.md\n---\nscenario: R1.S2\nmode: inspect\nexpected_s: 1\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R1.S2 Name too long\n\n## Given\n\n`alpha` at the commit set under test; a name of 65 characters.\n\n## When\n\nIn the `alpha` checkout:\n\n    python3 -c \"from alpha.greeting import greeting; print(greeting('x' * 65))\"\n\n## Then\n\n1. It exits non-zero, and its error output contains `64`.\n2. It prints no greeting on standard output.\n\n## Fails if\n\n- A greeting is printed, or the error does not name the limit.\n=== changes/add-greeting/tests/test_R2_S1_startup_line.md\n---\nscenario: R2.S1\nmode: inspect\nexpected_s: 2\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R2.S1 Start-up line\n\n## Given\n\n`beta` and `alpha` at the commit set under test, checked out side by side.\n\n## When\n\nIn the `beta` checkout:\n\n    python3 -m beta\n\n## Then\n\n1. The first line of standard output is `hello, demo`.\n2. It finishes within 1 s of start (wall time).\n\n## Fails if\n\n- Another first line, or 1 s or more.",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01SrFGFzhugX5JfBjttUp6HA",
+      "name": "Read",
+      "input": {
+        "file_path": "<config>/skills/swe-pod/status-format.md"
+      },
+      "is_error": false,
+      "output": "1\t# STATUS.md format\n2\t\n3\t`STATUS.md` sits at the root of a Project Space. The `swe-pod` skill builds\n4\tit from the records, as read in `SKILL.md` section 1, and nobody edits it by\n5\thand (`PROCESS.md \u00a715`). This file fixes its text, so two agents that build\n6\tit from the same records write the same bytes.\n7\t\n8\t## Layout\n9\t\n10\tThe lines below are exact. Text in `<angle brackets>` is filled in by the\n11\trules that follow; everything else is copied as written.\n12\t\n13\t```text\n14\t# Status: <space id>\n15\t\n16\tGenerated from the records; never edited by hand. As of <UTC of the newest ledger line or record>.\n17\t\n18\t- pins: <repo> <sha7>, ...\n19\t- open changes: <n> (<state>: <k>, ...)\n20\t\n21\t## <id>   state: <state>   owner: <handle>\n22\t\n23\t- gates: <gate> <handle> <UTC>, ...\n24\t- branches: change/<id>: <repo> <sha7>, ...\n25\t- tasks: waiting <k>, ready <k>, dispatched <k>, done <k>, blocked <k>\n26\t\n27\t| task | role | runs | state | latest |\n28\t|---|---|---|---|---|\n29\t| T<n> | <role> | <local or mesh> | <task state> | <UTC> <event> |\n30\t\n31\t- latest evidence: <ev id>, <env>, <green|not green>: <results>\n32\t- open findings: Critical <n>, Important <n>, Minor <n>\n33\t- next: <next>\n34\t```\n35\t\n36\tOne `## <id>` section follows the header for each open change, in byte\n37\torder of the change ids, each with its bullets and task table in the order\n38\tshown. For a sharded verify, the `latest evidence` bullet takes the sharded\n39\tform given under \"Per open change\", with one indented line per shard.\n40\tBlocks are separated by one empty line. No line has trailing spaces, and\n41\tthe file ends with one newline.\n42\t\n43\t## Header\n44\t\n45\t- **Space id:** the `id:` value in `space.yaml`, such as `proj:demo`.\n46\t- **As of:** the newest UTC, as `YYYY-MM-DDTHH:MMZ`, among:\n47\t  - every ledger line under `changes/`, `changes/archive/` included;\n48\t  - the UTC that begins the name of each record under\n49\t    `changes/*/evidence/`, `handoffs/` and `decisions/`, written back with\n50\t    its dashes and colon (`20261102T1412Z` is `2026-11-02T14:12Z`);\n51\t  - the UTC on each `approved:`, `integrated:` or `abandoned:` line in a\n52\t    spec's header (`SKILL.md` section 1.2).\n53\t\n54\t  With none of these yet, the line ends `As of no records yet.`\n55\t- **pins:** each repo under `repos:` in `pod.yaml`, in the order written,\n56\t  as `<repo> <sha7>`: its name and the first 7 hex digits of its `pin`,\n57\t  joined by `, `.\n58\t- **open changes:** `<n>` is the number of changes in state proposed,\n59\t  approved, planned, building or verified. The parenthesis lists each of\n60\t  those states that has at least one change, in that order, as\n61\t  `<state>: <k>`, joined by `, `. With no open change the line is\n62\t  `- open changes: 0`.\n63\t\n64\t## Per open change\n65\t\n66\t- **Heading:** the change id, its state (`SKILL.md` section 1.2) and the\n67\t  handle on the `owner:` line of the spec's header, separated as shown by\n68\t  three spaces.\n69\t- **gates:** the gates passed, in this order:\n70\t  - `spec <handle> <UTC>` for each `approved:` line in the spec's header,\n71\t    in the order written;\n72\t  - `go <handle> <UTC>` for the ledger's go line (`go by <handle>; ...`).\n73\t    A go line that names no handle gives `go <UTC>`.\n74\t\n75\t  With none passed, the bullet is `- gates: none`.\n76\t- **branches:** before the go line, `- branches: none yet`. After it, each\n77\t  repo in the spec's `repos:` list, in that order, as `<repo> <sha7>`, the\n78\t  head of `change/<id>` by the Branch head rule (`SKILL.md` section 1.1):\n79\t  read from the remote when the remote can be read, and from the records\n80\t  when it cannot. A repo with no head by that rule is `<repo> missing`.\n81\t- **tasks:** the number of tasks in each task state, in the order shown,\n82\t  zeros included. Then an empty line and the task table.\n83\t- **latest evidence:** `- latest evidence: none` until the change has an\n84\t  evidence record. Then the newest record (`SKILL.md` section 1.6) as\n85\t  `<ev id>, <env>, <green|not green>`, followed by `, stale` when it is not\n86\t  at the current commit set, then `: ` and its results, joined by `, `:\n87\t  - `scenarios <p>/<n> pass`, where `<n>` counts the spec's scenarios and\n88\t    `<p>` those the record passes;\n89\t  - `regression <p>/<n> pass` over the regression tests (`SKILL.md`\n90\t    section 1.6), only when `<n>` is not 0;\n91\t  - `unit <repo> <pass|fail|none-present|missing>` for each repo in the\n92\t    spec's `repos:` list, in that order;\n93\t  - `quality none-declared`, or `quality <p>/<n> pass` over the checks the\n94\t    spec declares;\n95\t  - `x-checks <p>/<n> pass` and `x-suggestions <p>/<n> pass`, where `<n>`\n96\t    counts the test files in `changes/<id>/tests/` that map to that key\n97\t    (`SKILL.md` section 5, step 4), each only when `<n>` is not 0.\n98\t\n99\t  For a sharded verify (`SKILL.md` section 1.7), the bullet shows each\n100\t  shard's latest record, one indented line per shard, in task order:\n101\t\n102\t  ```text\n103\t  - latest evidence: sharded, <green|not green>: <results>\n104\t    - <shard id>: <ev id>, <env>, <green|not green>[, stale]: <results>\n105\t    - <shard id>: none\n106\t  ```\n107\t\n108\t  - The first line is `green` when the shards' latest records are green\n109\t    together (`SKILL.md` section 1.7). Its results are those above, over\n110\t    the latest records taken together: a result is a pass when one of them\n111\t    passes it and none gives it `fail` or `not-run`. A repo's `unit` is\n112\t    `fail` when one of them gives `fail`, else the first of `pass` and\n113\t    `none-present` that one of them gives, else `missing`.\n114\t  - A shard's line is `<shard id>: none` until the shard has a record.\n115\t    Then it gives that record's id and `env`, `green` when nothing in it\n116\t    is `fail` or `not-run`, and `, stale` when it is out of date. Its\n117\t    results are those above, but each `<n>` counts only the results of\n118\t    that kind the record gives, and a kind it gives none of is left out:\n119\t    `unit` for each repo the record lists, in the spec's `repos:` order,\n120\t    and `quality none-declared` when the record says so.\n121\t- **open findings:** the totals of section \"Open findings\", below.\n122\t- **next:** one of these, by the change's state:\n123\t\n124\t  | State | `next:` |\n125\t  |---|---|\n126\t  | proposed | `next: approval of changes/<id>/spec.md, by the human` |\n127\t  | approved | `next: the plan, by the plan role` |\n128\t  | planned | `next: the go, by the human` |\n129\t  | building, verified | the first ready task, as `next: T<n> -> <role> (<local or mesh>, <env class or any>)`, with `runs:` and `needs:` from the plan |\n130\t\n131\t  When a building or verified change has no ready task, the first of these\n132\t  that holds gives the bullet:\n133\t  - a verify shard is done and its latest record is out of date (`SKILL.md`\n134\t    section 1.7): `next: re-run T<a>[, T<b>] at the current commit set`,\n135\t    naming each such shard in task order;\n136\t  - every task is done: `next: none; every task is done`;\n137\t  - otherwise: `next: none ready; dispatched: T<a>, T<b>`, adding\n138\t    `; blocked: T<c>` when any task is blocked and leaving out a list that\n139\t    would be empty.\n140\t\n141\t## The task table\n142\t\n143\tOne row per plan task (`SKILL.md` section 1.3), in task order: by number,\n144\twith a letter suffix after the bare number (`T19`, `T19a`, `T19b`, `T20`).\n145\t\n146\t- **task:** the id, `T<n>`.\n147\t- **role:** the first word of the task's `role:` field.\n148\t- **runs:** `local` or `mesh`, from its `runs:` field.\n149\t- **state:** one of the five task states, below.\n150\t- **latest:** the task's newest event, as below, or `-` when it has none.\n151\t\n152\t### Task states\n153\t\n154\tDecide each task's state by the first of these that holds. The ledger terms\n155\t(reported, review closed, held) are defined in `SKILL.md` section 1.4.\n156\t\n157\t1. **done.**\n158\t   - A build task: it has reported, and its review is closed.\n159\t   - A review task: the review of the task it reviews (`SKILL.md` section\n160\t     1.3) is closed. One that reviews no single task, such as the\n161\t     whole-change review, counts its own review lines.\n162\t   - A test or lead task: it has reported.\n163\t2. **blocked.** Its newest status line, later than its newest dispatch\n164\t   line, is BLOCKED or NEEDS_CONTEXT.\n165\t3. **dispatched.** A dispatch line names it. A review task too is\n166\t   dispatched only by its own dispatch line.\n167\t4. **ready.** It is not held, and every task in its `after` list is done.\n168\t   A review task that reviews one task is ready instead once that task has\n169\t   reported and every other task in its `after` list is done, since the\n170\t   review is part of that task's done-when.\n171\t5. **waiting.** Anything else, held tasks included.\n172\t\n173\t### Latest\n174\t\n175\tA task's events are the dispatch, status, fix-round, at-base and\n176\treturned-to-test lines that name it. A review task's events are its own\n177\tdispatch lines and the review lines of the task it reviews (its own review\n178\tlines, when it reviews no single task). The newest is the one with the\n179\tlatest UTC, and of those the one written last. The cell is its UTC, a\n180\tspace, and the event in this form:\n181\t\n182\t| Event | Cell text after the UTC |\n183\t|---|---|\n184\t| dispatch | `dispatch -> <role> (<local or mesh>, <env class or any>)` |\n185\t| status | the status word, then `, <repo> <sha7>..<sha7>` and `, unit <p>/<n> pass` when the line has them in that form; nothing else |\n186\t| in words, that the task is finished, done or complete (`SKILL.md` section 1.4) | `DONE` |\n187\t| review | `review: ` or `review r<k>: `, then `spec ok` or `spec issues`, then `; ` and its counts as `<k> <Severity>` in the order Critical, Important, Minor, joined by `, `, without file and line. Leave out each count of 0. When no count is left, or the line gives none, write `none`: `spec ok; 0 Important` gives `review: spec ok; none` |\n188\t| fix round | `fix round <r>/5: <a> addressed, <o> open` |\n189\t| at base | `at base: <f> fail, <p> pass`, counting the tests the line names |\n190\t| returned to test | `returned to test: <test name>` |\n191\t\n192\tA `|` inside a cell is written `\\|`.\n193\t\n194\t## Open findings\n195\t\n196\tThe ledger's review and fix-round lines give the counts.\n197\t\n198\t- **Critical and Important.** For each task that has a review line, take\n199\t  its newest review or fix-round line. A review line gives its Critical and\n200\t  Important counts. A fix-round line gives its `<o> open` findings, counted\n201\t  as Critical up to the number of Critical findings in the review before\n202\t  it, and the rest as Important. A ruling closes them at any round: when a\n203\t  `Ruling:` line newer than that line begins `Ruling: T<n> open findings`,\n204\t  as in `Ruling: T<n> open findings parked: <which>; <why>; <cost if wrong>`,\n205\t  the task counts 0. A `Ruling:` line in another form closes nothing. Add\n206\t  the counts over all tasks.\n207\t- **Minor.** The sum of the Minor counts of every review line of the\n208\t  change. Minor findings wait for the whole-change review and the final\n209\t  report's deferred minors, so none closes before integrate.\n210\t\n211\t## Same records, same text\n212\t\n213\t- Nothing comes from the wall clock, the session, the node or the space's\n214\t  own commit sha. Every UTC is copied from a record.\n215\t- Every list follows a fixed order given above: `pod.yaml` order for pins,\n216\t  the spec's order for repos and approvals, byte order for change ids, task\n217\t  order for tasks.\n218\t- Every empty case has its fixed text: `none`, `none yet`, `-`, `0`.\n219\t- The records are read as committed (`SKILL.md` section 1.1), and branch\n220\t  heads by its Branch head rule, from the remotes or, where a remote cannot\n221\t  be read, from the records, so the text changes only when a record, a pin\n222\t  or a branch head changes.\n223\t\n224\t## Example\n225\t\n226\tA space `proj:demo` with one change, `add-greeting`, in one repo, at a\n227\tfictional state:\n228\t\n229\t```markdown\n230\t# Status: proj:demo\n231\t\n232\tGenerated from the records; never edited by hand. As of 2026-11-02T15:20Z.\n233\t\n234\t- pins: greeter 77b01d4\n235\t- open changes: 1 (building: 1)\n236\t\n237\t## add-greeting   state: building   owner: ana\n238\t\n239\t- gates: spec ana 2026-11-01T15:20Z, go ana 2026-11-02T14:00Z\n240\t- branches: change/add-greeting: greeter 8e1d0c4\n241\t- tasks: waiting 3, ready 0, dispatched 2, done 1, blocked 0\n242\t\n243\t| task | role | runs | state | latest |\n244\t|---|---|---|---|---|\n245\t| T1 | build | local | dispatched | 2026-11-02T14:41Z DONE, greeter 77b01d4..8e1d0c4, unit 14/14 pass |\n246\t| T2 | test | mesh | done | 2026-11-02T15:20Z at base: 2 fail, 0 pass |\n247\t| T3 | review | local | dispatched | 2026-11-02T14:50Z review: spec ok; 1 Important |\n248\t| T4 | test | mesh | waiting | - |\n249\t| T5 | review | local | waiting | - |\n250\t| T6 | lead | local | waiting | - |\n251\t\n252\t- latest evidence: none\n253\t- open findings: Critical 0, Important 1, Minor 0\n254\t- next: none ready; dispatched: T1, T3\n255\t```\n256\t",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01NZeKGnAeeBY38EwDSvPGbE",
+      "name": "Bash",
+      "input": {
+        "command": "for r in alpha beta; do git ls-remote https://example.invalid/demo/$r.git refs/heads/change/add-greeting; echo \"$r exit $?\"; done 2>&1 | tail -4",
+        "description": "Check code repo remotes for branch heads"
+      },
+      "is_error": false,
+      "output": "fatal: unable to access 'https://example.invalid/demo/alpha.git/': Could not resolve host: example.invalid\nalpha exit 128\nfatal: unable to access 'https://example.invalid/demo/beta.git/': Could not resolve host: example.invalid\nbeta exit 128",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01B9XRGqupApb2aiCmh8EpKT",
+      "name": "Write",
+      "input": {
+        "file_path": "<scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space/STATUS.md",
+        "content": "# Status: proj:demo\n\nGenerated from the records; never edited by hand. As of 2026-10-01T13:11Z.\n\n- pins: alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c\n- open changes: 1 (verified: 1)\n\n## add-greeting   state: verified   owner: demo-owner\n\n- gates: spec demo-owner 2026-10-01T09:00Z, go demo-owner 2026-10-01T09:20Z\n- branches: change/add-greeting: alpha d4d4d4d, beta e5e5e5e\n- tasks: waiting 0, ready 1, dispatched 0, done 8, blocked 0\n\n| task | role | runs | state | latest |\n|---|---|---|---|---|\n| T1 | build | mesh | done | 2026-10-01T09:55Z DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass |\n| T2 | build | mesh | done | 2026-10-01T11:05Z DONE, beta b2b2b2b..e5e5e5e, unit 2/2 pass |\n| T3 | test | mesh | done | 2026-10-01T10:21Z at base: 3 fail, 0 pass |\n| T4 | review | local | done | 2026-10-01T10:05Z review: spec ok; none |\n| T5 | review | local | done | 2026-10-01T11:15Z review: spec ok; 1 Minor |\n| T6 | test | mesh | done | 2026-10-01T11:25Z DONE |\n| T7 | test | mesh | done | 2026-10-01T12:30Z DONE |\n| T8 | review | local | done | 2026-10-01T13:10Z review: spec ok; 1 Minor |\n| T9 | lead | local | ready | - |\n\n- latest evidence: ev-20261001T1230Z, macos-laptop, green: scenarios 3/3 pass, unit alpha pass, unit beta pass, quality none-declared\n- open findings: Critical 0, Important 0, Minor 2\n- next: T9 -> lead (local, any)\n"
+      },
+      "is_error": false,
+      "output": "File created successfully at: <scratch>/runs/20261028T105501Z-test_T7_TS2_spec_quoting_example_spec-fa38/space/STATUS.md (file state is current in your context \u2014 no need to Read it back)",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01NUTJGzeUwioMKULYVgd3q2",
+      "name": "Bash",
+      "input": {
+        "command": "cat <<'EOF'\nDESK: git -C . add STATUS.md\nDESK: git -C . commit -m \"status: regenerate STATUS.md as of 2026-10-01T13:11Z\"\nDESK: git -C . fetch origin\nDESK: git -C . rebase origin/main\nDESK: git -C . push origin HEAD:main\nEOF",
+        "description": "Print librarian git commands without running them"
+      },
+      "is_error": false,
+      "output": "DESK: git -C . add STATUS.md\nDESK: git -C . commit -m \"status: regenerate STATUS.md as of 2026-10-01T13:11Z\"\nDESK: git -C . fetch origin\nDESK: git -C . rebase origin/main\nDESK: git -C . push origin HEAD:main",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill",
+      "Write"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup"
+    ],
+    "skills": [
+      "swe-pod",
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T105501Z-test-T7-TS2-spec-quoting-example-spec-fa38-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 16,
+  "api_retries": 0,
+  "num_turns": 10,
+  "run": {
+    "step": 1,
+    "cap_s": 599,
+    "retried": false,
+    "exit": 0,
+    "elapsed_s": 48.6,
+    "capped": false,
+    "result_s": 48.6,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

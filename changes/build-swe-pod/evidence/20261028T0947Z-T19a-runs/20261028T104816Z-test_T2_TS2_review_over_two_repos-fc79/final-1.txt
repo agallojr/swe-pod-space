@@ -1,0 +1,31 @@
+I regenerated `STATUS.md` but couldn't file it: the space folder isn't a git repository, so the librarian's commit was printed as desk lines and none of them ran. There's no `FILED` or `REFUSED` line to report.
+
+**What's off in this space:**
+- Without git, I read the records from the files on disk instead of from the committed version.
+- There was no earlier `STATUS.md` to compare with, and no `AGENTS.md`.
+- The alpha and beta remotes (`example.invalid`) don't resolve, so I took the branch heads from the ledger: alpha `d4d4d4d`, beta `e5e5e5e`.
+- I couldn't confirm that the space's tests are unchanged since the evidence's space commit `5d5d5d5`. Both repo shas in the evidence match the branch heads, so I treated the evidence as current.
+
+**Where add-greeting stands:** it's in **building**, not verified.
+- **Done:** both builds, T1 in alpha and T2 in beta, with their reviews T4 and T5 closed. The tests T3 and T6 are done, and verify T7 is done.
+- **Evidence:** `ev-20261001T1230Z` is green. All 3 scenarios pass, unit tests pass in alpha and beta, and the spec declares no quality checks.
+- **What holds it back:** the whole-change review T8 covers alpha `a1a1a1a..d4d4d4d` and beta `b2b2b2b..e5e5e5e`, and found 1 open Important issue. At `beta/beta/__main__.py:4`, running beta with `--count-lines` prints its banner before the greeting, so the greeting isn't the first line, which R2.S1 requires.
+- **Minor findings:** 1 open, at `beta/beta/__main__.py:3`, from the T2 review.
+- **Next:** no task is ready, and T8 stays dispatched. The Important finding needs a fix round in beta, which moves beta's branch head. T7 (verify) and T8 (review) then have to run again before the change can be verified. Integrate (T9) waits for T8.
+
+**One gap in the records:** the T8 review file also lists a Minor at `alpha/alpha/__init__.py:12`. The ledger's T8 line records only the Important, and counts come from the ledger, so it isn't in the Minor total.
+
+Files:
+- `<scratch>/runs/20261028T104816Z-test_T2_TS2_review_over_two_repos-fc79/space/STATUS.md`
+- `<scratch>/runs/20261028T104816Z-test_T2_TS2_review_over_two_repos-fc79/space/changes/add-greeting/tasks/T8-review.md`
+- `<scratch>/runs/20261028T104816Z-test_T2_TS2_review_over_two_repos-fc79/space/changes/add-greeting/ledger.md`
+
+DESK: git -C space add STATUS.md
+DESK: git -C space commit -m "status: regenerate STATUS.md for add-greeting"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin HEAD
+
+STATE add-greeting: building
+REVIEWED add-greeting: alpha a1a1a1a..d4d4d4d, beta b2b2b2b..e5e5e5e
+OPEN FINDINGS add-greeting: Critical 0, Important 1, Minor 1

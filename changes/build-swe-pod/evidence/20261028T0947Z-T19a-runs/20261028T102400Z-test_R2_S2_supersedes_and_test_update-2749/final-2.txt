@@ -1,0 +1,22 @@
+I've written the plan for raise-name-limit to `changes/raise-name-limit/plan.md`; you still need to file it. The spec is approved, and every requirement has at least one scenario.
+
+**What the plan does:** it raises `alpha`'s fixed name limit from 64 to 128 code points. The refusal stays the same `ValueError`, and its message now names 128 instead of 64.
+
+**Tasks:**
+- **T1 (build, alpha):** sets the limit to 128 and updates the docstring, the unit tests and `CHANGELOG.md`. It is done when alpha's unit suite prints `Ran 8 tests` and `OK`.
+- **T2 (test):** writes one project-level test for each scenario, R1.S1 to R2.S2. All five should fail at alpha's current pin.
+- **T3 (test):** the test update the `supersedes` entry calls for. It edits `tests/add-greeting/test_R1_S2_name_too_long.md` in place so that a 129-character name must be refused with `128` in the message. The file keeps its key, `add-greeting/R1.S2`.
+- **T4 to T8:** builder test suggestions (T4), verify on `macos-laptop` (T5), the review of T1 (T6), the whole-change review (T7) and integrate (T8). At integrate, the space `README.md` still calls add-greeting "the one change in flight", so that line needs updating.
+
+T1, T2 and T3 can start together because no two tasks touch the same file. The longest chain is T1 → T4 → T5 → T7 → T8.
+
+**Defaults I chose (questions group b):**
+- The 200-character name in R2.S2 is `x` repeated 200 times.
+- The tests check the "does not contain `64`" rule only against the exception's own message, not all of stderr. A Python traceback's file paths or line numbers could contain `64` and fail the test even when the code is right.
+- Verify runs on `macos-laptop`, because it is the only environment class recorded in this space.
+- Verify skips beta's unit suite, since only alpha changes. Beta is still covered by the existing regression test `add-greeting/R2.S1`.
+- Until alpha merges, T3's updated test fails against alpha's pin, because it is edited in place in `tests/`.
+
+No questions for the human.
+
+I printed no `DESK: ` lines. Committing the plan is the librarian's step, which the lead runs when filing it, and the planner doesn't commit. Also, this space checkout isn't a git repository, so there was no commit to show. For the same reason, the plan's base commit set gives the space commit as "the commit that files this plan" rather than a sha.

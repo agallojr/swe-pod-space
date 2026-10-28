@@ -1,0 +1,6 @@
+T10.TS8.1 pass 6 of 6 joined or root values refused as profile line 11
+T10.TS8.2 pass 2 of 2 id-shaped texts filed
+T10.TS8.3 pass 0 refused value(s) printed
+T10.TS8.4 pass home path record: [('profile', 11)]; path printed False
+T10.TS8.5 pass 2 of 2 registry-only values filed
+T10.TS8.6 pass 0 git commit or push call(s) ran

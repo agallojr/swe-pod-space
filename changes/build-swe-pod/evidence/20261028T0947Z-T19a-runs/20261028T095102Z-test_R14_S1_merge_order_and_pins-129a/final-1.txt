@@ -1,0 +1,277 @@
+add-greeting is merged and integrated. In this desk run no git command ran: each one is printed below and treated as having succeeded, and every merge result is the branch head the ledger records.
+
+**Merges, in `depends` order (alpha before beta, as `pod.yaml` requires):**
+- **alpha:** `change/add-greeting` was fast-forwarded into `main` at **d4d4d4d**.
+- **beta:** merged the same way, after alpha, at **e5e5e5e**.
+- **gamma:** the spec doesn't name it, so it has no branch and no merge, and its pin stays **c3c3c3c**.
+
+**Checks before merging:**
+- Verify was green: evidence ev-20261001T1230Z passes all 3 scenarios, alpha's unit tests (3/3) and beta's (2/2), and the spec declares no quality checks.
+- The evidence ran at the current commit set: no pin moved and `tests/` was empty.
+- The whole-change review (T8) has no Critical or Important finding.
+
+**Space update after the merge (all 19 records passed the librarian's checks):**
+- **Pins** in `pod.yaml`: alpha a1a1a1a → d4d4d4d, beta b2b2b2b → e5e5e5e, gamma unchanged.
+- **Tests:** the 3 scenario tests moved to `tests/add-greeting/`.
+- **Spec:** the spec author added `- integrated: demo-owner 2026-10-28T09:53Z`.
+- **Archive:** the change folder is now `changes/archive/2026-10-28-add-greeting/`.
+- **README and status:** the space README now says no change is in flight. `STATUS.md` was regenerated: pins alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c; 0 open changes.
+- **Ledger:** has lines for the merge and the update. No open plan depends on this change, and there was nothing to prune.
+
+**Final report** (`<scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space/changes/archive/2026-10-28-add-greeting/report.md`):
+- **Scenarios:** R1.S1 test_R1_S1_default_greeting, R1.S2 test_R1_S2_name_too_long and R2.S1 test_R2_S1_startup_line all pass in ev-20261001T1230Z.
+- **Rulings:**
+  1. I integrated without a README change in alpha or beta. Plan T9 names both READMEs, but the spec asks for no docs and neither build task touched one. Cost if wrong: the READMEs won't mention the greeting until a follow-up change.
+  2. The update after the merge went in as one librarian commit per record, not the single space commit the process asks for. The librarian only commits one record at a time, and I may only commit through it. Cost if wrong: for a short time the space's main holds only part of the update.
+- **Deferred minors:** one Minor at beta/beta/__main__.py:3: the line that adds alpha's checkout to the path could have a comment saying why.
+- **Test suggestions:** none were made.
+- **Branches:** alpha `change/add-greeting` d4d4d4d, beta `change/add-greeting` e5e5e5e.
+
+**Open questions (both need your answer, demo-owner):**
+- Should alpha's and beta's READMEs mention the greeting?
+- "Merge" didn't say whether to delete the merged branches, so both `change/add-greeting` branches are still there. Delete them now, or keep them?
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting refs/heads/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet 5d5d5d5 HEAD -- changes/add-greeting/tests tests
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/alpha fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/alpha checkout main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/alpha push origin main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/beta fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/beta checkout main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/repos/beta push origin main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- tests/add-greeting/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File tests/add-greeting/test_R1_S1_default_greeting.md" -- tests/add-greeting/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- tests/add-greeting/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File tests/add-greeting/test_R1_S2_name_too_long.md" -- tests/add-greeting/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- tests/add-greeting/test_R2_S1_startup_line.md changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File tests/add-greeting/test_R2_S1_startup_line.md" -- tests/add-greeting/test_R2_S1_startup_line.md changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:pod.yaml
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File pod.yaml" -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:README.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- README.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- README.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File README.md" -- README.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- README.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/spec.md changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/spec.md" -- changes/archive/2026-10-28-add-greeting/spec.md changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/plan.md changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/plan.md" -- changes/archive/2026-10-28-add-greeting/plan.md changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/report.md changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/report.md" -- changes/archive/2026-10-28-add-greeting/report.md changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md changes/add-greeting/evidence/20261001T1230Z.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md" -- changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md changes/add-greeting/evidence/20261001T1230Z.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/evidence/20261001T1230Z.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T1-review.md changes/add-greeting/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-review.md changes/add-greeting/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T2-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T2-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T2-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T2-review.md changes/add-greeting/tasks/T2-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T2-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T2-review.md changes/add-greeting/tasks/T2-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T2-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md changes/add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T3-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md changes/add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T6-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T6-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T6-report.md changes/add-greeting/tasks/T6-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T6-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T6-report.md changes/add-greeting/tasks/T6-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T6-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md changes/add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T7-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md changes/add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T8-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- changes/archive/2026-10-28-add-greeting/ledger.md changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File changes/archive/2026-10-28-add-greeting/ledger.md" -- changes/archive/2026-10-28-add-greeting/ledger.md changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095102Z-test_R14_S1_merge_order_and_pins-129a/space merge-base --is-ancestor <commit> origin/main

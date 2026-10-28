@@ -1,0 +1,72 @@
+I haven't merged add-greeting. The test evidence it would merge on is out of date, so I've started bringing the branch up to date, and the first try isn't finished yet.
+
+**Why not:** the only verify run, `ev-20261001T1230Z` (green, 1 Oct), tested alpha at d4d4d4d, which is built on a1a1a1a. Since then add-farewell was merged: alpha's pin in `pod.yaml` moved to f6f6f6f, and `tests/` gained `test_R1_S1_default_farewell`. The process says to merge nothing on older evidence. Alpha's `change/add-greeting` has to be brought onto the new `main`, then verify and the whole-change review run again.
+
+**What I did:**
+- **Rulings logged in the ledger:**
+  - I'm not merging on the old evidence.
+  - Alpha's branch takes in the new `main` by merging it, not by a rebase. A rebase would need a force-push, which the process forbids. The cost is one merge commit in alpha's history.
+  - Beta's branch stays as it is, because its pin b2b2b2b hasn't moved.
+  - I added T10 (the merge build task) and T11 (its review) outside `plan.md`. After them, T7 verify and the T8 whole-change review run again.
+- **T10 brief written and handed out** to a local builder: `changes/add-greeting/tasks/T10-brief.md`.
+- **T10 came back DONE_WITH_CONCERNS, and I sent it back to the builder.** The alpha checkout on this node is empty, so the unit suite never ran at the merge head (it exited 1). The merge itself was only printed as a desk command, so no merge commit exists on the remote. The report is filed but the task is not done. Report: `<scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo/changes/add-greeting/tasks/T10-report.md`
+- **Filing:** the ledger, the T10 brief and the T10 report all passed the librarian's checks. Their filing commands are printed below. I haven't regenerated `STATUS.md`; that's still to do after these filings.
+
+**Next steps:**
+1. T10 runs again in a real alpha checkout and shows the unit suite passing at the merge head.
+2. T11 reviews that merge.
+3. T7 verify runs again at alpha's new head, beta e5e5e5e, gamma c3c3c3c and the current `tests/`.
+4. T8 whole-change review runs again.
+5. I write the final report, and then the merge needs your word, alpha first, then beta.
+
+Ledger: `<scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo/changes/add-greeting/ledger.md`
+
+Every DESK line I printed, in order. The builder's own DESK lines for the alpha merge are in its report.
+
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T10-brief.md" -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/repos/alpha fetch origin change/add-greeting main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/repos/alpha log --format=%H%n%B origin/main..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T10-report.md" -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T095813Z-test_R15_S1_reverify_after_other_change-2a83/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

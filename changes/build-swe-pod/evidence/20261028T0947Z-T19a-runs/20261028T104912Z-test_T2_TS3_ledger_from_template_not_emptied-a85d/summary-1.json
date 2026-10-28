@@ -1,0 +1,150 @@
+{
+  "result": "There is one open change, **add-greeting**. Its spec is approved and it is waiting for a plan. Nothing has been planned, dispatched or built yet.\n\n**Two problems with the records:**\n- **The space is not a git repository.** The skill reads records only as committed at `HEAD`, and here nothing is committed, so strictly nothing has been filed yet. I read the files on disk instead. Before anything is filed, the space needs to be initialised and its librarian needs to make a first commit.\n- **`STATUS.md` does not exist.** I worked out the status from the records instead. I didn't write or file the file, because you asked where things stand, not for a regenerate.\n\n**add-greeting** (`changes/add-greeting/spec.md`)\n- **State: approved.** The spec header says `approved: demo-owner 2026-10-01T09:00Z`. There is no `plan.md`, and the ledger has no dispatch line.\n- **Next:** the plan, by the plan role. After that it needs your go to create `change/add-greeting` in alpha and beta.\n- **Blocked or open findings:** none. There are no tasks or reviews yet.\n- **The ledger is still the template and was never emptied.** `changes/add-greeting/ledger.md` still holds the template's \"Delete this comment in a real ledger\" note. Its fenced block lists every event form with a `<YYYY-MM-DDTHH:MMZ>` placeholder instead of a real UTC time, so none of those lines count as events. The ledger records nothing, not even the spec approval. Before the lead writes its first line, the block should be emptied and the comment removed. The `export` folder holds a copy of the template at `export/swe-pod/templates/records/ledger.md`.\n\nFull paths worth opening:\n- `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/changes/add-greeting/spec.md`\n- `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/changes/add-greeting/ledger.md`\n- `STATUS.md` would go at `<scratch>/runs/20261028T104912Z-test_T2_TS3_ledger_from_template_not_emptied-a85d/space/STATUS.md`, but it is missing.\n\nNothing was filed, so the librarian's commit step never ran and I printed no `DESK:` lines.\n\nSTATE add-greeting: approved\nNEXT add-greeting: the plan, by the plan role\nEVENTS add-greeting: none",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01KUaoV2n1ehTtTNnM4T4raF",
+      "name": "Skill",
+      "input": {
+        "skill": "swe-pod"
+      },
+      "is_error": false,
+      "output": "Launching skill: swe-pod",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01TF9QbYm9pxz5RVXCi7B9KH",
+      "name": "Bash",
+      "input": {
+        "command": "git rev-parse HEAD 2>&1; git ls-tree -r --name-only HEAD 2>&1; ls -R",
+        "description": "Check space git state and list files"
+      },
+      "is_error": false,
+      "output": "fatal: not a git repository (or any of the parent directories): .git\nfatal: not a git repository (or any of the parent directories): .git\nAGENTS.md\nchanges\ndecisions\nhandoffs\nlore\nnotes\npod.yaml\nPROCESS.md\nREADME.md\nspace.yaml\ntests\n\n./changes:\nadd-greeting\n\n./changes/add-greeting:\nledger.md\nspec.md\n\n./decisions:\n\n./handoffs:\n\n./lore:\n\n./notes:\nnote-20261001T1100Z-a0b1-demo-context.md\n\n./tests:",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01Kc8UA57twcj7uGwsmXXATx",
+      "name": "Bash",
+      "input": {
+        "command": "for f in AGENTS.md pod.yaml space.yaml changes/add-greeting/spec.md changes/add-greeting/ledger.md; do echo \"=== $f\"; cat \"$f\"; done; ls -la ../export",
+        "description": "Print the space records"
+      },
+      "is_error": false,
+      "output": "=== AGENTS.md\n# Agents: start here\n\nThis is the Project Space for `proj:<project>`. It holds the process, specs,\nplans, records and project-level tests. Code and the other deliverables live in\nthe code repos `pod.yaml` names.\n\n## Read order\n\n1. `STATUS.md`: where each open change stands. The `swe-pod` skill generates\n   it from the records; nobody edits it by hand. If it is missing, run the\n   skill to make it.\n2. `pod.yaml`: the code repos, their pins, their merge order and the gates.\n3. `PROCESS.md`: the process, at the version `pod.yaml` pins.\n4. For the change you work on: `changes/<id>/spec.md`, then `plan.md`, then\n   `ledger.md`. Trust the ledger and the git logs over memory.\n5. Your task's brief, if you have one: `changes/<id>/tasks/T<n>-brief.md`.\n\n**Exception.** A test-writing agent reads only its brief and `spec.md`.\nWhile it writes project-level tests it skips the read order above: no\n`STATUS.md`, `plan.md` or `ledger.md`, no other brief, report or review, and\nno code-repo diff or implementation body.\n\n## Standing rules\n\n- **Specs first.** Nothing is planned, built or tested for a change whose\n  `spec.md` has no `approved:` line.\n- **One branch.** This space has one branch, `main`, and never another. Work\n  in flight is kept apart by folder, `changes/<id>/`. Code work happens only\n  on `change/<id>`, the one branch per spec in each code repo the spec names.\n- **Every write goes through the librarian.** Only the space's librarian\n  commits here. A change's records reach it through that change's lead.\n  `tests/`, `pod.yaml` and `changes/archive/` change only at integrate.\n- **Records use the shareable profile.** Actors are human handles or\n  `<handle>/<role>`, machines are environment classes such as `macos-laptop`,\n  and paths are relative to this space or are URLs. No hostname, agent id,\n  mesh task id, home-directory path or credential name.\n- **New record ids are collision-free.** An id is the category, the UTC\n  minute and four hex digits: `<category>-<YYYYMMDDTHHMMZ>-<4 hex>`.\n  Evidence, decisions and handoffs are one file per event, named by UTC time.\n- **Code repos hold only code, unit tests and shipped docs.** Specs, plans,\n  ledgers, briefs, reports, reviews, evidence and project-level tests live in\n  this space, never in a code repo.\n=== pod.yaml\npod: 1\nproject: demo\nprocess: swe-pod-process@1\nrepos:\n  alpha: {remote: \"https://example.invalid/demo/alpha.git\", pin: \"a1a1a1a\"}\n  beta:  {remote: \"https://example.invalid/demo/beta.git\", pin: \"b2b2b2b\"}\n  gamma: {remote: \"https://example.invalid/demo/gamma.git\", pin: \"c3c3c3c\"}\ndepends: {beta: [alpha]}            # merge order: alpha before beta\ngates: {spec: human, plan: human-skim, merge: human}\n=== space.yaml\n# Memory-space manifest of the demo Project Space (test fixture). Keys as the\n# space manifest of the memory-spaces design note, section 3.1; every value\n# is an invented placeholder.\nspace: 1\nid: proj:demo\nkind: project\ntitle: Demo project for the SWE Pod tests\nvisibility: shared\nowners: [demo-owner]\nwriter_model: multi-actor\ncategories: [notes, lore, decisions, evidence, handoffs, changes, tests]\nheader_profile: shareable\nmay_reference: [core]\nretention: until-archived\n=== changes/add-greeting/spec.md\n# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n- approved: demo-owner 2026-10-01T09:00Z\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.\n=== changes/add-greeting/ledger.md\n# Ledger: add-greeting\n\n<!--\nRecord: changes/<id>/ledger.md, the change's log. It is one fenced block, one\nevent per line, as <YYYY-MM-DDTHH:MMZ> <event> in UTC, appended in time order\nand never edited. Continuation lines are indented 18 spaces, the width of a\ntimestamp and its space. The block below lists every event form; a new\nledger's block starts empty. Machines appear only as environment classes. A\nrefused line never quotes the text that matched. Every Ruling: line reaches\nthe final report. Delete this comment in a real ledger.\n-->\n\n```\n<YYYY-MM-DDTHH:MMZ> spec approved by <handle>\n<YYYY-MM-DDTHH:MMZ> go by <handle>; branches change/<id>: <repo> <sha7>[, <repo> <sha7>]\n<YYYY-MM-DDTHH:MMZ> dispatch T<n> -> <role> (<local|mesh>, <env class|any>)[, base <repo> <sha7>]\n<YYYY-MM-DDTHH:MMZ> T<n> <DONE|DONE_WITH_CONCERNS|BLOCKED|NEEDS_CONTEXT>[, <repo> <sha7>..<sha7>][, unit <p>/<n> pass]\n<YYYY-MM-DDTHH:MMZ> T<n> review: <spec ok|spec issues>; <k> <Severity> [<repo>/<path>:<line>]\n<YYYY-MM-DDTHH:MMZ> T<n> fix round <r>/5: <a> addressed, <o> open, <sha7>..<sha7>\n<YYYY-MM-DDTHH:MMZ> T<n> at base: <test name> <fail|pass> (<reason>)[, ...]\n<YYYY-MM-DDTHH:MMZ> T<n> returned to test: <test name> passed at base\n<YYYY-MM-DDTHH:MMZ> T<n>.TS<k> -> <test|spec|builder>\n<YYYY-MM-DDTHH:MMZ> T<n>.TS<k> returned to builder: carries a computed value\n<YYYY-MM-DDTHH:MMZ> T<n>.TS<k> outcome: <tested <test name>|proposed as scenario|unit-tested|declined: <reason>|dropped>\n<YYYY-MM-DDTHH:MMZ> approval reopened for <Rn>[, <Rm>]; held T<a>[, T<b>]\n<YYYY-MM-DDTHH:MMZ> heavy: asked <handle> before T<n>: <command name>; caps <caps>; expected <s> s\n<YYYY-MM-DDTHH:MMZ> Ruling: <what>; <why>; <cost if wrong>\n                  <continuation of the line above, indented 18 spaces>\n<YYYY-MM-DDTHH:MMZ> filed <space path>[, ...]\n<YYYY-MM-DDTHH:MMZ> refused <space path>: <profile|reference|id|lane> line <n>\n```\ntotal 0\ndr-xr-xr-x@  3 agallojr  staff   96 Oct 28 06:49 .\ndrwxr-xr-x@ 16 agallojr  staff  512 Oct 28 06:49 ..\ndr-xr-xr-x@  5 agallojr  staff  160 Oct 28 06:49 swe-pod",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_017SWBTnvd75NyZv3PgnGxG1",
+      "name": "Bash",
+      "input": {
+        "command": "cd ../export/swe-pod; find . -type f | head -50; grep -rn -i \"next:\" --include=status-format.md . | head -30",
+        "description": "Locate status-format rules for next field"
+      },
+      "is_error": false,
+      "output": "./PROCESS.md\n./templates/records/ledger.md\n./templates/space/AGENTS.md\n./skills/swe-pod/status-format.md\n./skills/swe-pod/SKILL.md\n./skills/swe-pod/status-format.md:33:- next: <next>\n./skills/swe-pod/status-format.md:122:- **next:** one of these, by the change's state:\n./skills/swe-pod/status-format.md:124:  | State | `next:` |\n./skills/swe-pod/status-format.md:126:  | proposed | `next: approval of changes/<id>/spec.md, by the human` |\n./skills/swe-pod/status-format.md:127:  | approved | `next: the plan, by the plan role` |\n./skills/swe-pod/status-format.md:128:  | planned | `next: the go, by the human` |\n./skills/swe-pod/status-format.md:129:  | building, verified | the first ready task, as `next: T<n> -> <role> (<local or mesh>, <env class or any>)`, with `runs:` and `needs:` from the plan |\n./skills/swe-pod/status-format.md:134:    section 1.7): `next: re-run T<a>[, T<b>] at the current commit set`,\n./skills/swe-pod/status-format.md:136:  - every task is done: `next: none; every task is done`;\n./skills/swe-pod/status-format.md:137:  - otherwise: `next: none ready; dispatched: T<a>, T<b>`, adding\n./skills/swe-pod/status-format.md:254:- next: none ready; dispatched: T1, T3",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill",
+      "Write"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup"
+    ],
+    "skills": [
+      "swe-pod",
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T104912Z-test-T2-TS3-ledger-from-template-not-emptied-a85d-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 9,
+  "api_retries": 0,
+  "num_turns": 6,
+  "run": {
+    "step": 1,
+    "cap_s": 599,
+    "retried": false,
+    "exit": 0,
+    "elapsed_s": 22.8,
+    "capped": false,
+    "result_s": 22.8,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

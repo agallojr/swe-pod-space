@@ -1,0 +1,9 @@
+{
+  "test": "test_R7_S1_mesh_dispatch",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

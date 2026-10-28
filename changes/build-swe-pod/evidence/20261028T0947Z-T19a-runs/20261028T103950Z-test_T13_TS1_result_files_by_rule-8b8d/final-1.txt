@@ -1,0 +1,41 @@
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1306-0012 -> done"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+
+I ran one poll cycle and claimed both tasks in the `swe.test` queue. 0012 is done; 0011 failed because its executor never returned a result. The `swe.build` queue and my direct inbox were empty, and there were no replies or workflows to deal with. I did not start a background loop.
+
+- **20261001T1305-0011 (five result files): `failed`.** The `proj:demo` space was loaded, but the executor sub-agent was cut off by an API error (a safeguards flag) before it returned anything. Its staging directory was empty, nothing was written outside it, and no files were published. The result therefore has no `files:` key and no `-files/` folder. I didn't write a `runs` record because nothing was produced. The result at `outbox/demo-linux-01/20261001T1305-0011-result.md` explains the failure. It also lists, for reference, the rule each requested file would have broken:
+  - `notes/big.md` is over the 1 MiB limit.
+  - `notes/nul.md` contains a NUL byte.
+  - `../escape.md` has a `..` segment in its path.
+  - `notes/link.md` is a symbolic link, which blocks publishing any file from the task.
+  
+  Only the small note would have passed. The task can be re-posted.
+- **20261001T1306-0012 (reply OK): `done`.** The result body is `OK`, with no files. I also posted a `runs` record for the librarian at `tasks/roles/librarian/20261028T1042-0001-runs-submit.md`.
+
+`~/.agent-identity.env` doesn't exist on this node, and the bus has no `guidance/CLAUDE.md`. I used the identity from your prompt, and the poll interval of 300 from `agents/demo-linux-01.yaml`.
+
+DESK lines, in order:
+
+DESK: <config>/skills/mesh-on/mesh-scan-loop.sh <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus swe.build,swe.test demo-linux-01 300
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1305-0011 -> accepted"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus submodule update --init -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus submodule update --remote --merge -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1305-0011 -> running"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1305-0011 -> failed"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1306-0012 -> accepted"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus submodule update --remote --merge -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1306-0012 -> running"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus add -A
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus commit -m "status 20261001T1306-0012 -> done"
+DESK: git -C <scratch>/runs/20261028T103950Z-test_T13_TS1_result_files_by_rule-8b8d/bus push origin HEAD

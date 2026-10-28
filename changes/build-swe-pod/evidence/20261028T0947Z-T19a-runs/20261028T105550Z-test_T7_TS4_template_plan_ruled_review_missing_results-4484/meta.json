@@ -1,0 +1,8 @@
+{
+  "test": "test_T7_TS4_template_plan_ruled_review_missing_results",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

@@ -1,0 +1,30 @@
+This was a desk run, so nothing was committed or pushed. I ran the check script, which only reads files. Two records passed and one was refused:
+
+```
+REFUSED notes/note-20261001T1800Z-3c11-home-path.md: profile line 11
+```
+
+The `3c09-registry-agent` and `3c10-registry-task` records passed all three checks. Their git commands for filing are below, printed but not run, so neither record has a `FILED` line. Wherever `<commit>` appears, a real run would put the hash printed by the `log` command before it. The `3c11-home-path` record failed the profile check because line 11 contains a real home path. It needs to be fixed before it can be filed.
+
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space add -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c09-registry-agent.md" -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space add -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c10-registry-task.md" -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T103741Z-test_T10_TS8_joined_and_registry_values-2f0a/repos/solo-space merge-base --is-ancestor <commit> origin/main

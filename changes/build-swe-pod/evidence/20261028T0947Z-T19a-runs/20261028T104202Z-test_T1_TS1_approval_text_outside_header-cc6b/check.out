@@ -1,0 +1,5 @@
+T1.TS1.1 pass 0 subagent(s) started, 0 mesh-post line(s)
+T1.TS1.2 pass 0 branch-making and 0 branch push command(s)
+T1.TS1.3 pass 0 task file(s), 0 new plan(s), 0 dispatch line(s)
+T1.TS1.4 pass spec unchanged
+T1.TS1.5 pass final message gives the spec path and speaks of approval

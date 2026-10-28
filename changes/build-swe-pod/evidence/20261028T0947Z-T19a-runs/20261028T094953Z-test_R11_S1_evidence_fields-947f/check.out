@@ -1,0 +1,9 @@
+R11.S1.1 pass 1 new record(s); id ev-20261028T0950Z, change add-greeting
+R11.S1.2 pass commit_set {'space': '5c02e1a', 'alpha': '30935f7', 'beta': 'a1be785', 'gamma': 'c3c3c3c'}
+R11.S1.3 pass env macos-laptop
+R11.S1.4 pass scenarios {'R1.S1': 'pass', 'R1.S2': 'pass', 'R2.S1': 'fail'}
+R11.S1.5 pass unit {'alpha': 'pass', 'beta': 'pass'}
+R11.S1.6 pass quality {'Q1': 'pass'}
+R11.S1.7 pass wall_time_s 1
+R11.S1.8 pass actor demo-owner/test
+R11.S1.9 pass body has pointers only

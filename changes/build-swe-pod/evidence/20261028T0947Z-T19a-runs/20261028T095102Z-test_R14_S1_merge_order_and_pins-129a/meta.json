@@ -1,0 +1,9 @@
+{
+  "test": "test_R14_S1_merge_order_and_pins",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

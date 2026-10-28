@@ -1,0 +1,5 @@
+Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.
+
+I didn't start the planner. The spec's header has `size: project`, `owner: demo-owner` and `repos: [alpha, beta]`, but no `approved:` line, and a plan task can't be dispatched until it has one. I wrote nothing to the space, made no ledger entry and filed nothing. That means the librarian never ran, so I printed no `DESK: ` lines and there are none to repeat.
+
+To go ahead, demo-owner needs to approve the spec at `<scratch>/runs/20261028T105345Z-test_T5_TS1_plan_request_on_unapproved_spec-9247/space/changes/add-greeting/spec.md`. The spec author then adds the `approved:` line, and I'll start a fresh planner on it.

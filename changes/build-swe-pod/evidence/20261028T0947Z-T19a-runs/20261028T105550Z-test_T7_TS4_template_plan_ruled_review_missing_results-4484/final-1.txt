@@ -1,0 +1,33 @@
+I regenerated STATUS.md and wrote it to the space root. **It is not filed yet:** the commit step was a desk step, so I printed the git commands and ran none of them. Before it can be committed: the space folder isn't a git repository, the remote and branch in those commands (`origin`, `main`) are my guess, and there was no earlier STATUS.md to compare with.
+
+**add-greeting is still building, not verified.** The records are as of 2026-10-01T14:05Z.
+
+- **Tasks:** 7 of 9 are done (T1 to T7). T8, the whole-change review, is in progress. T9, the integrate step, waits on T8. No task is ready to start: `next: none ready; dispatched: T8`.
+- **Open findings: 2 Important, 1 Minor.**
+  - T8's review raised an Important finding at `beta/beta/__main__.py:4`.
+  - T10 and T11 aren't in the plan, but they were run after T8. T10 changed no code, and T11 raised the same Important finding again.
+  - The 14:05Z ruling meant to park this finding, but it isn't written as `Ruling: T<n> open findings ...`, so by the rules it closes nothing. T8 stays unfinished until someone records a ruling in that form or the finding is fixed.
+- **Evidence `ev-20261001T1230Z` is not green, and it is stale.**
+  - **Passed:** all 3 scenarios, both repos' unit tests, and quality is `none-declared` (correct, since the spec declares no quality checks).
+  - **No result:**
+    - `test_I1_greeting_docs` (x-check I1). The ledger never records this test file being filed, so it was probably added after the evidence run.
+    - The carried-over test `tests/test_R1_S1_default_farewell.md` (key `add-farewell/R1.S1`) from the earlier add-farewell change.
+  - **Why stale:** both remotes are placeholder `example.invalid` addresses that can't be reached, so I took the branch heads from the ledger: alpha `d4d4d4d` and beta `e5e5e5e`. Both match the evidence. But the space isn't a git repository, so the check that the test files haven't changed since the run can't pass. That makes the evidence stale.
+- **To get to verified:**
+  1. Record a ruling in the right form, or fix the finding, to close T8.
+  2. Run verify again at the current commit set, with results for I1 and the add-farewell test.
+
+Files worth opening:
+- `<scratch>/runs/20261028T105550Z-test_T7_TS4_template_plan_ruled_review_missing_results-4484/space/STATUS.md`
+- `<scratch>/runs/20261028T105550Z-test_T7_TS4_template_plan_ruled_review_missing_results-4484/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T105550Z-test_T7_TS4_template_plan_ruled_review_missing_results-4484/space/changes/add-greeting/evidence/20261001T1230Z.md`
+- `<scratch>/runs/20261028T105550Z-test_T7_TS4_template_plan_ruled_review_missing_results-4484/space/changes/add-greeting/tasks/T8-review.md`
+
+DESK: git add STATUS.md
+DESK: git commit -m "STATUS.md: regenerate from the records"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD
+
+STATE add-greeting: building
+MISSING add-greeting: test_I1_greeting_docs, test_R1_S1_default_farewell
