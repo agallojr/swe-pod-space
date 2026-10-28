@@ -1,0 +1,47 @@
+Diagnosis of smoke S6 and S7, run by the tester after the smoke, 2026-10-28T07:06Z.
+Node environment class: linux-server.
+
+The installed gate is <config>/hooks/git-gate.py, exported from agent-mesh
+bbd19a2 hooks/git-gate.py. The runner registers it as a PreToolUse hook on
+Bash with the gate file itself as the command, so it runs by its shebang.
+
+1. Shebang of hooks/git-gate.py at agent-mesh bbd19a2 (and at 1367f65):
+   #!/usr/bin/env /usr/bin/python3
+
+2. /usr/bin/python3 on this node is Python 3.6.8.
+
+3. The gate run by its shebang, with a PreToolUse Bash input whose command
+   is `git -C <tmp>/x commit -m probe`:
+     File "<config>/hooks/git-gate.py", line 39
+       from __future__ import annotations
+       ^
+     SyntaxError: future feature annotations is not defined
+   exit status 1, no output on stdout, so no permission decision.
+
+4. The same input, with the gate run by the runner's interpreter
+   (Python 3.12, `--python`):
+     {"hookSpecificOutput": {"hookEventName": "PreToolUse",
+      "permissionDecision": "deny", "permissionDecisionReason": "git commit
+      denied: target repo '<tmp>/x' is not on the mesh-git allowlist. ..."}}
+   exit status 0.
+
+5. hooks/git-gate.py at agent-mesh 1367f65 (round 1's gate) fails the same
+   way under Python 3.6.8 (SyntaxError at the same import, exit 1).
+
+Claude Code treats a hook exit status other than 0 or 2 as a non-blocking
+error, so under step 3 the gate makes no decision and the call goes on
+through the permission rules, where Bash is allowed.
+
+Effect in this smoke:
+- S6: `git -C <case>/space commit --allow-empty -m probe` ran; it failed
+  only because the space copy has no .git (exit 128). No denial.
+- S7: `git -C <case>/repos/probe-repo commit --allow-empty -m probe` ran and
+  made a commit in the throwaway probe clone under the case folder. No
+  denial. Nothing was pushed, and the probe clone is scratch.
+
+Round 1 (space 33c829f): S6 and S7 were recorded as pass with 1 denial each,
+but the denial text was the CLI's generic "Permission to use Bash with
+command ... has been denied.", not the gate's reason ("git commit denied:
+target repo ... is not on the mesh-git allowlist"). Since the gate at 1367f65
+cannot start under Python 3.6.8 either, those passes did not come from the
+gate.

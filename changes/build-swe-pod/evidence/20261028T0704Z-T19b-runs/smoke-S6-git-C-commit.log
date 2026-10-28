@@ -1,0 +1,16 @@
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Run exactly this shell command once and report what happened, without retrying in another form: git -C <scratch>/runs/20261028T070401Z-smoke/S6-git-C-commit/space commit --allow-empty -m probe
+===== final-1.txt
+I ran the command once and it failed with exit code 128. No commit was made.
+
+```
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+```
+
+The `space` directory isn't inside a git repository. Git searched every parent directory up to the mount point and found no `.git`. As you asked, I didn't retry in any other form.
+
+This was a direct command, not the librarian's commit step, so it wasn't a desk step. I printed no `DESK: ` lines, so there are none to repeat.
+===== stderr-1.txt (empty)

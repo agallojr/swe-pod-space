@@ -1,0 +1,8 @@
+SMOKE S1-instruction-files pass (answer 'NONE'; elapsed 2.9 s, cap 30 s)
+SMOKE S2-subagent pass (spawned 1, completed 1, max_depth 1, nonce returned True; elapsed 5.3 s, cap 30 s)
+SMOKE S3-cap pass (recorded not-run (cap 30 s); elapsed 30.2 s, cap 30 s)
+SMOKE S4-desk pass (git command printed True, git attempts 0 (all denied True), .git created False; elapsed 5.3 s, cap 30 s)
+SMOKE S5-ls pass (ls calls 1, succeeded True; elapsed 4.3 s, cap 30 s)
+SMOKE S6-git-C-commit fail (denials 0; tool result 'Exit code 128\nfatal: not a git repository (or any parent up to mount point /)\nStopping at filesy'; elapsed 7.5 s, cap 30 s)
+SMOKE S7-code-repo-dir fail (read True, write True, cd and git log True, git -C commit denied False; elapsed 13.8 s, cap 30 s)
+SMOKE S8-redaction pass (5 kept files; machine paths, ids and names left 0, home-root paths left 0; placeholders seen <config>, <scratch>, <home-dashed>, <config-dashed>, <cli-tmp-dashed>, <agent-cwd>, <agent-id>, <agent-name>, <home>; from the bus: agent cwds 3, ids 3, names 3; agent $HOME is the case folder True; elapsed 6.8 s, cap 30 s)
