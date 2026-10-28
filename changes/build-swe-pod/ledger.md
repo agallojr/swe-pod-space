@@ -619,4 +619,12 @@
                   macos-laptop
 2026-10-28T06:51Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
                   evidence/20261028T0648Z-T41-report.md
+2026-10-28T06:52Z T1 fix round 4/5: 1 addressed, 0 open, 3280728..7296598
+2026-10-28T06:52Z T6 fix round 2/5: 1 addressed, 0 open, 7296598..49f0a93
+2026-10-28T06:52Z T7 fix round 4/5: 1 addressed, 0 open, 49f0a93..079cd89
+2026-10-28T06:52Z T1 review r4: spec issues; 1 Important
+2026-10-28T06:52Z T6 review r3: spec ok; 2 Minor
+2026-10-28T06:52Z T7 review r4: spec ok; none
+2026-10-28T06:52Z filed changes/build-swe-pod/tasks/V1-review-r2.md
+2026-10-28T06:52Z dispatch T1, T6, T7 -> build (local, any), base swe-pod 079cd89: fix round 5
 ```
