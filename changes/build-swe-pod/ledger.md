@@ -571,4 +571,11 @@
 2026-10-28T06:00Z dispatch T10 -> build (local, any), base agent-mesh 1367f65: verify fix
 2026-10-28T06:00Z dispatch T41 -> test (local, any): runner fixes from verify
 2026-10-28T06:00Z dispatch T18 -> test (local, any): test and fixture fixes from verify
+2026-10-28T06:11Z T10 DONE, agent-mesh 1367f65..bbd19a2 (verify fix: the check script ships as
+                  skills/space-librarian/check.sh)
+2026-10-28T06:11Z T10 fix round 2/5: 1 addressed, 0 open, 1367f65..bbd19a2
+2026-10-28T06:11Z T10 review r2: spec ok; 1 Minor
+2026-10-28T06:11Z Ruling: T10's touches extend to skills/space-librarian/check.sh by the
+                  verify fix; cost if wrong: none, the file is the old script byte for byte
+2026-10-28T06:11Z filed changes/build-swe-pod/tasks/V2-report.md, tasks/T10-review-r2.md
 ```
