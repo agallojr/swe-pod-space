@@ -1,0 +1,7 @@
+{
+  "test": "test_I6_mesh_post_project_flag",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": []
+}

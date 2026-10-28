@@ -1,0 +1,6 @@
+T37.TS1.1 pass state given: "verify, not verified: shard T7a's record is at an older space commit ("
+T37.TS1.2 pass re-run named: T7a
+T37.TS1.3 pass commit set given: alpha d4d4d4d, beta f6f6f6f, space 8b8b8b8
+T37.TS1.4 pass 2 of 2 shard records read
+T37.TS1.5 pass pod dispatches 0, mesh commands 0, commits 0, records changed 0, new evidence 0, .git False
+T37.TS1.6 pass STATUS.md not written

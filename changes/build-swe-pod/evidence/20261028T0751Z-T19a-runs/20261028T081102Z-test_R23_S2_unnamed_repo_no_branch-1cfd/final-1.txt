@@ -1,0 +1,91 @@
+T1 is back, and it is **BLOCKED**. I filed its report, recorded the status and rebuilt STATUS.md. All three passed the checks. The filing commands, printed and not run:
+
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+
+**Why T1 is blocked:** there is no repository in the alpha checkout. I looked, and alpha, beta and gamma under `.../repos/` are all empty folders with no `.git`. So outside this desk run, the branch commands I printed at the go would have failed too. T1 needs alpha cloned there from its `pod.yaml` remote, with `change/add-greeting` on `origin`, before I dispatch it again. T2 will need the same for beta. T3 is still out on the mesh.
+
+The builder also found a real gap, and fixing it changes what gets built. So here is my one question:
+
+**What should `greeting(name)` return for a valid name of 64 characters or fewer, and does an empty string count as no name?** The builder guessed `hello, <name>`. The spec only covers the no-name case (R1.S1) and the too-long case (R1.S2). Once you answer, the spec author adds it as a scenario for your approval, before T1 runs again.
+
+Report: <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo/changes/add-greeting/tasks/T1-report.md
+
+Every DESK line I printed, in order:
+
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/repos/alpha branch change/add-greeting a1a1a1a
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/repos/alpha push origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/repos/beta branch change/add-greeting b2b2b2b
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/repos/beta push origin change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T1-brief.md" -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: mesh-post to=role:swe.test project=proj:demo from=demo-mac-01 type=task.request timeout_min=60 goal="Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T3 of change add-greeting from its brief." context="Role definition: swe-pod/agents/swe-test.md | Brief: changes/add-greeting/tasks/T3-brief.md | alpha https://example.invalid/demo/alpha.git a1a1a1a | beta https://example.invalid/demo/beta.git b2b2b2b | gamma https://example.invalid/demo/gamma.git c3c3c3c" done_when="three test files exist, one per scenario, and each fails at the base commit set for its stated reason" on_failure="return BLOCKED with the reason and any partial tests"
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo fetch origin

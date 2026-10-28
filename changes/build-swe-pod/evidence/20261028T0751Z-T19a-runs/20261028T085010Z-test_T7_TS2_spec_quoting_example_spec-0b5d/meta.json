@@ -1,0 +1,8 @@
+{
+  "test": "test_T7_TS2_spec_quoting_example_spec",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

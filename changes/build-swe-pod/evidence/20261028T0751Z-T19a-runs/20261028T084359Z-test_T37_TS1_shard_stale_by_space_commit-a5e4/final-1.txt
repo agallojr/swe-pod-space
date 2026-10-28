@@ -1,0 +1,30 @@
+**add-greeting is not verified.** It is in verify, but one of the two verify runs is out of date. The two runs (T7a and T7b) both passed, but they ran at two different space commits, so their records are not green together.
+
+**What's done (from the ledger):**
+- The spec was approved by demo-owner at 2026-10-01T09:00Z. The go was given at 10:30Z, with branches from alpha a1a1a1a and beta b2b2b2b. gamma is not in the spec, so it has no branch and verify uses its pin.
+- **T1 (alpha build):** done, a1a1a1a..d4d4d4d, unit 3/3 pass. Its review, T4, found one Minor.
+- **T2 (beta build):** done, b2b2b2b..e5e5e5e, unit 4/4 pass. Its review, T5, found one Important, which fix round 1/5 fixed with 0 open, ending at f6f6f6f.
+- **T3 (project-level tests):** the three tests fail at base, each for its stated reason. They were filed at 11:25Z.
+- **T6 (test suggestions):** marked DONE, but the ledger holds no suggestion lines.
+- **T8 (whole-change review):** passed, with no Critical or Important findings. Its one Minor, the bare `64` literal at alpha/greeting.py:9, is the same one T4 found. It stays a deferred minor.
+
+**Why it isn't verified:**
+- The two shards are meant to run from one space commit: the commit that filed the last of the latest shard briefs.
+- T7b first stopped BLOCKED. I then made a ruling (beta's unit suite runs with alpha on `PYTHONPATH`) and filed the T7b brief again at 14:35Z. That new filing is now the shards' space commit.
+- T7b ran again from it. Its record (`evidence/20261001T1500Z-T7b.md`) names space 8b8b8b8, and R2.S1 and beta's unit suite pass. That record is current.
+- T7a's record (`evidence/20261001T1412Z-T7a.md`) names space 7a7a7a7, the older commit from before the T7b brief was filed again. So it is out of date, even though it passed.
+- Nothing else has moved. The branch heads are still d4d4d4d and f6f6f6f in both records, and the tests last changed at 11:25Z, before both brief filings. So the briefs don't need rewriting: T7a only needs a new dispatch from its existing brief, at the same space commit, 8b8b8b8.
+- T8 was dispatched before the shard records were green together. Its result has no blocking finding, so it doesn't hold anything up. The change counts as verified once T7a passes at the current commit set.
+
+**Caveats:**
+- I couldn't confirm 8b8b8b8 against git, because this copy of the space has no history. I took it from the T7b record, which was dispatched one minute after that filing.
+- There is no `STATUS.md` in this copy, so everything above comes from the ledger and the records.
+
+**Next step:** dispatch T7a again (local, macos-laptop) from `changes/add-greeting/tasks/T7a-brief.md` at space 8b8b8b8, then file its record. After that comes integrate, on your word, merging alpha before beta. As you asked, I dispatched, filed and committed nothing in this run, so I printed no `DESK:` lines.
+
+The full ledger is at `<scratch>/runs/20261028T084359Z-test_T37_TS1_shard_stale_by_space_commit-a5e4/space/changes/add-greeting/ledger.md`.
+
+STATE add-greeting: verify, not verified: shard T7a's record is at an older space commit (7a7a7a7); T7b is current; the whole-change review T8 passed with one Minor
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

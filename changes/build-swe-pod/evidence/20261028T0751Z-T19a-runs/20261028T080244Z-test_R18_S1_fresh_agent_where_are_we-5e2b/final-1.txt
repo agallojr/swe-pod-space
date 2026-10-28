@@ -1,0 +1,29 @@
+There are two open changes in `proj:demo`. Neither has failed or been blocked, and neither has an open finding. One thing to know first: the space folder isn't a git repository, so I read the files as they sit on disk rather than "as committed" at `HEAD`. If anything there hasn't been committed, this picture could be off.
+
+`STATUS.md` is current. Its "As of" time, 2026-10-02T08:00Z, matches the newest event in the records (add-farewell's approval). You can open it at `<scratch>/runs/20261028T080244Z-test_R18_S1_fresh_agent_where_are_we-5e2b/space/STATUS.md`.
+
+## add-greeting: building (owner demo-owner)
+- **Gates passed:** demo-owner approved the spec on 2026-10-01 at 09:00Z and gave the go at 09:20Z.
+- **Branches:** alpha `change/add-greeting` is at d4d4d4d and beta is at b2b2b2b. The remotes are placeholder `example.invalid` URLs, so I took these from the ledger.
+- **Done:**
+  - **T1** put the greeting text in alpha (a1a1a1a..d4d4d4d) and its 3 unit tests pass.
+  - **T4**, the review of T1, found nothing Important.
+  - **T3** wrote the three scenario tests, and all three fail at the base commits, as expected.
+- **Next: dispatch T2** (beta prints the greeting). It's ready because T1 is done.
+- **Waiting:** T5 (review of T2), T6 (test suggestions), T7 (verify), T8 (whole-change review) and T9 (integrate).
+- **Evidence:** none yet.
+- **Open findings:** Critical 0, Important 0.
+
+## add-farewell: approved (owner demo-owner)
+- demo-owner approved the spec on 2026-10-02 at 08:00Z.
+- **Next: write the plan.** There's no plan yet, so it has no tasks and no branches.
+
+Records worth opening, all under `<scratch>/runs/20261028T080244Z-test_R18_S1_fresh_agent_where_are_we-5e2b/space/`:
+- `changes/add-greeting/ledger.md`
+- `changes/add-greeting/plan.md`
+- `changes/add-greeting/tasks/T1-review.md`
+- `changes/add-farewell/spec.md`
+
+This was a read-only status check. Nothing was filed, so the librarian's commit step never ran and I printed no `DESK: ` lines; there are none to repeat.
+
+To keep going, say "go" and I'll act as lead on add-greeting and dispatch T2.

@@ -1,0 +1,73 @@
+Both records passed the checks. The desk commit step follows, printed and not run:
+
+R = <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space
+
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space cat-file -e origin/main:changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space diff --quiet origin/main -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space log -1 --format=%H -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space merge-base --is-ancestor <commit> origin/main
+
+---
+
+I wrote the T6 brief and did not dispatch it. Both records passed the librarian's checks, but nothing is filed: this was a desk run, so the commit, push and confirm steps were printed and not run.
+
+**The brief:** `<scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space/changes/add-greeting/tasks/T6-brief.md`
+- It follows the test-writing template. It has T6's plan entry word for word, the spec path, and the plan's interface contract, global constraints and test map, all copied unchanged.
+- **Suggestions:** it holds one, T1.TS1, with only its "for the tester" part. That part says R1.S2 is at risk for a 64-character name made of two-byte characters such as `é`, because the spec counts the limit in code points.
+  - I sent it to the test agent because it gives no value the code computed and holds no code, and it covers behaviour the spec states on an input no scenario uses.
+  - The builder's code excerpt and the "for the reviewer" part are left out.
+- **Start from:**
+  - Base commit set: space 5c02e1a, alpha a1a1a1a, beta b2b2b2b, the same as T3's.
+  - Commit set under test: alpha d4d4d4d and beta e5e5e5e. Its space commit is the one that files this brief, which doesn't exist yet in a desk run, so the brief says it will be given at dispatch.
+- It ends with the fixed "Do not read plan.md, …" line.
+
+**Ledger:** I appended one line, `2026-10-28T08:30Z T1.TS1 -> test`. There are no `filed` lines and no dispatch line for T6.
+
+**Not done:**
+- `STATUS.md` is not regenerated, because nothing was filed.
+- The space checkout here is not a git repo, so I couldn't look up the space commit from git.
+
+Say the word and I'll dispatch T6 (local, any). It can then start from the space commit that files the brief.
+
+All `DESK: ` lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space cat-file -e origin/main:changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space diff --quiet origin/main -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space log -1 --format=%H -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082718Z-test_R9_S1_test_brief_contents-3688/space merge-base --is-ancestor <commit> origin/main

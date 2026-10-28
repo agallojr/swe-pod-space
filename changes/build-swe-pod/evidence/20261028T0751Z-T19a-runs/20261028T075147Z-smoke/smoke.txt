@@ -1,0 +1,8 @@
+SMOKE S1-instruction-files pass (answer 'NONE'; elapsed 3.0 s, cap 30 s)
+SMOKE S2-subagent pass (spawned 1, completed 1, max_depth 1, nonce returned True; elapsed 5.2 s, cap 30 s)
+SMOKE S3-cap pass (recorded not-run (cap 30 s); elapsed 30.6 s, cap 30 s)
+SMOKE S4-desk pass (git command printed True, git attempts 0 (all denied True), .git created False; elapsed 5.9 s, cap 30 s)
+SMOKE S5-ls pass (ls calls 1, succeeded True; elapsed 4.8 s, cap 30 s)
+SMOKE S6-git-C-commit pass (denials 1, by the gate 1; tool result 'PreToolUse:Bash hook error: git commit is gated: no mesh-git allowlist configured (<config>/mesh'; elapsed 7.5 s, cap 30 s)
+SMOKE S7-code-repo-dir pass (read True, write True, cd and git log True, git -C commit denied by the gate True; elapsed 12.5 s, cap 30 s)
+SMOKE S8-redaction pass (5 kept files; machine paths, ids and names left 0, home-root paths left 0; placeholders seen <config>, <scratch>, <home-dashed>, <config-dashed>, <cli-tmp-dashed>, <agent-cwd>, <agent-id>, <agent-name>, <home>; from the bus: agent cwds 3, ids 3, names 3; agent $HOME is the case folder True; elapsed 7.4 s, cap 30 s)

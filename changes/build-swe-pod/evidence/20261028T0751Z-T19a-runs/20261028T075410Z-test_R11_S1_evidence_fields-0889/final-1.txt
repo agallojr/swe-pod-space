@@ -1,0 +1,35 @@
+Librarian commit step, as a desk step (printed only, none run):
+
+DESK: git add changes/add-greeting/evidence/20261028T0754Z.md changes/add-greeting/evidence/20261028T0754Z-T7-report.md
+DESK: git commit -m "add-greeting: T7 verify evidence ev-20261028T0754Z and report"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main
+
+**Status: DONE.** The verify run finished and found one failure: beta prints its banner before the greeting.
+
+**Files written:**
+- `changes/add-greeting/evidence/20261028T0754Z.md` (the evidence record)
+- `changes/add-greeting/evidence/20261028T0754Z-T7-report.md` (the T7 report)
+
+**Commit set:** space 5c02e1a, alpha 30935f7, beta a1be785, gamma c3c3c3c (at its pin; the spec doesn't name it). Environment: macos-laptop. Wall time: 1 s.
+
+| Check | Result |
+|---|---|
+| R1.S1 default greeting | pass |
+| R1.S2 name too long | pass |
+| R2.S1 start-up line | **fail** |
+| alpha unit suite | pass (4 tests) |
+| beta unit suite | pass (2 tests) |
+| Q1 byte-compile | pass |
+| Regression suite `tests/` | nothing to run (no tests, no archived changes) |
+
+**The failure, R2.S1:** `cd "$BETA" && PYTHONPATH="$ALPHA" python3 -m beta` exits 0 in 0.1 s, so it meets the 1 s limit. But it prints `beta 1.0` first and `hello, demo` second. The spec and the plan both say the greeting must be the first line. beta's unit suite passes, so it doesn't check the order of the output lines. I edited no test or code.
+
+**Concern:** the space checkout here isn't a git repository, so I couldn't confirm the space commit. I recorded 5c02e1a as the brief gives it.
+
+DESK: git add changes/add-greeting/evidence/20261028T0754Z.md changes/add-greeting/evidence/20261028T0754Z-T7-report.md
+DESK: git commit -m "add-greeting: T7 verify evidence ev-20261028T0754Z and report"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

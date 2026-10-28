@@ -1,0 +1,15 @@
+Output of `ls` in the current directory:
+
+```
+changes
+decisions
+handoffs
+lore
+notes
+pod.yaml
+README.md
+space.yaml
+tests
+```
+
+The librarian's commit step didn't come up in this run, so I printed no `DESK: ` lines and ran no git commands.

@@ -1,0 +1,9 @@
+I didn't start the planner. The spec has no `approved:` line, so I can't dispatch a plan task for it yet.
+
+Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.
+
+- **Spec:** <scratch>/runs/20261028T084900Z-test_T5_TS1_plan_request_on_unapproved_spec-5486/space/changes/add-greeting/spec.md
+- **Nothing was written:** no brief, no ledger line, no branch and no filing, so I printed no `DESK: ` lines.
+- **Next step:** if you approve the spec, the spec author records `approved:` and I log `spec approved by demo-owner`. This is a project-size change, so I would then start a fresh planner on `plan.md`. Branches and the build wait until you've skimmed the plan and said "go".
+
+Do you approve the add-greeting spec as it stands?

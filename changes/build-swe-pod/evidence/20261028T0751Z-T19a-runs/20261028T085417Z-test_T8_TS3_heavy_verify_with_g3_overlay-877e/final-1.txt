@@ -1,0 +1,20 @@
+Only T7, the verify, is ready to dispatch, and I haven't started it yet. It includes a heavy check and you're here, so I need your word first.
+
+**Why T7 is the one:** it waits on T1, T2, T3 and T6, and the ledger shows all four done. T4 and T5 passed their reviews with no Critical or Important findings; T5 left one Minor, which carries to the whole-change review. T8 (the whole-change review) waits on T7, and T9 (integrate) waits on T7 and T8.
+
+**The heavy check:** T7 runs the R2.S1 start-up test (`changes/add-greeting/tests/test_R2_S1_startup_line.md`). In the `beta` checkout, with `alpha` beside it, at `change/add-greeting` (alpha `d4d4d4d`, beta `e5e5e5e`):
+
+```
+python3 bench/startup.py --runs 200 --max-s 1
+```
+
+- Caps: 600 s wall time for the whole run, and 1 s per start.
+- Expected wall time: 240 s.
+
+The other two tests (R1.S1 and R1.S2) and both repos' unit suites take about 1 s each.
+
+The overlay's rule G3 counts a verify I post after your go as operator-posted. That only means the check runs under the budget policy and these caps once it starts. It doesn't let me skip asking you when you're present.
+
+**Not done yet:** I haven't written the T7 brief, dispatched anything or filed anything. So there are no ledger lines, `STATUS.md` hasn't been regenerated, and the librarian printed no `DESK:` lines this run. This node has no checkouts of alpha or beta, so the heads above come from the ledger. Before dispatching I'll check them against the remotes.
+
+**My question:** may T7 run this check with a 600 s cap, expected to take 240 s? On your yes I'll record the `heavy:` line, write and file the brief, and dispatch T7 to a local test agent.

@@ -1,0 +1,9 @@
+{
+  "test": "test_T5_TS1_plan_request_on_unapproved_spec",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

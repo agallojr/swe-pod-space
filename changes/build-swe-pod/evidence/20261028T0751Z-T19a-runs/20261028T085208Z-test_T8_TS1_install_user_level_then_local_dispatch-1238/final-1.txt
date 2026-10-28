@@ -1,0 +1,59 @@
+T1 is blocked. The code is written and passes its unit tests, but nothing is committed. The git gate refused the builder's `git add` because this node has no mesh-git allowlist configured.
+
+**What I checked myself:**
+- **Branch:** alpha's `change/add-greeting` is still at 43f0919. `alpha/__init__.py` and `tests/test_alpha.py` are changed but not committed.
+- **Unit suite:** I re-ran `python3 -m unittest discover -s tests` in alpha: 4 tests, OK. The suite passes, but T1 isn't done until its commits are on the branch and pushed.
+- **Report:** the builder says each new test failed first and then passed. The report is at `<scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space/changes/add-greeting/tasks/T1-report.md`. Its full output gets checked once there are commits.
+
+**What I recorded:** I added `2026-10-28T08:53Z T1 BLOCKED, unit 4/4 pass` to the ledger. The report and the ledger both passed the librarian's checks. Their commit steps are printed below as desk lines and were not run, so there are no `filed` ledger lines and `STATUS.md` is not regenerated. I dispatched nothing else: the T4 review waits until T1's commits exist.
+
+**Not done, and why:**
+- I won't commit the builder's code myself. The lead writes no code, and the commits have to come from the builder through the gate.
+- I won't loosen the gate either.
+
+Decision for you: will you add the alpha checkout to this node's mesh-git allowlist? That would let the builder commit (with trailers `Change: add-greeting` and `Task: T1`) and push `change/add-greeting`. If you do, I'll send T1 back to the same builder to commit and push the work already in the tree.
+
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space cat-file -e origin/main:changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space diff --quiet origin/main -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space add -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space commit -m "File changes/add-greeting/tasks/T1-brief.md" -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space log -1 --format=%H -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space cat-file -e origin/main:changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space diff --quiet origin/main -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space log -1 --format=%H -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085208Z-test_T8_TS1_install_user_level_then_local_dispatch-1238/space merge-base --is-ancestor <commit> origin/main

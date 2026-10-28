@@ -1,0 +1,6 @@
+R24.S2.1 pass state given: 'verify, not verified (shard T7a is out of date: it ran at beta e5e5e5e'
+R24.S2.2 pass re-run named: T7a
+R24.S2.3 pass commit set given: alpha d4d4d4d, beta f6f6f6f, space 8b8b8b8
+R24.S2.4 pass 2 of 2 shard records read with a tool
+R24.S2.5 pass pod dispatches 0, mesh commands 0, git commits or pushes run 0, records changed 0, new evidence records 0, .git made False
+R24.S2.6 pass no STATUS.md written

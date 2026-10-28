@@ -1,0 +1,17 @@
+I loaded proj:demo and then dropped it. I didn't run the librarian's commit step, because loading and dropping file no records, so I printed no `DESK:` lines.
+
+**Load**
+- proj:demo is mounted on the bus at `spaces/proj-demo` with `rw` access.
+- This node hadn't cloned the space yet, so I set it up from the bus and then pulled its latest commit. That moved it from `3a4c5e7` to `90b5a1c` and added `notes/README.md`.
+- The space holds two records:
+  - `note-20261001T1100Z-a0b1`: "Why the demo greeting lives in alpha"
+  - `README`: no title
+- It was read-only for this session; anything to file in it goes to the space's librarian.
+
+**Drop**
+- I took proj:demo out of this session's loaded set, which is now empty. The clone stays on disk and nothing was deleted.
+
+**Bus state:** I staged, committed and pushed nothing on the bus. But `git status` on the bus now shows `M spaces/proj-demo`. That's because the bus still records the space's older commit, while the clone is now on its latest one. This mismatch is normally hidden by an `ignore = all` setting for the space, and the bus's `.gitmodules` doesn't have that setting, so it shows. It's only in the local checkout, and it shouldn't be committed. If you want it hidden, the operator can add the setting with:
+`git -C <scratch>/runs/20261028T082926Z-test_T12_TS3_load_never_changes_bus-c7e0/repos/bus config -f .gitmodules submodule.spaces/proj-demo.ignore all`
+
+LOADED: none

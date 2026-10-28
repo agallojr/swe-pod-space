@@ -1,0 +1,2 @@
+T1.TS6.1 pass T4: 1 subagent(s), 1 dispatch line(s)
+T1.TS6.2 pass T2: 1 subagent(s), 0 before T4's review returned; ledger order ok

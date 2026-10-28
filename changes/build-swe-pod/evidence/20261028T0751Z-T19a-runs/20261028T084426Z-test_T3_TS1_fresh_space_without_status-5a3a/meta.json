@@ -1,0 +1,8 @@
+{
+  "test": "test_T3_TS1_fresh_space_without_status",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

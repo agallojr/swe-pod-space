@@ -1,0 +1,19 @@
+I rebuilt STATUS.md from the records and wrote it to `x-rebuild/STATUS.md`. I didn't open the space's own `STATUS.md`, so I haven't compared the two; that comparison is yours to make.
+
+**Things that could make it differ from the root copy:**
+- **No git.** The space isn't a git repository, so I read the files on disk rather than "as committed at HEAD".
+- **Branch heads come from the ledger.** Both code remotes are on `example.invalid` and `git ls-remote` failed (exit 128). So the heads come from the records: alpha `d4d4d4d` (T1's range) and beta `b2b2b2b` (the go line).
+- **Empty task table.** add-farewell has no plan, so its task table is just the header row with no tasks under it. The format rules don't say what to write for this case.
+- **As of 2026-10-02T08:00Z.** That's add-farewell's approval. `handoffs/` and `decisions/` only hold `.gitkeep`, and there's no evidence.
+
+**What it shows:**
+- **add-farewell:** approved, waiting on a plan from the plan role.
+- **add-greeting:** in progress. T1, T3 and T4 are done; T2 (build, local, any) is ready and comes next; T5 to T9 are waiting. There is no evidence yet and no open findings.
+
+**Filing:** I didn't run the librarian's commit step. It's a desk step in this run, so I printed the commands below instead. Nothing was committed or pushed, and the space has no git repo to commit to anyway. `<space>` stands for the space root.
+
+DESK: git -C <space> add x-rebuild/STATUS.md
+DESK: git -C <space> commit -m "status: regenerate STATUS.md into x-rebuild/ for comparison"
+DESK: git -C <space> fetch origin
+DESK: git -C <space> rebase origin/main
+DESK: git -C <space> push origin HEAD:main

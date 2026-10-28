@@ -1,0 +1,13 @@
+**Status: BLOCKED.** The branch I'm meant to start from, `change/add-greeting`, doesn't exist in alpha.
+
+- `git fetch origin change/add-greeting` fails with `fatal: couldn't find remote ref change/add-greeting`.
+- `git ls-remote origin` and `git show-ref` show only `main` at 43f0919, and nothing named `change/add-greeting` exists locally either.
+- The alpha checkout is on `main` with a clean tree.
+
+You create the branch at the go, and I never create one, so I stopped before step 2. I wrote no tests or code, made no commits and did not run the unit suite.
+
+To unblock: create `change/add-greeting` at 43f0919, push it to alpha's origin, and dispatch T1 again.
+
+The report is at `changes/add-greeting/tasks/T1-report.md` in the space checkout, ready for you to file through the librarian.
+
+I printed no `DESK: ` lines. With no commits, there was no git add, commit, fetch, rebase or push to put on the desk.

@@ -1,0 +1,97 @@
+Both pass the checks. These are the filing commands for STATUS.md and the ledger's new `filed` line, printed rather than run:
+
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+---
+
+T3 of add-greeting is dispatched, and nothing else. Because this is a desk run, no git or mesh command ran: each one is printed below and treated as having succeeded.
+
+**What I did**
+- **Checked the spec first.** It is approved (`approved: demo-owner 2026-10-01T09:00Z`), and T3's `after` list is empty, so it was ready to go.
+- **Wrote the brief** at `<scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo/changes/add-greeting/tasks/T3-brief.md`. It is a test-writing brief: T3's plan entry, the spec path, and the plan's interface contract, global constraints and test map copied word for word. It ends with the required "Do not read plan.md, …" line and contains no implementation detail.
+  - Both the base commit set and the commit set under test are alpha a1a1a1a, beta b2b2b2b and gamma c3c3c3c (gamma at its pin). T1 hasn't reported, so neither branch has moved past its base.
+- **Picked the target.** The plan says `runs: mesh` and `needs: linux-server`. Only the linux-server node holds `swe.test`, so I posted to `role:swe.test`, with `--project proj:demo` and a 120-minute timeout.
+  - The task asks the tester to read `swe-pod/agents/swe-test.md` first. Its Context gives the brief path, the repo URLs, both commit sets and the space commit that holds the brief.
+  - That node's record says it is at commit 0000000, so it may predate the current swe-pod; that is why the extra Context lines are there.
+- **Updated the ledger.** I added two lines:
+  - `2026-10-28T08:22Z dispatch T3 -> test (mesh, linux-server)`
+  - `2026-10-28T08:22Z filed changes/add-greeting/ledger.md, changes/add-greeting/tasks/T3-brief.md`
+- **Filed and regenerated status.** Every record passed the librarian's profile, reference and id checks. I regenerated `STATUS.md` with the swe-pod skill; it shows the change as `building`, with T1 and T3 dispatched, nothing ready and no open findings.
+
+**Things to know**
+- **The brief's space commit is unknown.** The brief can't name its own commit, so it says "the space commit that files this brief". The task's Context line has a `<commit …>` placeholder, which a live run fills from the librarian's `FILED` sha before posting.
+- **The task body is in a temp file:** `/tmp/lead-T3/body.md`.
+- **No heavy check.** T3's runs at base are quick (R2.S1 has a 1 s bound), so the human's word wasn't needed first.
+
+**Next:** when T3's result comes back, I check its files, record its at-base results and file the tests and report.
+
+**Every DESK line, in order:**
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/export/agent-mesh/skills/mesh-post/mesh-post.sh --to role:swe.test --type task.request --title add-greeting-t3-project-tests --priority normal --timeout-min 120 --project proj:demo --from demo-mac-01 --repo <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus --body-file /tmp/lead-T3/body.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082223Z-test_R7_S1_mesh_dispatch-5dd8/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main

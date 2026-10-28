@@ -1,0 +1,27 @@
+I've written the plan for add-greeting at `changes/add-greeting/plan.md`. The spec is approved and each of its three greeting-text scenarios and one start-up scenario has a test in the plan's test map.
+
+**The work is two build tasks:**
+- **T1 (alpha):** adds `alpha.greeting(name: Optional[str] = None) -> str`. With no name it returns `hello, demo`. With a name it returns `hello, <name>`. A name longer than 64 code points raises a `ValueError` whose message contains `64`. T1 also adds unit tests and the CHANGELOG and README lines.
+- **T2 (beta):** starts after T1, because it calls the new function. `main` prints `alpha.greeting()` first, then the existing `beta 1.0` banner. T2 also adds a unit test and a README note.
+
+**The rest of the graph:**
+- **T3** writes the four project-level tests and starts at the go, at the same time as T1. Each must fail on the current code: the first three because alpha has no `greeting` yet, and the start-up test because beta's first line is still `beta 1.0`.
+- **T4** takes up the builders' test suggestions.
+- **T5** is the verify run on a `macos-laptop` machine. It isn't split into shards.
+- **T6 and T7** review T1 and T2, and **T8** reviews the whole change.
+- **T9** is the merge, alpha before beta.
+
+No two tasks touch the same file, and gamma stays at its pin. The longest chain is T1 → T6 → T2 → T7 → T4 → T5 → T8 → T9.
+
+**Defaults I chose, for the spec author to list under Open calls:**
+1. The "too long" error is a Python `ValueError`, and the tests check only that its message contains `64`, not the wording.
+2. The `beta 1.0` banner stays, as the second line.
+3. "No name" means `name=None`. An empty string counts as a name and gives `hello, `.
+4. beta finds alpha through `PYTHONPATH`. No packaging files are added to beta, which has none today.
+5. Verify runs on `macos-laptop`, the machine type named in the space's context note. The tests need only `python3`.
+
+No questions for the human.
+
+The space folder has no git history, so the plan's base commit set gives the space entry as "the commit that files this plan"; alpha, beta and gamma are at their pins. The lead fills in the space commit when filing the plan.
+
+I made no commit and ran no git commands; filing the plan through the librarian is the lead's job. So I printed no `DESK:` lines, and there are none to repeat.

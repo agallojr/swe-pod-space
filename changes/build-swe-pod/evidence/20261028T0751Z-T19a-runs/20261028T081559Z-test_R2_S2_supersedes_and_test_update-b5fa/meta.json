@@ -1,0 +1,8 @@
+{
+  "test": "test_R2_S2_supersedes_and_test_update",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

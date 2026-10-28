@@ -1,0 +1,29 @@
+I've written the plan for `raise-name-limit` to `changes/raise-name-limit/plan.md`; the lead still needs to file it. The spec is approved and both requirements, R1 and R2, have scenarios, so nothing goes back to the spec author.
+
+**Build:**
+- **T1** is the only build task, in alpha:
+  - set `_LIMIT = 128` and fix the `greeting` docstring;
+  - replace the unit test that expects a 65-character name to be refused with five tests (65, 128, 128 copies of `é`, 129, and 200 characters);
+  - add one changelog line.
+
+  It's done when alpha's unit suite prints `Ran 8 tests` and `OK`. The suite has 4 tests today, and I ran it to confirm it passes.
+
+**Tests:**
+- **T2** writes the five new project-level tests.
+- **T3** rewrites the superseded test `tests/add-greeting/test_R1_S2_name_too_long.md` in place so it expects a greeting. It keeps the file name, so the test keeps its key `add-greeting/R1.S2`.
+- **T4** takes up any test suggestions from the T1 builder.
+- **T5** is the verify run on `macos-laptop`. It runs the new tests, the three `add-greeting` regression tests, alpha's unit suite and Q1.
+
+**Reviews and integrate:** T6 reviews T1, T7 reviews the whole change after verify's first green run, and T8 integrates alpha only, with beta and gamma staying at their pins.
+
+**Order:** T1, T2 and T3 start in parallel, and no two tasks share a file. The longest chain is T1 → T6 → T4 → T5 → T7 → T8.
+
+Things the lead should know:
+- **T3 needs a ruling from the lead.** The process says a test task may only write files under `changes/<id>/tests/` or `changes/<id>/evidence/`, but it also says a superseded test is updated in `tests/`. Without T3's update the old test still expects 65 characters to be refused, so verify can never pass. I planned the in-place update; the lead files it as the allowed exception and records the ruling.
+- **The error check reads only the error message, not the whole error output.** That output includes file paths and line numbers, which could contain `64` by chance and make R2.S2 fail.
+- **R1.S3 uses `é` as a single character** (U+00E9), so 128 of them is 256 bytes in UTF-8. The other form, `e` plus a combining accent, counts as two characters.
+- **I couldn't check the commits.** The space and the alpha and beta checkouts on this node aren't git repositories, so the base commit set uses the pins in `pod.yaml`. The lead should confirm them against the remotes at the go.
+
+No questions for the human.
+
+I printed no `DESK:` lines. Committing is the librarian's step, which belongs to the lead, and the planner doesn't commit or push, so I ran no git commands and have none to repeat.

@@ -1,0 +1,64 @@
+I haven't merged add-greeting, and it can't be merged yet: its test evidence is older than the code it would land on.
+
+**Why it's held.** The last verify, ev-20261001T1230Z, tested alpha's branch built on a1a1a1a. Since then add-farewell has been merged. That moved alpha's pin in `pod.yaml` to f6f6f6f and added a regression test, `tests/test_R1_S1_default_farewell.md`. The process allows no merge on evidence older than the current pins and `tests/`. Beta's pin (b2b2b2b) hasn't moved, so beta's branch needs no update.
+
+**What I did:**
+- **Two rulings in the ledger.** First, the merge is held until alpha's branch is on the new `main` and verify passes again. Second, alpha's branch takes `main` in through a merge commit rather than a rebase. The branch is already pushed, so a rebase would need a force-push, which the process forbids. The cost is one extra merge commit in alpha's history.
+- **T10 brief written:** `<scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo/changes/add-greeting/tasks/T10-brief.md`. T10 merges alpha `main` (f6f6f6f) into `change/add-greeting`, runs the unit tests and pushes.
+- **T10 sent to a build agent on this node.** It came back `DONE_WITH_CONCERNS`, but with nothing to show. The alpha checkout here is empty, and in a desk run nothing actually ran, so there's no merge commit and no test output. I didn't accept the report and sent it back to the builder. I recorded no T10 status and dispatched no review of it.
+- **T10.TS1 sent to the test agent.** It's the builder's one test suggestion: check the greeting and the 64-character limit with multi-byte names, at the merged head with add-farewell present.
+- **Filing:** the ledger and the T10 brief both passed the librarian's checks. Their filing commands are below; none ran, so there are no `filed` ledger lines.
+- **Not done:** I didn't regenerate `STATUS.md`. It doesn't exist yet in the space.
+
+**Next steps, in order:**
+1. T10 runs for real.
+2. A fresh agent reviews T10's diff.
+3. A new suggestions task covers T10.TS1.
+4. Verify runs again at the new commit set: alpha's new branch head, beta at e5e5e5e, gamma at its pin c3c3c3c. That run includes the add-farewell regression test.
+5. If anything beyond the merge itself changes, the whole-change review runs again.
+6. Then the final report, and the merge on your word, alpha before beta.
+
+**Open question:** once verify is green, do you want each branch merged and deleted, opened as a pull request, or kept?
+
+DESK lines I printed, in order:
+```
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting refs/heads/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T10-brief.md" -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/repos/alpha fetch origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/repos/alpha log --format=%h%n%B --grep=^Change:\ add-greeting --grep=^Task:\ T10 --all-match d4d4d4d..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+```
+
+The T10 build agent printed its own lines in its session, and none of them ran: the planned merge of f6f6f6f into `change/add-greeting` in alpha, the commit with the T10 trailers, and the push of `change/add-greeting`. Its report is at `<scratch>/runs/20261028T075742Z-test_R15_S1_reverify_after_other_change-4ae3/bus/spaces/proj-demo/changes/add-greeting/tasks/T10-report.md`.

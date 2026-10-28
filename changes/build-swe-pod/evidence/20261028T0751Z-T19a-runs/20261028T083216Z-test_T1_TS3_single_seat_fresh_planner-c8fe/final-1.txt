@@ -1,0 +1,15 @@
+The self-review is filled in, the plan has no machine paths, and the librarian check passed. Desk run for the plan (printed, not run):
+
+```
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space cat-file -e origin/main:changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space diff --quiet origin/main -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space add -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space commit -m "File changes/add-greeting/plan.md" -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space log -1 --format=%H -- changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083216Z-test_T1_TS3_single_seat_fresh_planner-c8fe/space merge-base --is-ancestor <commit> origin/main
+```

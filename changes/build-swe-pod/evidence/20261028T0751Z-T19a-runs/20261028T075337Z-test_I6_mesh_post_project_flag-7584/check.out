@@ -1,0 +1,5 @@
+I6.1 pass proj:demo: project line right after timeout_min
+I6.2 pass proj:demo-2: project line right after timeout_min
+I6.3 pass invalid values: all refused with the message
+I6.4 pass checked before the repo: exit 1, mesh-post: invalid --project value: Bad_Value
+I6.5 pass no flag: no project line

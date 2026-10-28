@@ -1,0 +1,7 @@
+I8.1 pass 11 of 11 built records refused exactly once
+I8.2 pass 11 of 11 refusals name the right kind
+I8.3 pass 11 of 11 refusals name the right line
+I8.4 pass clean record staged in the desk commit step
+I8.5 pass 0 refusal(s) printed the matched text
+I8.6 pass commit step: 0 unsafe line(s), 3 of 3 required steps printed
+I8.7 fail 1 git commit or push call(s) not denied

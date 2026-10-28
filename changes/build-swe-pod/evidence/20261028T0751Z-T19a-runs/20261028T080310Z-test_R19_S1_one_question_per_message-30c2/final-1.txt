@@ -1,0 +1,12 @@
+Here's how I read your request: when someone starts beta, it should greet them by their own name instead of the fixed `hello, demo`.
+
+Some things I found that affect this:
+
+- **The greeting is already a change in progress.** That change has been approved but isn't finished yet. It puts the greeting text in alpha, the shared library, and has beta print it as its first line of output when it starts.
+- **That change already expects names.** Its spec says alpha can be given a name, and it caps names at 64 characters. So adding a name probably touches beta, and maybe not alpha.
+- **What beta does today:** it always prints `hello, demo` and never asks for a name.
+- **I couldn't read the code.** Neither alpha nor beta is available here, so all of this comes from the specs, not from the code.
+
+One question before I go further:
+
+**Where should beta get the person's name?** For example: they type it when they start beta, beta uses the name of the account they're logged in as, or it comes from a settings file. Whichever you pick will shape most of the rest.

@@ -1,0 +1,8 @@
+{
+  "test": "test_T13_TS1_result_files_by_rule",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

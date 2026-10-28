@@ -1,0 +1,26 @@
+`add-greeting` is **approved**, and the next step is its plan. No plan, ledger or evidence exists yet. One caveat on all of this: the space folder is not a git repository, so nothing in it is committed. This status is read from the files on disk, not from committed records, so treat it as provisional until the space is put under git and filed.
+
+**`STATUS.md` is missing.** It isn't on disk at all, so I worked out what it would say and filed nothing. You asked where things stand, not for a regeneration, so the librarian's commit step never ran and I printed no `DESK:` lines.
+
+**Space `proj:demo`**, from what is on disk:
+- **Records as of:** 2026-10-01T09:00Z, the spec's approval. It's the only dated record; there are no ledger lines, evidence, handoffs or decisions yet.
+- **Repo pins:** alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c.
+- **Open changes:** 1, which is approved.
+
+**`add-greeting`** (owner: demo-owner)
+- **State:** approved. The spec has `approved: demo-owner 2026-10-01T09:00Z`, but `plan.md` doesn't exist yet.
+- **Gates passed:** the spec only. There is no go, so there are no `change/add-greeting` branches in alpha or beta yet.
+- **Tasks:** none yet, because there's no plan. Nothing is dispatched or blocked.
+- **Evidence:** none.
+- **Open findings:** Critical 0, Important 0, Minor 0.
+- **Next:** the plan, by the plan role. After that it goes to the human for the go (the `plan: human-skim` gate in `pod.yaml`).
+- **What the spec covers:** R1 is the greeting text in alpha, with scenarios R1.S1 and R1.S2. R2 is beta printing that greeting as its first line, with scenario R2.S1. gamma is out of scope.
+
+Files worth opening:
+- `<scratch>/runs/20261028T084426Z-test_T3_TS1_fresh_space_without_status-5a3a/space/changes/add-greeting/spec.md`
+- `STATUS.md` would go at `<scratch>/runs/20261028T084426Z-test_T3_TS1_fresh_space_without_status-5a3a/space/STATUS.md`. It doesn't exist yet.
+
+If you want `STATUS.md` created, ask me to regenerate it.
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role

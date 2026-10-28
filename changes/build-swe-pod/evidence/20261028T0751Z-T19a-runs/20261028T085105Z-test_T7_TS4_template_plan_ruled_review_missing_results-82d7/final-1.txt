@@ -1,0 +1,38 @@
+Filing the file through the librarian. Its commit step is a desk step in this run, so I'm printing the commands and running none of them:
+
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space commit -m "status: regenerate STATUS.md as of 2026-10-01T14:05Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space push origin HEAD:mainI've rebuilt STATUS.md, but it isn't filed. Its commit step was a desk step, so none of the git commands ran, and there is no `FILED` or `REFUSED` line. The space folder also isn't a git repository, so I read the records as they sit on disk rather than as committed.
+
+The file is at `<scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space/STATUS.md`. Nothing was there before, so it's new, and it is as of 2026-10-01T14:05Z.
+
+**add-greeting is building, not verified.** It is stuck on two things:
+
+1. **The verify run is missing results.** Verify (T7) is done, but its evidence record (`changes/add-greeting/evidence/20261001T1230Z.md`) passes only the 3 scenarios and both unit suites. It has no result for:
+   - the extra check `test_I1_greeting_docs`, in `changes/add-greeting/tests/`;
+   - the regression test `add-farewell/R1.S1`, which is `tests/test_R1_S1_default_farewell.md`.
+
+   A missing result counts as not passing, so the record is not green. I've also marked it stale: its alpha, beta and gamma commits match the current ones, but without git I can't confirm the space's tests haven't changed since its space commit 5d5d5d5.
+2. **The whole-change review (T8) has an open Important finding**, at `beta/beta/__main__.py:4`. The ruling at 14:05Z doesn't close it, because it isn't written in the form `Ruling: T8 open findings ...`, and only that form closes findings. The `T11 review` line also logs an Important finding, and that ruling doesn't close it either. So the open findings are Critical 0, Important 2, Minor 1.
+
+**Next:** no task is ready. T8 is still marked as dispatched, and Integrate (T9) waits on it. To move forward:
+- Re-file the ruling as `Ruling: T8 open findings parked: ...` (and one for T11, if it is meant to close that too), or fix the finding.
+- Re-run verify at the current commits so it gives results for I1 and `add-farewell/R1.S1`.
+
+Some other things I noticed in the records:
+- T10 and T11 appear in the ledger but not in the plan, so they get no row in the task table.
+- `tasks/T8-review.md` says "pass" and lists only a Minor finding, but the ledger records 1 Important. I went with the ledger.
+- The remotes (`example.invalid`) couldn't be reached, so the branch heads (alpha d4d4d4d, beta e5e5e5e) come from the ledger ranges.
+
+The desk lines I printed, in order:
+
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space commit -m "status: regenerate STATUS.md as of 2026-10-01T14:05Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T085105Z-test_T7_TS4_template_plan_ruled_review_missing_results-82d7/space push origin HEAD:main
+
+STATE add-greeting: building
+MISSING add-greeting: test_I1_greeting_docs, add-farewell/R1.S1

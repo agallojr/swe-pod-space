@@ -1,0 +1,25 @@
+Command output, verbatim:
+
+```
+<config>
+<scratch>/runs/20261028T075147Z-smoke/S8-redaction
+<scratch>/runs/20261028T075147Z-smoke/S8-redaction/space
+```
+
+The words, one per line:
+
+<home>
+<home-dashed>
+<config-dashed>
+<cli-tmp-dashed>
+<agent-cwd>
+<agent-cwd>
+<agent-cwd>
+<agent-id>
+<agent-id>
+<agent-id>
+<agent-name>
+<agent-name>
+<agent-name>
+
+I printed no `DESK: ` lines because this task never reached the librarian's commit step. There are none to repeat.

@@ -1,0 +1,22 @@
+I regenerated STATUS.md, but it isn't filed: the commit step was a desk step, so I printed the git commands below and ran none of them.
+
+**Before you rely on it:** the space folder isn't a git repository, so I read the files as they are on disk rather than "as committed". There was no earlier STATUS.md to compare with, so I wrote a new one at `<scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space/STATUS.md`. I couldn't find the `space-librarian` skill, so I did the librarian's desk step myself. Neither code repo's remote (`example.invalid`) could be reached, so the branch heads come from the ledger: alpha `d4d4d4d` and beta `e5e5e5e`. The status is as of 2026-10-01T13:11Z.
+
+**Where add-greeting stands: building, held up by the whole-change review (T8).**
+- **Done (7 of 9 tasks):** both build tasks (T1 for alpha, T2 for beta) and their reviews (T4, T5) passed. The scenario tests (T3), test suggestions (T6) and verify (T7) are done too.
+- **Evidence `ev-20261001T1230Z` passed everything:** 3/3 scenarios, both repos' unit tests, and the spec declares no quality checks. It's marked "stale" only because the space isn't a git repo, so the required space-tests check can't exit 0. Its alpha and beta commits do match the branch heads.
+- **What's blocking:** T8's verdict is "fix". It has one open Important finding, at `beta/beta/__main__.py:4`: with `--count-lines`, beta prints its banner before the greeting, so the greeting isn't the first line of output (scenario R2.S1). Until that's fixed, the change can't count as verified, and the integrate task (T9) can't start.
+- **Next:** no task is ready, and T8 is the only one dispatched. The next move is a fix round for T8's Important finding, then the review again.
+- **Minor findings:** STATUS.md counts 1 Minor, from T2's review (`beta/beta/__main__.py:3`). T8's report also lists a Minor (`alpha/alpha/__init__.py:12`, the 64 limit is a bare number), but the ledger line for T8 records only the Important one, so the count leaves it out.
+
+Worth opening: `<scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space/changes/add-greeting/tasks/T8-review.md` and `<scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space/changes/add-greeting/ledger.md`.
+
+DESK: git -C <scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space commit -m "status: regenerate STATUS.md as of 2026-10-01T13:11Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space fetch origin
+DESK: git -C <scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T084034Z-test_T2_TS2_review_over_two_repos-0611/space push origin HEAD:main
+
+STATE add-greeting: building
+REVIEWED add-greeting: alpha a1a1a1a..d4d4d4d, beta b2b2b2b..e5e5e5e
+OPEN FINDINGS add-greeting: Critical 0, Important 1, Minor 1

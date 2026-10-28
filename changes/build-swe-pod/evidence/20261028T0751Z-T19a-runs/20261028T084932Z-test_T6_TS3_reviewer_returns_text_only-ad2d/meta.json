@@ -1,0 +1,8 @@
+{
+  "test": "test_T6_TS3_reviewer_returns_text_only",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": []
+}

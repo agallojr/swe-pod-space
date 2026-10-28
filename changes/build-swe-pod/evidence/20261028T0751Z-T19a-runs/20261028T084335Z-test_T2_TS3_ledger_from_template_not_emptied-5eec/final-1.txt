@@ -1,0 +1,24 @@
+## Where things stand: `proj:demo`
+
+One change is open, **add-greeting** (owner demo-owner). Its spec was approved on 2026-10-01T09:00Z, but nothing has been planned or built yet.
+
+- **State: approved.** `spec.md` has its `approved:` line. There is no `plan.md`, so the change is not yet planned, and no task has been dispatched.
+- **Next:** the plan, by the plan role.
+- **Blocked / findings:** nothing is blocked. There are no review lines, so there are no open Critical or Important findings.
+- **Ledger:** it records no events. `changes/add-greeting/ledger.md` still holds the template's example block, the lines that start with `<YYYY-MM-DDTHH:MMZ>` placeholders, and its "Delete this comment in a real ledger" note was never removed. None of those lines begins with a real UTC, so none counts as an event. Whoever files the first real event should clear the template lines first.
+- **STATUS.md is missing**, so it is behind the records. Worked out from the records, it would say "As of 2026-10-01T09:00Z" (the approval time), "open changes: 1 (approved: 1)", "branches: none yet" and "latest evidence: none". I didn't file it, since you asked where things stand and not for a regeneration.
+
+Two caveats:
+- **Not a git checkout:** the space folder isn't a git repository, so I read the files on disk, not "as committed at HEAD".
+- **Remotes not queried:** the remotes are placeholder `example.invalid` URLs, and before the go there are no branches to look up anyway.
+
+Records worth opening:
+- `<scratch>/runs/20261028T084335Z-test_T2_TS3_ledger_from_template_not_emptied-5eec/space/changes/add-greeting/spec.md`
+- `<scratch>/runs/20261028T084335Z-test_T2_TS3_ledger_from_template_not_emptied-5eec/space/changes/add-greeting/ledger.md`
+- STATUS.md would go at: `<scratch>/runs/20261028T084335Z-test_T2_TS3_ledger_from_template_not_emptied-5eec/space/STATUS.md`
+
+Nothing was filed, so the librarian's commit step never ran and I printed no `DESK: ` lines.
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role
+EVENTS add-greeting: none

@@ -1,0 +1,3 @@
+T9.TS2.1 pass template default AGENT_ROLES: build, install, slurm.submit, results.groom
+T9.TS2.2 pass template: 1 comment paragraph(s) tie AGENT_ROLES to a pod role
+T9.TS2.3 pass operator manual 1 paragraph(s) tie AGENT_ROLES to a pod role

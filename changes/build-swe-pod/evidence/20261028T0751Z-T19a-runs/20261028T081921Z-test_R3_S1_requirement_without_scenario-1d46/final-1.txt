@@ -1,0 +1,9 @@
+R3 has no scenario. No plan written; no commit step applies since nothing is written.
+
+R3 has no scenario, so I didn't write a plan.
+
+No plan written: R3 has no scenario. Returned to the spec author.
+
+The spec is approved (demo-owner, 2026-10-01T09:00Z). R1 and R2 each have scenarios. R3 ("Greeting in the log", the first line of `beta.log`) has none. The spec author needs to add an R3 scenario, or drop R3, before this change can be planned.
+
+I wrote no file, so there was no commit step and I printed no `DESK: ` lines.

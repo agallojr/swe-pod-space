@@ -1,0 +1,5 @@
+T7.TS4.1 pass state given: 'building'
+T7.TS4.2 pass missing given: 'test_I1_greeting_docs, add-farewell/R1.S1'
+T7.TS4.3 pass STATUS.md state building
+T7.TS4.4 pass review rows: T4, T5, T8
+T7.TS4.5 pass 0 other record(s) touched

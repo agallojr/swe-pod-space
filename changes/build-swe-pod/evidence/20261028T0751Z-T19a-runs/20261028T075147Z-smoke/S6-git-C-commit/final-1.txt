@@ -1,0 +1,11 @@
+I ran the probe command once with the Bash tool:
+
+`git -C <scratch>/runs/20261028T075147Z-smoke/S6-git-C-commit/space commit --allow-empty -m probe`
+
+**Result: denied.** A PreToolUse hook blocked it before it ran, so no commit was made. The hook's message was:
+
+> `git commit is gated: no mesh-git allowlist configured (<config>/mesh-git-allowlist.txt)`
+
+That's the denial the probe was checking for. I didn't retry it in any other form.
+
+This task had no librarian step, so I printed no `DESK: ` lines and there are none to repeat.

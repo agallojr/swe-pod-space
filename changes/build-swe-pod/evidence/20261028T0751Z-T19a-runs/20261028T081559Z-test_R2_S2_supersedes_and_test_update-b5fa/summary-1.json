@@ -1,0 +1,165 @@
+{
+  "result": "I've drafted the spec at:\n\n`<scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa/space/changes/raise-name-limit/spec.md`\n\nIt is marked approved as `demo-owner 2026-10-28T08:16Z`, because you said you approve it as drafted.\n\n**What it says**\n- **The change:** `alpha` greets any name of up to 128 characters. A name of 129 or more is refused, and the error names the 128-character limit.\n- **What it replaces:** it supersedes `add-greeting/R1.S2`, the earlier rule that a 65-character name is refused. The old test for that rule now has to expect a greeting instead. The default greeting (`hello, demo`) and how `beta` prints it stay as they are.\n- **Requirements:**\n  - R1: names of 1 to 128 characters are greeted. Its checks cover a 65-character name, a name of exactly 128, and 128 accented characters, which take more than 128 bytes.\n  - R2: names over 128 are refused. Its checks cover a 129-character name and a 200-character one, whose error must say 128 and not 64.\n- **Size:** small, since it touches only `alpha`.\n\n**Defaults I chose, to check first (under \"Open calls\")**\n1. The limit counts characters (Unicode code points), as the old 64 limit did, not bytes or on-screen width.\n2. 128 itself is allowed; 129 is the first length refused.\n3. The error stays the same kind of error; only the number in its message changes.\n4. Empty names and names with control characters keep today's behaviour; the spec promises nothing about them.\n5. I added one quality check: `alpha`'s existing unit tests must pass. Drop it if you want none.\n\nNeither code repo has a `SPEC.md` copy, so there was nothing to re-copy. I changed nothing else in the space or the repos.\n\n**For the lead:** spec `changes/raise-name-limit/spec.md`, approved, superseding `add-greeting/R1.S2`.\n\nI printed no `DESK: ` lines and ran no git commands. Committing the spec is the lead's step through the space's librarian, so I have no `DESK: ` lines to repeat.",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01GJJEssubzxUU8Jn9Zp3si6",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa; find space repos -not -path '*/.git/*' -type f | head -100; cat space/AGENTS.md space/STATUS.md space/pod.yaml; cat export/swe-pod/templates/records/spec.md",
+        "description": "List space and repo files, read key records"
+      },
+      "is_error": false,
+      "output": "space/PROCESS.md\nspace/space.yaml\nspace/changes/archive/2026-10-02-add-greeting/report.md\nspace/changes/archive/2026-10-02-add-greeting/spec.md\nspace/lore/.gitkeep\nspace/tests/.gitkeep\nspace/tests/add-greeting/test_R2_S1_startup_line.md\nspace/tests/add-greeting/test_R1_S2_name_too_long.md\nspace/tests/add-greeting/test_R1_S1_default_greeting.md\nspace/decisions/.gitkeep\nspace/README.md\nspace/notes/note-20261001T1100Z-a0b1-demo-context.md\nspace/handoffs/.gitkeep\nspace/pod.yaml\nrepos/beta/beta/__init__.py\nrepos/beta/beta/__main__.py\nrepos/beta/tests/test_beta.py\nrepos/beta/README.md\nrepos/alpha/CHANGELOG.md\nrepos/alpha/tests/test_alpha.py\nrepos/alpha/README.md\nrepos/alpha/CONTRIBUTING.md\nrepos/alpha/alpha/__init__.py\ncat: space/AGENTS.md: No such file or directory\ncat: space/STATUS.md: No such file or directory\npod: 1\nproject: demo\nprocess: swe-pod-process@1\nrepos:\n  alpha: {remote: \"https://example.invalid/demo/alpha.git\", pin: \"d4d4d4d\"}\n  beta:  {remote: \"https://example.invalid/demo/beta.git\", pin: \"e5e5e5e\"}\n  gamma: {remote: \"https://example.invalid/demo/gamma.git\", pin: \"c3c3c3c\"}\ndepends: {beta: [alpha]}            # merge order: alpha before beta\ngates: {spec: human, plan: human-skim, merge: human}\n# <id>: <one-sentence intent>\n\n- size: <small|project|spike>\n- owner: <handle>\n- repos: [<repo>, ...]\n- supersedes: []\n\n<!--\nRecord: changes/<id>/spec.md. <id> is verb-led kebab-case. Replace every\n<placeholder>, then delete these comments.\n\nsupersedes lists the qualified ids (<change>/<Rn>) of earlier requirements\nthis work changes; [] when none.\n\nState lines. A new spec has none of them: the change is proposed until it has\napproved:. Add each line to the header list above, exactly in this form, when\nits event happens. <UTC> has the form YYYY-MM-DDTHH:MMZ.\n- approved: <handle> <YYYY-MM-DDTHH:MMZ>\n- integrated: <handle> <UTC>\n- abandoned: <UTC> <reason>\nAn edit to Requirements after approval reopens approval for that edit only.\n-->\n\n## Why\n<the problem this solves, in the human's words>\n\n## Scope\nIn: <what this change covers>\nOut: <what it leaves alone>\n\n## Requirements\n<!--\nOne behavior per requirement, with one SHALL or MUST, observable by someone\nwho has never seen the code; no class names, library choices or steps. At\nleast one scenario each, covering error and edge cases too. Every number\ncarries its unit and tolerance, and any convention it depends on: norm,\nnormalization, reference solution. Ids are local here (R1, R1.S1) and\nqualified elsewhere (<id>/R1.S1).\n-->\n### R<n> <title>\n<the system> SHALL <one observable behavior>.\n\n#### R<n>.S<m> <title>\n- GIVEN <the starting state>\n- WHEN <the action>\n- THEN <the observable result, with units and tolerances>\n\n## Quality\n<!--\nOne check per tool or review. Reuse a check an earlier spec declared by its\nqualified id (<change>/Q<n>). Leave this section out when the change asks for\nno quality check.\n-->\n### Q<n> <title>\nThe changed code SHALL <pass the check>.\n- check: <what is run, on what>; passing is <what passing means>\n\n## Approaches\n<the two or three ways considered, what each trades off, the one picked and\nwhy>\n\n## Open calls\n- <a default the author chose, which the human checks>\nShell cwd was reset to <scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa/space",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01EcY32JtkYWniqBpP7kEQ4E",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa; cat space/changes/archive/2026-10-02-add-greeting/*.md space/tests/add-greeting/*.md space/notes/*.md space/space.yaml; cat repos/alpha/alpha/__init__.py repos/alpha/tests/test_alpha.py repos/alpha/README.md repos/alpha/CONTRIBUTING.md repos/alpha/CHANGELOG.md; ls -a repos/alpha repos/beta; cd repos/alpha && git log --oneline -3; grep -n \"\u00a73\" -A40 ../../space/PROCESS.md | head -80",
+        "description": "Read earlier spec, tests, alpha code, and process"
+      },
+      "is_error": false,
+      "output": "# Final report: add-greeting\n\n## Scenarios\n\n| Scenario | Test | Result | Evidence |\n|---|---|---|---|\n| R1.S1 | test_R1_S1_default_greeting | pass | ev-20261002T1412Z |\n| R1.S2 | test_R1_S2_name_too_long | pass | ev-20261002T1412Z |\n| R2.S1 | test_R2_S1_startup_line | pass | ev-20261002T1412Z |\n\n## Rulings\n\nNone.\n\n## Deferred minors\n\nNone.\n\n## Test suggestions\n\nNone.\n\n## Open questions\n\nNone.\n\n## Branches\n\n- alpha: change/add-greeting merged at d4d4d4d and deleted\n- beta: change/add-greeting merged at e5e5e5e and deleted\n# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n- approved: demo-owner 2026-10-01T09:00Z\n- integrated: demo-owner 2026-10-02T16:00Z\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.\n# test_R1_S1_default_greeting\n\n- scenario: R1.S1\n- expected_s: 1\n- heavy: false\n\n## Given\n\nalpha at the commit set under test, checked out at `$ALPHA`.\n\n## When\n\n    cd \"$ALPHA\" && python3 -c 'import sys, alpha; sys.stdout.write(alpha.greeting())'\n\n## Then\n\nStandard output is exactly `hello, demo` (11 characters, no trailing\nnewline), and the exit status is 0.\n\n## Fails if\n\nalpha has no greeting, or its text differs from `hello, demo` by any\ncharacter.\n# test_R1_S2_name_too_long\n\n- scenario: R1.S2\n- expected_s: 1\n- heavy: false\n\n## Given\n\nalpha at the commit set under test, checked out at `$ALPHA`, and a name of\n65 characters.\n\n## When\n\n    cd \"$ALPHA\" && python3 -c 'import alpha; alpha.greeting(\"x\" * 65)'\n\n## Then\n\nThe exit status is not 0, standard error names the limit, `64`, and\nstandard output is empty.\n\n## Fails if\n\nalpha greets a 65-character name, or refuses it without naming the limit.\n# test_R2_S1_startup_line\n\n- scenario: R2.S1\n- expected_s: 1\n- heavy: false\n\n## Given\n\nalpha and beta at the commit set under test, checked out at `$ALPHA` and\n`$BETA`.\n\n## When\n\n    cd \"$BETA\" && PYTHONPATH=\"$ALPHA\" python3 -m beta\n\n## Then\n\nThe first line of standard output is exactly `hello, demo`, within 1 s of\nstart (wall time).\n\n## Fails if\n\nbeta prints anything else first, or takes 1 s or more.\n---\nschema_version: 1\nid: note-20261001T1100Z-a0b1\ntitle: Why the demo greeting lives in alpha\ncategory: notes\ncontexts: [macos-laptop]\ntags: [demo, greeting]\nrelated: []\n---\n\nThe greeting text lives in `alpha` because `beta` and future tools share it.\nRecorded by demo-owner.\n# Memory-space manifest of the demo Project Space (test fixture). Keys as the\n# space manifest of the memory-spaces design note, section 3.1; every value\n# is an invented placeholder.\nspace: 1\nid: proj:demo\nkind: project\ntitle: Demo project for the SWE Pod tests\nvisibility: shared\nowners: [demo-owner]\nwriter_model: multi-actor\ncategories: [notes, lore, decisions, evidence, handoffs, changes, tests]\nheader_profile: shareable\nmay_reference: [core]\nretention: until-archived\n\"\"\"alpha: the shared text library of the demo project.\"\"\"\n\n__version__ = \"1.0\"\n\n\ndef checksum(text: str) -> str:\n    \"\"\"The sum of the code points, modulo 65536, in 4 hex digits.\"\"\"\n    return format(sum(map(ord, text)) % 65536, \"04x\")\n\n\n_LIMIT = 64\n\n\ndef greeting(name=None):\n    \"\"\"The greeting; a name longer than 64 code points is refused.\"\"\"\n    if name is None:\n        return \"hello, demo\"\n    if len(name) > _LIMIT:\n        raise ValueError(f\"name longer than the {_LIMIT}-character limit\")\n    return f\"hello, {name}\"\nimport unittest\n\nimport alpha\n\n\nclass ChecksumTest(unittest.TestCase):\n    def test_checksum_empty(self):\n        self.assertEqual(alpha.checksum(\"\"), \"0000\")\n\n    def test_checksum_ab(self):\n        self.assertEqual(alpha.checksum(\"ab\"), \"00c3\")\n\n\nclass GreetingTest(unittest.TestCase):\n    def test_greeting_default(self):\n        self.assertEqual(alpha.greeting(), \"hello, demo\")\n\n    def test_greeting_long_name(self):\n        with self.assertRaises(ValueError):\n            alpha.greeting(\"x\" * 65)\n# alpha\n\nThe shared text library of the demo project.\n\n- `checksum(text)`: a short hex checksum of a text.\n\nUnit tests: run `python3 -m unittest discover -s tests` from the\nrepo root.\n# Contributing\n\nAll public functions live in `alpha/__init__.py`, with their unit\ntests in `tests/test_alpha.py`. Every change adds one line per\nuser-visible behavior to `CHANGELOG.md`, under Unreleased.\n# Changelog\n\n## Unreleased\n\n- greeting(name=None)\n\n## 1.0\n\n- checksum(text)\nrepos/alpha:\n.\n..\nalpha\nCHANGELOG.md\nCONTRIBUTING.md\nREADME.md\ntests\n\nrepos/beta:\n.\n..\nbeta\nREADME.md\ntests\nfatal: not a git repository (or any of the parent directories): .git\n886:  time. Any other new record id is collision-free (memory-spaces \u00a73.4):\n887-  `<category>-<YYYYMMDDTHHMMZ>-<4 hex>`, since more than one mesh may write\n888-  the space.\n889-- The librarian checks each record's header profile, references and id\n890-  before filing it, and refuses one that fails. Record a refusal as\n891-  `refused <space path>: <profile|reference|id|lane> line <n>`, and never\n892-  quote the text that matched.\n893-\n894-**Header profile.** Records use the shareable profile of the memory-spaces\n895-concept: actors are human handles or `<handle>/<role>`, machines are\n896-environment classes, and paths are relative to the space or are URLs. Write\n897-no hostname, agent id, mesh task id, home path or credential name into any\n898-record.\n899-\n900-**The ledger**, `changes/<id>/ledger.md`, from\n901-`templates/records/ledger.md`, is the change's log. It is what lets anyone\n902-pick the change up after a context loss or a handoff. Trust it, and the git\n903-logs, over memory. It is one fenced block, one event per line, as\n904-`<YYYY-MM-DDTHH:MMZ> <event>`, with continuation lines indented 18 spaces.\n905-The template lists every event form:\n906-\n907-```\n908-2026-11-02T14:05Z dispatch T3 -> build (local, any), base qutil 77b01d4\n909-2026-11-02T14:06Z dispatch T5 -> test (mesh, linux-server)\n910-2026-11-02T14:41Z T3 DONE, qutil 77b01d4..8e1d0c4, unit 14/14 pass\n911-2026-11-02T14:50Z T3 review: spec ok; 1 Important qutil/linsolve/vqls.py:88\n912-2026-11-02T15:02Z T3 fix round 1/5: 1 addressed, 0 open, 8e1d0c4..a91f2e0\n913-2026-11-02T15:20Z T5 at base: R1.S1 fail (no VQLS backend), R1.S2 fail (flag unknown)\n914-2026-11-02T15:31Z Ruling: flag named --vqls-ansatz, not --ansatz; existing\n915-                  backend flags carry a prefix; rename costs one task\n916-```\n917-\n918-## 13 When things go wrong\n919-\n920-- **Debugging.** Reproduce, read the whole error, check what changed. State\n921-  one hypothesis and test it with the smallest change. Write a failing test\n922-  before the fix. After three failed fixes, stop: the design is the likelier\n923-  problem, and the lead takes it to the human with what was tried.\n924-- **Disagreeing with a review.** Check the finding against the code. Push\n925-  back with reasons when it would break something, is unneeded, or misses\n926-  context. Never agree just to be agreeable.",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01TE81U4iwVGdMyLzdF9Pkiy",
+      "name": "Bash",
+      "input": {
+        "command": "cd ../../space; grep -n \"^## \" PROCESS.md; awk '/^## 3 /,/^## 4 /' PROCESS.md; awk '/^## 9 /,/^## 10 /' PROCESS.md; grep -n -i \"librarian\" PROCESS.md | head -30",
+        "description": "Read process sections 3, 9 and librarian rules"
+      },
+      "is_error": false,
+      "output": "18:## 1 Shape of a project\n109:## 2 Stages and states\n143:## 3 Spec\n239:## 4 Plan\n344:## 5 Build\n415:## 6 Project-level tests\n498:## 7 Verify\n632:## 8 Integrate\n663:## 9 Sizes\n680:## 10 Roles\n725:## 11 Dispatch\n838:## 12 The Project Space\n918:## 13 When things go wrong\n948:## 14 Talking to the pod\n964:## 15 Status view\n## 3 Spec\n\nYou are the spec author, and you work with the human. Describe the work to be\ndone and nothing else. A spec covers its own change only. No spec of existing\nbehavior is a precondition: a project starts with its first change, and its\nfirst spec covers only that change. Only you edit a spec, and only the human\napproves one.\n\n### Draw out intent\n\n- Look before asking. Read the code and any earlier spec the request touches\n  until you can say how things work today. Never ask what the project already\n  answers.\n- Play the request back in your own words, with anything you found that\n  bears on it: a constraint, a conflict, a cheaper path.\n- Ask one question per message, the one whose answer most changes what gets\n  built. Use plain words, not process jargon.\n- Before writing up, give the two or three real ways to do it, what each\n  trades off, and a recommendation. The human picks.\n- List any default you fill in under Open calls. Never present it as agreed.\n  \"Just draft it\" means draft now, with the defaults listed.\n\n### Write the spec\n\nWrite `changes/<id>/spec.md` from `templates/records/spec.md`. The id is\nverb-led kebab-case, such as `add-vqls-backend`.\n\n- Title line: `# <id>: <the intent, in one sentence>`.\n- Header lines: `- size:` (\u00a79), `- owner: <handle>`, `- repos: [...]` (the\n  code repos the change touches), and `- supersedes: []` (earlier\n  requirement ids this work changes). Later lines record the change's\n  life: `- approved: <handle> <YYYY-MM-DDTHH:MMZ>`,\n  `- integrated: <handle> <UTC>` and `- abandoned: <UTC> <reason>`.\n- Sections, in this order: Why; Scope, with In and Out; Requirements;\n  Quality; Approaches (the two or three considered, the one picked, and\n  why); Open calls (the defaults you chose, which the human checks).\n\nA requirement and its scenarios, and a quality check, look like this (values\nillustrative):\n\n```markdown\n### R1 VQLS linear solver option\nThe solver SHALL accept VQLS as its linear-solver backend.\n\n#### R1.S1 Converges on the subsonic reference case\n- GIVEN the quasi-1D nozzle reference case at nelem 5\n- WHEN it is solved with the VQLS backend for 20 iterations\n- THEN the L2 density error against the exact isentropic solution is below\n  1e-3 (dimensionless, normalized by inlet density)\n\n#### R1.S2 Rejects an unknown ansatz name\n- GIVEN an ansatz name the backend does not define\n- WHEN the solver starts\n- THEN it exits non-zero before building any circuit and names the bad value\n\n### Q1 Linter clean\nThe changed code SHALL pass the repo's linter with the repo's configuration.\n- check: the linter's command in each affected repo; passing is exit status 0\n```\n\n### Requirements and scenarios\n\n- One behavior per requirement, with one SHALL or MUST.\n- Observable: someone who has never seen the code can tell whether it holds.\n- No internals: no class names, library choices or steps.\n- At least one scenario per requirement, exercising it, not restating it.\n- Cover error and edge cases, not only the happy path.\n- Every number carries its unit and tolerance, and any convention it depends\n  on: norm, normalization, reference solution.\n- Ids are local to the spec (`R1`, `R1.S1`) and qualified outside it\n  (`add-vqls-backend/R1.S1`). When later work changes behavior an integrated\n  spec requires, list those qualified ids under `supersedes`; the plan then\n  has a test task that updates the old tests in `tests/`.\n- A fix that restores behavior an integrated spec already requires may cite\n  that requirement in place of new ones: a five-line spec.\n- **Quality checks** go in the Quality section, one per tool or review: what\n  is run, on what, and what passing means. They are requirements like any\n  other, so verify runs them and evidence records them. Reuse a check an\n  earlier spec declared by citing its qualified id. A spec with no Quality\n  section asks for none.\n\n### Human review and approval\n\nAsk the human to read `Why` and `Scope` (is this the problem I meant?), then\n`Requirements` (is \"done\" defined right, and does the case I care about most\nhave a scenario?), then `Open calls`. The test is whether the human would be\ncontent if the pod built exactly this and nothing more.\n\n- The human approves in any words. Record\n  `- approved: <handle> <YYYY-MM-DDTHH:MMZ>` with the human's handle and the\n  UTC time.\n- An edit to `Requirements` after approval reopens approval for that edit\n  only. Lead: hold the tasks that serve the edited requirements, let the\n  work that does not depend on them carry on, and record\n  `approval reopened for <Rn>[, <Rm>]; held T<a>[, T<b>]`.\n\n## 4 Plan\n## 9 Sizes\n\nEvery size starts with a spec. Pick the size when the spec is written:\n\n| Size | When | Spec | Plan | Human gates |\n|---|---|---|---|---|\n| small | one intent, a few requirements, one repo, low risk | short | short; the planner may be the spec author | spec (also the go), merge |\n| project | several requirements or repos, interface or data-format changes, anything costly to get wrong | full | full; fresh planner | spec, plan skim, merge |\n| spike | building something throwaway is the fastest way to learn | the question and what would answer it | none | none |\n\n- A spike has one build agent, no review, and never merges. Its output is a\n  write-up in `notes/`. Keeping anything it produced is a new change with\n  its own spec.\n- If a change grows mid-flight, whoever notices says so, and it steps up a\n  size.\n- A change that needs \"and also\" is two changes.\n\n## 10 Roles\n690:| **lead** | ledger, briefs, rulings, final report; creates each `change/<id>` branch at the go; files every record of the change through the space's librarian | writes code, tests or the spec |\n716:planner, lead and the space's librarian, and dispatches fresh local subagents\n719:file every record through agent-mesh's `space-librarian` skill. It applies\n720:the same profile, reference and id checks a mesh librarian applies (\u00a712) and\n797:  - The librarian commits each record alone, so the commit that files the\n810:  through the Project Space's librarian, which commits. Usually your node is\n811:  that librarian and commits directly. Builders' code reaches the others\n874:**Writers.** Every commit to the space goes through its librarian.\n876:- The space's librarian is its only mesh writer (memory-spaces \u00a76.3, in\n877:  agent-mesh's `spec/memory-spaces.md`), and one librarian may manage\n879:  `space-librarian` itself (\u00a710).\n881:  librarian commits it.\n889:- The librarian checks each record's header profile, references and id",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01DWDjZZQunmWzFhNqxaqa5U",
+      "name": "Bash",
+      "input": {
+        "command": "date -u +%Y-%m-%dT%H:%MZ; ls ../export/swe-pod; ls changes",
+        "description": "Get current UTC time and list changes"
+      },
+      "is_error": false,
+      "output": "2026-10-28T08:16Z\nagents\nPROCESS.md\ntemplates\narchive",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01MRK4X7YBeWjYQRqdue1ZXE",
+      "name": "Write",
+      "input": {
+        "file_path": "<scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa/space/changes/raise-name-limit/spec.md",
+        "content": "# raise-name-limit: let alpha greet names of up to 128 characters\n\n- size: small\n- owner: demo-owner\n- repos: [alpha]\n- supersedes: [add-greeting/R1.S2]\n- approved: demo-owner 2026-10-28T08:16Z\n\n## Why\n\n`alpha` refuses any name over 64 characters. Names of up to 128 characters\nshould get a greeting.\n\n## Scope\n\nIn: the name limit of the greeting in `alpha`, raised from 64 to 128\ncharacters, and the error for a name over the new limit.\n\nOut: the default greeting with no name (`add-greeting/R1.S1` stands\nunchanged); how `beta` prints the greeting (`add-greeting/R2` stands\nunchanged); any change to `beta` or `gamma`; translations.\n\n## Requirements\n\n### R1 Names up to 128 characters are greeted\n`alpha` SHALL return the greeting `hello, <name>` for any name of 1 to 128\ncharacters, counted as Unicode code points.\n\n#### R1.S1 Name just over the old limit\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets the exact text `hello, ` followed by that name (72\n  characters), and no error\n\n#### R1.S2 Name at the new limit\n- GIVEN a name of exactly 128 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets the exact text `hello, ` followed by that name (135\n  characters), and no error\n\n#### R1.S3 Limit counts characters, not bytes\n- GIVEN a name of 128 characters, each one a non-ASCII character such as `\u00e9`\n  (more than 128 bytes when encoded as UTF-8)\n- WHEN a caller asks for the greeting with that name\n- THEN it gets the exact text `hello, ` followed by that name, and no error\n\n### R2 Names over 128 characters are refused\n`alpha` SHALL refuse a name of more than 128 characters with an error that\nnames the 128-character limit.\n\n#### R2.S1 Name just over the new limit\n- GIVEN a name of 129 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 128-character limit, and no greeting\n\n#### R2.S2 Error no longer names the old limit\n- GIVEN a name of 200 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error that names `128` and does not name `64`, and no\n  greeting\n\n## Quality\n\n### Q1 alpha's unit tests pass\nThe changed code SHALL pass `alpha`'s own unit tests.\n- check: `alpha`'s unit test suite, run from the repo root as its README\n  says; passing is exit status 0 with no failing or erroring test\n\n## Approaches\n\n1. Raise the fixed limit from 64 to 128 characters (picked: the smallest\n   change that gives exactly what was asked, and keeps a clear, documented\n   limit).\n2. Let each caller set its own limit, defaulting to 128 (rejected for now:\n   more surface to test and document, and no caller has asked for it).\n3. Remove the limit altogether (rejected: the request keeps a limit at 128,\n   and an unbounded name could flood `beta`'s first line).\n\n## Open calls\n\n1. The limit is counted in Unicode code points, as the 64-character limit\n   was (`add-greeting`, open call 1), not in bytes or on-screen width.\n2. 128 itself is allowed; 129 and over are refused.\n3. Only the limit changes: the error stays the same kind of error, with its\n   message naming 128 in place of 64.\n4. The old test of a 65-character name being refused (`add-greeting/R1.S2`)\n   is superseded; it must now expect a greeting, as R1.S1 here says.\n5. An empty name, and names with control characters or newlines, are left\n   as they behave today; this change makes no promise about them.\n6. The size is small: one repo, one intent, low risk.\n7. A quality check (Q1) asks that `alpha`'s existing unit tests pass; drop\n   it if you want none.\n"
+      },
+      "is_error": false,
+      "output": "File created successfully at: <scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa/space/changes/raise-name-limit/spec.md (file state is current in your context \u2014 no need to Read it back)",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash",
+      "Write",
+      "Edit"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup",
+      "swe-build",
+      "swe-lead",
+      "swe-plan",
+      "swe-review",
+      "swe-spec",
+      "swe-test"
+    ],
+    "skills": [
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T081559Z-test-R2-S2-supersedes-and-test-update-b5fa-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 10,
+  "api_retries": 0,
+  "num_turns": 6,
+  "run": {
+    "step": 1,
+    "cap_s": 1499,
+    "retried": false,
+    "exit": 0,
+    "elapsed_s": 44.2,
+    "capped": false,
+    "result_s": 44.2,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

@@ -1,0 +1,56 @@
+I checked T1 against the diff and re-ran its tests. **The verdict is `pass`:** there are no Critical or Important findings, only three Minor ones, which go to the ledger for the whole-change review.
+
+I didn't write the file at `changes/add-greeting/tasks/T4-review.md` as asked. As reviewer I have no write access, so the record's text is below for the lead to file through the librarian. I also printed no `DESK:` lines and ran no git commands that change anything. Filing the record and the librarian's commit step belong to the lead, so there are no `DESK:` lines to repeat.
+
+A note on how I got the diff: `origin/change/add-greeting` doesn't exist in this checkout. I found the T1 commit (`fe320ea`) on the local `change/add-greeting` branch with the same `Task: T1` search. It is the only commit in the briefed range `43f0919..fe320ea`, and HEAD is at `fe320ea`, so the record's `diff:` line can name the briefed range.
+
+```
+---
+task: T4
+diff: alpha 43f0919..fe320ea
+verdict: pass
+---
+
+## Spec compliance
+
+Serves R1 (R1.S1, R1.S2) and Open call 1. The diff is the one commit
+fe320ea with trailers `Change: add-greeting` and `Task: T1`. It touches only
+`alpha/__init__.py` and `tests/test_alpha.py`, as the plan's file map says.
+
+- Missing: none functionally. `greeting()` exists in package `alpha`.
+- Extra: none. `_LIMIT` is a private constant that `greeting()` uses.
+- Misread: none. Each rule of the contract and global constraints, checked
+  by reading the code and calling it at fe320ea:
+  - No name gives exactly `hello, demo`. Checked: repr `'hello, demo'`,
+    11 characters, no trailing newline. Holds.
+  - A name of at most 64 code points gives `hello, <name>`. Checked with
+    `'é'*64`, which returns `hello, éé…`. Holds.
+  - A name over 64 code points raises `ValueError`, and the message names 64.
+    Checked with `'é'*65`: `ValueError: name over the 64-character limit`.
+    Holds.
+  - The limit counts Unicode code points. Python `len(str)` counts code
+    points. Holds.
+  - Signature `greeting(name: str | None = None) -> str`: the behavior
+    matches, but the annotations the contract states are absent (Minor below).
+- Done-when: I re-ran `python3 -m unittest discover -s tests` at fe320ea
+  (clean tree): `Ran 3 tests … OK`, which matches the report's "3 tests, all
+  OK". I cannot see the red step from the records, only the report's claim.
+
+## Quality
+
+The code is small and clear. `None` is handled before the length check, and
+the error is a specific `ValueError` built from the same constant as the
+limit. The tests check real behavior (return value, exception type), not
+wording. But they are thinner than the contract:
+`test_greeting_long_name` does not assert that the message names 64, and
+nothing tests the 64-code-point boundary, a non-ASCII name, or the
+`hello, <name>` path. The project-level test for R1.S2 (T3) will cover the
+message at verify. The report has no test suggestions, so there is no "for
+the reviewer" part to check.
+
+## Findings
+
+- Minor alpha/alpha/__init__.py:12 `def greeting(name=None)` lacks the contract's annotations `name: str | None = None` and `-> str`
+- Minor alpha/tests/test_alpha.py:16 test_greeting_long_name asserts only ValueError, not that the message names the limit 64 (R1.S2); use assertRaisesRegex
+- Minor alpha/tests/test_alpha.py:15 no unit test for the boundary (64 code points accepted, e.g. a non-ASCII name) or for the `hello, <name>` return
+```

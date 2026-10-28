@@ -1,0 +1,9 @@
+{
+  "test": "test_T1_TS3_single_seat_fresh_planner",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

@@ -1,0 +1,8 @@
+No plan written: R3 has no scenario. Returned to the spec author.
+No plan written: R4 has no scenario. Returned to the spec author.
+
+The spec is approved (demo-owner, 2026-10-01T09:00Z). R1 and R2 each have scenarios: R1.S1, R1.S2 and R2.S1. R3 ("Greeting in the log") and R4 ("Greeting in the help text") have none. The rules say I write no plan while any requirement has no scenario, so I did not create `changes/add-greeting/plan.md`. I changed nothing in the space, so there is nothing for the librarian to file and I printed no `DESK:` lines.
+
+When the spec author adds scenarios for R3 and R4, I can plan it. These are worth settling then:
+- **R3:** which log file `beta` writes to (path or setting) and what form the log line takes.
+- **R4:** whether `beta --help` still exits after showing the help text, and what comes after the greeting line.

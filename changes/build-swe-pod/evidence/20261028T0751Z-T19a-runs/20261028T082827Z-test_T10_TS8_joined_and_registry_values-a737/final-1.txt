@@ -1,0 +1,29 @@
+Six of the eight records failed the profile check. The other two, 3b07 and 3b08, passed all three checks (profile, reference and id). This was a desk run, so nothing was committed or pushed. There are no `FILED` lines and no commit hashes.
+
+```
+REFUSED notes/note-20261001T1800Z-3a01-archive-name.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a02-task-prefix.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a03-node-prefix.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a04-task-underscore.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a05-agent-underscore.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a06-cwd-root.md: profile line 11
+```
+
+Each refused record has a real value from the bus or this machine at line 11, such as a hostname, agent id, task id, credential key name or home path. I haven't shown the matched text, as the skill requires.
+
+The 3a03 refusal may be worth a look. The skill says a hostname joined to a longer name with `-` or `_` should pass. So either its line 11 holds a value that is not allowed when joined, such as an agent id, agent name or task id, or the check is stricter than the skill describes. I trusted the script's result and didn't look into it.
+
+Here are the commit-step commands for 3b07 and 3b08, none of them run:
+
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b07-utc-record-id.md" -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b08-sha256.md" -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/bus/spaces/proj-demo push origin HEAD:main

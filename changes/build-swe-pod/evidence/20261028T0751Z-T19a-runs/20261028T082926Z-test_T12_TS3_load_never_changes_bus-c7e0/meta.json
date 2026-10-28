@@ -1,0 +1,8 @@
+{
+  "test": "test_T12_TS3_load_never_changes_bus",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": []
+}

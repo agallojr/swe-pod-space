@@ -1,0 +1,17 @@
+I've written the T7 verify brief at `<scratch>/runs/20261028T081102Z-test_R23_S2_unnamed_repo_no_branch-1cfd/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md`. I dispatched nothing and didn't file it. It's written for the point when T1 to T6 are done, but the ledger shows T1 as BLOCKED, and the heads d4d4d4d and e5e5e5e don't exist yet. I'll send it to the librarian when I dispatch T7, along with its `dispatch T7 -> test (mesh, any)` line, after checking that those heads are on `change/add-greeting`.
+
+What the brief sets out:
+
+- **Template:** it uses the test brief, since T7 is a test task, and ends with the required "Do not read plan.md, ledger.md…" line. It holds no build steps, diffs or builder reports.
+- **Task, interface contract, global constraints and test map:** all copied word for word from `plan.md`.
+- **Commits to test:** alpha d4d4d4d and beta e5e5e5e, both on `change/add-greeting`. The base it compares against is alpha a1a1a1a, beta b2b2b2b and gamma c3c3c3c.
+- **gamma:** it's in `pod.yaml` but not in the spec's `repos:`. So it gets no branch and is tested at its pin, c3c3c3c. The evidence record's `commit_set` still has to name it, along with the space, alpha and beta.
+- **Space commit:** given as "the space commit that files this brief", as in the T3 brief, because its sha isn't known until the brief is filed.
+- **Unit tests:** alpha's and beta's, each run with `python3 -m unittest discover -s tests -t .`. gamma isn't affected by the change.
+- **Quality checks:** the spec has no Quality section, so the record should say `quality: none-declared`.
+- **Older tests:** the brief asks for every regression test in `tests/` to be run, but the folder is empty today, so there are none yet.
+- **Where results go:** an evidence record at `changes/add-greeting/evidence/<UTC>.md` and a report at `changes/add-greeting/evidence/<UTC>-T7-report.md`.
+
+No ruling was needed. The plan says T7 `runs: mesh`, which is allowed for test tasks. No test is known to run over 60 s (R2.S1 has a 1 s limit), so nothing needs your approval as a long-running check.
+
+I printed no `DESK:` lines, because nothing here needed a git, mesh or gh command.

@@ -1,0 +1,25 @@
+I wrote a new `STATUS.md`, but it hasn't been filed: per your instructions I printed the librarian's git commands and ran none of them. There was no `STATUS.md` before.
+
+**add-greeting is verified.** The only task left is **T9 Integrate**, run by the lead on the local machine. It's ready now because both of the tasks it waits on, T7 Verify and T8 Whole-change review, are done.
+
+- **Tasks:** T1 to T8 are all done, nothing is blocked, and nothing is in flight.
+- **Branches:** `change/add-greeting` is at alpha `d4d4d4d` and beta `e5e5e5e`. Neither remote resolves (`example.invalid`), so these come from the ledger.
+- **Evidence:** the latest record, `ev-20261001T1230Z` from `macos-laptop`, is green. All 3 scenarios pass, the alpha and beta unit tests pass, and quality is `none-declared`. Its alpha, beta and gamma shas match the current ones. There are no regression tests yet.
+- **Findings:** none Critical or Important. Two Minor findings (from the T2 and T8 reviews, both at `beta/beta/__main__.py:3`) will be listed as deferred in the final report.
+- **The quoted example in the spec:** `spec.md` quotes an `add-farewell` spec inside a code block, with its own `approved: example-owner 2026-12-01T10:00Z` and a quality check `Q7`. Neither counts. The only approval is demo-owner's, the spec declares no quality checks, and the status time is the newest real record (2026-10-01T13:11Z), not the example's December date.
+
+**Caveat:** the space folder isn't a git repository. So I read the files as they are on disk rather than as committed. I also couldn't run the check that the space's tests haven't changed since evidence commit `5d5d5d5`. "Verified" assumes they haven't; if they have, the evidence is out of date and the change drops back to building, with T9 still the next task.
+
+Files:
+- `<scratch>/runs/20261028T085010Z-test_T7_TS2_spec_quoting_example_spec-0b5d/space/STATUS.md`
+- `<scratch>/runs/20261028T085010Z-test_T7_TS2_spec_quoting_example_spec-0b5d/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T085010Z-test_T7_TS2_spec_quoting_example_spec-0b5d/space/changes/add-greeting/evidence/20261001T1230Z.md`
+
+DESK: git add STATUS.md
+DESK: git commit -m "STATUS.md: regenerate from the records"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main
+
+STATE add-greeting: verified
+APPROVED add-greeting: demo-owner 2026-10-01T09:00Z

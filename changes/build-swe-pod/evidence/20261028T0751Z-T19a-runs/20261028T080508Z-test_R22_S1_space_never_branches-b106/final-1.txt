@@ -1,0 +1,145 @@
+STATUS.md is regenerated. Filing it and the latest ledger line:
+
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+## add-farewell has started
+
+**Branch.** I made `change/add-farewell` in **alpha only**, from its pin `a1a1a1a`, and pushed it. The spec names only alpha, so beta, gamma and the Project Space got no branch. This was a desk run: no git or mesh command actually ran, so no real commits, pushes or test runs on the remote branch happened. Everything below is recorded as if those commands had succeeded.
+
+**What has run:**
+- **T1 (build, alpha):** finished with a concern. It added `farewell()` in `alpha/farewell.py`, returning `goodbye, demo`, test first. Its own test failed first, then passed 2 of 2. The plan said `runs: mesh`, but build tasks run local for now; I recorded a ruling for that.
+- **T3 (review of T1):** passed. It found no Critical or Important issues and one Minor one: the plan's done-when command, `python3 -m unittest discover -s tests -t .`, fails here because `tests/__init__.py` is missing. The cause is that this desk checkout of alpha holds none of the branch's files.
+- **T2 (writes the scenario test):** posted to the mesh test role. It has not reported yet.
+
+**Rulings I made:**
+- T1 runs local instead of on the mesh.
+- T1's done-when stays open until that unittest command passes at the real branch head. If the branch really has no `tests/__init__.py`, it needs a small fix before verify.
+- T1's one test suggestion is declined. It checks exactly what scenario R1.S1 checks, and T2 is writing that test.
+
+**Next:** STATUS.md lists T4 (the test-suggestions task) as ready. I haven't sent it: no suggestion is left for it, and T1's done-when is still open. After that comes T5 (verify), then T6 (whole-change review).
+
+**Files:**
+- Ledger: <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo/changes/add-farewell/ledger.md
+- Briefs: <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo/changes/add-farewell/tasks/T1-brief.md, T2-brief.md, T3-brief.md (same folder)
+- T1 report and review: same folder, T1-report.md and T1-review.md
+- Status: <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo/STATUS.md
+
+**Every DESK line I printed, in order:**
+
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha remote get-url origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha branch change/add-farewell a1a1a1a
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha push origin change/add-farewell
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T1-brief.md" -- changes/add-farewell/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T2-brief.md" -- changes/add-farewell/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: mesh-post --bus <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus --from demo-mac-01 --to role:swe.test --type task.request --project proj:demo --timeout-min 60 --goal "Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T2 of change add-farewell from its brief." --context "Role definition: swe-pod/agents/swe-test.md | Brief: changes/add-farewell/tasks/T2-brief.md | Repos: alpha https://example.invalid/demo/alpha.git, beta https://example.invalid/demo/beta.git, gamma https://example.invalid/demo/gamma.git | Space commit holding the brief: the commit that filed changes/add-farewell/tasks/T2-brief.md | Commit set under test: alpha change/add-farewell a1a1a1a, beta b2b2b2b, gamma c3c3c3c" --done-when "one test file exists and fails at the base commit set for its stated reason" --on-failure "BLOCKED or NEEDS_CONTEXT with the reason, and any partial test file as a result file"
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha fetch origin change/add-farewell
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha log --format='%h %s%n%(trailers)' a1a1a1a..origin/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/repos/alpha diff a1a1a1a..origin/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T3-brief.md" -- changes/add-farewell/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T1-report.md" -- changes/add-farewell/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T1-review.md" -- changes/add-farewell/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T1-review.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T080508Z-test_R22_S1_space_never_branches-b106/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+**DESK lines printed by the agents I dispatched** (they wrote `<alpha>` for the alpha checkout):
+
+The T1 builder:
+DESK: git -C <alpha> fetch origin change/add-farewell
+DESK: git -C <alpha> checkout change/add-farewell
+DESK: git -C <alpha> add -- alpha/farewell.py tests/test_farewell.py
+DESK: git -C <alpha> commit -m "Add farewell() returning the alpha farewell text" --trailer "Change: add-farewell" --trailer "Task: T1" -- alpha/farewell.py tests/test_farewell.py
+DESK: git -C <alpha> fetch origin change/add-farewell
+DESK: git -C <alpha> merge-base --is-ancestor origin/change/add-farewell HEAD
+DESK: git -C <alpha> push origin change/add-farewell
+
+The T3 reviewer:
+DESK: git log --format=%h -E --grep='^Task: T1$' origin/change/add-farewell
+DESK: git show <sha7>   (once for each commit the log above lists; in this desk run, the two working-tree files stand in for that output)

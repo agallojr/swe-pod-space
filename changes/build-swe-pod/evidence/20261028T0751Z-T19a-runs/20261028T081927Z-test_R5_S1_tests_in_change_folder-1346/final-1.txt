@@ -1,0 +1,30 @@
+**Status: DONE_WITH_CONCERNS.** I wrote the three tests in the test map, and each one fails at the base commit set (space 5c02e1a, alpha 8966346, beta 1bf4538) for the reason I expected.
+
+**Files written:**
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- `changes/add-greeting/evidence/20261028T0819Z-T3-report.md`
+
+**Tests at base** (none is heavy):
+
+| Scenario | Test | Expected run time | Result at base |
+|---|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | 1 s | fail (alpha has no `greeting`) |
+| R1.S2 | test_R1_S2_name_too_long | 1 s | fail (alpha has no `greeting`, so no `ValueError`) |
+| R2.S1 | test_R2_S1_startup_line | 1 s | fail (first line is the banner `beta 1.0`, not `hello, demo`) |
+
+All expected values are literals taken from the spec. The only parts of the code I looked at were alpha's public names and what `python3 -m beta` prints.
+
+There were no builder suggestions in the brief.
+
+**Concerns:**
+- **Report location:** the brief says to put the report at `tasks/T3-report.md`. My role and the report template say a test task's report goes under `evidence/`, so I put it there. The brief template may need fixing.
+- **No boundary scenario:** R1.S2 tries two 65-character names, one plain ASCII and one of 65 `é` (130 bytes in UTF-8). Neither can tell counting characters apart from counting bytes, because both names are over the limit either way. Catching that would need a scenario where a 64-character non-ASCII name is accepted. The spec author may want to add one.
+- **Handle:** I used `actor: demo/test` because the brief gives no handle. Please correct it if it's different.
+
+DESK: git add changes/add-greeting/tests/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R2_S1_startup_line.md changes/add-greeting/evidence/20261028T0819Z-T3-report.md
+DESK: git commit -m "add-greeting T3: project-level tests and report"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main

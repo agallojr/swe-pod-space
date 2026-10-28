@@ -1,0 +1,113 @@
+All integrate files pass the checks. Here is the integrate commit, one space commit as §8 step 5 requires, followed by the separate filing of STATUS.md:
+
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -A -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "Integrate add-greeting: promote tests to tests/add-greeting, pins alpha d4d4d4d beta e5e5e5e, archive change" -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main
+
+There was nothing to prune: no diff files were made for review.
+
+---
+
+## add-greeting is merged and integrated
+
+**Before the merge.** Verify had passed (ev-20261001T1230Z: all 3 scenarios, alpha unit tests 3/3, beta unit tests 2/2) on alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c. The whole-change review (T8) had no Critical or Important findings. No pin and nothing in `tests/` had moved since that evidence, so no rebase or second verify was needed.
+
+**Merge order** follows `pod.yaml`, where beta depends on alpha:
+1. alpha: `change/add-greeting` fast-forwarded into `main`, now d4d4d4d.
+2. beta: the same, now e5e5e5e.
+3. gamma: not in the spec, so no branch and no merge. Its pin stays c3c3c3c.
+
+**Integrate update** (one space commit):
+- **Pins in `pod.yaml`:** alpha a1a1a1a → d4d4d4d, beta b2b2b2b → e5e5e5e, gamma unchanged at c3c3c3c.
+- **Tests:** moved from the change folder to `tests/add-greeting/` (3 tests).
+- **Spec:** the spec author added `integrated: demo-owner 2026-10-28T07:55Z`.
+- **Archive:** the change folder moved to `changes/archive/2026-10-28-add-greeting/`.
+- **Space README:** updated to say add-greeting is integrated and no change is in flight.
+- **Open plans:** none depended on this change.
+- **STATUS.md:** regenerated. It shows 0 open changes and the new pins.
+
+### Final report
+Full report: `<scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space/changes/archive/2026-10-28-add-greeting/report.md`
+
+| Scenario | Test | Result | Evidence |
+|---|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass | ev-20261001T1230Z |
+| R1.S2 | test_R1_S2_name_too_long | pass | ev-20261001T1230Z |
+| R2.S1 | test_R2_S1_startup_line | pass | ev-20261001T1230Z |
+
+- **Ruling (2026-10-28T07:55Z):** I merged on the verified heads without updating the alpha and beta READMEs.
+  - The plan's integrate task lists those READMEs, but no build task was planned to write them, and the spec requires no doc text.
+  - A doc commit now would have moved both heads and voided the evidence.
+  - Cost if wrong: the shipped READMEs don't mention the greeting until a follow-up change adds it.
+- **Deferred minor:** `beta/beta/__main__.py:3`, the path set-up line could say why it adds the alpha checkout. It's a comment only and changes no behavior.
+- **Test suggestions:** none were made.
+- **Branches:** alpha `change/add-greeting` at d4d4d4d and beta `change/add-greeting` at e5e5e5e. Both are kept: you said "merge" but not "delete", so I didn't delete them.
+
+**Your call:** should I delete `change/add-greeting` in alpha and beta now that they're merged?
+
+### Every DESK line, in order
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log --oneline 5d5d5d5..HEAD -- tests/ pod.yaml
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/alpha fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/alpha checkout main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/alpha push origin main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/beta fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/beta checkout main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/repos/beta push origin main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -A -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "Integrate add-greeting: promote tests to tests/add-greeting, pins alpha d4d4d4d beta e5e5e5e, archive change" -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075504Z-test_R14_S1_merge_order_and_pins-aec9/space merge-base --is-ancestor <commit> origin/main

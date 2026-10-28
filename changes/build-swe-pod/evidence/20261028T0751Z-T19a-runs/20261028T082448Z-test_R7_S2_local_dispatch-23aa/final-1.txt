@@ -1,0 +1,35 @@
+I dispatched T3 of add-greeting, and nothing else. The spec at `changes/add-greeting/spec.md` has its `approved:` line and the go is in the ledger. T3 has no `after` tasks, so it was ready.
+
+**What I did:**
+1. **Brief:** wrote the test-writing brief at `<scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space/changes/add-greeting/tasks/T3-brief.md`.
+   - It holds T3's plan entry, the spec path, and the plan's interface contract, global constraints and test map, all copied verbatim. It ends with the required "Do not read…" line.
+   - It starts from alpha 8966346 and beta 1bf4538, which are both the base and the commit set under test. Gamma is not in the spec, so it stays at its pin, c3c3c3c.
+   - The space checkout is not a git repo yet, so the brief lists the space as "no commit yet".
+2. **Ledger:** appended `2026-10-28T08:25Z dispatch T3 -> test (local, any), base alpha 8966346, base beta 1bf4538`.
+3. **Filing:** the ledger and the brief both passed the librarian's checks (profile, reference, id). The commit step was a desk run, so they are not filed: there are no `filed` ledger lines yet and `STATUS.md` was not regenerated.
+4. **Dispatch:** started a local `swe-test` agent. Its prompt held the brief's path and the checkout paths.
+
+**T3 result (DONE).** These are the test agent's claims; I have not checked them against the files or the test output yet.
+- It wrote three tests in `changes/add-greeting/tests/`: `test_R1_S1_default_greeting.md`, `test_R1_S2_name_too_long.md` and `test_R2_S1_startup_line.md`. None is heavy; expected run times are 1 s, 1 s and 2 s.
+- Its report is at `changes/add-greeting/evidence/20261028T0826Z-T3-report.md`.
+- At base, all three fail for the reason it expected:
+  - The two R1 tests fail because alpha has no `greeting` yet.
+  - The R2 test fails because beta's first output line is `beta 1.0`, not `hello, demo`.
+- It made no commits and received no suggestions.
+
+**Next step, not done:** check T3's files and its at-base output, record the `T3 at base` and `T3 DONE` ledger lines, and file the tests and the report through the librarian. Then regenerate `STATUS.md`.
+
+DESK lines printed, in order:
+
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082448Z-test_R7_S2_local_dispatch-23aa/space push origin HEAD:main

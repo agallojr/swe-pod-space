@@ -1,0 +1,4 @@
+R16.S1.1 pass swe-pod 4d5bfc7: 1 of 1 template dispatch line(s) in the form
+R16.S1.2 pass 211 agent-written dispatch line(s) in 70 ledger(s) of 357 other run(s)
+R16.S1.3 fail 13 agent-written dispatch line(s) not in the form; 20261028T082448Z-test_R7_S2_local_dispatch-23aa:changes/add-greeting/ledger.md:7; space:changes/build-swe-pod/ledger.md:59; space:changes/build-swe-pod/ledger.md:127
+R16.S1.4 pass 0 machine value hit(s) in dispatch lines

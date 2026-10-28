@@ -1,0 +1,25 @@
+**No, add-greeting is not verified.** It is in verify, and one of its two verify shards ran on older code.
+
+**Why T7a is out of date.**
+- T7a ran at 12:38Z against beta `e5e5e5e` and space commit `7a7a7a7`. Its record is `changes/add-greeting/evidence/20261001T1238Z-T7a.md`.
+- At 12:40Z, the fix round for the Important finding in T5's review moved beta to `f6f6f6f`.
+- The T7b brief was then filed again at 13:29Z, so the shards' space commit is now the one that filed it. T7b's record gives it as `8b8b8b8`; the space has no git history here, so I couldn't confirm that sha directly.
+- So T7a's record is at neither the current beta head nor the current shards' space commit.
+
+**Why T7b counts.** Its rerun (`changes/add-greeting/evidence/20261001T1426Z-T7b.md`) is at the current commit set: alpha `d4d4d4d`, beta `f6f6f6f`, gamma at its pin, space `8b8b8b8`. R2.S1 passed and beta's unit suite passed. Nothing in the change's `tests/` or the space's `tests/` changed after that commit; the tests were filed at 11:25Z.
+
+**Result.** The two records are not green together, because T7a is out of date. Its passes for R1.S1, R1.S2 and alpha's unit suite were measured against beta `e5e5e5e`, so they don't count.
+
+**Other things in the records:**
+- **T8 came too early.** The whole-change review should follow verify's first green run. It was dispatched at 14:30Z, before verify was green. It did review the current diffs (alpha `a1a1a1a..d4d4d4d`, beta `b2b2b2b..f6f6f6f`), passed, and has only one Minor open (`alpha/greeting.py:9`). So it isn't blocking, but it came out of order.
+- **The T7a brief still names beta `e5e5e5e`.** The commit set hasn't moved since `8b8b8b8`, so the rule is to send T7a again from its existing brief with a new dispatch line, at `8b8b8b8`, and give it the current heads in the prompt. If that brief is rewritten to name `f6f6f6f`, its filing becomes a new shards' space commit. Then both T7a and T7b must run again.
+- **STATUS.md is missing.** It should be regenerated with the swe-pod skill and filed after the next filing.
+
+**Next steps:** send T7a again at the current commit set and file its record. Once both records are green together, integrate (T9) can start, but only on your word.
+
+As you asked, I dispatched, filed and committed nothing. The librarian's commit step never ran, so I printed no `DESK:` lines.
+
+STATE add-greeting: verify, not verified (shard T7a is out of date: it ran at beta e5e5e5e and space 7a7a7a7; T7b is current and green; T8 whole-change review passed with 1 Minor)
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

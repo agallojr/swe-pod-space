@@ -1,0 +1,23 @@
+I regenerated `STATUS.md` and wrote it to `<scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space/STATUS.md`. It is not filed: the commit step was a desk step, so I printed the git commands and ran none of them. There is no `FILED` or `REFUSED` line to report.
+
+**Where things stand (as of 2026-10-02T08:00Z):**
+- **Header:** pins are alpha a1a1a1a, beta b2b2b2b and gamma c3c3c3c. Two changes are open: one approved, one building.
+- **add-farewell:** approved but has no plan yet, so it is waiting on the plan role. No tasks, branches or evidence.
+- **add-greeting:** building.
+  - Branches: alpha is at d4d4d4d and beta at b2b2b2b.
+  - Done: T1 (alpha build, review clean), T3 (scenario tests, all 3 fail at base as they should) and T4 (the review of T1).
+  - Ready: **T2**, the beta build (local, any), which is next.
+  - Waiting: T5 to T9.
+  - No evidence yet, and no open findings.
+
+**Things I had to assume:**
+- **The space is not a git repo,** so I couldn't read the records "as committed" and read the files on disk instead. No `STATUS.md` existed before, so there was nothing to compare against. For the same reason the printed commands would fail if run as they are.
+- **Branch heads come from the ledger.** Neither remote (`example.invalid`) could be reached (`Could not resolve host`), so alpha is the end of T1's range and beta is its sha from the go line.
+- **add-farewell's task table is the header row only.** It has no plan, and the format doesn't say what an empty table should look like.
+- **The rebase target `origin/main` is a guess.** Nothing in the space names a default branch.
+
+DESK: git -C <scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space commit -m "status: regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T080326Z-test_R20_S1_status_rebuild_matches-38b7/space push origin HEAD

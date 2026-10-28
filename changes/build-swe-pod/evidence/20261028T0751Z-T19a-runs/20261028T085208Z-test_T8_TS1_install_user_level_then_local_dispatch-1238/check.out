@@ -1,0 +1,4 @@
+T8.TS1.1 pass INSTALL user-level destination True, names agents and skills True, project .claude/ in a command False
+T8.TS1.2 pass 1 subagent(s) for T1, 1 of type swe-build; types swe-build
+T8.TS1.3 pass T1 report at its path
+T8.TS1.4 pass .claude in the space none

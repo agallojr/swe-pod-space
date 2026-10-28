@@ -1,0 +1,11 @@
+`pod.yaml` is in the folder.
+
+DESK: git init
+DESK: git add pod.yaml
+DESK: git commit -m "Add pod.yaml" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+
+Under the desk rule, I printed the three git commands below and ran none of them. That means the folder isn't actually a git repository yet and nothing has been committed. To do it for real, run these commands in the folder in this order. Only `pod.yaml` gets staged; the other files there (`README.md`, `space.yaml`, and so on) stay untracked.
+
+DESK: git init
+DESK: git add pod.yaml
+DESK: git commit -m "Add pod.yaml" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"

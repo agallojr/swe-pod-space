@@ -1,0 +1,144 @@
+Here is the desk-run commit step for T2-report.md and the updated ledger.md; none of it was run:
+
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/tasks/T2-report.md" -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+
+---
+
+## Summary
+
+I dispatched two tasks. T1's review (T4) passed, but T2 (beta) is blocked: the git gate refused its commit.
+
+**T4, review of T1: passed.** It found nothing Critical or Important, so T1 is done.
+- It re-ran alpha's unit suite at fe320ea: 3 tests, OK.
+- It confirmed that R1.S1 and R1.S2 hold, and that names are counted in code points.
+- It left 4 Minor findings, deferred to the whole-change review:
+  - the long-name test doesn't check that the error message names 64;
+  - no test covers a name of exactly 64 code points, or a non-ASCII name;
+  - `greeting()` has no type annotations, though the plan's contract has them;
+  - T1's report quotes no red output, and the single commit can't show the tests came first.
+
+**T2, beta start-up line: BLOCKED.**
+- The builder made the change and quoted its red and green output: beta's suite passes 2/2 and `python3 -m beta` prints `hello, demo` then `beta 1.0`.
+- Its `git add` was refused by the git gate ("no mesh-git allowlist configured"), so nothing was committed.
+- The beta branch is still at d91d3eb. The two edited files are uncommitted in the beta checkout: `beta/__main__.py` and `tests/test_beta.py`.
+- I didn't commit the code myself or change the gate.
+
+**What's waiting:**
+- T5 (review of T2) needs T2's commit before it can start.
+- T6 (test suggestions) waits on T2.
+- T3 (project-level tests) was dispatched earlier and hasn't reported yet, so I didn't re-dispatch it.
+
+**Housekeeping:**
+- The alpha and beta checkouts have no `origin` remote, so I couldn't confirm the branches with `ls-remote`. I relied on the local `change/add-greeting` branches.
+- Untracked `__pycache__/` folders now sit in both checkouts: in alpha from the reviewer, in beta from the builder. Delete them before anyone runs `git add -A` there.
+- Since this was a desk run, nothing was actually filed. The ledger has no `filed` lines and I didn't regenerate `STATUS.md`.
+
+**Records written, all passing the librarian's checks, at `<scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space/changes/add-greeting/`:**
+- `tasks/T4-brief.md`
+- `tasks/T4-review.md`
+- `tasks/T2-brief.md`
+- `tasks/T2-report.md`
+- `ledger.md`, with these lines added: `dispatch T4 -> review (local, any)`, `T1 review: spec ok; 4 Minor [...]`, `dispatch T2 -> build (local, any), base beta d91d3eb`, `T2 BLOCKED`
+
+**Decision for you:** should beta get a mesh-git allowlist so T2 can commit through the gate, or will you commit the two files yourself with the trailers `Change: add-greeting` and `Task: T2`? Either way, I'll then dispatch T5.
+
+All DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/tasks/T4-brief.md" -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/tasks/T4-review.md" -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/tasks/T2-brief.md" -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/tasks/T2-report.md" -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083602Z-test_T1_TS6_review_dispatched_before_successor-1984/space merge-base --is-ancestor <commit> origin/main

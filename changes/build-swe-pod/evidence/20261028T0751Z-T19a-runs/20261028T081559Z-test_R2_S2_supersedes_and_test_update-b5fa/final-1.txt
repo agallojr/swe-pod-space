@@ -1,0 +1,26 @@
+I've drafted the spec at:
+
+`<scratch>/runs/20261028T081559Z-test_R2_S2_supersedes_and_test_update-b5fa/space/changes/raise-name-limit/spec.md`
+
+It is marked approved as `demo-owner 2026-10-28T08:16Z`, because you said you approve it as drafted.
+
+**What it says**
+- **The change:** `alpha` greets any name of up to 128 characters. A name of 129 or more is refused, and the error names the 128-character limit.
+- **What it replaces:** it supersedes `add-greeting/R1.S2`, the earlier rule that a 65-character name is refused. The old test for that rule now has to expect a greeting instead. The default greeting (`hello, demo`) and how `beta` prints it stay as they are.
+- **Requirements:**
+  - R1: names of 1 to 128 characters are greeted. Its checks cover a 65-character name, a name of exactly 128, and 128 accented characters, which take more than 128 bytes.
+  - R2: names over 128 are refused. Its checks cover a 129-character name and a 200-character one, whose error must say 128 and not 64.
+- **Size:** small, since it touches only `alpha`.
+
+**Defaults I chose, to check first (under "Open calls")**
+1. The limit counts characters (Unicode code points), as the old 64 limit did, not bytes or on-screen width.
+2. 128 itself is allowed; 129 is the first length refused.
+3. The error stays the same kind of error; only the number in its message changes.
+4. Empty names and names with control characters keep today's behaviour; the spec promises nothing about them.
+5. I added one quality check: `alpha`'s existing unit tests must pass. Drop it if you want none.
+
+Neither code repo has a `SPEC.md` copy, so there was nothing to re-copy. I changed nothing else in the space or the repos.
+
+**For the lead:** spec `changes/raise-name-limit/spec.md`, approved, superseding `add-greeting/R1.S2`.
+
+I printed no `DESK: ` lines and ran no git commands. Committing the spec is the lead's step through the space's librarian, so I have no `DESK: ` lines to repeat.

@@ -1,0 +1,26 @@
+Two of the three records passed the checks and one was refused. This was a desk run, so nothing was committed or pushed and no record is filed.
+
+```
+REFUSED notes/note-20261001T1800Z-3c11-home-path.md: profile line 11
+```
+
+- **Passed:** `3c09-registry-agent` and `3c10-registry-task`. With no bus, the check used only this machine's values, and neither note contains any of them. The commands to file them are below.
+- **Refused:** `3c11-home-path` failed the profile check at line 11. The check blocks real hostnames, agent IDs, task IDs, credential key names and home paths; from the filename it's probably a real home path. It needs fixing before it can be filed.
+- **The space root is not a git repository.** `git rev-parse` there returned "not a git repository". The commands below would fail there until the directory is a checkout with `origin` set.
+
+The skill's duplicate-check and confirm-on-`origin/main` commands are left out, since you listed only add, commit, fetch, rebase and push.
+
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space add -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c09-registry-agent.md" -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space add -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c10-registry-task.md" -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082827Z-test_T10_TS8_joined_and_registry_values-a737/repos/solo-space fetch origin
