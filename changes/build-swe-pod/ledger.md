@@ -512,4 +512,18 @@
                   those ids
 2026-10-28T04:09Z filed changes/build-swe-pod/tests/ (T18: 45 test_T*_TS* tests and 23
                   overlays), evidence/20261028T0406Z-T18-report.md
+2026-10-28T04:11Z Ruling: the shards' expected times, computed now from the filed expected_s
+                  and the split, are 11473 s and 11472 s, about 191 min each and 382 min in
+                  all; that is over the 02:49Z ruling's 180 min shard cap and a little over
+                  the overlay's about 3 h per run and about 6 h in all, so the shard cap is
+                  240 min, under the operator's yes to heavy (03:10Z) and permissive time
+                  (02:49Z), both given before these figures were known; cost if wrong:
+                  about 6.4 h of node time the operator did not see as a figure
+2026-10-28T04:11Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T04:11Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T04:11Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T04:11Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T04:11Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
