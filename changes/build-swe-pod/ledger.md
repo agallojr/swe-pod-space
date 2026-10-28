@@ -416,4 +416,100 @@
                   managed policy it reports is the kind ruled on at 02:59Z
 2026-10-28T03:29Z T42 review: spec ok; 1 Minor
 2026-10-28T03:29Z filed changes/build-swe-pod/tasks/T42-review.md
+2026-10-28T04:09Z T18 DONE_WITH_CONCERNS: 54 of 64 suggestions tested in 45 new tests (9 serve
+                  more than one), 10 declined; 23 overlays; expected 11169 s in all
+2026-10-28T04:09Z T18 at base: all 45 new tests fail (37 on an absent deliverable, no agent
+                  started; 8 inspect tests on a failing check), 0 pass
+2026-10-28T04:09Z T1.TS1 outcome: tested test_T1_TS1_approval_text_outside_header
+2026-10-28T04:09Z T1.TS2 outcome: tested test_T1_TS2_only_regression_suite_moved
+2026-10-28T04:09Z T1.TS3 outcome: tested test_T1_TS3_single_seat_fresh_planner
+2026-10-28T04:09Z T1.TS4 outcome: tested test_T1_TS4_heavy_from_recorded_run_time
+2026-10-28T04:09Z T1.TS5 outcome: tested test_T1_TS5_computed_values_in_other_forms
+2026-10-28T04:09Z T1.TS6 outcome: tested test_T1_TS6_review_dispatched_before_successor
+2026-10-28T04:09Z T2.TS1 outcome: tested test_T2_TS1_spec_from_template_with_comments
+2026-10-28T04:09Z T2.TS2 outcome: tested test_T2_TS2_review_over_two_repos
+2026-10-28T04:09Z T2.TS3 outcome: tested test_T2_TS3_ledger_from_template_not_emptied
+2026-10-28T04:09Z T2.TS4 outcome: declined: test_R12_S2_no_checks_declared already
+                  exercises it
+2026-10-28T04:09Z T3.TS1 outcome: tested test_T3_TS1_fresh_space_without_status
+2026-10-28T04:09Z T3.TS2 outcome: tested test_T3_TS2_blind_writer_amid_records_and_code
+2026-10-28T04:09Z T3.TS3 outcome: tested test_T3_TS3_placeholder_repo_in_pod_yaml
+2026-10-28T04:09Z T4.TS1 outcome: tested
+                  test_T4_TS1_several_requirements_without_scenario
+2026-10-28T04:09Z T4.TS2 outcome: tested test_T4_TS2_approval_relayed_by_lead
+2026-10-28T04:09Z T4.TS3 outcome: tested test_T4_TS3_planner_on_unapproved_spec
+2026-10-28T04:09Z T4.TS4 outcome: declined: test_R2_S2_supersedes_and_test_update
+                  already exercises it
+2026-10-28T04:09Z T4.TS5 outcome: tested test_T4_TS5_just_draft_it_lists_defaults
+2026-10-28T04:09Z T5.TS1 outcome: tested test_T5_TS1_plan_request_on_unapproved_spec
+2026-10-28T04:09Z T5.TS2 outcome: declined: test_R8_S1_test_result_in_lane already
+                  exercises it
+2026-10-28T04:09Z T5.TS3 outcome: tested test_T5_TS3_edit_while_serving_task_runs
+2026-10-28T04:09Z T5.TS5 outcome: tested test_T5_TS5_only_pin_moved
+2026-10-28T04:09Z T5.TS6 outcome: tested test_T1_TS5_computed_values_in_other_forms
+2026-10-28T04:09Z T6.TS1 outcome: tested test_T6_TS1_no_change_branch_on_remote
+2026-10-28T04:09Z T6.TS2 outcome: tested test_T3_TS2_blind_writer_amid_records_and_code
+2026-10-28T04:09Z T6.TS3 outcome: tested test_T6_TS3_reviewer_returns_text_only
+2026-10-28T04:09Z T6.TS4 outcome: declined: test_R11_S1_evidence_fields already
+                  exercises it
+2026-10-28T04:09Z T6.TS5 outcome: declined: cannot be produced or observed under the
+                  runner's isolation protocol
+2026-10-28T04:09Z T7.TS1 outcome: tested test_T7_TS1_same_minute_events
+2026-10-28T04:09Z T7.TS2 outcome: tested test_T7_TS2_spec_quoting_example_spec
+2026-10-28T04:09Z T7.TS3 outcome: tested test_T7_TS3_ledger_written_in_words
+2026-10-28T04:09Z T7.TS4 outcome: tested
+                  test_T7_TS4_template_plan_ruled_review_missing_results
+2026-10-28T04:09Z T8.TS1 outcome: tested
+                  test_T8_TS1_install_user_level_then_local_dispatch
+2026-10-28T04:09Z T8.TS2 outcome: tested test_T8_TS2_single_seat_files_through_librarian
+2026-10-28T04:09Z T8.TS3 outcome: tested test_T8_TS3_heavy_verify_with_g3_overlay
+2026-10-28T04:09Z T9.TS1 outcome: tested test_T9_TS1_pod_roles_per_task_output
+2026-10-28T04:09Z T9.TS2 outcome: tested test_T9_TS2_agent_roles_registration
+2026-10-28T04:09Z T9.TS3 outcome: declined: it can be checked only by reading the diff
+                  of T9's commits in agent-mesh (which files they change, and that the
+                  identity template's change is comments only), which the blind rule
+                  excludes
+2026-10-28T04:09Z T10.TS1 outcome: tested test_T10_TS1_reference_rule
+2026-10-28T04:09Z T10.TS2 outcome: tested test_T10_TS8_joined_and_registry_values
+2026-10-28T04:09Z T10.TS3 outcome: tested test_T10_TS1_reference_rule
+2026-10-28T04:09Z T10.TS4 outcome: declined: its duplicate-id half is exercised by
+                  test_I8_space_librarian_checks (record duplicate) and
+                  test_R17_S2_single_seat_librarian (record duplicate-two)
+2026-10-28T04:09Z T10.TS5 outcome: tested test_T10_TS8_joined_and_registry_values
+2026-10-28T04:09Z T10.TS6 outcome: tested test_T10_TS6_commit_stage_order
+2026-10-28T04:09Z T10.TS7 outcome: declined: a line-for-line comparison of runs on two
+                  nodes is outside what one runner test can observe (a run sees only its
+                  own node)
+2026-10-28T04:09Z T10.TS8 outcome: tested test_T10_TS8_joined_and_registry_values
+2026-10-28T04:09Z T11.TS1 outcome: tested test_T11_TS1_project_value_edges
+2026-10-28T04:09Z T11.TS2 outcome: declined: test_I6_mesh_post_project_flag already
+                  exercises it
+2026-10-28T04:09Z T11.TS3 outcome: tested test_T11_TS3_fan_out_project_line
+2026-10-28T04:09Z T11.TS4 outcome: tested test_T11_TS1_project_value_edges
+2026-10-28T04:09Z T11.TS5 outcome: tested test_T11_TS5_new_bus_mounts_no_space
+2026-10-28T04:09Z T11.TS6 outcome: tested test_T11_TS6_memory_spaces_scope_in_docs
+2026-10-28T04:09Z T11.TS7 outcome: tested test_T11_TS7_protocol_spaces_writers
+2026-10-28T04:09Z T12.TS1 outcome: tested test_T12_TS1_unmounted_project_blocked
+2026-10-28T04:09Z T12.TS2 outcome: tested test_T12_TS2_scan_list_initialized_spaces
+2026-10-28T04:09Z T12.TS3 outcome: tested test_T12_TS3_load_never_changes_bus
+2026-10-28T04:09Z T13.TS1 outcome: tested test_T13_TS1_result_files_by_rule
+2026-10-28T04:09Z T13.TS2 outcome: tested test_T13_TS1_result_files_by_rule
+2026-10-28T04:09Z T14.TS1 outcome: declined: the spec states no requirement on the
+                  agent-mesh README's links or on its linking the memory-spaces design,
+                  so the expected value would come from the builder (a proposed scenario
+                  for the spec author, if wanted)
+2026-10-28T04:09Z T14.TS2 outcome: tested test_T11_TS6_memory_spaces_scope_in_docs
+2026-10-28T04:09Z T14.TS3 outcome: tested test_T9_TS1_pod_roles_per_task_output
+2026-10-28T04:09Z T37.TS1 outcome: tested test_T37_TS1_shard_stale_by_space_commit
+2026-10-28T04:09Z T37.TS2 outcome: tested test_T37_TS2_shards_leave_out_unit_suite
+2026-10-28T04:09Z T37.TS3 outcome: tested test_T37_TS3_report_among_evidence
+2026-10-28T04:09Z Ruling: nine fixture files under tests/fixtures/overlays/ copy the demo
+                  change's evidence records, so one fixture id sits in several overlays and
+                  the librarian refuses them on id; they are test data in the test lane, not
+                  space records, and pass the profile and reference checks; filed as T16's
+                  and T17's overlays were; the librarian applying record ids to test
+                  fixtures is logged for T35; cost if wrong: none, no space record holds
+                  those ids
+2026-10-28T04:09Z filed changes/build-swe-pod/tests/ (T18: 45 test_T*_TS* tests and 23
+                  overlays), evidence/20261028T0406Z-T18-report.md
 ```
