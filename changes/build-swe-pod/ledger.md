@@ -189,4 +189,17 @@
                   <UTC>-<task id>-report.md (A39); cost if wrong: three records sit
                   outside the test lane by one folder
 2026-10-28T00:48Z T39 re-briefed with the R24 evidence contract of plan section 2.4
+2026-10-28T00:48Z operator decision PC1: (a), T19b runs serially on the remote node's
+                  one signed-in runner config; the node's one mesh agent takes it as
+                  one task; the suite splits about half and half by expected_s
+2026-10-28T00:53Z operator decision PC2: (i), the lead posts T19b with the operator's
+                  heavy approval quoted in its Context
+2026-10-28T00:53Z operator decision: G3 applied to the operator overlay now, ahead of
+                  T36, with higher limits for agent test and verify runs (about 6 h
+                  total, about 3 h per run; token use covered by the change's
+                  approval); T36's G3 step is done
+2026-10-28T00:53Z plan.md revision 4.2 filed: T41 (runner follow-up as a test task,
+                  after T15, before both shards) and A44 to A46 fixed
+2026-10-28T00:53Z Ruling: the runner follow-up already in progress under the test role
+                  is filed as T41; cost if wrong: none
 ```

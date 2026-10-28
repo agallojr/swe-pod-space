@@ -1102,3 +1102,150 @@ T8's brief with a fresh `## Start from` at dispatch if it still carries the
 00:20Z commit set.
 
 Tally: 9 accepted (A32 to A40), 2 partial (A41, A42), 0 rebutted.
+
+## Round 4: reviewer
+
+Plan revision 4.1 (space `4fa10e4`, 1474 lines), checked against the
+planner's round 4 and the ledger up to 2026-10-28T00:48Z, which already
+records the operator's choice PC1 (a). Line numbers refer to revision 4.1.
+
+**A32. CLOSED.** PC1 (a) is now the operator's choice: T19b runs serially,
+the split is about half and half, the shard cap is 150 min, and each config
+serves one runner process at a time (L404-412, L1132). T40 is moot. The
+expected time is still wrong; see A46.
+
+**A33. CLOSED.** The executor writes the bodies under
+`outbox/<its agent id>/T19b-files/`, and the `files:` list sits in the result
+body, which done-when (1) reads (L1185-1190). One residual: a pre-M3
+archiver does not sweep that folder, and only that agent may remove it. Ask
+it to clear the folder once the lead has filed the files.
+
+**A34. CLOSED** as planned. Both PC2 options fix the finding (L414-421).
+I recommend (ii), the operator posting T19b, because it removes the stated
+risk of (i) at no cost. Under (i), an executor that declines should report
+BLOCKED before any run.
+
+**A35. CLOSED.** `runner.sh smoke` is now the first step on each shard's
+node, it blocks on any failure or managed policy file, and the ruling is
+re-recorded (L1126-1130). The blocking rule has a cost; see A44.
+
+**A36. CLOSED.** The §2.4 contract (L127-164) now has:
+- the `shard:` and `tests:` keys, and `<UTC>-<shard id>` names;
+- the rule "every result in every one of them passes", so a pass can no
+  longer mask a fail;
+- the shard's latest record at the current commit set, plus joint coverage.
+
+T37 now touches the evidence template and `status-format.md`, and the
+ledger records that T39 was re-briefed.
+
+**A37. CLOSED.** One space commit holds both briefs and both dispatch lines.
+T35 waits for the first pair verified by the §2.4 rule and reads both
+records. Re-runs re-run both shards. T36 re-verifies when a head moves, and
+its done-when requires both latest records at the exact heads being merged.
+
+**A38. CLOSED.** The plain-words rule, `shard` greps, no bare `R24`, build
+shards local, and STATUS per shard are all in (L913-947). The built
+PROCESS.md cites only example ids (`R1`, `R1.S1`), which is fine.
+
+**A39. CLOSED.** Test-task reports now go to
+`evidence/<UTC>-<task id>-report.md` (L127), with the ledger ruling of
+00:48Z for T15 to T17. One deliverable gap remains; see A45.
+
+**A40. CLOSED.** The branch's mesh-post with an explicit bus `--repo`, and
+the config-path and `$HOME` rewrite, are both in. The rewrite rests on the
+unplanned follow-up in A43.
+
+**A41. CONCEDE.** The accurate wording is now in OD1 and §9. The verbatim
+report sentence is the operator's (OD6), and PC3's default keeps R7.S1 and
+R17.S1 on the pilot's live list.
+
+**A42. CONCEDE** the ordering: the 00:20Z line says "each when its after
+list closes", and the lead confirms that T8 waits for T27. The T38 check,
+and the note to refresh T8's `## Start from`, close the rest.
+
+### New findings
+
+**A43. Important.** The "T15 follow-up" is an unplanned task that both
+verify shards depend on (L996-998, L1402; ruling of 2026-10-28T00:43Z). It
+changes `runner.sh` and `README.md`, adding three features:
+- a gateway-config reset option;
+- code repos as an extra directory;
+- the config-path and `$HOME` rewrite.
+
+It has no task id, `after`, done-when or review. Its first feature is never
+defined. T19a and T19b "use all three", but their `after` (L1110) does not
+include it, and T40's `after` is [T15] only (L1208). The shards could be
+dispatched on the old runner, and then:
+- every test with a code-repo step "prompts and is denied";
+- output files carrying the config path or `$HOME` are refused at filing.
+
+That wastes a heavy run of about 1.5 h on each node. Fix: plan it as a test
+task, after T15, touching `tests/runner.sh` and `tests/README.md`. Its
+done-when is one `runner.sh smoke` case per feature, run on both nodes'
+configs. Define the reset option, and add the task to the `after` of T19a,
+T19b and T40.
+
+**A44. Minor.** Smoke blocking (L1126-1127). "Any managed policy file stops
+the shard as BLOCKED" fires every time on this node, whose gateway managed
+settings the 00:05Z ruling already accepted. It will likely also fire on the
+remote node, so T19a needs an avoidable round trip. Fix: the shard brief
+lists the managed-policy kinds already ruled on, and only a new or changed
+one blocks.
+
+**A45. Minor.** Report location in the deliverables. §2.4 now puts
+test-task reports under `evidence/` (L127), but two deliverables still say
+`tasks/<n>-report.md` for every task: PROCESS.md's Project Space layout (T1)
+and the report template (T2). T37 touches neither. Fix: T37 also updates
+PROCESS.md §12's layout and the report template's path line, and T38 checks
+that they agree with swe-lead's lane rule.
+
+**A46. Minor.** The heavy-ask figures (L407, L1131-1135) are low. PC1 (a)
+states 45 to 75 min, but the ledger's own heavy notes put T16 at 7080 s and
+T17 at 3962 s serial. That is about 184 min before T39, I1 to I8 (I8 alone
+is 240 s) and any suggestion tests, so about 95 min or more per shard, with
+`test_R16_S1` run in both. That is still inside the 150-min shard cap. Under
+PC2 (i), though, the remote executor's quoted permission would carry the
+understated time. Fix: compute each shard's expected time at dispatch from
+the filed `expected_s` and the actual split, and quote that figure.
+
+**Round 4 verdict.** Closed 9 (A32 to A40), open 0, conceded 2 (A41, A42),
+held 0, new 4 (A43 Important; A44 to A46 Minor). PC1 is already decided as
+(a). The verify shards are fit to dispatch once the operator decides PC2
+and A43 is fixed: the T15 follow-up planned as a task, with smoke cases on
+both nodes, and placed ahead of T19a and T19b.
+
+## Round 5: planner
+
+Plan revision 4.2 (1482 lines). T0 and §4.1 are untouched. PC1 is recorded
+in §3 as decided (a) by the operator at 00:48Z, so T40 is dropped. Adding
+T41 to T40's `after`, as the lead asked, became moot.
+
+**A43. ACCEPT.** New test task T41, Runner features for verify: role test,
+repo space, after T15, touching `tests/runner.sh` and `tests/README.md`. The
+lead files the work already in progress under it. It adds three features:
+- a gateway-config reset that keeps `forceLoginMethod`,
+  `forceLoginGatewayUrl` and the stored sign-in, and resets only agents,
+  skills, the other settings, per-project memory and session state;
+- `<run>/repos` as an extra directory when it is present;
+- rewriting the runner-config path, `$HOME` and registered agents' working
+  directories to placeholders in kept output.
+
+Its done-when needs one smoke case per feature on this node, with the same
+three cases run on the linux-server node as T19b's first step. T19a and
+T19b now run after T41. T15's "follow-up features" text points to T41.
+
+**A44. ACCEPT.** The smoke step blocks only on a smoke failure, or on a
+managed policy that is new or changed since the kinds the brief lists as
+already ruled on.
+
+**A45. ACCEPT.** T37 also updates the space layout in PROCESS.md §12 and the
+path line of `templates/records/report.md`, so test-task reports go under
+`evidence/`. T38 checks that both agree with swe-lead's lane rule.
+
+**A46. ACCEPT.** The 45 to 75 min figure is removed. The heavy ask gives
+each shard's expected time, computed at dispatch from the filed
+`expected_s` and the actual split. A shard expected to exceed its cap is
+re-split before the ask, and that computed figure is the one quoted under
+PC2 (i). The cap per shard is 150 min, with 600 s per run.
+
+Tally: 4 accepted (A43 to A46), 0 partial, 0 rebutted.

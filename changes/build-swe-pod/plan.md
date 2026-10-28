@@ -4,7 +4,7 @@
   and amended with R24, approved 2026-10-28T00:31Z (§3 OD7)
 - size: project. Planner: a fresh agent in the plan role, which never saw the
   spec conversation (spec §5.2)
-- revision: 4.1, after review rounds 1 to 4 (`plan-review.md`) and the
+- revision: 4.2, after review rounds 1 to 5 (`plan-review.md`) and the
   operator decisions in §3
 - base commit set (what the tests run against at base): the space's `main` at
   the commit that files this plan; swe-pod `8fc5294`; agent-mesh `8ee5364`
@@ -398,19 +398,13 @@ one; elsewhere the plan cites them by id.
   - Each shard files its own evidence record, and the change is verified
     only as R24 says (§2.4).
 
-Choices pending with the operator. The plan proceeds with each default until
-the operator picks:
+Operator choices on verify, PC1 to PC3. The plan proceeds with each
+default until the operator picks:
 
-- **PC1** (A32): how T19b runs.
-  - (a), the default: T19b runs serially, like T19a, on one signed-in
-    config. The split is about half and half by `expected_s`, and the
-    expected wall time is 45 to 75 min.
-  - (b): the runner gets one signed-in config per parallel slot (T40), so
-    that T19b runs 4 at a time. On that node each slot is a separate gateway
-    device-flow sign-in by the operator. T19a takes about one fifth of the
-    `expected_s`, and the expected wall time is 20 to 45 min.
-
-  Either way, each config serves one runner process at a time.
+- **PC1** (A32): **decided (a)** by the operator (ledger, 00:48Z). T19b runs
+  serially, like T19a, on one signed-in config, and each config serves one
+  runner process at a time. The parallel-slot option, and its task T40, are
+  dropped.
 - **PC2** (A34): who authorizes T19b's long runs on the remote node.
   - (i), the default: the operator approves the heavy ask, the lead records
     it as a `heavy:` ledger line, and T19b's Context quotes that approval,
@@ -453,8 +447,8 @@ and similar placeholders, never a real name, path or host.
 | agent-mesh | `bus-skeleton/spaces.yaml` | create | empty registry for new buses | T11 |
 | agent-mesh | `skills/mesh-load/SKILL.md` | create | load and drop a space (M2) | T12 |
 | agent-mesh | `README.md` | change | new skills, spaces, `swe.*` roles | T14 |
-| swe-pod | `PROCESS.md`, `agents/swe-plan.md`, `swe-lead.md`, `swe-test.md`, `skills/swe-pod/SKILL.md`, `status-format.md`, `templates/records/evidence.md` | change | role scaling and sharded verify (R24) | T37 |
-| space | `changes/build-swe-pod/tests/**` | create | project-level tests, runner and fixtures | T15 to T18, T39 |
+| swe-pod | `PROCESS.md`, `agents/swe-plan.md`, `swe-lead.md`, `swe-test.md`, `skills/swe-pod/SKILL.md`, `status-format.md`, `templates/records/evidence.md`, `report.md` | change | role scaling, sharded verify (R24), test-report location | T37 |
+| space | `changes/build-swe-pod/tests/**` | create | project-level tests, runner and fixtures | T15 to T18, T39, T41 |
 | space | `changes/build-swe-pod/evidence/*` | create | verify evidence and test outputs | T19a, T19b |
 
 ### 4.1 Build checkouts, commits and filing
@@ -916,7 +910,8 @@ rule listed in the steps; no grep stands in for that.
 - serves: [R24]
 - touches: PROCESS.md, agents/swe-plan.md, agents/swe-lead.md,
   agents/swe-test.md, skills/swe-pod/SKILL.md,
-  skills/swe-pod/status-format.md, templates/records/evidence.md
+  skills/swe-pod/status-format.md, templates/records/evidence.md,
+  templates/records/report.md
 - steps:
   - **PROCESS.md.**
     - §4 Plan: tasks with no dependency run in parallel by default, and a
@@ -941,6 +936,9 @@ rule listed in the steps; no grep stands in for that.
     (R24.S2).
   - **Evidence template.** Add `shard:` and `tests:`, and the shard file
     name.
+  - **Report location.** In PROCESS.md §12's space layout and in the report
+    template's path line, a test task's report goes under `evidence/`
+    (§2.4).
 - done when: (1) a grep finds `shard` in PROCESS.md §4, §7 and §11, finds
   `shard:` and `tests:` in the evidence template and the skill, and finds no
   bare `R24` in PROCESS.md; (2) review checks every rule in the steps; (3)
@@ -989,13 +987,11 @@ depends on §4.1 or §5, which the test agent never reads.
       agent prints commands and runs none.
     - **Caps and output.** A run is stopped at its cap and recorded as
       `not-run (cap)`. Each run writes one output file. In it, the scratch
-      root, the config path and `$HOME` are rewritten to `<scratch>`,
-      `<config>` and `<home>`, so no machine path reaches it.
+      root is rewritten to `<scratch>`, and T41 adds further rewrites.
     - **One process per config.** Each config serves one runner process at a
       time.
-    - **Follow-up features.** The T15 follow-up adds three: a gateway-config
-      reset option, code repos as an extra directory, and the
-      config-path and `$HOME` rewrite above. T19a and T19b use all three.
+    - **Later features.** T41 extends the runner, and T19a and T19b depend
+      on it.
     - **Deliverables.** They are exported read-only by sha (`git archive`)
       from the brief's `## Start from`, never read from a working copy. The
       runner takes machine paths as arguments and holds none.
@@ -1087,6 +1083,27 @@ depends on §4.1 or §5, which the test agent never reads.
 - done when: (1) 2 test files exist, for R24.S1 and R24.S2; (2) each is run at
   base and fails on the precondition; the lead records `T39 at base:`.
 
+### T41 Runner features for verify
+- role: test
+- repo: space
+- after: [T15]
+- runs: local
+- needs: any
+- serves: [R1 to R24] (the verify harness)
+- touches: changes/build-swe-pod/tests/runner.sh, tests/README.md
+- steps: The work is already under way in the test role, and the lead files
+  it under T41. It adds three runner features:
+  1. **Gateway-config reset.** Keep `forceLoginMethod`,
+     `forceLoginGatewayUrl` and the stored sign-in. Reset only the agents,
+     the skills, the other settings, per-project memory and session state.
+  2. **Code repos.** Use `<run>/repos` as an extra directory when it is
+     present.
+  3. **Output rewrite.** In kept output, rewrite the runner-config path,
+     `$HOME` and each registered agent's working directory to placeholders.
+- done when: `runner.sh smoke` has one passing case per feature on this
+  node; the same three cases run on the linux-server node as T19b's first
+  step; and README documents all three features.
+
 ### T18 Builder test suggestions
 - role: test
 - repo: space
@@ -1107,7 +1124,7 @@ depends on §4.1 or §5, which the test agent never reads.
 Both shards share these fields:
 - role: test
 - repo: space, swe-pod, agent-mesh
-- after: [T0 to T18, T37, T39]
+- after: [T0 to T18, T37, T39, T41]
 - serves: [R1 to R24]
 - prerequisite: the operator has signed in the isolated runner config on
   the node (T15 Config); if it fails, the shard reports BLOCKED, for the
@@ -1117,22 +1134,25 @@ Both shards share these fields:
   dispatch lines. Both shards run at that space commit and at the same
   branch heads, by sha.
 - **Split** (the lead, at dispatch). Each test goes to one shard by its
-  `expected_s`, so that both shards finish at about the same time. Under PC1
-  (a) both shards are serial, so the split is about half and half; under
-  (b), T19a takes about one fifth.
+  `expected_s`, so that both shards finish at about the same time. Both are
+  serial (PC1), so the split is about half and half.
   - A test whose `env` names a class goes to the shard of that class.
   - `test_R16_S1` runs last in both shards, over that shard's ledgers.
   - Each brief's `## Task` lists its shard's tests.
-- **First step: `runner.sh smoke`** on the shard's own node. Any failure, or
-  any managed policy file, stops the shard as BLOCKED, for a lead ruling,
-  before any test runs. The evidence body records the smoke result. For
-  T19b, this replaces the mitigation named in the 00:05Z ruling, which the
-  lead re-records.
+- **First step: `runner.sh smoke`** on the shard's own node, with T41's
+  three cases. The brief lists the managed-policy kinds already ruled on.
+  Only a smoke failure, or a managed policy that is new or changed since
+  then, stops the shard as BLOCKED for a lead ruling before any test runs.
+  The evidence body records the smoke result. For T19b, this replaces the
+  mitigation named in the 00:05Z ruling, which the lead re-records.
 - **Caps.** Each run is capped at its `cap_s`, at most 600 s, and each shard
-  at 150 min in total under PC1 (a), or 120 min under (b).
-- **Heavy.** Before dispatch, the lead gives the operator one heavy ask: the
-  runner commands, the caps and the PC1 wall time (R13.S1). The approval is
-  used as PC2 says.
+  at 150 min in total.
+- **Heavy.** Before dispatch, the lead gives the operator one heavy ask
+  (R13.S1). It names the runner commands and the caps, and each shard's
+  expected time, computed at dispatch from the filed `expected_s` and the
+  actual split. A shard expected to exceed its cap is re-split before the
+  ask. The approval is used as PC2 says, and the quoted figure is that
+  computed time.
 - **Suites.** Neither repo has a unit suite, and the spec has no Quality
   section.
 - **Evidence.** Each shard files one record named for its shard, with every
@@ -1186,8 +1206,7 @@ Both shards share these fields:
     executor itself writes each file body under
     `outbox/<its agent id>/T19b-files/<space path>`, which the old poller's
     sync carries. It puts the `files:` list, with sha256, in the result body.
-  - **Run.** Serial under PC1 (a). Under (b), up to 4 slots at a time, and
-    never more than half the node's cores.
+  - **Run.** Serially (PC1).
   - **R7.S1, live.** The tester checks test_R7_S1's Then items against its
     own task.request and the dispatch line in the space commit it was given.
   - **Filing.** The lead pulls the bus by hand (§3 OD3), checks each sha256
@@ -1202,18 +1221,7 @@ Both shards share these fields:
 
 T20 is merged into verify (§3 OD6), and its id is not reused.
 
-### T40 Runner slots (only if the operator picks PC1 (b))
-- role: test
-- repo: space
-- after: [T15]
-- runs: local
-- needs: any
-- serves: [R24]
-- touches: changes/build-swe-pod/tests/runner.sh, tests/README.md
-- steps: Give the runner one signed-in config per parallel slot, and a
-  locked `results.log`. The operator signs in each slot.
-- done when: `runner.sh smoke` passes with 4 slots at once, and no two runs
-  share a config. T19b then runs `after` T40 as well.
+T40 is dropped (PC1 (a)), and its id is not reused.
 
 ## 7. Review tasks
 
@@ -1245,7 +1253,7 @@ the ledger.
 | T32 | T12 M2b | [T12] | as T12 |
 | T33 | T13 M3 | [T13] | as T13 |
 | T34 | T14 agent-mesh README | [T14] | as T14 |
-| T38 | T37 role scaling; it also checks that the swe-pod README's process summary still matches | [T37] | as T37 |
+| T38 | T37 role scaling. It also checks that the swe-pod README's process summary still matches, and that PROCESS.md §12 and the report template agree with swe-lead's lane rule | [T37] | as T37 |
 
 ### T35 Whole-change review
 - role: review
@@ -1386,8 +1394,8 @@ declares no Quality section; the standard close covers it.
 - **Then:**
   - T7 after T0 and T2. T8 after T1 to T7.
   - T12 after T9. T13 after T11 and T12. T14 after T10 and T13.
-  - T16, T17 and T39 after T15, in parallel. T37 after T1, T2, T4, T5, T6
-    and T7. T40 runs only under PC1 (b), after T15.
+  - T16, T17, T39 and T41 after T15, in parallel. T37 after T1, T2, T4, T5,
+    T6 and T7.
   - T19a and T19b in parallel, then T35, then T36.
 - **Ordering of shared files:**
   - `guidance/agent-operating.md` and `skills/mesh-on/poller-prompt.md`: T12,
@@ -1397,10 +1405,9 @@ declares no Quality section; the standard close covers it.
   - swe-pod `README.md`: T0, then T8.
   - `PROCESS.md`, `agents/swe-plan.md`, `agents/swe-lead.md`,
     `agents/swe-test.md`, `skills/swe-pod/SKILL.md`, `status-format.md` and
-    `templates/records/evidence.md`: T1, T4, T5, T6, T7, T7 and T2
-    respectively, then T37.
-  - `tests/runner.sh` and `tests/README.md`: T15 and its follow-up, then
-    T40 if it runs.
+    `templates/records/evidence.md` and `report.md`: T1, T4, T5, T6, T7, T7,
+    T2 and T2 respectively, then T37.
+  - `tests/runner.sh` and `tests/README.md`: T15, then T41.
   - `SPEC.md` and `spec-process.*`: T0 only, plus T0-style re-copies (§4.1).
   - No other file is touched by two tasks. Test tasks write only new files.
 - **Longest chain** (13 tasks): T0 > T9 > T29 > T12 > T32 > T13 > T33 > T14
@@ -1437,7 +1444,8 @@ declares no Quality section; the standard close covers it.
 
 ## Questions for the spec
 
-The questions that needed the operator are settled (§3, OD1 to OD7), except PC1 to PC3 in §3, which have defaults. Several
+The questions that needed the operator are settled (§3, OD1 to OD7 and PC1).
+PC2 and PC3 in §3 have defaults. Several
 earlier defaults are now fixed in §2 or in their tasks, and are no longer
 open: result files (§2.7); M4 deferred (§1); mesh builds deferred (§3 OD4,
 T36 step 3); results with no scenario (§2.4); no layout bump (§2.7);
