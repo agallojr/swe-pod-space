@@ -804,4 +804,22 @@
 2026-10-28T11:30Z T1 DONE, swe-pod be81f02..ec77436 (verify fix: heavy rule)
 2026-10-28T11:30Z T8 DONE, swe-pod 9884cd1..83eaef9 (verify fix: heavy rule)
 2026-10-28T11:30Z filed changes/build-swe-pod/tasks/V3-report.md, tasks/V3-review-r2.md
+2026-10-28T11:31Z T18 DONE_WITH_CONCERNS: round 4 test fixes (T7.TS3, R19.S1, R23.S2, T13.TS1)
+2026-10-28T11:31Z T41 DONE_WITH_CONCERNS: the librarian preamble asks for every git command of
+                  the procedure, and the bus's direct-inbox names are redacted; smoke 8 of 8
+                  twice on macos-laptop
+2026-10-28T11:31Z T18 at base: all 4 changed tests fail for their stated reasons, no agent
+                  started, 0 pass
+2026-10-28T11:31Z filed changes/build-swe-pod/tests/ (T18 and T41 round 4 fixes),
+                  evidence/20261028T1130Z-T18-report.md
+2026-10-28T11:31Z Ruling: the commit set has moved, through swe-pod's head (83eaef9, the
+                  heavy-rule fix) and the tests (now at 73c7543), so both shards are briefed again
+                  and run again, round 5, with the same split and caps; cost if wrong: none
+2026-10-28T11:31Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T11:31Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T11:31Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T11:31Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T11:31Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
