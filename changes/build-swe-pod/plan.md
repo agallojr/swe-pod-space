@@ -4,8 +4,9 @@
   and amended with R24, approved 2026-10-28T00:31Z (§3 OD7)
 - size: project. Planner: a fresh agent in the plan role, which never saw the
   spec conversation (spec §5.2)
-- revision: 4.2, after review rounds 1 to 5 (`plan-review.md`) and the
-  operator decisions in §3
+- revision: 4.3, adding T42 and T43 so that space-librarian files shard
+  evidence ids (T37's review); before that, review rounds 1 to 5
+  (`plan-review.md`) and the operator decisions in §3
 - base commit set (what the tests run against at base): the space's `main` at
   the commit that files this plan; swe-pod `8fc5294`; agent-mesh `8ee5364`
   (the pins in `pod.yaml`)
@@ -448,6 +449,7 @@ and similar placeholders, never a real name, path or host.
 | agent-mesh | `skills/mesh-load/SKILL.md` | create | load and drop a space (M2) | T12 |
 | agent-mesh | `README.md` | change | new skills, spaces, `swe.*` roles | T14 |
 | swe-pod | `PROCESS.md`, `agents/swe-plan.md`, `swe-lead.md`, `swe-test.md`, `skills/swe-pod/SKILL.md`, `status-format.md`, `templates/records/evidence.md`, `report.md` | change | role scaling, sharded verify (R24), test-report location | T37 |
+| agent-mesh | `skills/space-librarian/SKILL.md` | change | the id check accepts shard evidence ids (R24) | T42 |
 | space | `changes/build-swe-pod/tests/**` | create | project-level tests, runner and fixtures | T15 to T18, T39, T41 |
 | space | `changes/build-swe-pod/evidence/*` | create | verify evidence and test outputs | T19a, T19b |
 
@@ -944,6 +946,45 @@ rule listed in the steps; no grep stands in for that.
   bare `R24` in PROCESS.md; (2) review checks every rule in the steps; (3)
   the standard close holds.
 
+### T42 Shard evidence ids in space-librarian (M5)
+- role: build
+- repo: agent-mesh
+- after: [T10]
+- runs: local
+- needs: any
+- serves: [R24]
+- touches: skills/space-librarian/SKILL.md
+- steps:
+  - The id form for a record under `changes/<id>/evidence/` also accepts a
+    shard record's id, `ev-<YYYYMMDDTHHMMZ>-<shard id>` (§2.4). The shard id
+    is a task id followed by one lowercase letter, as §2.5 names shard ids
+    (`T<n>a`, `T<n>b`).
+  - **Prose.** In section 1's id bullet, the evidence form reads `ev-<UTC>`,
+    or `ev-<UTC>-<shard id>` for a shard, such as `ev-<UTC>-T19a`.
+  - **Script.** In the `changes/*/evidence/*)` case, the evidence
+    alternative becomes `ev-[0-9]{8}T[0-9]{4}Z(-T[0-9]+[a-z])?`.
+  - Nothing else changes: the other id forms, the already-present and
+    one-file-per-event rules, the profile and reference checks, and
+    section 2.
+- done when:
+  1. In a scratch directory outside every repo, a throwaway space (a
+     `git init` repo with a `space.yaml`, and no remote) holds records built
+     at run time under `changes/demo/evidence/`. The section 1 script, run on
+     them, prints `CHECKED` for both `ev-20261028T0100Z` and
+     `ev-20261028T0100Z-T19a`, held by two records in the space at once.
+  2. It prints `REFUSED <space path>: id line <n>` for a new record with
+     each of these ids: `ev-20261028T0100Z-T19` (no letter),
+     `ev-20261028T0100Z-19a` (no `T`), `ev-20261028T0100Z-T19a-x` (trailing
+     text) and `ev-20261028T0100-T19a` (no `Z`); for a second evidence
+     record that holds `ev-20261028T0100Z-T19a` again; and for
+     `ev-20261028T0200Z-T19a` in a record under `notes/`.
+  3. T10's done-when checks 1 and 2 still hold.
+  4. The `Task: T42` commits change only the id bullet's prose in section 1
+     and the script's `changes/*/evidence/*)` case.
+  5. Review checks that the prose and the script give the same form, and
+     that nothing else changed.
+  6. The standard close holds.
+
 ## 6. Test tasks
 
 These are written blind, from the test-writing brief only (§2.4), whose
@@ -1124,15 +1165,16 @@ depends on §4.1 or §5, which the test agent never reads.
 Both shards share these fields:
 - role: test
 - repo: space, swe-pod, agent-mesh
-- after: [T0 to T18, T37, T39, T41]
+- after: [T0 to T18, T37, T39, T41, T42]
 - serves: [R1 to R24]
 - prerequisite: the operator has signed in the isolated runner config on
   the node (T15 Config); if it fails, the shard reports BLOCKED, for the
   operator.
 
-- **Commit set.** One space commit files both shard briefs and both
-  dispatch lines. Both shards run at that space commit and at the same
-  branch heads, by sha.
+- **Commit set.** The shards' space commit is the space commit that files
+  the last of the shard briefs and dispatch lines, and the lead gives that
+  commit to every shard at dispatch. Both shards run at that space commit
+  and at the same branch heads, by sha.
 - **Split** (the lead, at dispatch). Each test goes to one shard by its
   `expected_s`, so that both shards finish at about the same time. Both are
   serial (PC1), so the split is about half and half.
@@ -1254,6 +1296,7 @@ the ledger.
 | T33 | T13 M3 | [T13] | as T13 |
 | T34 | T14 agent-mesh README | [T14] | as T14 |
 | T38 | T37 role scaling. It also checks that the swe-pod README's process summary still matches, and that PROCESS.md §12 and the report template agree with swe-lead's lane rule | [T37] | as T37 |
+| T43 | T42 shard evidence ids in space-librarian | [T42] | as T42 |
 
 ### T35 Whole-change review
 - role: review
@@ -1394,6 +1437,7 @@ declares no Quality section; the standard close covers it.
 - **Then:**
   - T7 after T0 and T2. T8 after T1 to T7.
   - T12 after T9. T13 after T11 and T12. T14 after T10 and T13.
+  - T42 after T10, then its review T43; T19a and T19b wait for both.
   - T16, T17, T39 and T41 after T15, in parallel. T37 after T1, T2, T4, T5,
     T6 and T7.
   - T19a and T19b in parallel, then T35, then T36.
@@ -1408,6 +1452,7 @@ declares no Quality section; the standard close covers it.
     `templates/records/evidence.md` and `report.md`: T1, T4, T5, T6, T7, T7,
     T2 and T2 respectively, then T37.
   - `tests/runner.sh` and `tests/README.md`: T15, then T41.
+  - `skills/space-librarian/SKILL.md`: T10, then T42.
   - `SPEC.md` and `spec-process.*`: T0 only, plus T0-style re-copies (§4.1).
   - No other file is touched by two tasks. Test tasks write only new files.
 - **Longest chain** (13 tasks): T0 > T9 > T29 > T12 > T32 > T13 > T33 > T14
@@ -1421,7 +1466,8 @@ declares no Quality section; the standard close covers it.
   T1, T5, T6. R11 to T1, T2, T6. R12 to T1, T2, T6, T7. R13 to T1, T5, T8.
   R14 to T1, T2, T5. R15 to T1, T5. R16 to T2, T3, T10. R17 to T5, T8, T10,
   T11, T12, T13. R18 to T1, T2, T3, T5, T7. R19 to T1, T4. R20 to T7. R21 to
-  T1, T2, T5, T6. R22 to T1, T3, T5. R23 to T1, T5, T6. R24 to T37. Pass.
+  T1, T2, T5, T6. R22 to T1, T3, T5. R23 to T1, T5, T6. R24 to T37, T42.
+  Pass.
 - **Every scenario maps to a test.** The test map lists 37 of 37 scenarios,
   each with a test name and the task that writes it. Pass.
 - **No placeholder steps.** Every done-when names a file, an exact string, a
@@ -1431,12 +1477,14 @@ declares no Quality section; the standard close covers it.
   `swe-pod-process@1`, `swe-<role>`, `swe.<role>`, `project:`, `--project`,
   `files:`, `-files/`, `MESH_SCAN_LIST`, `space-librarian`, `mesh-load`,
   `none-present`, `none-declared`, `x-checks`, `x-suggestions`, `T<n>.TS<k>`,
-  `test_R<n>_S<m>_<slug>`. Pass.
+  `test_R<n>_S<m>_<slug>`, and the shard evidence id
+  `ev-<YYYYMMDDTHHMMZ>-<shard id>` with shard ids `T<n>a`, `T<n>b` (§2.4,
+  §2.5, T42). Pass.
 - **Every task has its fields.** Each has role, repo, after, runs, needs,
   serves and done-when; the review tasks get them through the rule above
   their table. T0 serves none, because it lands an input (§3 OD5). Pass.
-- **Shared files are ordered** (§10). No build task touches `SPEC.md`, and
-  the standard close checks that. Pass.
+- **Shared files are ordered** (§10), T10 then T42 included. No build task
+  touches `SPEC.md`, and the standard close checks that. Pass.
 - **Blindness, scope, shareable.** §6 cites only §2, §3, §9 and its own
   files. Nothing outside spec §§13 and 14 is built; M4 and the executor git
   exception are deferred (§3 OD4). There is no hostname, agent id, home path
