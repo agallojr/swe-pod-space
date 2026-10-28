@@ -794,4 +794,14 @@
 2026-10-28T11:26Z dispatch T5 -> build (local, any), base swe-pod a9296c5
 2026-10-28T11:26Z dispatch T1 -> build (local, any), base swe-pod a9296c5
 2026-10-28T11:26Z dispatch T8 -> build (local, any), base swe-pod a9296c5
+2026-10-28T11:30Z T5 fix round 3/5: 1 addressed, 0 open, a9296c5..c1744fe
+2026-10-28T11:30Z T1 fix round 3/5: 1 addressed, 0 open, c1744fe..ec77436
+2026-10-28T11:30Z T8 fix round 2/5: 1 addressed, 0 open, ec77436..83eaef9
+2026-10-28T11:30Z T5 review r6: spec ok; none
+2026-10-28T11:30Z T1 review r8: spec ok; none
+2026-10-28T11:30Z T8 review r3: spec ok; none
+2026-10-28T11:30Z T5 DONE, swe-pod 4d5bfc7..c1744fe (verify fix: heavy rule)
+2026-10-28T11:30Z T1 DONE, swe-pod be81f02..ec77436 (verify fix: heavy rule)
+2026-10-28T11:30Z T8 DONE, swe-pod 9884cd1..83eaef9 (verify fix: heavy rule)
+2026-10-28T11:30Z filed changes/build-swe-pod/tasks/V3-report.md, tasks/V3-review-r2.md
 ```
