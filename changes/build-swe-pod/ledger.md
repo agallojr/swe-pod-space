@@ -846,4 +846,19 @@
                   T41, proven by live runs before both shards run again, round 6; the 03:23Z
                   and 12:04Z rulings stand; cost if wrong: one more round
 2026-10-28T12:28Z dispatch T41 -> test (local, any)
+2026-10-28T12:40Z T41 DONE_WITH_CONCERNS: the librarian desk-step preamble asks the agent to carry
+                  the step out, printing each git command where it would run it, through any
+                  confirmation after the push; nine live librarian runs, none stopped by the
+                  provider's safeguard (T10.TS6 2 of 3, I8 3 of 3, R17.S2 3 of 3); smoke 8 of 8
+2026-10-28T12:40Z filed changes/build-swe-pod/tests/runner.sh, evidence/20261028T1238Z-T41-report.md
+2026-10-28T12:40Z Ruling: the commit set has moved through the tests (now at 31e5e2d), so both
+                  shards are briefed again and run again, round 6, with the same split and
+                  caps; cost if wrong: none, a full re-run
+2026-10-28T12:40Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T12:40Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T12:40Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T12:40Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T12:40Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
