@@ -402,4 +402,13 @@
 2026-10-28T03:18Z T42 DONE, agent-mesh e0f6af0..1367f65
 2026-10-28T03:18Z filed changes/build-swe-pod/tasks/T42-report.md
 2026-10-28T03:18Z T42.TS1 and T42.TS2 -> logged for T35, not T18, by the 03:07Z ruling
+2026-10-28T03:23Z T41 DONE_WITH_CONCERNS: S3 waits in the runner's own interpreter instead of
+                  a bare sleep, S4 and S7 prompts leave no reading that skips the step, and
+                  the three retry at most twice when the probe does not fire; smoke 8 of 8
+                  in three runs in a row on macos-laptop
+2026-10-28T03:23Z Ruling: the T41 agent read 30 lines of the T39 report, outside its brief;
+                  a test task's report holds no implementation body, diff, builder report
+                  or build-task step; cost if wrong: none to blindness
+2026-10-28T03:23Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
+                  evidence/20261028T0321Z-T41-report.md
 ```
