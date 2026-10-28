@@ -611,4 +611,12 @@
 2026-10-28T06:44Z T18 at base: all 59 changed tests fail for their stated reasons (50 on an
                   absent deliverable, no agent started; 9 inspect), 0 pass
 2026-10-28T06:44Z filed changes/build-swe-pod/tests/ (T18 fixes), evidence/20261028T0640Z-T18-report.md
+2026-10-28T06:51Z T41 DONE_WITH_CONCERNS: runner fixes from verify (mesh-post deny in command
+                  position; DESK lines in the final reply; git -C only inside the run dir;
+                  a run ends 10 s after its result; one retry with no agent turn; HOME is the
+                  run dir with the node's .agent-* files denied and ids redacted; a skill
+                  deliverable exports its whole directory); smoke 8 of 8 in three runs on
+                  macos-laptop
+2026-10-28T06:51Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
+                  evidence/20261028T0648Z-T41-report.md
 ```
