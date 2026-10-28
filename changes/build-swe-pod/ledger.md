@@ -822,4 +822,10 @@
 2026-10-28T11:31Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T11:31Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T11:31Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-28T12:04Z Ruling: in round 5, runs stopped by the provider's safeguard (an API error,
+                  not an agent's answer) are environmental, as round 1's gateway outage was; a
+                  shard re-runs each such test after its main pass, at most twice more, at the
+                  same commit set and inside its cap, then test_R16_S1 again last; each test's
+                  result is its last run's, and one still stopped is not-run (environment);
+                  cost if wrong: up to about 40 min more shard time
 ```
