@@ -39,8 +39,9 @@ runner.sh run <test file>... --python <py> --scratch <scratch> \
   the sha7 in the run's `meta.json`, so the commit set of every run is known.
 - `--gate` names the agent-mesh sha whose `hooks/git-gate.py` is installed.
 - `--bus` and `--space` are read-only sources of real values for checks that
-  look for them (I5), and `--bus` also gives the agent working directories
-  the redaction rewrites. Nothing read from them is printed or written.
+  look for them (I5), and `--bus` also gives the registered agents' working
+  directories, ids, names and hostnames that the redaction rewrites. Nothing
+  read from them is printed or written.
 - `--env` is this node's environment class. A test whose `env` is not `any`
   runs only where `--env` matches it.
 - `--allow-heavy` lets tests marked `heavy: true` run. Give it only after the
@@ -60,31 +61,53 @@ RESULT <test name> fail (check <In.k>: <reason>)
 RESULT <test name> fail (deliverable absent: <repo> <sha7> <path>)
 RESULT <test name> not-run (cap <n> s)
 RESULT <test name> not-run (heavy: needs the operator's go and --allow-heavy)
+RESULT <test name> error (no agent turn in step <k>; see stream-<k>.jsonl and stderr-<k>.txt)
 BLOCKED <reason>
 ```
+
+When an agent step was retried (see Caps), the result's parenthesis ends
+`; step <k> retried once after <reason>)`, as in `pass (all 4 checks pass;
+step 1 retried once after startup failure with no agent turn)`.
 
 `BLOCKED` means sign-in or isolation failed and nothing ran; report it to the
 operator. Exit status: 0 when every test passed, 1 otherwise, 3 when blocked.
 
 Each run leaves `<scratch>/runs/<UTC>-<test name>-<4 hex>/` with `meta.json`
 (commit set, absent deliverables), `export/` (the deliverables, read-only),
-the space copy, and per agent step `prompt-<k>.txt`, `stream-<k>.jsonl`,
-`summary-<k>.json`, `final-<k>.txt` and `stderr-<k>.txt`, then `check.out`.
-Run dirs stay on the node; evidence points at them by test name only. The
-export is made read-only, so clear a run dir with `chmod -R u+w` first.
+the space copy, anything the agent wrote under `~` (the run dir is its home;
+see Home), and per agent step `prompt-<k>.txt`, `stream-<k>.jsonl`,
+`summary-<k>.json`,
+`final-<k>.txt` and `stderr-<k>.txt` (and `stream-<k>-try1.jsonl` and
+`stderr-<k>-try1.txt` when the step was retried), then `check.out`. Run dirs
+stay on the node; evidence points at them by test name only. The export is
+made read-only, so clear a run dir with `chmod -R u+w` first.
 
 **Kept output is redacted.** After a test's checks have run (and after each
 smoke case is judged), the runner rewrites every file at the top of the run
 dir (prompts, streams, summaries, final texts, stderr, `meta.json`,
 `setup.out`, `check.out` and any file a setup wrote there), as well as
-`results.log`, `smoke.txt` and every line it prints. Machine paths become
-placeholders, longest first: the scratch root becomes `<scratch>`, the
-config dir `<config>`, each registered agent's `cwd` read from `--bus` at
-run time `<agent-cwd>`, and `$HOME` `<home>`. Any other per-user path under
-a macOS or Linux home root becomes `<user-home>`, and this node's hostname
-`<host>`. The working copies in the run dir (`space/`, `bus/`, `export/`,
-`repos/`) are not rewritten; they are inputs, not logs. Give `--bus` to
-smoke and test runs so agent working directories are covered.
+`results.log`, `smoke.txt` and every line it prints:
+
+- Machine paths become placeholders, longest first, each in its given form,
+  its resolved form and the CLI's dash-encoded form (every character that is
+  not a letter or digit becomes `-`, as in the CLI's `projects/` and temp
+  folder names; placeholder `<...-dashed>`): the scratch root `<scratch>`,
+  the config dir `<config>`, each registered agent's `cwd` read from `--bus`
+  at run time `<agent-cwd>`, `$HOME` `<home>`, the CLI's temp folder
+  (`/tmp/claude-<uid>`) `<cli-tmp>`, and the node's temp folder `<tmp>` when
+  it is a per-user folder rather than `/tmp`. A background task's output
+  file under the CLI's temp folder, for example, is kept as
+  `<cli-tmp>/<scratch-dashed>-runs-<run>-space/...`.
+- Any other per-user path under a macOS or Linux home root becomes
+  `<user-home>`.
+- As whole words: each registered agent's `agent_id` becomes `<agent-id>`,
+  its `agent_name` `<agent-name>` and its `hostname` `<host>`, all read from
+  `--bus`; this node's hostname also becomes `<host>`.
+
+Folders in the run dir (`space/`, `bus/`, `export/`, `repos/`, and what
+the agent wrote under `~`, such as `Library/`) are not rewritten; they are
+inputs and working copies, not logs. Give `--bus` to smoke and test runs
+so the registered agents are covered.
 
 ## Isolation protocol
 
@@ -98,7 +121,8 @@ the user's own. Before every run it resets that config in place:
 
 - it rewrites `settings.json` (atomically, keeping its file mode) with the
   runner's settings below, plus the keys it carries over;
-- it deletes and rewrites `agents/`, `skills/` and `hooks/`;
+- it deletes and rewrites `agents/`, `skills/` and `hooks/` (the git gate
+  and the runner's check, see Settings);
 - it deletes any `CLAUDE.md`, `CLAUDE.local.md`, `rules/`, `commands/`,
   `output-styles/`, `settings.local.json` and `mesh-git-allowlist.txt`;
 - it clears per-project memory and session state: `projects/`, `todos/`,
@@ -133,6 +157,30 @@ starting session or to a mesh identity (`CLAUDECODE`,
 `AGENT_ID`, `MESH_*` and the like), and writes no provider setting of its
 own.
 
+**Home.** Each agent run gets its own scratch home: its `$HOME` is the run
+dir itself (for a smoke case, the case folder), and the `XDG_*_HOME`
+variables are dropped so they fall under it too. The agent does not see the
+node's home through `~`: no shell startup files, no git identity, no
+`~/.agent-*` mesh identity files. The home is the run dir rather than a
+folder inside it because the CLI looks for `.claude/` skill and agent folders
+in every folder above the cwd up to `$HOME`: with a home outside the cwd's
+ancestry, that walk went on past the scratch root into the node's home and
+loaded the operator's own skills and agents (smoke S1 then listed 25 skills
+instead of the 16 bundled ones). With the run dir as home, the walk stops
+there.
+
+The sign-in does not depend on `$HOME`, because the config dir is passed
+explicitly (`CLAUDE_CONFIG_DIR`), with one exception: on macOS the CLI keeps
+the sign-in in the login keychain, which is found under `$HOME`. So when the
+node's home has `Library/Keychains`, the runner links that one folder into
+the run dir (`<run>/Library/Keychains`) for the length of each agent run and
+removes the link when the run ends; nothing else of the node's home is
+linked. Whatever the CLI or the agent writes under `~` stays in the run dir
+(on macOS, `<run>/Library/Caches/`). Absolute paths into the node's home are
+still reachable, so the runner's check (see Settings) also denies any tool
+call that names a `.agent-*` file in the node's home, by absolute path,
+`~<user>/` or `cd <home>`.
+
 **No guidance.** There is no CLAUDE.md or other guidance. `claudeMdExcludes`
 excludes every `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md` and
 `.claude/rules/` file, in the run's folder and in every folder above it, so a
@@ -140,10 +188,35 @@ space's `AGENTS.md` reaches the agent only when it reads it with a tool. The
 product's bundled skills and built-in agent types remain; they are part of
 Claude Code, not guidance.
 
-**Settings.** The product's `hooks/git-gate.py` is installed as the only
-PreToolUse hook on Bash, with no allowlist, so it denies every git add,
-commit and push wherever it points. The deny list adds `git -C`,
-`git branch`, `git checkout`, `git reset`, `sudo`, WebFetch and WebSearch.
+**Settings.** The product's `hooks/git-gate.py` is installed as a PreToolUse
+hook on Bash, with no allowlist, so it denies every git add, commit and push
+wherever it points. The deny list adds `git branch`, `git checkout`,
+`git reset`, `sudo`, WebFetch and WebSearch.
+
+Beside the gate, the runner installs its own check, `hooks/runner-check.py`
+(written from `runner.sh` at every reset and run with the runner's
+interpreter), as a PreToolUse hook on Bash, Read, Grep, Glob, Edit and
+Write. It only ever denies, and it reads a Bash command by command position:
+it splits the line into simple commands (at `;`, `&&`, `||`, `|`, `&`,
+parentheses, backticks and new lines, skipping here-document bodies), and
+looks past variable assignments, shell keywords, wrappers such as `env`,
+`nohup` or `timeout`, and `bash`/`sh`/`source` (whose script, or `-c`
+string, it reads in turn). It denies:
+
+- `git -C <path>` unless `<path>` is a literal path inside the run dir (no
+  variable, `~` or glob), so read-only git and `git -C <abs> submodule
+  update` run on the run's own repos, as the mesh-load skill needs, and
+  `git -C` at any other path is denied. Add, commit and push at a path in
+  the run dir are left to the git gate, which denies them; smoke S6 and S7
+  show its denial;
+- `git branch`, `git checkout` and `git reset` after any global options,
+  such as `git -C <repo> checkout -b x` (the deny list covers them only
+  without options);
+- in a desk run, git, gh and the mesh scripts (`mesh-post*`,
+  `mesh-scan-loop*`) where they are the command; see Desk steps;
+- any tool call naming a `.agent-*` file in the node's home; see Home.
+
+Its denials appear in the run's permission denials, as the gate's do.
 
 **Permission mode.** `dontAsk`, set in the settings and on the command line,
 with bypass mode disabled. It never prompts and is not a bypass mode. It
@@ -160,30 +233,56 @@ the run dir, the cwd and the config dir. Fixtures have no `.git`.
 time, in its setup script, under `<run>/repos/` (the `REPOS` variable). When
 that directory exists after setup, the runner adds it with `--add-dir`, so
 the agent under test can read and write there and run read-only git (for
-example `cd <repo> && git log`) under the permission mode. The git gate and
-the deny list still apply, so `git -C <repo> commit` and every add, commit
-and push are denied there too. The cwd is never inside `<run>/repos/`.
+example `cd <repo> && git log`, or `git -C <repo> log` and
+`git -C <repo> submodule update` with the literal path) under the permission
+mode. The git gate, the deny list and the runner's check still apply, so
+`git -C <repo> commit`, `git -C <repo> checkout` and every add, commit and
+push are denied there too. The cwd is never inside `<run>/repos/`.
 
 **Desk steps.** In desk mode the prompt starts with the runner's desk
 preamble: the agent runs no git, mesh (`mesh-post`, `mesh-scan-loop`) or `gh`
-command, and prints each one it would run on its own line starting
-`DESK: `. The deny list then also denies `git`, `gh` and the mesh scripts, so
-a slip is denied rather than run. In agent mode the preamble makes the
-librarian's commit step a desk step in the same way; the git gate denies its
-commits regardless.
+command, prints each one it would run on its own line starting `DESK: `, and
+repeats every such line in its final reply, in order, so that a check that
+reads the final reply sees them all. The deny list then also denies `git`
+and `gh`, and the runner's check denies the mesh scripts where they are the
+command (`mesh-post.sh ...`, `bash <path>/mesh-post.sh ...`), so a slip is
+denied rather than run, while a read of a file under `skills/mesh-post/`
+(such as `cat .../skills/mesh-post/SKILL.md`) works. In agent mode the
+preamble makes the librarian's commit step a desk step in the same way, with
+the same rule for the final reply; the git gate denies its commits
+regardless.
 
 **Caps.** Every test has `cap_s`: its agent steps share it, and its setup
-and check scripts are each held to it. A run still going at its cap is
-stopped, with its whole process group, and recorded as `not-run (cap <n> s)`. A process that dies at startup with no
-result, or that gets only provider API retries and no agent turn, is retried
-once; the retry is recorded, and a second stall is reported as such. Smoke
-cases S3, S4 and S7 retry by their own rule instead; see Smoke test.
+and check scripts are each held to it. An agent run ends at the stream's
+`result` event: the process then gets 10 s to exit, after which the runner
+stops it (a command the agent left running in the background no longer
+keeps the run alive). Whenever a run ends, the runner stops what is left of
+its process group and of the processes under the agent process, including
+any that started a session of their own. A run counts as capped only when no
+result came by the cap: it is then stopped the same way and recorded as
+`not-run (cap <n> s)`. `summary-<k>.json` records `result_s` (when the
+result came), `elapsed_s` (when the run ended), `capped` and
+`stopped_after_result`.
+
+A run that gives no agent turn (an empty stream, as when the provider's
+gateway is down, a process that ends at startup, or only provider API
+retries until the cap) is retried once, after a 30 s pause. The first
+attempt's stream and stderr are kept as `stream-<k>-try1.jsonl` and
+`stderr-<k>-try1.txt`, and the result says so (see Running). If the retry
+gives no turn either, the result is
+`error (no agent turn in step <k>; ...)`, or `not-run (cap <n> s; provider
+API retries, no agent turn)` when it reached the cap. Smoke cases S3, S4 and
+S7 retry by their own rule instead; see Smoke test.
 
 **Deliverables.** They are exported read-only by sha (`git archive`) from the
 checkout named by `--repo`, at the commit set the brief's `## Start from`
-gives, never read from a working copy. An agent or desk test whose
-deliverable is absent at that sha fails without starting an agent. An
-inspect test still runs its check, which reports each missing part.
+gives, never read from a working copy. A deliverable that names a skill's
+`SKILL.md`, `<repo>:skills/<name>/SKILL.md`, brings its whole skill
+directory, `skills/<name>/`, at that sha, so files beside it (such as the
+space-librarian skill's `check.sh`) are installed with it. An agent or desk
+test whose deliverable is absent at that sha fails without starting an
+agent. An inspect test still runs its check, which reports each missing
+part.
 
 **Managed policy.** The smoke test lists any managed policy file present
 (system managed settings, a managed `CLAUDE.md`, or remote managed settings
@@ -274,9 +373,9 @@ capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 | S3 | A run told to run a 90 s wait in the foreground (a Python `select` call with a 90 s timeout, run with the runner's interpreter; not a shell `sleep`, which the CLI may refuse to run in the foreground) is stopped at the 30 s cap and recorded `not-run (cap 30 s)`. |
 | S4 | A desk run asked to commit, and told that the task is not done until each git command it needs is in its reply as a `DESK: ` line, prints a git command, runs no git command, and makes no `.git`. |
 | S5 | A permitted Bash command, `ls`, succeeds. |
-| S6 | A `git -C <scratch> commit` attempt is denied. |
-| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied. The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
-| S8 | The agent prints the config dir, `$HOME` and its cwd, and repeats each registered agent's `cwd` from `--bus`. After redaction, no kept file of that run holds any of them or any other home-root path, and the placeholders appear in their place. |
+| S6 | A `git -C <scratch> commit` attempt, at a path in the case folder, is denied by the git gate (the runner's check lets `git -C` run there). |
+| S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied by the git gate. The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
+| S8 | The agent prints the config dir, its `$HOME` and its cwd, then repeats the node's `$HOME`, the CLI's dash-encoded forms of the home, config and CLI temp paths and, from `--bus`, each registered agent's `cwd`, `agent_id` and `agent_name`. After redaction, no kept file of that run holds any of them or any other home-root path, the placeholders (`<home>`, `<config>`, `<scratch>`, the `<...-dashed>` forms, `<agent-cwd>`, `<agent-id>`, `<agent-name>`) appear in their place, and the `$HOME` it printed is its scratch home. |
 
 The smoke output also names the settings keys the reset carried over (none
 on an environment-provider node) and the sign-in files it left alone.
