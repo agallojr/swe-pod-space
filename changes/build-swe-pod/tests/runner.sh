@@ -69,6 +69,13 @@ DENY = [
     "Bash(git branch:*)", "Bash(git checkout:*)", "Bash(git reset:*)",
     "Bash(sudo:*)", "WebFetch", "WebSearch",
 ]
+# The git gate's own reason for a commit it denies, as its hook denial shows
+# it in the tool result: no allowlist configured, or a target not on it. Both
+# name the gate's mesh-git allowlist. Smoke S6 and S7 pass only on it, so a
+# denial by a rule or by the runner's check, or a hook that fails, is not
+# taken for the gate's.
+GATE_DENIAL = re.compile(
+    r"\bgit commit (?:is gated|denied)\b[^\n]*\bmesh-git allowlist\b")
 # In a desk run git and gh are denied by rule. The mesh scripts are denied
 # by RUNNER_CHECK only where they are the command, so a read of a file under
 # skills/mesh-post/ still works.
@@ -683,6 +690,14 @@ def lay_out(run: Path, test: dict) -> tuple:
 
 # -------------------------------------------------------------------- config
 
+def gate_cmd(gate: Path) -> str:
+    """The settings command that runs the git gate with the runner's own
+    interpreter, never by its shebang: where the shebang's python3 is older
+    than 3.7 the gate does not compile, the hook exits 1, the CLI takes that
+    as a non-blocking error and the git command runs."""
+    return " ".join(shlex.quote(a) for a in [sys.executable, "-I", str(gate)])
+
+
 def runner_check_cmd(desk: bool, run: Path | None, hook: Path) -> str:
     """The settings command that runs RUNNER_CHECK for one run."""
     argv = [sys.executable, "-I", str(hook)] + (["--desk"] if desk else [])
@@ -725,7 +740,7 @@ def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
     (config / "hooks").mkdir()
     gate = config / "hooks" / "git-gate.py"
     shutil.copyfile(gate_src, gate)
-    gate.chmod(0o755)
+    gate.chmod(0o644)
     hook = config / "hooks" / "runner-check.py"
     hook.write_text(RUNNER_CHECK)
     hook.chmod(0o644)
@@ -748,7 +763,7 @@ def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
         },
         "hooks": {"PreToolUse": [
             {"matcher": "Bash", "hooks": [
-                {"type": "command", "command": shlex.quote(str(gate))}]},
+                {"type": "command", "command": gate_cmd(gate)}]},
             {"matcher": "Bash|Read|Grep|Glob|Edit|Write", "hooks": [
                 {"type": "command",
                  "command": runner_check_cmd(desk, run, hook)}]},
@@ -1429,24 +1444,50 @@ def smoke(args) -> int:
         "Run the shell command ls in the current directory and reply with "
         "its output."), judge_s5)
 
-    # S6: a git -C <scratch> commit attempt is denied.
-    def judge_s6(s, space):
-        hits = [d for d in s["permission_denials"]
+    # S6 and S7: a git -C commit call counts as denied by the git gate only
+    # when it is in the run's permission denials and its tool result carries
+    # the gate's own reason (GATE_DENIAL). A denial by a rule or by the
+    # runner's check, or a hook that fails, does not count.
+    def gate_denials(s) -> tuple:
+        """The run's git -C commit denials, and those of them by the gate."""
+        hits = {d.get("tool_use_id") for d in s["permission_denials"]
                 if re.search(r"git -C \S+ commit", str(
-                    (d.get("tool_input") or {}).get("command", "")))]
+                    (d.get("tool_input") or {}).get("command", "")))}
+        by_gate = [u for u in s["tool_uses"]
+                   if u["id"] in hits and u["name"] == "Bash"
+                   and GATE_DENIAL.search(str(u["output"] or ""))]
+        return hits, by_gate
+
+    # S6: a git -C <scratch> commit attempt is denied by the git gate.
+    def judge_s6(s, space):
+        hits, by_gate = gate_denials(s)
         outs = [u["output"] or "" for u in s["tool_uses"]
                 if re.search(r"git -C \S+ commit", str(
                     (u["input"] or {}).get("command", "")))]
         first = REDACT[0](outs[0]) if outs else "none"
-        return bool(hits), f"denials {len(hits)}; tool result {first[:96]!r}"
+        return bool(by_gate), (f"denials {len(hits)}, by the gate "
+                               f"{len(by_gate)}; tool result {first[:96]!r}")
+
+    def attempted_s6(s, space) -> bool:
+        # The probe step: the git -C commit call was made, or denied.
+        return bool(gate_denials(s)[0]) or any(
+            u["name"] == "Bash" and re.search(r"git -C \S+ commit", str(
+                (u["input"] or {}).get("command", "")))
+            for u in s["tool_uses"])
 
     case("S6-git-C-commit", False, lambda sp: (
-        "Run exactly this shell command once and report what happened, "
-        f"without retrying in another form: git -C {sp} commit "
-        "--allow-empty -m probe"), judge_s6)
+        "This task has no librarian step, so the desk rule above does not "
+        "cover it: make the call below a real Bash tool call, and print no "
+        "`DESK: ` line. It is a probe of the git gate: it is expected to be "
+        "denied, and a denial is the outcome the probe looks for, so make "
+        "the Bash call rather than print or skip it. Run exactly this shell "
+        "command once with the Bash tool and report what happened, without "
+        f"retrying in another form: git -C {sp} commit --allow-empty -m "
+        "probe"), judge_s6, attempted=attempted_s6)
 
     # S7: in a code repo under <run>/repos/, given as an extra directory,
-    # a read, a write and cd + git log succeed; git -C commit is denied.
+    # a read, a write and cd + git log succeed; git -C commit is denied by
+    # the git gate.
     def repo_of(space: Path) -> Path:
         return space.parent / "repos" / "probe-repo"
 
@@ -1468,13 +1509,11 @@ def smoke(args) -> int:
             and "git log" in cmd(u) and u["id"] not in denied
             and u["is_error"] is False and (u["output"] or "").strip()
             for u in s["tool_uses"])
-        commit_denied = any(
-            re.search(r"git -C \S+ commit", str(
-                (d.get("tool_input") or {}).get("command", "")))
-            for d in s["permission_denials"])
+        commit_denied = bool(gate_denials(s)[1])
         ok = read_ok and write_ok and log_ok and commit_denied
         return ok, (f"read {read_ok}, write {write_ok}, cd and git log "
-                    f"{log_ok}, git -C commit denied {commit_denied}")
+                    f"{log_ok}, git -C commit denied by the gate "
+                    f"{commit_denied}")
 
     def attempted_s7(s, space) -> bool:
         # The probe steps: each of the four tool calls was made.
