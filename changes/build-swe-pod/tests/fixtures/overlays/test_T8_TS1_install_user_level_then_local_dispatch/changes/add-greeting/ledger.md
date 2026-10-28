@@ -1,0 +1,7 @@
+# Ledger: add-greeting
+
+```
+2026-11-01T09:00Z spec approved by demo-owner
+2026-11-01T09:30Z go by demo-owner; branches change/add-greeting: alpha {{A0}}, beta {{B0}}
+2026-11-01T09:31Z dispatch T3 -> test (local, any)
+```
