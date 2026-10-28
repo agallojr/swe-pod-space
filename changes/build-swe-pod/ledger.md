@@ -237,4 +237,16 @@
                   wave-2 role definitions were read from swe-pod 8770c1a
 2026-10-28T01:32Z filed wave 2 reports and reviews (T2, T7, T8, T12, T13, T14)
 2026-10-28T01:33Z handoff of the lead role to a fresh session: handoffs/20261028T0132Z-build-swe-pod.md
+2026-10-28T01:46Z Ruling: the 01:32Z lines for T2, T3, T8, T9, T12, T13 and T14 are restated
+                  below as review lines, counts copied from the filed reviews; each
+                  joined a status and its review in one event, and the swe-pod skill
+                  reads a review only from a line that begins T<n> review:; cost if
+                  wrong: none, no count changes
+2026-10-28T01:46Z T2 review: spec ok; 7 Minor
+2026-10-28T01:46Z T3 review: spec ok; 5 Minor
+2026-10-28T01:46Z T8 review: spec ok; 7 Minor
+2026-10-28T01:46Z T9 review: spec ok; 4 Minor
+2026-10-28T01:46Z T12 review: spec ok; 4 Minor
+2026-10-28T01:46Z T13 review: spec ok; 7 Minor
+2026-10-28T01:46Z T14 review: spec ok; 4 Minor
 ```
