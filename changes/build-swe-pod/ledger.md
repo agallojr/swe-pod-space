@@ -113,4 +113,7 @@
 2026-10-28T00:05Z heavy noted: test_I8 expected 240 s, cap 600 s; it joins the
                   operator ask before T19
 2026-10-28T00:05Z filed changes/build-swe-pod/tests/ (T15), tasks/T15-report.md
+2026-10-28T00:05Z dispatch T16 -> test (local, any)
+2026-10-28T00:05Z dispatch T17 -> test (local, any)
+2026-10-28T00:05Z filed changes/build-swe-pod/tasks/T16-brief.md, T17-brief.md
 ```
