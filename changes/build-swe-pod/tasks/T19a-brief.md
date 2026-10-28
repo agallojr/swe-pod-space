@@ -606,14 +606,14 @@ declares no Quality section; the standard close covers it.
 
 - Use the runner and its protocol in `changes/build-swe-pod/tests/README.md`. First `runner.sh reset`, then `runner.sh smoke`. A smoke failure, or a managed policy of a kind not ruled on, stops the shard as BLOCKED before any test runs. Kinds ruled on: the node's gateway login and provider environment (00:05Z); a gateway settings drop-in, and the gateway's remote managed settings (02:59Z). The evidence body records the smoke result.
 - Time (02:49Z, and the shard cap ruling at dispatch): each run is capped at its own `cap_s`, and the shard at 240 min in all. A run that reaches its cap is `not-run`, with the cap. If the shard reaches 240 min, stop, record every test not yet run as `not-run (shard cap)`, and file what you have.
-- heavy: approved by agallojr ("yes to heavy", 2026-10-28T03:10Z; "be permissive on time", 02:49Z) for runner.sh run over this shard's tests; caps: each run its own cap_s, at most 1800 s, and the shard 240 min; expected: T19a 11473 s, T19b 11472 s. Pass `--allow-heavy`.
+- heavy: approved by agallojr ("yes to heavy", 2026-10-28T03:10Z; "be permissive on time", 02:49Z) for runner.sh run over this shard's tests, round 2 after the verify fixes; caps: each run its own cap_s, at most 1800 s, and the shard 240 min; expected: T19a 11473 s, T19b 11472 s. Pass `--allow-heavy`.
 - Run only this shard's tests, serially, in the order listed, each once. Write the shard record with every key of plan section 2.4, `shard:` and `tests:` included, `unit: {swe-pod: none-present, agent-mesh: none-present}`, `quality: none-declared` and `wall_time_s`, and results only for the tests this shard ran. Log pointers go only into its `-runs/` folder.
 
 ## Start from
 
 - base commit set: space c814837, swe-pod 8fc5294, agent-mesh 8ee5364
-- commit set under test: swe-pod 1cecea0, agent-mesh 1367f65
-- tests changed at: 6c84e8f
+- commit set under test: swe-pod 4d5bfc7, agent-mesh bbd19a2
+- tests changed at: 7bbe9af
 - shards' space commit: given at dispatch, on its own line
 
 ## Result goes to
