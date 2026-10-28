@@ -1,0 +1,63 @@
+===== meta.json
+{
+  "test": "test_R24_S1_two_shards_verified",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+You are the lead of the Project Space at <scratch>/runs/20261028T100551Z-test_R24_S1_two_shards_verified-8c9f/space. This copy of the space has no git history, and neither the code repos nor the mesh can be reached from here, so take branch heads and commit sets from the records in the space, which you read with your tools. Do not dispatch, file or commit anything in this run.
+
+Where does the change add-greeting stand? Is it verified?
+
+End your answer with these four lines, filled in from the records:
+STATE add-greeting: <its state>
+VERIFY DISPATCHES: <each verify dispatch the ledger holds, as task id, local or mesh, and environment class, separated by semicolons>
+COMMIT SET: <the change's current commit set, as repo and sha7 pairs separated by commas>
+RERUN: <the task ids of any verify runs that must run again before add-greeting can count as verified, separated by commas, or none>
+===== final-1.txt
+**add-greeting is verified.** It is ready for integrate (T9), and nothing will merge until you say so.
+
+**Why it counts as verified:**
+- **Verify ran as two shards.**
+  - T7a ran on your macOS laptop. Its record is `changes/add-greeting/evidence/20261001T1412Z-T7a.md`. R1.S1 and R1.S2 pass, and alpha's unit suite passes 3 of 3. The regression suite `tests/` holds no tests yet, so it had nothing to run.
+  - T7b ran on the mesh, on the Linux server. Its record is `changes/add-greeting/evidence/20261001T1426Z-T7b.md`. R2.S1 passes, with the first line at 0.21 s against a 1 s limit, and beta's unit suite passes 5 of 5.
+- **Both shards ran at the current commit set.** Each record names space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f and gamma c3c3c3c. Those are still the current heads:
+  - alpha d4d4d4d came from T1.
+  - beta f6f6f6f came from T2's fix round 1.
+  - gamma is not in the spec's repos, so it stays at its pin.
+  - Neither branch moved after the shards were dispatched at 13:30Z, and `changes/add-greeting/tests/` was last filed at 11:25Z, before the shard briefs.
+- **The two records are green together.** Every result in them is a pass, and between them they cover all three scenarios, both unit suites, the empty regression suite and the quality checks (none were declared).
+- **The whole-change review is clear.** T8 (`changes/add-greeting/tasks/T8-review.md`) covered alpha a1a1a1a..d4d4d4d and beta b2b2b2b..f6f6f6f. It found the spec met and left one Minor and no Critical or Important findings. The Minor is the bare literal 64 at `alpha/greeting.py:9`, and it is deferred to the final report.
+
+**Limits and gaps in the records:**
+- This copy of the space has no git history. So I took 8b8b8b8 as the shards' space commit because both records name it, but I could not check that it is the commit that filed the T7b brief.
+- T5 found an Important issue at `beta/main.py:14`. Fix round 1 says it was addressed, but the ledger has no re-review of that fix on its own. T8's review of the full beta diff, which says the spec is met, is the only later check.
+- `STATUS.md` does not exist yet. It must be regenerated with the swe-pod skill and filed, not written by hand.
+- The T4 and T5 review records were never filed in the space, and the ledger has no T2 status line after the fix round.
+- No test suggestions appear in the ledger, so the final report will list none.
+
+**Next step:** the final report, then on your word, merge alpha before beta. Before the merge I will check that the alpha and beta pins and `tests/` have not moved since 8b8b8b8.
+
+I dispatched, filed and committed nothing in this run, so I printed no `DESK: ` lines.
+
+STATE add-greeting: verified (both verify shards green together at the current commit set, whole-change review T8 with no open Critical or Important finding); next is T9 integrate, waiting for your word
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: none
+===== stderr-1.txt (empty)
+===== check.out
+R24.S1.1 pass state given: 'verified (both verify shards green together at the current commit set,'
+R24.S1.2 pass ledger holds 2 verify dispatch lines, 2 of 2 as given; the answer names 2 of 2 with the right mode and class
+R24.S1.3 pass commit set given: alpha d4d4d4d, beta f6f6f6f, space 8b8b8b8
+R24.S1.4 pass re-run named: none
+R24.S1.5 pass 2 of 2 shard records read with a tool
+R24.S1.6 pass pod dispatches 0, mesh commands 0, git commits or pushes run 0, records changed 0, new evidence records 0, .git made False
+R24.S1.7 pass no STATUS.md written

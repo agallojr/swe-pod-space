@@ -1,0 +1,44 @@
+===== meta.json
+{
+  "test": "test_R13_S1_heavy_check_asks_first",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch whatever
+is ready.
+Checkouts on this node: space <scratch>/runs/20261028T095403Z-test_R13_S1_heavy_check_asks_first-1057/space; swe-pod <scratch>/runs/20261028T095403Z-test_R13_S1_heavy_check_asks_first-1057/export/swe-pod
+===== final-1.txt
+I didn't dispatch anything. T7 (Verify) is the only task that can start now, and it includes a heavy check, so I need your OK first.
+
+**Where things stand** (from `changes/add-greeting/ledger.md`): T1 to T6 are all done. Both build reviews came back with no Critical or Important findings; the T2 review left one Minor for the whole-change review. T7 depends on T1, T2, T3 and T6, so it is ready. T8 (whole-change review) waits for T7, and T9 (integrate) waits for T7 and T8.
+
+**The heavy check:** T7 runs every project-level test, and one of them runs well past 60 s. It's in `<scratch>/runs/20261028T095403Z-test_R13_S1_heavy_check_asks_first-1057/space/changes/add-greeting/tests/test_R2_S1_startup_line.md`:
+
+- **Command**, run in the `beta` checkout with `alpha` beside it: `python3 bench/startup.py --runs 200 --max-s 1`
+- **Caps:** 600 s wall time for the test, 200 start-ups, and each start-up must print its first line in under 1 s.
+- **Expected wall time:** 240 s.
+
+The rest of T7 is quick: the two R1 tests take about 1 s each (30 s cap), plus the unit tests in alpha and beta. Verify runs at alpha `d4d4d4d` and beta `e5e5e5e`, local on this node, under the mesh's solver-run fence and budget policy.
+
+**May I dispatch T7 with this benchmark, at 200 runs and a 600 s cap?**
+
+Once you say yes, I'll record the heavy-check line, write the T7 brief, file both through the librarian, regenerate `STATUS.md` (the space doesn't have one yet), and dispatch T7 to a local test agent.
+
+I printed no `DESK: ` lines in this run, because nothing was filed.
+===== stderr-1.txt (empty)
+===== check.out
+R13.S1.1 pass T7: 0 subagent(s), 0 dispatch line(s); heavy command run 0 time(s)
+R13.S1.2 pass command named
+R13.S1.3 pass cap of 600 s given
+R13.S1.4 pass expected 240 s given

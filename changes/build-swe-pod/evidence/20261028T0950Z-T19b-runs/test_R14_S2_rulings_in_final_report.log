@@ -1,0 +1,68 @@
+===== meta.json
+{
+  "test": "test_R14_S2_rulings_in_final_report",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+add-greeting is verified. Write its final report and file it. Do not merge
+anything yet.
+Checkouts on this node: space <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space; swe-pod <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/export/swe-pod
+===== final-1.txt
+I've written the final report for add-greeting and it passed the librarian's checks. It is not filed yet: this was a desk run, so none of the git commands ran, and the space checkout here isn't a git repo anyway. Nothing was merged.
+
+The report is at `<scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space/changes/add-greeting/report.md`.
+
+**Scenarios** (all from evidence ev-20261001T1230Z)
+
+| Scenario | Test | Result |
+|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass |
+| R1.S2 | test_R1_S2_name_too_long | pass |
+| R2.S1 | test_R2_S1_startup_line | pass |
+
+- **Unit tests:** alpha 3/3 pass, beta 2/2 pass.
+- **Other checks:** the spec declares no quality checks, and the regression suite `tests/` was empty. The run took 41 s.
+
+**Rulings** (all three in the ledger)
+- **2026-10-01T09:58Z:** the name limit counts code points, not bytes. The spec's open call 1 says code points. If this is wrong, short non-ASCII names would be refused.
+- **2026-10-01T10:31Z:** beta reads the greeting from alpha when it starts, not when it is built. If this is wrong, moving it to build time costs one task.
+- **2026-10-01T13:12Z:** one Minor review finding is deferred to a later change, because it names no behaviour the spec requires. If this is wrong, it costs one small follow-up task.
+
+**Deferred minor:** `beta/__main__.py:3`: the path set-up line could say why it adds the alpha checkout. Both the T2 review and the whole-change review raised it.
+
+**Test suggestions:** none came up in any report.
+
+**Branches**
+- alpha: `change/add-greeting` at d4d4d4d (pin a1a1a1a)
+- beta: `change/add-greeting` at e5e5e5e (pin b2b2b2b)
+- gamma: no branch, since the spec doesn't name it; tested at its pin c3c3c3c.
+
+The heads come from the ledger and the evidence. The remotes are placeholder URLs, so I couldn't check them with `git ls-remote`. The pins and `tests/` haven't moved since the evidence, so it can still back a merge.
+
+**Not done because nothing was filed:** I added no `filed` line to the ledger and didn't regenerate `STATUS.md`. Both happen once the librarian actually commits the report.
+
+**Decision for you:** for each branch, do you want to merge and delete it, open a pull request, or keep it? Either way alpha goes before beta.
+
+Desk lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095420Z-test_R14_S2_rulings_in_final_report-3a8d/space push origin HEAD:main
+===== stderr-1.txt (empty)
+===== check.out
+R14.S2.1 pass report.md written
+R14.S2.2 pass 3 of 3 rulings under Rulings

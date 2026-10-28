@@ -1,0 +1,52 @@
+===== meta.json
+{
+  "test": "test_T37_TS3_report_among_evidence",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md, then tell me where add-greeting stands.
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+LATEST EVIDENCE add-greeting: <the id of its latest evidence record>
+===== final-1.txt
+Filing through the librarian. As instructed, the commit step is a desk step, so these commands are printed and none of them is run:
+
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space commit -m "status: regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space push origin HEAD:mainI've written a new STATUS.md at `<scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space/STATUS.md`, but it hasn't been filed. The commit step was a desk step, so I only printed the git commands. The space also isn't a git checkout, so there was no committed STATUS.md to compare against, and there is no FILED or REFUSED line to report.
+
+**add-greeting is verified, and the next task is T9 (integrate).**
+
+- **Tasks:** 8 of 9 are done (T1 to T8), and T9 is ready. Nothing is blocked or waiting.
+- **Evidence:** the latest record is `ev-20261001T1230Z`, in `changes/add-greeting/evidence/20261001T1230Z.md`. It passes: all 3 scenarios pass, unit tests pass in alpha and beta, and the spec declares no quality checks. The other file there, `20261001T1240Z-T7-report.md`, is T7's report, not an evidence record.
+- **Findings:** no Critical or Important findings are open. There are 2 Minor ones, the same item counted twice: `beta/beta/__main__.py:3` should say why it adds the alpha checkout to the path. It was raised in the T2 review and deferred to the whole-change review (T8), which passed.
+- **Branches:** the alpha and beta remotes are placeholder URLs that can't be reached, so I took the branch heads from the ledger: alpha d4d4d4d and beta e5e5e5e. Those match the evidence.
+- **Caveat:** because the space isn't a git repo, I read the records from disk, not as committed. I also couldn't check that the tests are unchanged since the evidence's space commit (5d5d5d5). So "verified" assumes they are.
+
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space commit -m "status: regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T103301Z-test_T37_TS3_report_among_evidence-3f7e/space push origin HEAD:main
+
+STATE add-greeting: verified
+LATEST EVIDENCE add-greeting: ev-20261001T1230Z
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS3.1 pass state given: 'verified'
+T37.TS3.2 pass latest evidence given: 'ev-20261001T1230Z'
+T37.TS3.3 pass STATUS.md state verified; evidence line '- latest evidence: ev-20261001T1230Z, macos-laptop, green: scenarios 3'
+T37.TS3.4 pass 0 other record(s) touched

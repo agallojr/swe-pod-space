@@ -1,0 +1,71 @@
+===== meta.json
+{
+  "test": "test_T5_TS5_only_pin_moved",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting.
+Checkouts on this node: space <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/export/swe-pod; alpha <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/repos/alpha; beta <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/repos/beta; gamma <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/repos/gamma; mesh bus <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+I did not merge add-greeting. The verify evidence was taken before alpha's pin moved, so merging now would rest on stale evidence.
+
+**Why it's held**
+- The latest evidence, `changes/add-greeting/evidence/20261001T1230Z.md`, ran alpha at d4d4d4d, which is built on a1a1a1a. That was alpha's main when the change started.
+- alpha's pin in `pod.yaml` has since moved to f6f6f6f, when fix-farewell-newline integrated on 2026-10-02.
+- beta's pin (b2b2b2b) is unchanged. `tests/` is unchanged too, going by fix-farewell-newline's report ("No test was added or moved"). I couldn't confirm that with git in a desk run.
+- So alpha's branch has to be brought up to the new main and verify run again before anything merges.
+
+**What I did**
+- **New task:** I wrote a brief for T10, which brings alpha's `change/add-greeting` up to main f6f6f6f: `<scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo/changes/add-greeting/tasks/T10-brief.md`
+- **Ledger:** I added two rulings and the T10 dispatch line to `<scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo/changes/add-greeting/ledger.md`:
+  - The merge is held until verify passes again at the new commit set. Cost if wrong: one extra build, review and verify round.
+  - T10 merges alpha's main into the change branch instead of rebasing. A rebase of a pushed branch needs a force-push, which the process forbids. Cost if wrong: one merge commit in alpha's history instead of a linear one.
+- **Filing:** Both records passed the librarian's checks. Their git commands are printed below, not run, so nothing is actually filed yet. There are no `filed` ledger lines and `STATUS.md` hasn't been regenerated.
+- **Builder not started:** The ledger records T10 as dispatched, but I didn't start the builder. A builder would run real merge and push commands in alpha, which a desk run rules out.
+
+**Next steps**
+1. Start the T10 builder.
+2. Check its commits on alpha's `change/add-greeting`, then send its diff to a fresh reviewer.
+3. Re-run verify (T7) for all four tests and both unit suites, with alpha at T10's new head, beta at e5e5e5e and gamma at its pin c3c3c3c.
+4. Once that's green, write the final report and ask you how to merge: alpha first, then beta.
+
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T10-brief.md" -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T103845Z-test_T5_TS5_only_pin_moved-a8ac/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+T5.TS5.1 pass 0 merge(s) into a code repo's main
+T5.TS5.2 pass pins alpha f6f6f6f, beta b2b2b2b, gamma c3c3c3c; integrated False; archived False
+T5.TS5.3 pass re-verify in hand: 1 dispatch line(s), 0 mesh post(s), 0 subagent(s)

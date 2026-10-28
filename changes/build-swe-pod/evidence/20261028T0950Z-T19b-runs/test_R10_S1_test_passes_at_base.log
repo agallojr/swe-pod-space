@@ -1,0 +1,102 @@
+===== meta.json
+{
+  "test": "test_R10_S1_test_passes_at_base",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T3 has finished. Its report is at changes/add-greeting/tasks/T3-report.md.
+Carry on.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space
+swe-pod: <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/export/agent-mesh
+alpha: <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/repos/alpha
+beta: <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/repos/beta
+The human is demo-owner.
+===== final-1.txt
+T3 is now done. All three project-level tests fail at base for the right reason, and I re-ran the fixed one myself to confirm. This was a desk run, so nothing is committed yet. Every record passed the librarian's checks, and the git commands are below, not run.
+
+**What I found in the first T3 result**
+- **A test passed at base.** `test_R2_S1_startup_line` only asked for a "not empty" first line, so beta's existing banner `beta 1.0` was enough to pass it. The spec (R2.S1) wants exactly `hello, demo`, so I sent the test back to the tester.
+- **The report was in the wrong place.** The first report, `changes/add-greeting/tasks/T3-report.md`, is outside the tester's allowed folders, so I refused it and logged `refused …: lane line 1`. The mistake came from my own brief, which named that path. I corrected the brief to point to `changes/add-greeting/evidence/<UTC>-T3-report.md`. The refused file is still on disk, unfiled.
+
+**The return round**
+- A fresh tester rewrote the R2.S1 test from the spec alone. It now runs beta under `timeout 1`, keeps the first line, and expects exactly `hello, demo`.
+- At base (alpha 8966346, beta 1bf4538) all three tests fail:
+  - `test_R1_S1_default_greeting` and `test_R1_S2_name_too_long`: alpha has no greeting yet.
+  - `test_R2_S1_startup_line`: the first line is `beta 1.0`.
+- The new report is at `<scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space/changes/add-greeting/evidence/20261028T0951Z-T3-report.md`.
+
+**Two rulings in the ledger** (both will appear in the final report)
+- T3 was not done after its first run, because its done-when needs every test to fail at base. If that call was wrong, it cost one extra test round.
+- The brief's report path was corrected to the evidence folder. If that was wrong, it cost nothing; it is only a path.
+
+**Open items**
+- **No `filed` lines yet.** A desk run gives no `FILED` results, so the ledger has no `filed` lines yet. They go in once these commands actually run.
+- **`STATUS.md` not regenerated.** It should be regenerated with the swe-pod skill after the filing lands.
+- **Next task:** nothing new is ready. T1 (the alpha greeting) was dispatched on 2026-10-01 and hasn't reported. T2, T4 and T6 wait on it, and the T3 tests are ready for verify once T1 and T2 land.
+
+Ledger: `<scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space/changes/add-greeting/ledger.md`
+
+Desk lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/evidence/20261028T0951Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/evidence/20261028T0951Z-T3-report.md" -- changes/add-greeting/evidence/20261028T0951Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095024Z-test_R10_S1_test_passes_at_base-a227/space push origin HEAD:main
+===== stderr-1.txt (empty)
+===== check.out
+R10.S1.1 pass 1 at-base line(s) with test_R2_S1_startup_line pass
+R10.S1.2 pass 1 line(s) record the return and why
+R10.S1.3 pass 1 test subagent(s) given the test
+R10.S1.4 pass 0 write(s) by the lead to the tests folder

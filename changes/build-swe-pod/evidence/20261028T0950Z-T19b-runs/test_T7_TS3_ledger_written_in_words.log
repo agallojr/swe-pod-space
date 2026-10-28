@@ -1,0 +1,58 @@
+===== meta.json
+{
+  "test": "test_T7_TS3_ledger_written_in_words",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Where are we?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+NEXT add-greeting: <the task ids it can dispatch now, separated by commas, or none>
+IN FLIGHT add-greeting: <the task ids dispatched and not yet reported, separated by commas, or none>
+===== final-1.txt
+**add-greeting** is building, and the next task is **T4, the review of T1** (local, any). I only read the records and changed nothing.
+
+**What's happened** (from `changes/add-greeting/ledger.md`, last entry 2026-10-01T09:56Z):
+- **Spec approved and go given:** demo-owner approved the spec at 09:00Z and gave the go at 09:20Z.
+- **T0 (change branches) is done.** The ledger says so in plain words rather than in the usual status form: "made change/add-greeting in alpha at a1a1a1a and in beta at b2b2b2b, so T0 is finished". That counts as DONE.
+- **T1 (greeting text in alpha) has reported DONE**, with alpha at a1a1a1a..d4d4d4d and unit tests 3/3 passing. The report is at `changes/add-greeting/tasks/T1-report.md`. T1 isn't done yet, because its review (T4) hasn't run.
+- **T3 (the scenario tests)** was sent out at 09:26Z and hasn't reported back.
+
+**Task counts:** 1 done (T0), 2 in flight (T1, T3), 1 ready (T4), 6 waiting (T2, T5 to T9). T2 waits on T1, which needs T4 to finish first. Nothing is blocked, and there are no open findings, because no review has run yet.
+
+**Branches:** the repo addresses (`example.invalid`) can't be reached, so the heads come from the records. alpha is at d4d4d4d. beta shows as missing: under the rule's strict wording, the only place beta's sha is written is the plain-words T0 line, not the go line or a commit-range entry.
+
+**No evidence yet.**
+
+**Two record problems to know about:**
+- **The space isn't a git checkout**, so nothing is committed. I read the files as they are on disk, which the rules don't strictly allow.
+- **There's no `STATUS.md`.** It's missing, so it's behind the records. I didn't create or file one; ask for a regenerate if you want it.
+
+Records worth opening:
+- `<scratch>/runs/20261028T104140Z-test_T7_TS3_ledger_written_in_words-70bd/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T104140Z-test_T7_TS3_ledger_written_in_words-70bd/space/changes/add-greeting/plan.md`
+- `<scratch>/runs/20261028T104140Z-test_T7_TS3_ledger_written_in_words-70bd/space/changes/add-greeting/tasks/T1-report.md`
+- `<scratch>/runs/20261028T104140Z-test_T7_TS3_ledger_written_in_words-70bd/space/STATUS.md` (missing)
+
+I didn't need the librarian's commit step, so I printed no `DESK: ` lines.
+
+STATE add-greeting: building
+NEXT add-greeting: T4
+IN FLIGHT add-greeting: T1, T3
+===== stderr-1.txt (empty)
+===== check.out
+T7.TS3.1 pass state given: 'building'
+T7.TS3.2 pass next given: T4
+T7.TS3.3 fail in flight given: T1, T3
+T7.TS3.4 pass 0 other record(s) touched

@@ -1,0 +1,74 @@
+===== meta.json
+{
+  "test": "test_T7_TS1_same_minute_events",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md.
+===== final-1.txt
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space commit -m "status: regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space push origin HEAD:main
+
+I wrote a new `STATUS.md` at `<scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space/STATUS.md`. It isn't filed yet: this run treats the commit as a desk step, so I printed the git commands above and ran none of them. That means there's no `FILED` or `REFUSED` line to report.
+
+Two things to know:
+- **The space isn't a git repo,** so I couldn't read the records "as committed" at `HEAD`. I read the files on disk instead. There was also no earlier `STATUS.md` to compare against.
+- **Neither code remote can be reached** (`git ls-remote` exit 128, `example.invalid` doesn't resolve). So I took the branch heads from the ledger.
+
+What it says (as of 2026-10-02T08:00Z, 2 open changes):
+- **add-farewell is approved.** It has no plan yet, so it has no tasks. Next is the plan, by the plan role.
+- **add-greeting is building.** The branch heads are alpha `d4d4d4d` and beta `f6f6f6f`. T1 to T5 are done, T6 is ready, and T7, T8 and T9 are waiting. Next is T6 → test (local, any). There are no open findings.
+- **Same-minute events:** four T2 events share 2026-10-01T11:05Z. Where several events have the same time, the one written last wins:
+  - T2's latest is the fix round (1 addressed, 0 open), which closes T2's Important finding.
+  - T5's latest is the T2 review with 1 Important, because it was written after T5's dispatch.
+  - beta's head comes from the fix round's `e5e5e5e..f6f6f6f`.
+
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space commit -m "status: regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space fetch origin
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T104011Z-test_T7_TS1_same_minute_events-c1f1/space push origin HEAD:main
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md from the records, but write it to x-rebuild/STATUS.md in
+the space, not to the space root, and do not open the space's own STATUS.md: I
+want to compare the two.
+===== final-2.txt
+I rebuilt STATUS.md from the records and wrote it to `x-rebuild/STATUS.md`. I didn't open the root `STATUS.md`, so I skipped the skill's compare step; the diff is yours to do.
+
+I also didn't file it. You asked for a copy to compare, and filing would make a scratch file into a record. So the librarian's commit step never ran, I printed no `DESK:` lines, and there are none to repeat. The space folder isn't a git repository anyway, so I read the records as they are on disk, not "as committed".
+
+**What the rebuild says:**
+- **As of 2026-10-02T08:00Z.** That's the approval time in add-farewell's spec and ledger, which is newer than any line in add-greeting's ledger.
+- **add-farewell is approved.** It has no plan or tasks yet, so the next step is the plan. Its task table is just the header row.
+- **add-greeting is building.** T1 to T5 are done, T6 is ready, and T7 to T9 are waiting. The next task is `T6 -> test (local, any)`. There are no open findings and no evidence yet.
+- **Branch heads came from the ledger.** The `example.invalid` remotes don't resolve (`git ls-remote` exited 128), so the format's records rule applies. That gives `alpha d4d4d4d` and `beta f6f6f6f`.
+
+**Several events share the 11:05Z minute, which affects a few cells.** The rule is that events with the same time count in the order they're written:
+- The T2 fix-round line comes last of them, so it sets beta's head to `f6f6f6f`, not `e5e5e5e`. It is also T2's latest event.
+- T2's newest review or fix-round line is that fix round, which shows `0 open`. So the Important finding from the T2 review no longer counts as open.
+- T5's latest cell is the T2 review line (`review: spec issues; 1 Important`), because it's written after T5's dispatch line in the same minute. The fix-round line doesn't count as one of T5's events.
+- T3's at-base line names three tests, all failing, so its cell reads `at base: 3 fail, 0 pass`.
+
+If the root file differs on any of these, that's probably where to look first.
+===== stderr-2.txt (empty)
+===== check.out
+T7.TS1.1 pass STATUS.md header and As-of right
+T7.TS1.2 pass step 2 touched STATUS.md 0 time(s); rebuild written
+T7.TS1.3 pass rebuild matches
+T7.TS1.4 pass T2 rows: '| T2 | build | local | done | 2026-10-01T11:05Z fix round 1/5: 1 addre'; '| T2 | build | local | done | 2026-10-01T11:05Z fix round 1/5: 1 addre'

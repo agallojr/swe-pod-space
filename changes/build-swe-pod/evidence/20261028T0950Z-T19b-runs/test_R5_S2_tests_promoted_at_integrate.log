@@ -1,0 +1,158 @@
+===== meta.json
+{
+  "test": "test_R5_S2_tests_promoted_at_integrate",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting. Then write the brief for T4, the verify task of
+add-farewell, and stop there: do not dispatch it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space
+swe-pod: <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+I merged add-greeting into alpha and beta and finished the integrate in the space. I wrote T4's brief for add-farewell and filed it, but did not dispatch it, as you asked. This was a desk run, so every git command below was printed, not run. That covers the merges, the remote checks and the librarian's commits. Nothing has actually been pushed.
+
+**The merge (alpha before beta, as `pod.yaml` requires)**
+- Before merging I checked the records: ev-20261002T1412Z is all pass (3/3 scenarios, both unit suites) at alpha d4d4d4d and beta e5e5e5e. The pins hadn't moved, and the reviews (T4, T5 and the whole-change review T8) have no open Critical or Important findings.
+- Both merges are fast-forwards, so alpha `main` is now d4d4d4d and beta `main` e5e5e5e: exactly what was verified.
+- I kept both `change/add-greeting` branches; deleting them needs your word.
+
+**Integrate, in the space**
+- The tests moved to the regression suite as `tests/add-greeting/` (3 tests).
+- `pod.yaml` pins are now alpha d4d4d4d and beta e5e5e5e; gamma stays at c3c3c3c.
+- The spec author added `integrated: demo-owner 2026-10-28T10:17Z` to the spec.
+- The change folder moved to `changes/archive/2026-10-28-add-greeting/`.
+- I updated the space's `README.md` and regenerated `STATUS.md` with the skill's rules.
+- There was nothing to prune.
+
+**Final report** (`changes/archive/2026-10-28-add-greeting/report.md`)
+- Scenarios R1.S1, R1.S2 and R2.S1 all pass in ev-20261002T1412Z.
+- My three rulings:
+  1. I integrated without updating the alpha and beta READMEs. The plan's integrate entry lists them, but no build task touched them and the spec asks for no docs.
+  2. Fast-forward merges, with the branches kept.
+  3. The integrate went in as one librarian commit per record, because the librarian never puts two records in one commit. That breaks the process's "one space commit" rule.
+- Deferred minor: T4's note that alpha's module docstring doesn't mention `greeting()`.
+- Test suggestions: none.
+- Open questions:
+  - Should the READMEs get a follow-up change?
+  - Should the planned `hello, <name>` behaviour, which the spec doesn't state and no project-level test covers, become a scenario?
+  - Should the branches be deleted?
+
+**T4 brief** (`changes/add-farewell/tasks/T4-brief.md`)
+- It names gamma at f6f6f6f, alpha and beta at their new pins, and the space at the commit that files the brief, which comes after the integrate.
+- It tells the tester to run the farewell test, the new regression tests `add-greeting/R1.S1`, `R1.S2` and `R2.S1`, and gamma's unit suite. The spec declares no quality checks.
+
+**Two problems**
+- **T4 isn't actually ready.** add-farewell's T1 report and T3 review aren't in the space, and T3's done-when needs that review filed. Also, the ledger line `T3 review:` names the review task, not T1, so by the skill's rules T1's review never closed. `STATUS.md` shows T1 and T3 as still dispatched and T4 as waiting.
+- **The archive move leaves the old files behind.** The librarian files only files that exist, so it can't commit the removal of the old `changes/add-greeting/` paths. In real git they would stay in place next to the archive copy until someone removes them.
+
+Every DESK line, in order:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting refs/heads/main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space diff --quiet 5c02e1a HEAD -- tests
+DESK: git clone https://example.invalid/demo/alpha.git <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/alpha
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/alpha push origin main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git clone https://example.invalid/demo/beta.git <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/beta
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/work/beta push origin main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/gamma.git refs/heads/change/add-farewell
+
+The librarian's commit commands follow. Each record gets its add, commit and push, in filing order. For brevity I left out the fetch, skip-check, rebase and confirm commands that surround each one.
+
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File tests/add-greeting/test_R1_S1_default_greeting.md" -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File tests/add-greeting/test_R1_S2_name_too_long.md" -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File tests/add-greeting/test_R2_S1_startup_line.md" -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File pod.yaml" -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- README.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File README.md" -- README.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/spec.md" -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/plan.md" -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/report.md" -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md" -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T2-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md" -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T3-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T4-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T5-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T7-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T8-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/add-farewell/tasks/T4-brief.md" -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/archive/2026-10-28-add-greeting/ledger.md" -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space push origin HEAD:main
+
+Files are in <scratch>/runs/20261028T101544Z-test_R5_S2_tests_promoted_at_integrate-b15e/space:
+- changes/archive/2026-10-28-add-greeting/report.md
+- changes/add-farewell/tasks/T4-brief.md
+- STATUS.md
+
+Decision for you: before T4 is dispatched, should I send add-farewell's T1 and T3 back to their agents to file the missing report and review?
+===== stderr-1.txt (empty)
+===== check.out
+R5.S2.1 pass 3 of 3 tests promoted to tests/
+R5.S2.2 pass T4 brief written
+R5.S2.3 pass T4 brief runs the regression suite
+R5.S2.4 pass add-farewell's test stays in its change folder

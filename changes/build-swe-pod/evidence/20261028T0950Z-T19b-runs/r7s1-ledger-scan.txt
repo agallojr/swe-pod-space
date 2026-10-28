@@ -1,0 +1,2 @@
+range bc724fd~1..bc724fd: 17 lines added, 9 events; hits agent-id 0, agent-name 0, hostname 0, cwd 0, task-id 0, cred-name 0, home-path 0
+range e8fa318..a2bbb6d: 40 lines added, 16 events; hits agent-id 0, agent-name 0, hostname 0, cwd 0, task-id 0, cred-name 0, home-path 0

@@ -1,0 +1,64 @@
+===== meta.json
+{
+  "test": "test_T1_TS5_computed_values_in_other_forms",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T1 of add-greeting is done and reviewed. Route the test suggestions in its
+report, then write the brief for T6, the suggestions task, as it stands with
+what has been routed to it so far. Start no agent: I will pass on anything
+meant for a builder myself.
+Checkouts on this node: space <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space; swe-pod <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/export/swe-pod
+===== final-1.txt
+Both records passed the librarian's checks. The commit step is a desk step, so here are its commands, run by no one:
+
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space fetch origin
+
+I've routed T1's three test suggestions and written the T6 brief. Both passed the filing checks, but since commits were a desk step nothing is committed, and I haven't added `filed` lines to the ledger. I started no agent.
+
+**Routing** (added to `changes/add-greeting/ledger.md`):
+- **T1.TS1 (combining marks near the limit): back to the builder.** It says the error reports a length "near 70 code units, give or take one". That is a value the code computed, even as an approximation. Nothing went to the test agent.
+- **T1.TS2 (zero-width joiner in the name): back to the builder.** It gives `hello, ` plus 9 code points, so a 16-character greeting. That is also a computed value. Nothing went to the test agent.
+- **T1.TS3 (a name of exactly 64 characters): to the test agent.** The spec covers this case (the limit is 64 code points), but no scenario tests it. The test agent takes the expected result from the spec: a greeting, not the limit error.
+
+**For you to pass to the T1 builder:** restate TS1 and TS2 in spec terms only: which requirement is at risk, the input, and the failure expected, with no value the code produced. Once restated, I'll route them again. Their "for the reviewer" parts stay with the reviews.
+
+**T6 brief:** `<scratch>/runs/20261028T103132Z-test_T1_TS5_computed_values_in_other_forms-e8cd/space/changes/add-greeting/tasks/T6-brief.md`
+- It is the test-writing brief, and its only suggestion is TS3's "for the tester" part.
+- Some starting points are still unknown and marked "not yet known":
+  - The space commits, because this space checkout isn't a git repo.
+  - beta's head, because T2 isn't done.
+- Known so far: base is alpha `a1a1a1a`, beta `b2b2b2b`, gamma `c3c3c3c` (its pin); under test, alpha is at `d4d4d4d`.
+- T6 can't start until T2 is done. I'll rewrite the brief then, with the real commits and any restated suggestions.
+
+**Not done:** I haven't regenerated `STATUS.md`, because nothing was actually filed.
+===== stderr-1.txt (empty)
+===== check.out
+T1.TS5.1 pass 1 line(s) return T1.TS1 to the builder
+T1.TS5.2 pass 1 line(s) return T1.TS2 to the builder
+T1.TS5.3 pass to test: 0 line(s), 0 file(s), 0 subagent prompt(s)
+T1.TS5.4 pass 1 line(s) route T1.TS3 to the test agent

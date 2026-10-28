@@ -1,0 +1,50 @@
+===== meta.json
+{
+  "test": "test_R8_S2_builder_disputes_test",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+changes/add-greeting/tasks/T10-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T102410Z-test_R8_S2_builder_disputes_test-39e9/space
+swe-pod: <scratch>/runs/20261028T102410Z-test_R8_S2_builder_disputes_test-39e9/export/swe-pod
+alpha: <scratch>/runs/20261028T102410Z-test_R8_S2_builder_disputes_test-39e9/repos/alpha
+beta: <scratch>/runs/20261028T102410Z-test_R8_S2_builder_disputes_test-39e9/repos/beta
+===== final-1.txt
+T10 is **DONE_WITH_CONCERNS**: the project test `test_R1_S2_name_too_long` is wrong, and alpha already meets the spec, so I changed no code.
+
+- **The failure is real but expected:** running the test at 30935f7 gives the same result as the evidence. A 40-character name gets the greeting.
+- **Why the test is wrong:** the spec's R1.S2 uses a 65-character name, and Open calls 1 sets the limit at 64 code points. A 40-character name is under the limit, so the spec requires a greeting for it. Making this test pass would mean breaking R1.S2. That also means the task's done-when condition can't be met.
+- **Routing:** the T7 routing ("test agrees with the spec, code does not") had it backwards. The test needs restating with a 65-character name. I left the test unchanged and logged the dispute in the report.
+- **Unit tests added:** in `tests/test_alpha.py` I added 4 tests that check the limit:
+  - 40 and 64 code points are accepted.
+  - 65 is refused, and the error message names 64.
+  - The limit counts code points, not bytes.
+
+  With the limit set to 39 in a copy of alpha, which is what the test asks for, 4 tests fail. The full alpha suite on the real code is `unit 8/8 pass`.
+- **Nothing is committed yet:** the commit and push were desk-only, so the `tests/test_alpha.py` change is uncommitted in the alpha checkout.
+
+The report, with two test suggestions about the boundary at 64 and code-point counting, is at `changes/add-greeting/tasks/T10-report.md`.
+
+DESK: git add -- alpha/__init__.py tests/test_alpha.py
+DESK: git commit -m "Pin the 64-code-point name limit in alpha unit tests" --trailer "Change: add-greeting" --trailer "Task: T10" --trailer "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- alpha/__init__.py tests/test_alpha.py
+DESK: git fetch origin change/add-greeting
+DESK: git rebase --no-autostash origin/change/add-greeting
+DESK: git push origin change/add-greeting
+===== stderr-1.txt (empty)
+===== check.out
+R8.S2.1 pass status DONE_WITH_CONCERNS (from the report)
+R8.S2.2 pass concerns name the test
+R8.S2.3 pass concerns name the clause (R1.S2)
+R8.S2.4 pass 0 test file(s) changed

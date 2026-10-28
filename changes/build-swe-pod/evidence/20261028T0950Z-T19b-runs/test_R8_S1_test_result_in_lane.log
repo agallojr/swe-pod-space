@@ -1,0 +1,72 @@
+===== meta.json
+{
+  "test": "test_R8_S1_test_result_in_lane",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T3 has finished. Its report is at changes/add-greeting/tasks/T3-report.md.
+File its result.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space
+swe-pod: <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+Of T3's six files, three passed and three were refused for being outside the test role's lane. This was a desk run, so nothing is committed yet. The `git` commands are printed below and none of them ran. Because nothing is on the space's `main`, I wrote no `filed` ledger lines and did not regenerate `STATUS.md`.
+
+**Passed and ready to file.** All three passed the librarian's checks:
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+
+**Refused.** Each is recorded as `refused <path>: lane line 1` and left unfiled:
+- `tests/test_R1_S1_default_greeting.md`: the test agent copied a test into the space-wide regression suite. Change tests move into `tests/` only at integrate, as `tests/add-greeting/`.
+- `changes/add-greeting/spec.md`: the test agent edited R1.S2 to say the 65 characters are code points. Only the spec author edits the spec. The spec's Open calls already say the limit counts code points, so the edit is probably not needed. If you want it anyway, it goes to the spec author as a proposed edit, and it would reopen approval for R1.
+- `changes/add-greeting/tasks/T3-report.md`: a test agent's report belongs at `changes/add-greeting/evidence/<UTC>-T3-report.md`. The T3 brief named the wrong path. I recorded a ruling that the test agent files the report again under `evidence/`.
+
+**Results at the base commit set.** I recorded them in the ledger. Each test failed for the reason it states, which is what T3's done-when asks for:
+- `test_R1_S1_default_greeting` failed: alpha has no greeting.
+- `test_R1_S2_name_too_long` failed: alpha has no greeting.
+- `test_R2_S1_startup_line` failed: the first line is the banner.
+
+**Next.** I have not marked T3 done, because its report is not filed. Next, the test agent files the report again under `evidence/`. Once these commits are made, I'll record the `filed` lines and regenerate `STATUS.md`. The ledger is `<scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space/changes/add-greeting/ledger.md`.
+
+The desk commands, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102306Z-test_R8_S1_test_result_in_lane-2b0c/space push origin HEAD:main
+===== stderr-1.txt (empty)
+===== check.out
+R8.S1.1 pass 3 of 3 in-lane tests filed
+R8.S1.2 pass out-of-lane filed: none; wholesale staging: False
+R8.S1.3 pass 2 of 2 refusals recorded

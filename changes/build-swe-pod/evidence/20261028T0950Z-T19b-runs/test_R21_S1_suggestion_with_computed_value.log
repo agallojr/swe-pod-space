@@ -1,0 +1,54 @@
+===== meta.json
+{
+  "test": "test_R21_S1_suggestion_with_computed_value",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T1 of add-greeting is done and reviewed. Route the test suggestions in its
+report. Start no agent: I will pass on anything meant for a builder myself.
+Checkouts on this node: space <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space; swe-pod <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/export/swe-pod
+===== final-1.txt
+I routed both suggestions from T1's report. I started no agent, and nothing was filed: this was a desk run.
+
+**T1.TS1, combining marks at the limit: returned to the builder.** Its "for the tester" part gives an expected value that came from the code: the length the code computed and the error text that follows from it. A blind test can't use a number the code produced, so I sent nothing to the test agent. When you pass it to the builder, ask them to restate it with the input and the spec clause only (Open calls 1: the limit is 64 characters, counted as Unicode code points) and no expected value. Its "for the reviewer" part points at where `alpha/greeting.py` takes the length, line 8. That part goes to the reviewers, never to the test agent.
+
+**T1.TS2, a name of exactly 64 characters: sent to the test agent.** The spec covers this: the 64-character limit allows such a name. But no scenario tries one, since R1.S2 uses 65. Its "for the tester" part will go into the brief for T6, the test-suggestions task. T6 also waits on T2, which hasn't been dispatched yet, so I haven't written that brief. Its outcome will be recorded once T6 reports.
+
+**Ledger.** I added two lines to `<scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space/changes/add-greeting/ledger.md`:
+```
+2026-10-28T10:02Z T1.TS1 returned to builder: carries a computed value
+2026-10-28T10:02Z T1.TS2 -> test
+```
+The librarian's checks passed on the ledger. Its commit step only printed its commands. So there is no `filed` ledger line yet, and I haven't regenerated `STATUS.md`. Both are done after the real filing.
+
+**Next:** T2, beta prints the greeting, is ready to dispatch now that T1 is done. After T2, T6 gets its brief with TS2 in it. If the builder's restated TS1 has no computed value, I'll route it then.
+
+The desk lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100220Z-test_R21_S1_suggestion_with_computed_value-2269/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R21.S1.1 pass 1 line(s) return T1.TS1 to the builder
+R21.S1.2 pass T1.TS1 to test: 0 line(s), 0 file(s), 0 subagent prompt(s)
+R21.S1.3 pass 1 line(s) route T1.TS2 to the test agent

@@ -1,0 +1,16 @@
+===== meta.json
+{
+  "test": "test_I7_agent_mesh_documents",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": []
+}
+===== check.out
+I7.1 pass agent-mesh bbd19a2: PROTOCOL section 5 documents the project field
+I7.2 pass result files: documented, and swept in section 9
+I7.3 pass section 3 spaces rows present
+I7.4 pass six roles: at most 6 of 6 named in one document
+I7.5 pass mesh-load skill as contract
+I7.6 pass space-librarian skill as contract
+I7.7 pass scan-loop list mode documented

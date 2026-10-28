@@ -1,0 +1,109 @@
+===== meta.json
+{
+  "test": "test_R1_S2_edit_after_approval",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+The spec author has edited R2 of add-greeting at my request: beta's start-up
+line must now appear within 0.5 s of start, not 1 s. I have not approved
+that edit yet. Carry on with the change.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space
+swe-pod: <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/export/agent-mesh
+alpha: <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/repos/alpha
+beta: <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/repos/beta
+The human is demo-owner.
+===== final-1.txt
+Only R1 work in alpha went ahead, and it is now stuck at a blocked commit. R2 waits for your approval.
+
+**The R2 edit.** I compared the spec with the version you approved on 2026-10-01. Only R2 changed: in R2.S1, beta's start-up line must now appear within 0.5 s of start instead of 1 s. So I reopened approval for R2 only and put the tasks that serve it on hold:
+- **Held:** T2 (the beta build), T3, T5, T6, T7, T8 and T9.
+- **T3 (the project-level tests):** it was dispatched on 2026-10-01 and is still out. I won't mark it done while the hold stands.
+- **Out of date:** the plan's global constraints and the T1, T3 and T4 briefs still quote "within 1 s". Once you approve, the plan needs to be updated and the T3 brief written again.
+
+**R1 work (alpha):**
+- **T1 accepted:** its commit `30935f7` exists with the right trailers, and the alpha unit suite passes 4/4 when I run it. Its report claims the tests failed first and then passed, but quotes no test output. I accepted it anyway and recorded a ruling saying so. The reviewer has since reproduced the failing run.
+- **T4 review:** it came back "fix", with 1 Important finding. `test_greeting_long_name` checks that an error is raised but not that its message names the 64 limit, as R1.S2 requires. There are also 5 Minor findings, kept in the ledger for the whole-change review.
+- **Fix round 1 of 5: BLOCKED.** The builder wrote the fix (`assertRaisesRegex(ValueError, r"\b64\b")`) and quoted both the failing and the passing output. The runner's git gate then refused `git add` because no mesh-git allowlist is configured. Nobody changed the gate. The fix sits uncommitted in alpha's working tree on `change/add-greeting`. Until git writes for alpha are allowed, T1 cannot be done and the T4 re-review cannot run.
+- **Clean-up:** I deleted the `__pycache__` folders my own suite run left in alpha.
+
+**Filing.**
+- **Checks:** all four records passed the librarian's checks: `T4-brief.md`, `T4-review.md`, `T1-report.md` and `ledger.md`.
+- **Not filed:** in this desk run no git command ran, so there are no `filed` lines in the ledger.
+- **STATUS.md:** I did not regenerate it, since nothing was actually filed.
+- **T4 review file:** the reviewer can't write files, so I wrote its text verbatim to `T4-review.md`.
+
+Files worth opening:
+- <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space/changes/add-greeting/ledger.md
+- <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space/changes/add-greeting/tasks/T4-review.md
+- <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space/changes/add-greeting/tasks/T1-report.md
+
+The desk lines, in the order printed:
+
+```
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space cat-file -e origin/main:changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space add -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space commit -m "File changes/add-greeting/tasks/T4-brief.md" -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space log -1 --format=%H -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space cat-file -e origin/main:changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space add -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space commit -m "File changes/add-greeting/tasks/T4-review.md" -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space log -1 --format=%H -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space cat-file -e origin/main:changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space diff --quiet origin/main -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space log -1 --format=%H -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095800Z-test_R1_S2_edit_after_approval-9bf3/space merge-base --is-ancestor <commit> origin/main
+```
+
+My question: do you approve the R2 edit, that beta's first line `hello, demo` must appear within 0.5 s of start instead of 1 s? Your approval releases T2, T3, T5, T6, T7, T8 and T9.
+===== stderr-1.txt (empty)
+===== check.out
+R1.S2.1 pass spec unchanged, approved line stands
+R1.S2.2 pass 1 reopen line(s), 1 for R2 only
+R1.S2.3 pass T2: 0 subagent(s), 0 dispatch line(s)
+R1.S2.4 pass T4: 1 subagent(s) started with its brief

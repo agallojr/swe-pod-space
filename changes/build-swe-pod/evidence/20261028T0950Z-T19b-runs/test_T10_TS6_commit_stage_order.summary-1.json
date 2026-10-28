@@ -1,0 +1,140 @@
+{
+  "result": "Both records passed the profile, reference and id checks. As you asked, the commit step was a desk run: I printed these git commands and ran none of them. Neither record has been committed or pushed, so there are no `FILED` lines.\n\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a01-first.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m \"File notes/note-20261001T1600Z-2a01-first.md\" -- notes/note-20261001T1600Z-2a01-first.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a02-second.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m \"File notes/note-20261001T1600Z-2a02-second.md\" -- notes/note-20261001T1600Z-2a02-second.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main\n\nI printed only the five command types you listed. The skill's full desk run would also print its other git commands: a fetch at the start with `cat-file` and `diff` to see if a record is already filed, `log` to find the commit, and a final fetch with `merge-base` to confirm the push landed.",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01VRuQukzC2ZANAptmAKfwaN",
+      "name": "Skill",
+      "input": {
+        "skill": "space-librarian",
+        "args": "space root: <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo; bus: <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus; records: notes/note-20261001T1600Z-2a01-first.md notes/note-20261001T1600Z-2a02-second.md; commit step is a desk step (print DESK: lines, run none)"
+      },
+      "is_error": false,
+      "output": "Launching skill: space-librarian",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01F1yQCNQtc2D3EMXbSeFWj5",
+      "name": "Bash",
+      "input": {
+        "command": "ls notes/; SPACE=<scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo BUS=<scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus sh <config>/skills/space-librarian/check.sh notes/note-20261001T1600Z-2a01-first.md notes/note-20261001T1600Z-2a02-second.md",
+        "description": "Run the record check script"
+      },
+      "is_error": false,
+      "output": "note-20261001T1100Z-a0b1-demo-context.md\nnote-20261001T1600Z-2a01-first.md\nnote-20261001T1600Z-2a02-second.md\nCHECKED notes/note-20261001T1600Z-2a01-first.md\nCHECKED notes/note-20261001T1600Z-2a02-second.md",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01NDrzHnxj9t6vndYxfiUUUu",
+      "name": "Bash",
+      "input": {
+        "command": "R=<scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo\nfor p in notes/note-20261001T1600Z-2a01-first.md notes/note-20261001T1600Z-2a02-second.md; do\necho \"DESK: git -C $R add -- $p\"\necho \"DESK: git -C $R commit -m \\\"File $p\\\" -- $p\"\necho \"DESK: git -C $R fetch origin\"\necho \"DESK: git -C $R rebase --autostash origin/main\"\necho \"DESK: git -C $R push origin HEAD:main\"\ndone",
+        "description": "Print desk commit commands without running git"
+      },
+      "is_error": false,
+      "output": "DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a01-first.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m \"File notes/note-20261001T1600Z-2a01-first.md\" -- notes/note-20261001T1600Z-2a01-first.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a02-second.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m \"File notes/note-20261001T1600Z-2a02-second.md\" -- notes/note-20261001T1600Z-2a02-second.md\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main\nDESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill",
+      "Write"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup"
+    ],
+    "skills": [
+      "space-librarian",
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T102615Z-test-T10-TS6-commit-stage-order-ca06-bus-spaces-proj-demo/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 6,
+  "api_retries": 0,
+  "num_turns": 5,
+  "run": {
+    "step": 1,
+    "cap_s": 599,
+    "retried": false,
+    "exit": 0,
+    "elapsed_s": 25.9,
+    "capped": false,
+    "result_s": 25.9,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

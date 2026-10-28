@@ -1,0 +1,98 @@
+===== meta.json
+{
+  "test": "test_T5_TS3_edit_while_serving_task_runs",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+The spec author has edited R2 of add-greeting at my request: beta's start-up
+line must now appear within 0.5 s of start, not 1 s. I have not approved
+that edit yet. T2 has just reported; its report is at
+changes/add-greeting/tasks/T2-report.md. Carry on with the change.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space
+swe-pod: <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/export/agent-mesh
+alpha: <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/repos/alpha
+beta: <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/repos/beta
+The human is demo-owner.
+===== final-1.txt
+Approval for R2 is open again because of the 0.5 s edit, so I've held all the work that depends on R2, including T2. Only the review of T1, the alpha task, could go ahead. It passed, and T1 is done.
+
+**The R2 hold.** I compared the spec with what was approved. The only change is R2.S1: the time limit went from 1 s to 0.5 s. R1 is unchanged. Every unfinished task that serves R2 is on hold: T2, T3, T5, T6, T7, T8 and T9. I dispatched none of them and marked none of them done. T3 (the project-level tests) was dispatched earlier and has not reported back.
+
+**T2 has reported but is not checked or filed.** Its commit exists on beta's local `change/add-greeting` (55955b3, d91d3eb..55955b3, tagged `Change: add-greeting` / `Task: T2`). Two checks are still open:
+- **No remote copy to check against.** The beta checkout has no `origin`, so I couldn't confirm the commit is on the remote. Alpha's checkout has the same gap.
+- **No test output.** The report only says "Red before the code, green at 55955b3: 1 test, OK." It has no actual red or green output.
+
+When the hold lifts, the report goes back to the builder for that output. The review of T2 (T5) follows after that. I've recorded this as a ruling in the ledger.
+
+**T1 review (T4).** Verdict pass, with no Critical or Important findings, so T1 is done (alpha 43f0919..fe320ea, 3/3 unit tests pass). There are four Minor findings, which stay in the ledger for the final whole-change review:
+- `greeting()` has no type annotations, unlike the plan's signature.
+- The long-name unit test doesn't check that the error message names the 64 limit.
+- No unit test covers a 64-code-point name being accepted.
+- `plan.md` §3 still quotes R2.S1 as "within 1 s". It needs updating once you rule on the edit.
+
+The reviewer role can't write files, so I saved its text unchanged at the review's path and recorded that as a ruling too.
+
+**Filing (desk run).** The librarian's checks passed for all three records: `T4-brief.md`, `T4-review.md` and `ledger.md`. Its git commands were printed, not run, so nothing is confirmed filed yet. For the same reason the ledger has no `filed` lines and I haven't regenerated `STATUS.md`.
+
+Files worth opening:
+- <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space/changes/add-greeting/ledger.md
+- <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space/changes/add-greeting/tasks/T4-review.md
+- <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space/changes/add-greeting/spec.md
+
+DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space cat-file -e origin/main:changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space add -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space commit -m "File changes/add-greeting/tasks/T4-brief.md" -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space log -1 --format=%H -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space cat-file -e origin/main:changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space diff --quiet origin/main -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space add -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space commit -m "File changes/add-greeting/tasks/T4-review.md" -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space log -1 --format=%H -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space fetch origin
+DESK: git -C <scratch>/runs/20261028T103557Z-test_T5_TS3_edit_while_serving_task_runs-31e3/space merge-base --is-ancestor <commit> origin/main
+
+Do you approve the R2.S1 edit, so beta's first line must appear within 0.5 s of start instead of 1 s? Once you do, I'll record your approval, release the held tasks, and have the plan's quote of R2.S1 updated.
+===== stderr-1.txt (empty)
+===== check.out
+T5.TS3.1 pass spec unchanged
+T5.TS3.2 pass 2 line(s) reopen approval for R2 alone
+T5.TS3.3 pass successors of T2: 0 subagent(s), 0 dispatch line(s)
+T5.TS3.4 pass T4: 1 subagent(s), 1 dispatch line(s)

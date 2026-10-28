@@ -1,0 +1,40 @@
+===== meta.json
+{
+  "test": "test_T10_TS6_commit_stage_order",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo. The mesh bus is at <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus. The records, as space paths: notes/note-20261001T1600Z-2a01-first.md notes/note-20261001T1600Z-2a02-second.md
+===== final-1.txt
+Both records passed the profile, reference and id checks. As you asked, the commit step was a desk run: I printed these git commands and ran none of them. Neither record has been committed or pushed, so there are no `FILED` lines.
+
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m "File notes/note-20261001T1600Z-2a01-first.md" -- notes/note-20261001T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo add -- notes/note-20261001T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo commit -m "File notes/note-20261001T1600Z-2a02-second.md" -- notes/note-20261001T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T102615Z-test_T10_TS6_commit_stage_order-ca06/bus/spaces/proj-demo push origin HEAD:main
+
+I printed only the five command types you listed. The skill's full desk run would also print its other git commands: a fetch at the start with `cat-file` and `diff` to see if a record is already filed, `log` to find the commit, and a final fetch with `merge-base` to confirm the push landed.
+===== stderr-1.txt (empty)
+===== check.out
+T10.TS6.1 pass 2 commit(s), covering notes/note-20261001T1600Z-2a01-first.md; notes/note-20261001T1600Z-2a02-second.md
+T10.TS6.2 pass after each commit, fetch, rebase and push at 2, 3, 4; 7, 8, 9; 2 push(es)
+T10.TS6.3 fail after each push, fresh fetch and ancestor check at 7, -1; -1, -1
+T10.TS6.4 pass 0 forced push, branch or wholesale add line(s)
+T10.TS6.5 pass 0 FILED line(s) printed
+T10.TS6.6 pass 0 git commit or push call(s) ran

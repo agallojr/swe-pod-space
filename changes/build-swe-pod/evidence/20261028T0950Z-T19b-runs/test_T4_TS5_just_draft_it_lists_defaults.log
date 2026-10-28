@@ -1,0 +1,50 @@
+===== meta.json
+{
+  "test": "test_T4_TS5_just_draft_it_lists_defaults",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'd like beta to greet people by name when it starts. Call the change
+greet-by-name. Just draft it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T103521Z-test_T4_TS5_just_draft_it_lists_defaults-3548/space
+swe-pod: <scratch>/runs/20261028T103521Z-test_T4_TS5_just_draft_it_lists_defaults-3548/export/swe-pod
+alpha: <scratch>/runs/20261028T103521Z-test_T4_TS5_just_draft_it_lists_defaults-3548/repos/alpha
+beta: <scratch>/runs/20261028T103521Z-test_T4_TS5_just_draft_it_lists_defaults-3548/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've written the draft spec for greet-by-name. It's a proposal for you to review, not yet approved:
+
+`<scratch>/runs/20261028T103521Z-test_T4_TS5_just_draft_it_lists_defaults-3548/space/changes/greet-by-name/spec.md`
+
+**What I found first:** `alpha` can already make a greeting for any name, and it already refuses names longer than 64 characters. `beta` just never passes it a name. So this change only touches `beta`, and I've sized it as small.
+
+**What the draft says:** you start `beta` with `--name Ada` and its first line is `hello, Ada`. With no name it still prints `hello, demo`. A name that's too long or empty, or `--name` with nothing after it, gets an error message and a failing exit, and nothing else is printed.
+
+**How to review it:**
+1. **Why and Scope:** is this the problem you meant? It leaves out working out the name automatically, for example from your login.
+2. **Requirements:** does the case you care about most have a worked example?
+3. **Open calls:** these are defaults I picked and you haven't agreed to yet. Check these first:
+   - The name comes only from `--name`, not from your login or the environment.
+   - A bad name is an error. It doesn't fall back to `hello, demo`.
+   - The name is printed exactly as typed, with no trimming of spaces and no change of case.
+   - When there's an error, the `beta 1.0` line isn't printed either.
+
+**For the lead:** the path is above, and the status is proposed. No `SPEC.md` copy exists in any repo, so I didn't make one. I didn't print any `DESK:` lines because I didn't do a commit step: filing the spec through the librarian is the lead's job. So I have no `DESK:` lines to repeat here.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS5.1 pass draft written
+T4.TS5.2 pass no approved: line
+T4.TS5.3 pass Open calls items: 9
+T4.TS5.4 pass named for the name: --name; missing from Open calls: none

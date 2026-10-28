@@ -1,0 +1,94 @@
+===== meta.json
+{
+  "test": "test_R2_S1_first_change_no_specs",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I want beta to print a greeting when it starts, and the greeting text should
+come from alpha so other tools can share it. Call the change add-greeting.
+Just draft it. I approve it as you draft it, so record my approval as
+demo-owner.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/space
+swe-pod: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/export/swe-pod
+alpha: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/repos/alpha
+beta: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've written the spec and recorded your approval as you asked: `approved: demo-owner 2026-10-28T10:06Z`.
+
+**Spec:** `<scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/space/changes/add-greeting/spec.md`
+
+**What it asks for**
+- **alpha** gets a greeting that any tool can use. It works like the `checksum` function alpha already has, and returns the same single line every time.
+- **beta** prints that greeting as the first line every time it starts, including with `--count-lines`. The banner (`beta 1.0`) and the line count come after it, unchanged.
+- One test checks that beta takes the text from alpha: if alpha's greeting changes, beta prints the new text without any change to beta.
+- **Checks:** the unit tests pass in both repos, and alpha's changelog gets one line for the greeting, as its contributing guide asks.
+
+I sized it "project" rather than "small" because it touches two repos and adds to what alpha offers other tools.
+
+**Choices I made that you haven't seen yet** (they're listed at the end of the spec, and your approval covers them, so please check these first):
+- The greeting reads `Hello from demo!`.
+- It prints before the `beta 1.0` banner, not after it.
+- It goes to the same output as the banner, so the line-count option prints one extra line too. Anything that reads beta's output will see that extra line.
+- alpha offers the greeting as a function, not as a fixed value or a text file.
+- beta has no way to turn the greeting off.
+- Neither alpha's nor beta's version number changes.
+
+If you want to change any of these, I'll edit the spec and record your approval of that edit.
+
+**For the lead:** the spec at `changes/add-greeting/spec.md` is approved. Neither alpha nor beta keeps a `SPEC.md` copy, so I made none. I committed nothing and printed no `DESK:` lines: filing the spec through the librarian is the lead's step.
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/space
+swe-pod: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/export/swe-pod
+alpha: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/repos/alpha
+beta: <scratch>/runs/20261028T100614Z-test_R2_S1_first_change_no_specs-daac/repos/beta
+The human is demo-owner.
+===== final-2.txt
+I've written the plan for add-greeting at `changes/add-greeting/plan.md`. The spec is approved and all eight scenarios have a test in the plan. I haven't committed it: you file it through the librarian.
+
+**What gets built** (two build tasks, both run locally):
+- **T1, in alpha:** a new public function `alpha.greeting()` that returns `Hello from demo!`. It sits beside `checksum` and comes with three unit tests, the `- greeting()` changelog line under Unreleased, and a line in alpha's README.
+- **T2, in beta:** `main` first prints `alpha.greeting()`, called through the `alpha` module at each start, so beta keeps no copy of the text. Its output after the greeting is unchanged. It adds four unit tests, one of which swaps in `Hi there` through `mock.patch`, and an update to beta's README. T2 waits for T1 because it uses the new function.
+
+**Tests and the rest:**
+- **T3:** the project-level tests start at the go, alongside T1. For R2.S2 they put a stand-in `alpha` that returns `Hi there` first on `PYTHONPATH`.
+- **T4:** picks up the builders' test suggestions, after T3, since both write to the change's tests folder.
+- **T5:** one verify run on `linux-server`, not split up.
+- **T6 to T9:** a review of each build task, the whole-change review, and integrate (alpha merges before beta; gamma stays at its pin).
+- **Longest chain:** T1 → T6 → T2 → T7 → T4 → T5 → T8 → T9.
+
+**Gaps in the spec where I chose a default** (listed in the plan for the spec's Open calls):
+- The spec doesn't name the function; I used `greeting()`.
+- "alpha installed" means alpha's checkout is on `PYTHONPATH`. Neither repo has packaging files, and the plan adds none.
+- beta now needs alpha to start and has no fallback if alpha is missing.
+- R3.S2's three input lines are `a\nb\nc\n`.
+- Verify runs on `linux-server`, though any machine with `python3` would do.
+
+No questions for the human.
+
+I printed no `DESK:` lines: as planner I don't run the librarian's commit step.
+===== stderr-2.txt (empty)
+===== check.out
+R2.S1.1 pass new spec files ['changes/add-greeting/spec.md']; 0 other file(s) with SHALL
+R2.S1.2 pass requirements cover only the change
+R2.S1.3 pass supersedes []
+R2.S1.4 pass approved line present
+R2.S1.5 pass plan self-review filled, 3 of 3 requirement ids

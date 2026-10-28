@@ -1,0 +1,158 @@
+{
+  "result": "Steps 1\u20133 worked, and the git gate blocked step 4 as expected.\n\n1. **Read README.md:** succeeded. It is the agent-mesh product README.\n2. **Write probe.txt:** succeeded. The file holds the single word `PROBE`.\n3. **`git log --oneline -1`:** succeeded and returned `8ee5364 checkin: product working changes`.\n4. **`git commit --allow-empty -m probe`:** denied by the PreToolUse git gate with \"git commit is gated: no mesh-git allowlist configured (<config>/mesh-git-allowlist.txt)\". No commit was made.\n\nNo `DESK: ` lines were printed, since this task has no librarian step.",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01Syi6zEVexBwXpaU1eVpAg2",
+      "name": "Read",
+      "input": {
+        "file_path": "<scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo/README.md"
+      },
+      "is_error": false,
+      "output": "1\t# agent-mesh (product)\n2\t\n3\tThe mesh **product**: the protocol, skills, git gate, env templates, guidance,\n4\tand installer that turn a machine into a coordination node for Claude agents on\n5\thosts that cannot reach each other directly.\n6\t\n7\tThis repo is the reusable software. The runtime coordination state \u2014 the\n8\tappend-only ledger nodes read and write, plus the shared library \u2014 lives in a\n9\tseparate **bus** repo (`agent-mesh-bus-<mesh>`, one per mesh, named for the\n10\tmesh), where this product is linked in as a pinned `product/` submodule. A node\n11\tclones the bus, checks out the recorded product pin, and runs it. See\n12\t[`docs/product-data-split.md`](docs/product-data-split.md) for the rationale.\n13\t\n14\t## What a turn looks like\n15\t\n16\tAn operator steers in plain language from any Claude session \u2014 a workstation or\n17\ta phone. Nodes do the work. Everything meets in the bus as plain git commits:\n18\t\n19\t> \"Post to role `build`: run the nightly export and put the result in the\n20\t> outbox.\"\n21\t\n22\t```\n23\ttasks/roles/build/20260814T1502-0001-nightly-export.md   operator posts the task\n24\tstatus/20260814T1502-0001.json                           a node claims: accepted\n25\tstatus/20260814T1502-0001.json                           running -> done\n26\toutbox/<agent-id>/20260814T1502-0001-result.md               the claimant's result\n27\ttasks/roles/librarian/...                                provenance (runs) record\n28\t```\n29\t\n30\tThe operator reads the status and result back after a `git pull`. No broker, no\n31\tserver, no shared network \u2014 just files, single-writer paths, and git.\n32\t\n33\t## The docs\n34\t\n35\t| You are | Read |\n36\t|---|---|\n37\t| A **user** driving a running mesh (post work, read results \u2014 terminal first; phone also works) | [`docs/operator-manual.md`](docs/operator-manual.md) |\n38\t| An **admin** installing a node on an existing mesh | [`INSTALL.md`](INSTALL.md) |\n39\t| An **admin** standing up a brand-new mesh (scaffold a bus) | [`install/README.md`](install/README.md) |\n40\t| Running biased reviewer agents (lenses) over a result | [`lenses/README.md`](lenses/README.md) |\n41\t| Implementing or auditing behavior | [`spec/PROTOCOL.md`](spec/PROTOCOL.md) \u2014 the normative reference |\n42\t| Wondering where this sits in the multi-agent landscape | [`docs/positioning.md`](docs/positioning.md) |\n43\t| Migrating an old node after the product/data split | [`docs/reinstall-after-split.md`](docs/reinstall-after-split.md) |\n44\t\n45\t## Getting started \u2014 pick your path\n46\t\n47\tThis repo is software, not a running mesh. You do not clone it to join a mesh;\n48\tyou either **stand up your own mesh** (creating a private bus) or **join one\n49\tthat already exists**.\n50\t\n51\t**A. Standing up a new mesh (no bus yet \u2014 start here if you found this repo).**\n52\t\n53\t1. Create an **empty, private** repo on your own Git host \u2014 this becomes *your*\n54\t   bus. Naming convention: `agent-mesh-bus-<mesh>`, named for the mesh it\n55\t   coordinates. Keep it private: it holds your runtime coordination state, your\n56\t   credential *names*, and your deployment-specific rules. The product stays\n57\t   public; your bus never should.\n58\t2. Clone this product repo and run the installer, pointing it at the public\n59\t   product URL and your new (empty) bus URL:\n60\t\n61\t   ```sh\n62\t   git clone https://github.com/you/agent-mesh.git\n63\t   cd agent-mesh\n64\t   PRODUCT_URL=https://github.com/you/agent-mesh.git \\\n65\t   BUS_URL=<your-empty-private-bus-url> \\\n66\t   BUS_PATH=\"$HOME/agent-mesh-bus-mymesh\" \\\n67\t   ./install/install.sh --product-tag v0.1.0\n68\t   ```\n69\t\n70\t   The installer scaffolds the bus from `bus-skeleton/`, links this product in\n71\t   as the pinned `product/` submodule, writes the bus's `guidance/CLAUDE.md`,\n72\t   and wires the git gate + skills. It **prints** the bus's first\n73\t   `commit`/`push` for you to run \u2014 it never pushes on its own. Full detail:\n74\t   [`install/README.md`](install/README.md). This node is the first node\n75\t   of your mesh.\n76\t\n77\t**B. Joining an existing mesh (a bus is already running).** Clone that bus and\n78\tinstall a node against it \u2014 see [`INSTALL.md`](INSTALL.md). You do not run the\n79\tinstaller or touch the product directly; the product arrives as the bus's\n80\t`product/` submodule.\n81\t\n82\t## How it is delivered\n83\t\n84\tThe product reaches every node as a submodule of the bus, pinned to a recorded\n85\tcommit, so all nodes on the same bus commit run byte-identical code. Nodes ride\n86\tthe **recorded pin** (adopter mode, the default): a sync realizes the commit the\n87\tbus records, not product `main` tip. Shipping a mesh-wide update = bump the\n88\tsubmodule pin in one bus commit; nodes pick it up on their next `git pull` +\n89\t`git submodule update --init --recursive`. (Tracking `main` tip is developer mode,\n90\topt-in per node via `MESH_PRODUCT_TRACK=tip` \u2014 for the maintainer's own mesh; see\n91\t[`INSTALL.md`](INSTALL.md).) The installer (`install/install.sh`) scaffolds a fresh\n92\tbus from `bus-skeleton/`, adds this product as the `product/` submodule at a chosen\n93\tpin, and wires the git gate and skill symlinks.\n94\t\n95\t## Idle costs nothing\n96\t\n97\tA node's poller does not poll with inference. It parks on a portable shell\n98\tscanner (`skills/mesh-on/mesh-scan-loop.sh`) that pulls, scans the node's\n99\tqueues, and sleeps in a loop, exiting only when there is claimable work (or a\n100\tstop/upgrade signal). While parked the agent spends **zero inference tokens**,\n101\tand an idle node makes **zero commits** \u2014 token and repo traffic are\n102\tproportional to real work, not to node-count \u00d7 poll-frequency \u00d7 uptime.\n103\t\n104\t## The library \u2014 what the mesh remembers\n105\t\n106\tDurable knowledge lives on the bus under `memory/`, curated by the holder of\n107\tthe `librarian` role. Five fixed categories (normative definition:\n108\t[`spec/PROTOCOL.md`](spec/PROTOCOL.md) \u00a77):\n109\t\n110\t| Category | Holds |\n111\t|---|---|\n112\t| `lore/` | Verified operational gotchas: symptom / cause / fix / scope. |\n113\t| `notes/` | Durable research and design knowledge: specs, designs, comparisons, plans, handoffs. |\n114\t| `refs/` | External references (papers, decks, images) \u2014 stored via LFS, or pointer-only. |\n115\t| `workflows/` | Curated write-ups of multi-node processes that ran. |\n116\t| `runs/` | Provenance: one compact record per result-bearing task. |\n117\t\n118\t`runs/` is the mesh's **audit trail**. Task scratch (message, status, outbox\n119\tresult) is swept by retention, but the run record \u2014 who ran what, when, on\n120\twhich node, with what outcome and artifact pointers \u2014 survives it. Together\n121\twith git history (every state change is a commit by an identified writer), what\n122\tthe mesh did is reconstructable after the fact.\n123\t\n124\tAny node submits durable learning as a `library.submit` message into the\n125\tlibrarian's queue; the librarian validates it, assigns an id, and promotes it\n126\tinto `memory/<category>/`. Records are small text \u2014 heavy payloads stay outside\n127\tthe bus and are referenced by pointer.\n128\t\n129\t## Customizing a deployment \u2014 the overlays\n130\t\n131\tThe product is generic; a deployment personalizes it **in the bus**, never by\n132\tediting product files. Two overlay points:\n133\t\n134\t- **Guidance overlay.** The bus entry point `guidance/CLAUDE.md` composes the\n135\t  chain every node loads: the product's `best-practices.base.md`, then the\n136\t  bus's private `memory/best-practices.user.md` (this deployment's rules,\n137\t  layered on top), then the product's `agent-operating.md` and\n138\t  `permissions.md`. To change mesh-wide behavior, edit the user overlay in the\n139\t  bus \u2014 the base stays pristine and upgradable.\n140\t- **Skills overlay.** `<bus>/skills/` overrides product skills by name: the\n141\t  installer links product skills into `~/.claude/skills/` first, then bus\n142\t  entries, so a same-named bus skill wins on that node and a new name adds an\n143\t  instance-only skill. Prefer tuning behavior through the guidance overlay; a\n144\t  whole-skill copy is the escape hatch, not the first move.\n145\t\n146\t## Security posture\n147\t\n148\t- **The bus is private; the product is public.** The bus carries your ledger,\n149\t  credential names, and deployment rules \u2014 keep its repo private.\n150\t- **Credential values never enter the bus.** Values live only in each node's\n151\t  `~/.agent-credentials.env` (mode 600). Messages, statuses, logs, and results\n152\t  carry credential **names** only; a blocked task reports the name it needs,\n153\t  never a value.\n154\t- **Path-scoped git gate.** A PreToolUse hook (`hooks/git-gate.py`) permits\n155\t  `git add/commit/push` only on allowlisted repo paths, requires literal\n156\t  absolute paths it can verify, and fails closed. It also rejects staging\n157\t  large or binary blobs into the bus.\n158\t- **Single-writer by construction.** Each node writes only the paths it owns,\n159\t  so merges cannot happen and every change is attributable \u2014 git history is a\n160\t  tamper-evident log of who wrote what, when.\n161\t- **Authenticated email ingress** (optional, off by default): mail becomes a\n162\t  mesh message only if DKIM/DMARC pass with the domain aligned to `From`, the\n163\t  verified sender is on an exact-match allowlist, AND a shared-secret body\n164\t  line matches under a constant-time compare. The allowlist alone is never\n165\t  authorization.\n166\t\n167\t## Layout (product repo)\n168\t\n169\t| Path | Role |\n170\t|---|---|\n171\t| `spec/` | The protocol definition (`PROTOCOL.md`) \u2014 the normative reference. |\n172\t| `skills/` | The `mesh-on` / `mesh-off` / `mesh-post` / `mesh-check` / `mesh-ref` Claude skills; symlinked into `~/.claude/skills/` from `product/skills/`. |\n173\t| `hooks/` | `git-gate.py` (path-scoped git gate + blob rejection), its settings snippet, and the allowlist template. |\n174\t| `templates/` | `*.env.template` files copied to `$HOME` and filled in per node (never committed). |\n175\t| `guidance/` | `best-practices.base.md` (universal, self-contained), `agent-operating.md`, `permissions.md`, `operator-interface.md`, and a product-side `CLAUDE.md`. |\n176\t| `install/` | The installer that scaffolds a bus and links this product in. |\n177\t| `bus-skeleton/` | The empty, `.gitkeep`-tracked directory skeleton a fresh bus starts from. |\n178\t| `docs/` | Design + operator docs (the product/data split, operator manual, re-install guide). |\n179\t\n180\tThe coordination directories (`agents/`, `tasks/`, `status/`, `outbox/`,\n181\t`workflows/`, `_archive/`) and the library (`memory/` \u2014 the five categories\n182\tabove, plus the deployment's `memory/best-practices.user.md` overlay) live at\n183\tthe **bus** root, not here. The bus's own `guidance/CLAUDE.md` composes the\n184\tproduct base with the deployment's user overlay (see `spec/PROTOCOL.md` \u00a74.4).\n185\t\n186\t## Core invariants\n187\t\n188\t- Single writer per path; merges are impossible by construction.\n189\t- Credentials referenced by name only; values never enter the bus.\n190\t- Large blobs never enter the bus; records reference them by pointer in\n191\t  `artifacts`. The git gate enforces this.\n192\t- Messages are self-contained and immutable.\n193\t- Conflicts are re-derived, never resolved textually.\n194\t- The product submodule is read-only on nodes; only the operator bumps the\n195\t  pin.\n196\t",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01B5kiNCYCeHbTkRKnKrMLDM",
+      "name": "Write",
+      "input": {
+        "file_path": "<scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo/probe.txt",
+        "content": "PROBE"
+      },
+      "is_error": false,
+      "output": "File created successfully at: <scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo/probe.txt (file state is current in your context \u2014 no need to Read it back)",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_0192ifuqb9DFoGLHLqx1vMR7",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo && git log --oneline -1",
+        "description": "Show latest commit in probe repo"
+      },
+      "is_error": false,
+      "output": "8ee5364 checkin: product working changes",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_0147nkCP9nnPHavwffqk9SN1",
+      "name": "Bash",
+      "input": {
+        "command": "git -C <scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo commit --allow-empty -m probe",
+        "description": "Make an empty probe commit to test git gate"
+      },
+      "is_error": true,
+      "output": "PreToolUse:Bash hook error: git commit is gated: no mesh-git allowlist configured (<config>/mesh-git-allowlist.txt)",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [
+    {
+      "tool_name": "Bash",
+      "tool_use_id": "toolu_bdrk_0147nkCP9nnPHavwffqk9SN1",
+      "tool_input": {
+        "command": "git -C <scratch>/runs/20261028T094837Z-smoke/S7-code-repo-dir/repos/probe-repo commit --allow-empty -m probe",
+        "description": "Make an empty probe commit to test git gate"
+      }
+    }
+  ],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill",
+      "Write"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup"
+    ],
+    "skills": [
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T094837Z-smoke-S7-code-repo-dir-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 5,
+  "api_retries": 0,
+  "num_turns": 5,
+  "run": {
+    "step": 1,
+    "cap_s": 30,
+    "retried": false,
+    "exit": 0,
+    "elapsed_s": 11.8,
+    "capped": false,
+    "result_s": 11.8,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

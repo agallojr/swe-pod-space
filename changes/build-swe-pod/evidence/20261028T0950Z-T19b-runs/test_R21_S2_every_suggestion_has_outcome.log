@@ -1,0 +1,96 @@
+===== meta.json
+{
+  "test": "test_R21_S2_every_suggestion_has_outcome",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+add-greeting is verified. Write its final report and file it. Do not merge
+anything yet.
+Checkouts on this node: space <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space; swe-pod <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/export/swe-pod
+===== final-1.txt
+The final report passed the librarian's checks. The commit is a desk step, so here are its commands, printed and not run:
+
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space merge-base --is-ancestor <commit> origin/mainI've written the final report for add-greeting and it passed the librarian's checks, but it is **not filed yet**. Committing is a desk step in this run, so I printed the commit commands and ran none of them. That means there is no FILED result, no `filed` line in the ledger, and STATUS.md has not been regenerated. Nothing was merged.
+
+Report: `<scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space/changes/add-greeting/report.md`
+
+## add-greeting: final report
+
+**Scenarios** (all from evidence ev-20261001T1230Z)
+
+| Scenario | Test | Result |
+|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass |
+| R1.S2 | test_R1_S2_name_too_long | pass |
+| R2.S1 | test_R2_S1_startup_line | pass |
+
+- The extra test test_T1_TS1_combining_marks also passed.
+- Unit tests pass in both repos: alpha 3/3, beta 2/2.
+- The spec declares no quality checks, and the space's `tests/` folder is still empty.
+- The evidence ran at space 5d5d5d5, alpha d4d4d4d, beta e5e5e5e and gamma c3c3c3c (gamma at its pin).
+- Since that evidence, neither the pins in `pod.yaml` (alpha a1a1a1a, beta b2b2b2b) nor `tests/` have moved, so no rebase or second verify is needed before a merge.
+
+**Rulings:** none. The ledger has no ruling lines.
+
+**Deferred minors:** one. The T2 review found that line 3 of `beta/beta/__main__.py`, which sets up the path, could say why it adds the alpha checkout. The whole-change review raised it again and still passed. No Critical or Important finding is open.
+
+**Test suggestions:**
+- **T1.TS1** (combining marks at the 64-character limit): tested as test_T1_TS1_combining_marks; it passes.
+- **T1.TS2** (greeting text cached at import): covered by a unit test.
+- **T2.TS1** (start-up from a slow network disk): declined. The 1 s start-up bound in R2.S1 applies to the environment the evidence runs on, and a slow network disk isn't one.
+- **T2.TS2** (start-up line when NO_COLOR is set): proposed as a new scenario. The spec doesn't have it yet, so it has been neither approved and tested nor dropped.
+
+**Open questions** (both for demo-owner):
+1. Should the NO_COLOR case from T2.TS2 become a scenario under R2, or be dropped? If it's added, it needs approval and a test before integrate.
+2. Should the deferred minor in `beta/beta/__main__.py` be fixed before the merge?
+
+**Branches**
+
+| Repo | Branch | Head |
+|---|---|---|
+| alpha | change/add-greeting | d4d4d4d |
+| beta | change/add-greeting | e5e5e5e |
+| gamma | none (not in the spec) | pin c3c3c3c |
+
+These heads come from the ledger and the evidence. I couldn't check them against the remotes because the remote URLs aren't reachable.
+
+**Next:** your word on the NO_COLOR question, then on how to merge. alpha goes first, then beta, and for each you pick merge and delete, a pull request, or keep the branch.
+
+## Desk lines, in the order printed
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space fetch origin
+DESK: git -C <scratch>/runs/20261028T100302Z-test_R21_S2_every_suggestion_has_outcome-cdaf/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R21.S2.1 pass report.md written
+R21.S2.2 pass 4 of 4 suggestions named
+R21.S2.3 pass 4 of 4 with their outcome

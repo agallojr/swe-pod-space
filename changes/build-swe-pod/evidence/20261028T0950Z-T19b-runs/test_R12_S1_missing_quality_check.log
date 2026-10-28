@@ -1,0 +1,61 @@
+===== meta.json
+{
+  "test": "test_R12_S1_missing_quality_check",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Where are we on add-greeting?
+===== final-1.txt
+**add-greeting isn't verified yet. The verify run never checked quality check Q2, so the change can't be integrated.**
+
+`STATUS.md` doesn't exist, so it's behind. Everything below comes straight from the records. I filed nothing, so there was no librarian commit step and no `DESK:` lines.
+
+**State: building.** The spec was approved by demo-owner at 2026-10-01T09:00Z. The latest ledger entry is from 2026-10-01T13:11Z.
+
+| Task | What it is | Where it stands |
+|---|---|---|
+| T1 | Greeting text in alpha | Done (alpha `a1a1a1a..d4d4d4d`); reviewed by T4 with no findings |
+| T2 | beta prints the greeting | Done (beta `b2b2b2b..e5e5e5e`); reviewed by T5 with 1 Minor finding |
+| T3 | Scenario tests | Done; all three tests failed at the base as expected |
+| T6 | Test suggestions | Done |
+| T7 | Verify | Marked DONE, but the evidence is incomplete (see below) |
+| T8 | Whole-change review | Verdict pass, 1 Minor finding (the same one from T2) |
+| T9 | Integrate | Not yet dispatched |
+
+**Why it isn't verified.** The verify record is `changes/add-greeting/evidence/20261001T1230Z.md`, id `ev-20261001T1230Z`. It passes all three scenarios and the unit tests for alpha and beta. But the spec has two quality checks:
+- **Q1** (linter clean): `quality: {Q1: pass}`.
+- **Q2** (`demo-docs --strict` in beta): no result.
+
+A missing result counts as a failure, so the record isn't green. T7's own done-when condition ("Q1 and Q2") wasn't met either, even though the ledger says DONE. The T7 report confirms that only Q1 was run.
+
+**Next.** By the plan's dependencies alone, the next task would be **T9 → lead (local, any)**, because T7 and T8 are both marked done. It shouldn't go ahead: integrating requires a verified change. T7 needs to run again with Q2 added, giving a new evidence record that has both Q1 and Q2. After that the change can be verified and T9 can proceed.
+
+**Blocked:** nothing. **Open Critical or Important findings:** none. The only finding is a Minor one in `beta/beta/__main__.py:3`: a comment could explain why it adds the alpha checkout.
+
+**Caveats:**
+- The space folder isn't a git repository, so I read the files as they are on disk, not as committed. For the same reason I couldn't check the space side of the evidence's commit set.
+- The repo remotes are placeholders (`example.invalid`), so I took the branch heads from the ledger: alpha `d4d4d4d`, beta `e5e5e5e`. These match the evidence.
+- The space has no `AGENTS.md`.
+
+Records worth opening:
+- `<scratch>/runs/20261028T095242Z-test_R12_S1_missing_quality_check-c988/space/changes/add-greeting/evidence/20261001T1230Z.md`
+- `<scratch>/runs/20261028T095242Z-test_R12_S1_missing_quality_check-c988/space/changes/add-greeting/tasks/T7-report.md`
+- `<scratch>/runs/20261028T095242Z-test_R12_S1_missing_quality_check-c988/space/changes/add-greeting/ledger.md`
+- `STATUS.md` would go at `<scratch>/runs/20261028T095242Z-test_R12_S1_missing_quality_check-c988/space/STATUS.md`
+
+`DESK:` lines printed: none.
+===== stderr-1.txt (empty)
+===== check.out
+R12.S1.1 pass add-greeting reported not verified; STATUS.md state absent
+R12.S1.2 pass Q2 named
+R12.S1.3 pass 0 record(s) added, changed or removed besides STATUS.md

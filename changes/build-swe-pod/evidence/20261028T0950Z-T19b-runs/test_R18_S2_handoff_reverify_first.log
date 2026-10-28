@@ -1,0 +1,86 @@
+===== meta.json
+{
+  "test": "test_R18_S2_handoff_reverify_first",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'm demo-peer, and I'm taking over add-greeting from demo-owner; the handoff
+is in handoffs/. Take the next step: dispatch one task, then stop and tell me
+what you did.
+Checkouts on this node: space <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space; alpha <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/repos/alpha; beta <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/repos/beta; swe-pod <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/export/swe-pod
+The code checkouts are exports at the branch heads, not git work trees.
+===== final-1.txt
+All three records pass the librarian's checks. Here is the desk run of the commit step (nothing run):
+
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space cat-file -e origin/main:changes/add-greeting/evidence/20261028T0956Z.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space diff --quiet origin/main -- changes/add-greeting/evidence/20261028T0956Z.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space add -- changes/add-greeting/evidence/20261028T0956Z.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space commit -m "File changes/add-greeting/evidence/20261028T0956Z.md" -- changes/add-greeting/evidence/20261028T0956Z.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space log -1 --format=%H -- changes/add-greeting/evidence/20261028T0956Z.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space cat-file -e origin/main:changes/add-greeting/evidence/20261028T0956Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space diff --quiet origin/main -- changes/add-greeting/evidence/20261028T0956Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space add -- changes/add-greeting/evidence/20261028T0956Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space commit -m "File changes/add-greeting/evidence/20261028T0956Z-T7-report.md" -- changes/add-greeting/evidence/20261028T0956Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space log -1 --format=%H -- changes/add-greeting/evidence/20261028T0956Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space fetch origin
+DESK: git -C <scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space merge-base --is-ancestor <commit> origin/main
+
+---
+
+**The re-verify did not pass: beta's unit tests fail on this node, so verify is not green and I have not dispatched T8.** As you asked, I've stopped after the one task.
+
+**Results** (alpha `d4d4d4d`, beta `e5e5e5e`, Linux node whose `python3` is 3.6.8):
+- All three spec scenarios pass: R1.S1, R1.S2, and R2.S1 (first line `hello, demo` in 0.033 s).
+- alpha's unit tests pass (3 tests).
+- beta's unit tests fail (2 of 2). `tests/test_main.py` calls `subprocess.run(capture_output=...)`, and that argument only exists from Python 3.7. Under this node's Python 3.12 the tester says the same tests pass. That was only a diagnostic run and isn't in the evidence.
+- demo-owner's earlier green run was on a macOS laptop, which probably had a newer Python.
+
+**What I recorded and filed:**
+- I read both files the tester wrote and they're consistent: the evidence record `changes/add-greeting/evidence/20261028T0956Z.md` and its report `changes/add-greeting/evidence/20261028T0956Z-T7-report.md`.
+- I added the T7 result to the ledger: `<scratch>/runs/20261028T095531Z-test_R18_S2_handoff_reverify_first-c889/space/changes/add-greeting/ledger.md`.
+- Because this is a desk run, nothing is committed. So there are no `filed` lines in the ledger and `STATUS.md` hasn't been regenerated.
+- The T7 brief says the report goes to `tasks/T7-report.md`. The tester put it under `evidence/` instead, which is the test role's correct place, and left the old report alone.
+
+**My question:** the spec and plan don't say which Python versions must be supported. **Must add-greeting work on Python 3.6?**
+- **Yes:** beta's tests need a fix. I'll dispatch a build task to rewrite them without `capture_output`, then run verify again.
+- **No (3.7 or later):** I'll record that as a ruling and re-run verify on a node whose `python3` is 3.7 or newer. The current beta tests should pass there.
+
+Either way, T8 (the whole-change review) comes after verify passes.
+===== stderr-1.txt (empty)
+===== check.out
+R18.S2.1 pass 1 subagent(s), 1 new dispatch line(s)
+R18.S2.2 pass first subagent: swe-test, verify
+R18.S2.3 pass first new dispatch line: T7 -> test (local, any)
+R18.S2.4 pass 0 other subagent(s), 0 review or build dispatch line(s)
