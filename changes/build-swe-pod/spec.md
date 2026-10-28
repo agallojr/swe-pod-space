@@ -8,6 +8,7 @@
 - supersedes: []
 - Status: revision 3, 2026-10-27 (UTC), approved.
 - approved: agallojr 2026-10-27T21:36Z
+- approved: agallojr 2026-10-28T00:31Z (amendment: R24 added, with the scaling bullet in §7)
 - Replaces two earlier drafts kept in the operator's private library: a design
   concept (revision 2, 2026-10-26) and an engineering process (draft 1,
   2026-10-27). Both used OpenSpec and superpowers as plug-ins. This revision
@@ -582,7 +583,11 @@ Return the failing output. Do not edit tests or code.
   Usually the lead's node is that librarian and commits directly. Builders'
   code reaches the others through the pushed `change/<id>` branches.
 - **Ordering.** The lead dispatches a task once every task in its `after` list
-  is done, so independent tasks run in parallel. On the mesh this is a
+  is done, so independent tasks run in parallel.
+- **Scaling.** Several holders of one role may run one task as shards in
+  parallel, local and remote together: builders on independent files, or
+  testers each running part of the suite. The plan names the shards and
+  how the work divides; a sharded verify is verified only as R24 says. On the mesh this is a
   workflow the lead drives (PROTOCOL §8.1); its record lives in the bus.
 - **What the space records.** The ledger names the role, `local` or `mesh`,
   and the environment class. Mesh task ids and agent ids stay in the bus, so
@@ -1003,6 +1008,26 @@ SHALL commit to it and push no other branch.
 - GIVEN a repo in `pod.yaml` that the spec does not name
 - WHEN the change runs
 - THEN that repo gets no branch, and verify uses its pin
+
+### R24 Scaled roles
+A task MAY be split into shards that several holders of its role run in
+parallel, local or remote. A sharded verify SHALL count as verified only
+when its shards' evidence records, all at the same commit set, together
+hold a passing result for every scenario, unit suite and declared quality
+check.
+
+#### R24.S1 Two verify shards on two nodes
+- GIVEN a verify split into two shards, one run on a macos-laptop node and
+  one on a linux-server node through the mesh
+- WHEN both evidence records are filed at the same commit set, and every
+  result in them is a pass
+- THEN the change is verified, and the ledger shows both dispatches
+
+#### R24.S2 A shard at another commit set
+- GIVEN two verify shards whose evidence records name different commit sets
+- WHEN the lead reads the change's state
+- THEN the change is not verified until the out-of-date shard is re-run at
+  the current commit set
 
 ## 13. Deliverables (the build, in Markdown)
 

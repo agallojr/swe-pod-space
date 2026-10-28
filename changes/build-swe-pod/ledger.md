@@ -137,4 +137,12 @@
 2026-10-28T00:27Z operator directive, refining the last: merge T19 and T20 into one
                   verify task, run by the remote linux-server pod agent in the test
                   role through the mesh; no separate verify on the lead's node
+2026-10-28T00:31Z spec amended by the spec author with the operator: R24 Scaled roles
+                  (R24.S1, R24.S2) and the scaling bullet in spec section 7
+2026-10-28T00:31Z approval reopened for R24; approved by agallojr; no task held
+2026-10-28T00:31Z SPEC.md re-copied verbatim with the amendment, swe-pod 74d23f1
+                  (Task: T0); Requirements sections identical
+2026-10-28T00:31Z plan to be revised for R24: verify sharded across a local and a
+                  linux-server test role holder; shard rules into PROCESS.md and the
+                  lead, plan and test role definitions; tests for R24
 ```
