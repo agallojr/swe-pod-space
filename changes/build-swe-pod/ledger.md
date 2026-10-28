@@ -765,4 +765,10 @@
 2026-10-28T11:06Z dispatch T1 -> build (local, any), base swe-pod 4d5bfc7
 2026-10-28T11:06Z dispatch T18 -> test (local, any)
 2026-10-28T11:06Z dispatch T41 -> test (local, any)
+2026-10-28T11:07Z Ruling: the lead filed one T19a round 4 log copy that the librarian check had
+                  refused on profile, a bus inbox name that the shipped mesh-post skill's text
+                  uses as its default sender; it is public product text, now redacted to
+                  <agent> in that copy in a follow-up commit, and the lead files nothing past a
+                  refusal again; the runner's redaction of that name is logged for T35; cost
+                  if wrong: the name stays in the space's history
 ```
