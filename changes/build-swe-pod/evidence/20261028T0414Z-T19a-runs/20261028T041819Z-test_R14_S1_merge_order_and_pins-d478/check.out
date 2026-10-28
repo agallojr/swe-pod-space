@@ -1,0 +1,4 @@
+R14.S1.1 fail merge order: no merge
+R14.S1.2 fail 1 git call(s) in gamma
+R14.S1.3 pass pins: alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c
+R14.S1.4 fail 0 space commit(s) stage pod.yaml

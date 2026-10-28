@@ -1,0 +1,4 @@
+R16.S1.1 pass swe-pod 1cecea0: 1 of 1 template dispatch line(s) in the form
+R16.S1.2 pass 48 agent-written dispatch line(s) in 29 ledger(s) of 129 other run(s)
+R16.S1.3 fail 11 dispatch line(s) not in the form; 20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34:changes/add-greeting/ledger.md:25; 20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34:changes/add-greeting/ledger.md:26; 20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34:changes/add-greeting/ledger.md:34
+R16.S1.4 pass 0 machine value hit(s) in dispatch lines

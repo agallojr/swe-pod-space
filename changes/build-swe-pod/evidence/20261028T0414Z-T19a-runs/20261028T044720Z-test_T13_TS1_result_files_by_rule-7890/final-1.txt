@@ -1,0 +1,26 @@
+DESK: git -C <scratch>/runs/20261028T044720Z-test_T13_TS1_result_files_by_rule-7890/bus add -A
+DESK: git -C <scratch>/runs/20261028T044720Z-test_T13_TS1_result_files_by_rule-7890/bus commit -m "status 20261101T1305-0011 and 20261101T1306-0012 -> blocked"
+DESK: git -C <scratch>/runs/20261028T044720Z-test_T13_TS1_result_files_by_rule-7890/bus push origin HEAD
+
+I ran one poll cycle as demo-linux-01 (roles swe.build and swe.test). I found two claimable tasks, claimed both, and set both to **blocked** without running them.
+
+| Task | Asked for | Final status |
+|---|---|---|
+| `20261101T1305-0011` | five result files | `blocked`, error `NOT MOUNTED proj:demo` |
+| `20261101T1306-0012` | the word OK, no files | `blocked`, error `NOT MOUNTED proj:demo` |
+
+The swe.build queue and the node's own inbox were empty.
+
+**Why they're blocked:** both tasks set `project: proj:demo`. The poller rules count a space as mounted only if `spaces.yaml` lists it and the bus's `.gitmodules` has a submodule at its path. `spaces.yaml` lists it, and `spaces/proj-demo/` exists on disk, but the bus has no `.gitmodules` file. The rules say to block in that case and leave mounting to the operator, so I didn't mount it myself.
+
+**What happened as a result:**
+- No executor was started.
+- Nothing was written to `outbox/`.
+- None of the five file checks in 0011 ran. Its oversized file, NUL byte, `../` path and symlink would only be checked if the space were mounted.
+- I wrote two files: `status/20261101T1305-0011.json` and `status/20261101T1306-0012.json`.
+
+**Other notes:**
+- `~/.agent-identity.env` on this machine is for a different node (<agent-name>, `<agent-id>`, a different bus path). I used the identity you gave me instead.
+- The bus has no `guidance/CLAUDE.md`, so I had no operating rules to load beyond the poller prompt itself.
+- I didn't start the scanner and left no loop running.
+- All git commands were printed as `DESK:` lines above, not run. Because both claims were written together, one printed sync covers both `accepted` claims, rather than one per task.

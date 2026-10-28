@@ -1,0 +1,52 @@
+The only task that was ready was the review of T1, and I've dispatched it. Its review came back with **verdict: fix**: one Important finding. So T1 isn't done, and T2 (beta) and T6 (test suggestions) can't start yet. Nothing has been committed to the space, because this was a desk run.
+
+**Why only the review was ready.** The plan counts T1 as done only once its review has no Critical or Important finding. T2 and T6 both wait on T1. T3, the project-level tests, was already dispatched at the go.
+
+**Before dispatching I checked:**
+- **Branch:** the head of `change/add-greeting` in alpha is 29edf20, on base 9caf876, and its commit carries the trailers `Change: add-greeting` and `Task: T1`. alpha has no remote in this checkout, so I checked the local branch.
+- **T1 report:** it gives its test output only as a summary, with no actual failing or passing output. I told the reviewer to re-run the suite, and it got 3 tests, all OK.
+
+**Review findings:**
+- **Important** (`alpha/tests/test_alpha.py:15`): nothing tests the case where a name of up to 64 code points is accepted and returns `hello, <name>`. That means an off-by-one on the limit would pass every unit test.
+- **Minor** (go to the ledger for the whole-change review):
+  - The long-name test doesn't check that the error message names 64.
+  - `greeting()` has no type annotations, though the plan specifies them.
+  - The test-first red-then-green steps can't be seen: the report shows no failing output, and the tests and the code went in as one commit.
+
+The reviewer couldn't confirm with git that the checkout was at 29edf20 when it re-ran the suite. It read the two changed files instead, and they match that commit's diff.
+
+**Next:** fix round 1 of 5 goes to T1's builder for the Important finding, followed by a review of the fix diff only. I haven't dispatched it.
+
+**Things to check:**
+- **Librarian script:** the check script in the `space-librarian` skill is garbled as published (its `$0`–`$3` parameters appear as the words `Desk`, `run.`, `Space`, `root:`). I put the parameters back in a scratch copy and ran that. All three records passed. The skill itself needs fixing.
+- **Clock:** this node's clock reads 2026-10-28T04:54Z, earlier than the ledger's 2026-11-01 entries. My new ledger lines use the real clock, so they sort before the older ones.
+- **Not done yet:** no `filed` ledger lines and no `STATUS.md` update. I'll add both once the commands below actually run and the librarian returns FILED.
+
+Records written, in `<scratch>/runs/20261028T045342Z-test_T1_TS6_review_dispatched_before_successor-1582/space/changes/add-greeting/`:
+- `tasks/T4-brief.md`
+- `tasks/T4-review.md`
+- `ledger.md`, with two new lines: `dispatch T4 -> review (local, any), base alpha 9caf876` and `T1 review: spec issues; 1 Important alpha/tests/test_alpha.py:15, 3 Minor ...`
+
+Librarian desk commands (S = the space root above):
+
+```
+DESK: git -C S fetch origin
+DESK: git -C S add -- changes/add-greeting/ledger.md
+DESK: git -C S commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C S fetch origin
+DESK: git -C S rebase --autostash origin/main
+DESK: git -C S push origin HEAD:main
+DESK: git -C S fetch origin
+DESK: git -C S add -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C S commit -m "File changes/add-greeting/tasks/T4-brief.md" -- changes/add-greeting/tasks/T4-brief.md
+DESK: git -C S fetch origin
+DESK: git -C S rebase --autostash origin/main
+DESK: git -C S push origin HEAD:main
+DESK: git -C S fetch origin
+DESK: git -C S add -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C S commit -m "File changes/add-greeting/tasks/T4-review.md" -- changes/add-greeting/tasks/T4-review.md
+DESK: git -C S fetch origin
+DESK: git -C S rebase --autostash origin/main
+DESK: git -C S push origin HEAD:main
+DESK: git -C S fetch origin
+```

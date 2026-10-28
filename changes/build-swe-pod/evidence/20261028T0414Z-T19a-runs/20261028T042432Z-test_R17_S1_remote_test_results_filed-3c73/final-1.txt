@@ -1,0 +1,27 @@
+I filed T3's three tests. I refused its report and sent it back, so T3 isn't counted done yet.
+
+**Filed** (desk run: the librarian checks really ran and all passed; the git commands were only printed as `DESK:` lines):
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+
+All three matched the sha256 in the result, are plain text and are well under the size limit. There is one test per scenario in the plan's test map.
+
+**Refused:** `changes/add-greeting/tasks/T3-report.md`, for being outside the test role's lane (`refused …: lane line 1`). A tester's report belongs at `changes/add-greeting/evidence/<UTC>-T3-report.md`. The mistake was mine: my T3 brief named the wrong path. I fixed that line in `changes/add-greeting/tasks/T3-brief.md`, filed the brief, and printed a `DESK: mesh-post` asking the tester to send back only the report, at the right path, with the actual output of each test run at the base commits.
+
+**Rulings added to the ledger:**
+- The brief's report path is corrected and the report goes back to the tester. If that's wrong, the cost is one extra round trip.
+- T3 isn't counted done, and its at-base results aren't recorded, until the report is filed in lane. The base fails are T3's done-when, and they rest only on that report.
+
+**Ledger** (`changes/add-greeting/ledger.md`): new lines for T3 DONE, the filed tests, the refused report, the two rulings and T3's new dispatch. All are timestamped `2026-11-01T10:25Z`. This node's clock reads 2026-10-28, which is earlier than the ledger's own events, so I used a time just after the result's completion (10:20Z) to keep the lines in order.
+
+**STATUS.md** regenerated and filed: the change is building, T1 and T3 are dispatched, nothing is ready, and there are no open findings. The branch heads are taken from the go-line bases, because the `ls-remote` calls were only printed.
+
+**Outside this task, but you should know:** T1, a build task, was dispatched to the mesh (`2026-11-01T09:21Z`) with no ruling. Build tasks run local until mesh executors may push to `change/add-greeting`. The plan also marks T2 `runs: mesh`, and I will run T2 local, with a ruling, when it is ready.
+
+**Next:** wait for T3's report from the tester and for T1's result.
+
+Files:
+- `<scratch>/runs/20261028T042432Z-test_R17_S1_remote_test_results_filed-3c73/bus/spaces/proj-demo/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T042432Z-test_R17_S1_remote_test_results_filed-3c73/bus/spaces/proj-demo/changes/add-greeting/tasks/T3-brief.md`
+- `<scratch>/runs/20261028T042432Z-test_R17_S1_remote_test_results_filed-3c73/bus/spaces/proj-demo/STATUS.md`

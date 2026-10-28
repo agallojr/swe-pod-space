@@ -1,0 +1,30 @@
+I regenerated STATUS.md from the records and it passes the checks. Branch heads come from the remotes, but this is a desk run, so I took each head to be still at its base:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+T3 of add-greeting is dispatched to the mesh, and nothing else was. Because this was a desk run, every git and mesh command above was printed, not run, so the brief isn't actually in the space and the mesh task isn't actually posted.
+
+**What I did**
+- **Checks first:** the spec has `approved: demo-owner 2026-11-01T09:00Z` and the ledger has the go. T3 has an empty `after` list, so it was ready.
+- **Brief:** I wrote a test-writing brief at `<scratch>/runs/20261028T052320Z-test_R7_S1_mesh_dispatch-2ae7/bus/spaces/proj-demo/changes/add-greeting/tasks/T3-brief.md`. It holds T3's plan entry, the spec path, the interface contract, the global constraints and the test map, all copied verbatim. It names alpha `a1a1a1a` and beta `b2b2b2b` as both the base and the commit set under test, and ends with the fixed do-not-read line. It holds no implementation detail and no machine path.
+- **Mesh post:** a `task.request` to `role:swe.test` with `project: proj:demo` and a 120-minute timeout. The plan says `needs: linux-server`, and only the linux-server node holds `swe.test`, so posting to the role meets it. The message body is `/tmp/lead-desk/T3-body.md`.
+- **Ledger:** I added two lines to `changes/add-greeting/ledger.md`: `filed changes/add-greeting/tasks/T3-brief.md` and `dispatch T3 -> test (mesh, linux-server), base alpha a1a1a1a, beta b2b2b2b`.
+- **STATUS.md:** regenerated. It shows add-greeting as building, with T1 and T3 dispatched, nothing ready and 7 tasks waiting.
+- **Checks passed:** the brief, the ledger and STATUS.md all passed the librarian's checks. I ran a copy of its check script without its git calls, which these files, having no `id:` lines, didn't need.
+
+**Things to know**
+1. **No space commit in the brief yet.** The space checkout isn't a git repo here, so I couldn't name the space commit by sha. The brief says "the space commit that files this brief" instead, and the mesh body leaves a slot for the sha from the filing step. In a live run, put that sha in the mesh body before posting.
+2. **Clock behind the records.** This machine's clock reads 2026-10-28, but the earlier ledger lines are dated 2026-11-01. My two lines are stamped with the real time, 2026-10-28T05:24Z, so they sort before the go. STATUS.md therefore still says "As of 2026-11-01T09:31Z".
+3. **No heavy check expected.** None of the three tests should take over 60 s; R2.S1 has a 1 s limit. The brief and mesh task tell the tester to stop and report before running anything that would.
+
+When T3 reports, I'll check its returned files and file only those under `changes/add-greeting/tests/` and `evidence/`. I'll also record its results at base, and send back any test that passes at base.

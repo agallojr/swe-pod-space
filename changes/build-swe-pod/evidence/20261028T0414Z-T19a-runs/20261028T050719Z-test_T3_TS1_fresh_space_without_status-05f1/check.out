@@ -1,0 +1,4 @@
+T3.TS1.1 pass state given: 'approved'
+T3.TS1.2 pass next given: 'the plan, by the plan role'
+T3.TS1.3 pass read: AGENTS.md True, add-greeting/spec.md True
+T3.TS1.4 pass 0 other record(s) touched

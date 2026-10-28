@@ -1,0 +1,37 @@
+There was no committed STATUS.md before, so I wrote a new one. This run treats the librarian's commit as a desk step, so here are the commands, none of them run:
+
+```
+DESK: git -C <scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space commit -m "status: regenerate STATUS.md as of 2026-11-01T14:05Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space push origin HEAD
+```
+
+The commit wasn't run, so I have no `FILED` or `REFUSED` line. STATUS.md is written to disk but not filed.
+
+## Where add-greeting stands
+
+**State: building, not verified.** STATUS.md is at `<scratch>/runs/20261028T051730Z-test_T7_TS4_template_plan_ruled_review_missing_results-6f6e/space/STATUS.md`.
+
+- **Tasks:** the builds (T1, T2), their reviews (T4, T5), and the test tasks T3, T6 and the T7 verify are done.
+- **T8, the whole-change review:** dispatched but still open, with one Important finding at `beta/beta/__main__.py:4`.
+- **T9, integrate:** waits on T8.
+- **Next:** no task is ready to dispatch; only T8 is in flight.
+- **The evidence (`changes/add-greeting/evidence/20261101T1230Z.md`) is not green.** All 3 scenarios pass, both unit suites pass, and the spec declares no quality checks. But `changes/add-greeting/tests/test_I1_greeting_docs.md` (cross-check I1) has no result under `x-checks:`, and a missing result does not count as a pass.
+- **Open findings: Critical 0, Important 2, Minor 1.**
+  - T8's review left one Important.
+  - A second Important came from a T11 review of the same line (T11 isn't a plan task).
+  - The Minor is from the T2 review.
+- **The ruling doesn't close the findings.** The `14:05Z` ledger line ("the Important on beta/beta/__main__.py:4 is parked…") isn't in the `Ruling: T<n> open findings …` form, so under the status rules it closes nothing. If demo-owner meant to park it, the lead needs to write it again in that form, e.g. `Ruling: T8 open findings parked: …`, and do the same for T11.
+
+**Other problems in the records:**
+- T10 and T11 are dispatched in the ledger but aren't in `plan.md`, so they have no rows in the table.
+- The T8 ledger line says 1 Important, but `tasks/T8-review.md` says `verdict: pass` with only a Minor. The ledger is what counts.
+- I couldn't check whether the evidence is stale. The remotes don't resolve and the space isn't a git checkout, so the branch heads (alpha d4d4d4d, beta e5e5e5e) come from the ledger, and I couldn't check the space sha 5d5d5d5.
+- `tests/test_R1_S1_default_farewell.md` was promoted from add-farewell. The archived change has no `plan.md` with a test map, so the regression rule doesn't require a result for it, and the evidence has none.
+
+To verify, the change needs: a new verify run with an I1 result (and a regression result for add-farewell to be safe), plus T8's Important either fixed or ruled on in the proper form.
+
+STATE add-greeting: building
+MISSING add-greeting: I1 (test_I1_greeting_docs)

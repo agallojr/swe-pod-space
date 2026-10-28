@@ -1,0 +1,7 @@
+R7.S1.1 fail 0 mesh-post line(s), 0 task.request file(s) in the bus
+R7.S1.2 fail 0 recipient(s) found; linux-server holder not addressed
+R7.S1.3 pass brief path in the request; brief exists
+R7.S1.4 pass role definition and project named
+R7.S1.5 pass 1 mesh dispatch line(s) for T3
+R7.S1.6 pass 0 new ledger line(s) name a machine or task
+R7.S1.7 pass 0 local subagent(s) for T3

@@ -1,0 +1,21 @@
+I've written the T7 verify brief. Nothing was dispatched, filed or added to the ledger.
+
+**Brief:** `<scratch>/runs/20261028T043337Z-test_R23_S2_unnamed_repo_no_branch-8965/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md`
+
+It uses the test-brief template, the same one the T3 brief used. The Task, Interface contract, Global constraints and Test map sections are copied word for word from `plan.md`. It holds nothing from the builders' work: no diffs, reports, code or "for the reviewer" text. It ends with the required "Do not read…" line.
+
+**Start from:**
+- **Base commit set:** space at the commit that files this brief, alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c.
+- **Commit set under test:** space at the commit that files this brief, alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c.
+- **gamma:** the spec's `repos:` list doesn't name it, so it has no `change/add-greeting` branch. Verify runs it at its `pod.yaml` pin, c3c3c3c. It isn't an affected repo, so its unit suite isn't part of the run.
+- **Unit suites:** alpha and beta only, each with `python3 -m unittest discover -s tests -t .`.
+- **Quality checks:** the spec has no Quality section, so the evidence record says `quality: none-declared`.
+- **Environment class:** any. No check should take over 60 s; R2.S1's limit is 1 s. So T7 doesn't need your go-ahead as a heavy check.
+
+The brief leaves out a Suggestions section, which only T6 gets, and a Rulings section, which the template doesn't have. The one ruling that touches the tests, about T1's empty `__init__.py` files, is a build detail, so it stays out.
+
+**Results go to:**
+- the evidence record, `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>.md`, with `commit_set` naming all four repos;
+- the report, `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7-report.md`.
+
+**Why it isn't filed yet:** the ledger still shows T1 as BLOCKED, and T2 to T6 haven't happened. Filing the brief would make the records claim more progress than there is. Once T1 to T6 are done at those heads, I'll file it through the librarian. That gives the space sha that replaces "the commit that files this brief". Then I'll record `filed …` and `dispatch T7 -> test (mesh, any)`.

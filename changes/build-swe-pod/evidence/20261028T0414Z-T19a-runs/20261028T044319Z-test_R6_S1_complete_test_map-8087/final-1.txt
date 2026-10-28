@@ -1,0 +1,26 @@
+I've written the plan for add-greeting at `changes/add-greeting/plan.md`. It has 9 tasks, and every requirement and scenario is covered. I committed nothing; you file the plan through the space's librarian, so I printed no `DESK:` lines.
+
+**The change:**
+- **T1 (alpha):** adds `greeting(name: str | None = None) -> str` and `NAME_LIMIT = 64` to `alpha/__init__.py`. It returns `hello, demo` with no name, `hello, <name>` otherwise, and raises `ValueError` naming 64 for longer names. It also adds unit tests and one line each to the CHANGELOG and README, as alpha's `CONTRIBUTING.md` asks.
+- **T2 (beta, after T1):** prints `alpha.greeting()` as the first statement of `main`. Today beta's first line is its `beta 1.0` banner, so the greeting goes before it and the banner becomes line 2. T2 also adds a unit test and a README note that alpha's repo root must be on `PYTHONPATH`.
+
+**Tests, reviews and integrate:**
+- **T3:** writes the four project-level tests at the go, in parallel with T1: `test_R1_S1_default_greeting`, `test_R1_S2_name_too_long`, `test_R1_S3_greeting_with_name` and `test_R2_S1_startup_line`. The last one times beta's first line against the 1 s limit.
+- **T4:** takes up builder test suggestions, after T3 because both touch the same test file.
+- **T5:** verify on `macos-laptop`.
+- **T6 and T7:** one review per build task. **T8:** the whole-change review.
+- **T9:** integrate: alpha merges first, then beta; gamma's pin doesn't change.
+- **Longest chain:** T1 → T2 → T4 → T5 → T8 → T9. Nothing is sharded, since the change is two small edits.
+
+**Defaults I chose (b), for the spec author to list under Open calls:**
+1. beta finds alpha through `PYTHONPATH`. Neither repo has packaging files, and the plan adds none.
+2. An empty name gives `hello, demo`, the same as no name.
+3. A long name raises `ValueError` with the message `name is <n> characters; the limit is 64`. Tests check only the error type and that 64 is named.
+4. beta keeps its `beta 1.0` banner, as line 2.
+5. The 1 s limit is timed from just before beta starts until its first line is read.
+6. Verify runs on `macos-laptop`, the context the space's note on this change records.
+7. Only a name's length is checked.
+
+No questions for the human.
+
+The plan's base commit set gives the space commit as "recorded by the lead at the go", because I couldn't run git here; please record it then.

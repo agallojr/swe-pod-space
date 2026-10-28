@@ -1,0 +1,38 @@
+Desk step for the librarian (printed only, nothing run):
+
+DESK: git -C space add changes/add-greeting/evidence/20261028T0417Z.md changes/add-greeting/evidence/20261028T0417Z-T7-report.md
+DESK: git -C space commit -m "add-greeting: T7 verify evidence and report"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin HEAD
+
+## Status: DONE_WITH_CONCERNS
+
+Verify ran at the full commit set, and one scenario fails: **R2.S1**.
+
+**Files written**
+- `changes/add-greeting/evidence/20261028T0417Z.md` (the evidence record)
+- `changes/add-greeting/evidence/20261028T0417Z-T7-report.md` (the report)
+
+**Results** (macos-laptop; space 5c02e1a, alpha 51682dc, beta 9b0e3e6, gamma c3c3c3c at its pin)
+
+| Check | Result |
+|---|---|
+| R1.S1 default greeting | pass |
+| R1.S2 name too long | pass |
+| R2.S1 start-up line | **fail** |
+| alpha unit suite (4 tests) | pass |
+| beta unit suite (2 tests) | pass |
+| Q1 byte-compiles, both repos | pass |
+| Regression suite `tests/` | no tests in it |
+
+Wall time: 3 s.
+
+**The failure:** `python3 -m beta` prints `beta 1.0` first and `hello, demo` second. The spec says the greeting comes first. It ran in 0.14 s, well inside the 1 s limit, so only the line order is wrong. beta's unit suites still pass, which means they don't check the order.
+
+**Concerns**
+- **Report location:** the brief asked for the report at `tasks/T7-report.md`. My role only lets me write under `evidence/`, so I filed it there.
+- **Commits checked by hand:** git commands weren't allowed in this run. I confirmed the alpha and beta commits by reading their `.git` refs, not with git itself.
+- **Space commit not checked:** the space checkout isn't a git repository, so 5c02e1a is the brief's value and I couldn't confirm it.
+- **gamma not run:** there's no gamma checkout on this node, so it's recorded at its pin and nothing ran against it.
+- **Leftover files:** Q1 left untracked `__pycache__/` folders in the alpha and beta checkouts.

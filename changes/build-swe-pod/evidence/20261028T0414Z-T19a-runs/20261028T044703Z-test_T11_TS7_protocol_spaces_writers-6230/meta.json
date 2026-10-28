@@ -1,0 +1,7 @@
+{
+  "test": "test_T11_TS7_protocol_spaces_writers",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": []
+}

@@ -1,0 +1,20 @@
+One change is open, `add-greeting`. Its spec is approved and it has no plan yet, so the next step is writing the plan.
+
+**Two problems with the records:**
+- **There is no `STATUS.md`**, so I worked the status out from the record files themselves.
+- **The space folder is not a git repository.** The process only counts committed files as records, and nothing here has been committed, so I read the files as they are on disk. Until the space is committed, none of this is formally on file.
+
+**`add-greeting`**: let `alpha` provide the greeting `hello, demo` and have `beta` print it at start-up.
+- **State: approved.** `changes/add-greeting/spec.md` has `approved: demo-owner 2026-11-01T09:00Z`. It covers repos `alpha` and `beta` and has two requirements: R1, the greeting text (scenarios R1.S1 and R1.S2), and R2, beta printing it (scenario R2.S1).
+- **No plan, ledger or evidence yet.** There is no `plan.md`, `ledger.md`, `evidence/` or `tasks/`, so nothing has been sent out to work on and nothing is blocked.
+- **Open findings:** none.
+- **One open call in the spec:** the name limit is 64 characters, counted as Unicode code points.
+
+Files worth opening:
+- `<scratch>/runs/20261028T050719Z-test_T3_TS1_fresh_space_without_status-05f1/space/changes/add-greeting/spec.md`
+- `STATUS.md` should be at `<scratch>/runs/20261028T050719Z-test_T3_TS1_fresh_space_without_status-05f1/space/STATUS.md`. It doesn't exist yet. I can generate it if you ask, but it can only be filed once the space is a git checkout.
+
+I filed nothing, so the librarian's commit step didn't come up and there are no `DESK:` lines to print.
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role

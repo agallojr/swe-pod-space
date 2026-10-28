@@ -1,0 +1,8 @@
+{
+  "test": "test_T10_TS8_joined_and_registry_values",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": []
+}

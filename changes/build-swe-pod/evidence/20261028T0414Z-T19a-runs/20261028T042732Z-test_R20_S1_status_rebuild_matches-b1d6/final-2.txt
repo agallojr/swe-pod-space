@@ -1,0 +1,29 @@
+I rebuilt STATUS.md from the records and wrote it to `x-rebuild/STATUS.md`. I didn't open the space's own `STATUS.md`, so step 3 (comparing the two) is left for you.
+
+The commit step is a desk step for this run, so these were printed and none were run:
+
+```
+DESK: git -C space add x-rebuild/STATUS.md
+DESK: git -C space commit -m "status: regenerate STATUS.md from the records (x-rebuild)" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin HEAD
+```
+
+There's no `FILED` or `REFUSED` line, because nothing was filed.
+
+**What it says**
+- **As of:** 2026-11-02T08:00Z, from when `add-farewell` was approved.
+- **Open changes:** 2 (approved: 1, building: 1).
+- **add-farewell:** approved. It has no plan yet, so it has no tasks. Next: the plan, by the plan role.
+- **add-greeting:** building.
+  - T1, T3 and T4 are done.
+  - T2 is ready and is the next task: `T2 -> build (local, any)`.
+  - T5 to T9 are waiting.
+  - There is no evidence yet and no open findings.
+
+**Where I departed from the skill's rules, or had to choose:**
+1. **Not a git checkout.** The space isn't a git repository, so I read the records from the working tree rather than at `HEAD`. For the same reason, the `DESK:` commands above would fail if run as they are.
+2. **Branch heads come from the ledger, not the remotes.** The remotes don't resolve (`example.invalid`), so I couldn't look up `change/add-greeting`. I used `alpha d4d4d4d` (where T1's DONE line left it) and `beta b2b2b2b` (from the go line). Strictly, the format wants live heads, and an unreachable remote isn't the same as `missing`. These two values are the most likely to differ from the committed file.
+3. **T4's latest cell reads `review: spec ok; none`.** The ledger line says `0 Important`. I read "none when it lists no finding" as covering a zero count. The other reading is `spec ok; 0 Important`.
+4. **add-farewell's task table has only its header rows.** It has no plan, and the format gives no fixed text for an empty table.

@@ -1,0 +1,21 @@
+I've drafted the spec and recorded your approval as demo-owner at 2026-10-28T04:39Z.
+
+**Spec:** `<scratch>/runs/20261028T043908Z-test_R2_S2_supersedes_and_test_update-2972/space/changes/raise-name-limit/spec.md`
+
+**Why the spec looks like this:** In today's code the 64-character cap is one fixed number in `alpha`. The earlier greeting change (`add-greeting`) had a check that a 65-character name is refused, so this spec replaces that check (`add-greeting/R1.S2`), and the test for it will need updating. `beta` only prints the greeting with no name, so it doesn't change, and the spec covers `alpha` only.
+
+**What "done" means:**
+- **R1:** names of 1 to 128 characters get `hello, <name>`. It's checked at 65 characters, at exactly 128, and with 128 accented characters, to show it counts characters, not bytes.
+- **R2:** names over 128 characters are refused with an error that names 128. It's checked at 129 characters, and at 200 to make sure the message no longer says 64.
+
+**Choices I made that you should check first** (listed under Open calls in the spec):
+1. **The limit stays fixed and rises to 128.** I didn't let each caller set its own limit or remove the limit entirely.
+2. **The limit includes 128:** 128 characters are greeted, 129 are refused.
+3. **Characters are counted as Unicode code points,** the same way as before.
+4. **The error stays as it is apart from the number.**
+5. **An empty name is left alone.**
+6. **No extra quality check** is asked for.
+
+If any of these is wrong, tell me and I'll change the spec. Changing a requirement would need your approval again.
+
+**For the lead:** the spec is approved at that path. No code repo has a `SPEC.md` copy, so I made none. I committed nothing and printed no `DESK:` commit lines, because filing the spec is the lead's job through the librarian.

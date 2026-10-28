@@ -1,0 +1,4 @@
+T3.TS3.1 fail branch made in alpha False, beta False
+T3.TS3.2 pass 0 branch(es) made outside alpha and beta, 0 command(s) name the placeholder
+T3.TS3.3 pass go line names alpha and beta only
+T3.TS3.4 pass pod.yaml unchanged

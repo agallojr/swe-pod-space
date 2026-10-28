@@ -1,0 +1,33 @@
+The checks are done. One record passed and eleven were refused. This was a desk run, so the commands below were printed and none of them were run. Nothing was committed or pushed, and the run produced no `FILED` line.
+
+```
+REFUSED notes/note-20261101T1201Z-0a01-mac-home.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a02-linux-home.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a03-agent-id.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a04-agent-host.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a05-task-id.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a06-local-host.md: profile line 11
+REFUSED notes/note-20261101T1201Z-0a07-home.md: profile line 11
+REFUSED notes/note-20261101T1202Z-0b08-dead-ref.md: reference line 8
+REFUSED notes/note-20261101T1202Z-0b09-cross-space.md: reference line 11
+REFUSED notes/note-2026-11-01-bad-id-form.md: id line 3
+REFUSED notes/note-20261101T1100Z-a0b1-duplicate.md: id line 3
+```
+
+These are the commit-step commands for the one record that passed, `notes/note-20261101T1200Z-c1e4-clean-record.md`:
+
+```
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261101T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261101T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo add -- notes/note-20261101T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo commit -m "File notes/note-20261101T1200Z-c1e4-clean-record.md" -- notes/note-20261101T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261101T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T041612Z-test_I8_space_librarian_checks-9474/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+```
+
+You asked for add, commit, fetch, rebase and push; I printed every command in the commit step, so the list also has the commands that check whether the record is already filed and that confirm the push. `<commit>` stays a placeholder because nothing was committed. In a real run, the check would also run again on this record after the rebase.

@@ -1,0 +1,28 @@
+The checks are done: 6 records refused, 2 passed. Below is the desk run for the 2 that passed. These commands were printed only, none were run:
+
+```
+REFUSED notes/note-20261101T1800Z-3a01-archive-name.md: profile line 11
+REFUSED notes/note-20261101T1800Z-3a02-task-prefix.md: profile line 11
+REFUSED notes/note-20261101T1800Z-3a03-node-prefix.md: profile line 11
+REFUSED notes/note-20261101T1800Z-3a04-task-underscore.md: profile line 11
+REFUSED notes/note-20261101T1800Z-3a05-agent-underscore.md: profile line 11
+REFUSED notes/note-20261101T1800Z-3a06-cwd-root.md: profile line 11
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo add -- notes/note-20261101T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo commit -m "File notes/note-20261101T1800Z-3b07-utc-record-id.md" -- notes/note-20261101T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo add -- notes/note-20261101T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo commit -m "File notes/note-20261101T1800Z-3b08-sha256.md" -- notes/note-20261101T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/bus/spaces/proj-demo fetch origin
+```
+
+For each record, the order is: the step-1 fetch, add, commit, the step-3 fetch and rebase, push, then the step-5 confirmation fetch. As a desk run, there are no `FILED` lines and nothing was committed or pushed.
+
+**The skill's check script is broken as written.** A template substitution replaced its placeholders: `$1` became `root:`, `$2` became the space-root path, and awk's `$0` became `Space`. Run as printed, the script reads the wrong files and can't check anything. I put the original placeholders back, changed nothing else, and ran the fixed copy from `/tmp/space-librarian-desk/check.sh`, outside the space. The source in `runner-config/skills/space-librarian/SKILL.md` should be fixed so later runs don't hit this.

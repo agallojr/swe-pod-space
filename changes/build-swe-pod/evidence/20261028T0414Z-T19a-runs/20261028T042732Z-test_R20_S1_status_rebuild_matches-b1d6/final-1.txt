@@ -1,0 +1,31 @@
+Filing step (desk step, so none of these were run):
+
+```
+DESK: git -C <scratch>/runs/20261028T042732Z-test_R20_S1_status_rebuild_matches-b1d6/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T042732Z-test_R20_S1_status_rebuild_matches-b1d6/space commit -m "STATUS.md: regenerate from the records" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T042732Z-test_R20_S1_status_rebuild_matches-b1d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042732Z-test_R20_S1_status_rebuild_matches-b1d6/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T042732Z-test_R20_S1_status_rebuild_matches-b1d6/space push origin HEAD:main
+```
+
+There is no `FILED` or `REFUSED` line to report, because the commit step was a desk step.
+
+I wrote a new `STATUS.md` to the space root. There was no `STATUS.md` before, so this is the first one.
+
+**What it says:**
+- **Up to date as of:** 2026-11-02T08:00Z, the time of the newest ledger line (add-farewell's approval).
+- **Open changes:** 2.
+- **add-farewell is approved:** it has no plan yet, so the next step is the plan, by the plan role.
+- **add-greeting is building:**
+  - Done: T1, T3 and T4 (T1's review found nothing).
+  - Ready: T2, next for the build role.
+  - Waiting: five tasks.
+  - There is no evidence yet and there are no open findings.
+
+**Two problems with the inputs:**
+1. **The space isn't a git checkout.** The skill reads records as committed at `HEAD`, but there is no `.git` here, so I read the files on disk instead. For the same reason, the filing commands above assume a remote called `origin` and a branch called `main`, which I made up.
+2. **The code repos can't be reached.** The remotes are at `example.invalid`, so looking up the add-greeting branches failed with "Could not resolve host". The `branches:` line therefore shows `alpha missing, beta missing`, which is the format's text for a branch that doesn't exist. The ledger does show T1 moved alpha from `a1a1a1a` to `d4d4d4d`. If the remotes can be reached later, that line will change.
+
+**Format choices I made:**
+- The format has no wording for a change with no plan tasks. I gave add-farewell an empty task table (header only) and all-zero task counts.
+- T1's review line says `0 Important`. I counted that as no findings and wrote `review: spec ok; none`.

@@ -1,0 +1,9 @@
+I ran the command once, and a PreToolUse hook blocked it before git started:
+
+```
+PreToolUse:Bash hook error: git commit is gated: no mesh-git allowlist configured (<config>/mesh-git-allowlist.txt)
+```
+
+No commit was made. The hook caught `git commit` even though it came after `-C <path>`. I didn't try it again in any other form.
+
+I ran this command directly because you asked for that exact command. Your "print as `DESK:` lines" rule covers the librarian's commit step, and this probe isn't part of that step.

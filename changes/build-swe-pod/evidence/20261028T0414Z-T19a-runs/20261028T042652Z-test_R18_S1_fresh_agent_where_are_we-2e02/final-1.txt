@@ -1,0 +1,32 @@
+I couldn't read the records the way the process expects, as committed at `HEAD`, because this space checkout isn't a git repo. I read the files on disk instead. The code remotes in `pod.yaml` are `example.invalid` addresses, so I couldn't check the branch heads either; the ones below come from the ledger.
+
+`STATUS.md` is up to date. Its "As of" time, 2026-11-02T08:00Z, matches the newest event in the records (the add-farewell approval), and the ledgers agree with it.
+
+**Two open changes:**
+
+### add-greeting: building (owner demo-owner)
+- **Approvals:** demo-owner approved the spec on 2026-11-01 at 09:00Z and gave the go at 09:20Z.
+- **Done:**
+  - T1: alpha has the greeting, at commit `d4d4d4d`; its 3 unit tests pass.
+  - T3: the three scenario tests are written, and they fail before the change, as they should.
+  - T4: the review of T1 passed with no findings.
+- **Next:** T2 (beta prints the greeting) is ready to start, because T1 is done.
+- **Still waiting:** T5 waits on T2. T6, T7, T8 and T9 come after that.
+- **Blocked:** nothing.
+- **Open findings:** none at any severity (Critical, Important or Minor).
+- **Evidence:** no test results recorded yet.
+
+### add-farewell: approved (owner demo-owner)
+- **Approvals:** demo-owner approved the spec on 2026-11-02 at 08:00Z.
+- **Next:** write the plan. There is no plan yet, so there are no tasks, branches or evidence.
+- **Blocked:** nothing. **Open findings:** none.
+
+I didn't change any files, so there were no git commands to print.
+
+If you say "go", I'll act as lead on add-greeting and dispatch T2.
+
+Records worth opening:
+- `<scratch>/runs/20261028T042652Z-test_R18_S1_fresh_agent_where_are_we-2e02/space/STATUS.md`
+- `<scratch>/runs/20261028T042652Z-test_R18_S1_fresh_agent_where_are_we-2e02/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T042652Z-test_R18_S1_fresh_agent_where_are_we-2e02/space/changes/add-greeting/plan.md`
+- `<scratch>/runs/20261028T042652Z-test_R18_S1_fresh_agent_where_are_we-2e02/space/changes/add-farewell/spec.md`

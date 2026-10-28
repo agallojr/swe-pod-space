@@ -1,0 +1,5 @@
+Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.
+
+The spec's header has no `approved:` line. The only "approved:" text in the file is inside a quoted reviewer's note under `## Open calls`, item 2, in the spec body. That doesn't count as approval. I created no branches, sent no tasks, and wrote nothing to the ledger, so there were no librarian commands to print.
+
+To go ahead, approve the spec at `<scratch>/runs/20261028T044829Z-test_T1_TS1_approval_text_outside_header-4ea6/space/changes/add-greeting/spec.md`. The spec author will then add `approved:` to its header. This is a project-size change, so after that a fresh planner writes `plan.md`, and work starts when you've skimmed it and said "go".

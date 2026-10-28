@@ -1,0 +1,3 @@
+R18.S1.1 pass state building for add-greeting True, approved for add-farewell True
+R18.S1.2 pass next T2 for add-greeting True, plan for add-farewell True
+R18.S1.3 pass read: AGENTS.md True, STATUS.md True, ledger.md True

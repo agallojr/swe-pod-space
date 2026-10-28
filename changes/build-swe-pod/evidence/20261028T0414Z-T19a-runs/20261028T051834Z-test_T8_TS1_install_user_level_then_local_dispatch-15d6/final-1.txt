@@ -1,0 +1,46 @@
+T1 came back **BLOCKED**. The code and tests are in alpha's working tree, but nothing is committed. Branch `change/add-greeting` is still at `9caf876`. Two things stop the commit:
+- **The git gate:** `git add` is refused because no mesh-git allowlist is set up for this runner.
+- **No remote:** the alpha checkout has no `origin`, so even with the gate open the branch can't be fetched or pushed.
+
+The builder says the 5 unit tests pass and that each new test failed first for the right reason. That run was on uncommitted files, so it's a claim only. T1 isn't done until its commits are on `change/add-greeting` and reviewed (T4). I won't commit the builder's code myself, and I won't loosen the gate.
+
+**Ledger lines added:**
+```
+2026-10-28T05:22Z T1 BLOCKED
+2026-10-28T05:22Z T1.TS1 -> test
+2026-10-28T05:22Z T1.TS2 -> spec
+```
+- **T1.TS1** (64 vs 65 characters from outside the BMP, counted as code points) is covered by Open call 1, so it goes to the test agent in T6's brief, with its "for the tester" part only.
+- **T1.TS2** (an empty name gives `hello, ` with a trailing space) is behaviour the spec doesn't state, so it goes to the spec author as a proposed scenario.
+- Neither one is dispatched yet.
+
+The ledger and `T1-report.md` both passed the librarian's checks. Desk commands, none run:
+
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space cat-file -e origin/main:changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space diff --quiet origin/main -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space log -1 --format=%H -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space merge-base --is-ancestor <commit> origin/main
+
+**Files worth opening:**
+- The report: `<scratch>/runs/20261028T051834Z-test_T8_TS1_install_user_level_then_local_dispatch-15d6/space/changes/add-greeting/tasks/T1-report.md`
+- The uncommitted code: `.../repos/alpha/alpha/__init__.py` and `.../repos/alpha/tests/test_alpha.py`
+
+**Decision needed:** should this run let the pod commit and push to alpha's `change/add-greeting`? That means adding alpha to the mesh-git allowlist and giving the checkout an `origin` that holds the branch. Once that's in place I'll send T1 back to its builder to commit with the `Change: add-greeting` / `Task: T1` trailers and push. If the pod may not, say so: I'll give you the commands to commit and push yourself, then check the commits and dispatch the T4 review.

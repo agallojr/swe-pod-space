@@ -1,0 +1,34 @@
+I rebuilt STATUS.md and wrote it to the space root. It hasn't been filed: you made the commit step a desk step, so I ran none of the git commands. Here they are:
+
+```
+DESK: git -C <scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space commit -m "Regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space push origin HEAD
+```
+
+Since nothing was filed, there's no `FILED` or `REFUSED` line. There was no STATUS.md before, so the new file differs from the old one by definition.
+
+**Some things couldn't be checked:**
+- **The space directory isn't a git repo**, so I couldn't read the records as committed. I read them from the files on disk instead. That also means I couldn't confirm that the evidence's space commit (`5d5d5d5`) matches the current tests.
+- **The code repos couldn't be reached.** `git ls-remote` failed because the host `example.invalid` doesn't resolve. I took the branch heads (alpha `d4d4d4d`, beta `e5e5e5e`) from the ledger's latest DONE lines instead. Those match the evidence's commit set.
+
+**Where add-greeting stands:** it's **verified**. All the build, test and review work is done, and the only step left is integrating it.
+- **Gates passed:** demo-owner approved the spec at 2026-11-01T09:00Z and gave the go at 09:20Z.
+- **Tasks:** 8 of 9 are done. T1 and T2 are built and their reviews are closed. T3, T6 and T7 have reported. The T8 whole-change review finished with only one Minor finding.
+- **Evidence:** the latest record, `ev-20261101T1230Z` (macos-laptop), is green. All 3 scenarios pass, the unit tests pass in both alpha and beta, and the spec declares no quality checks. There are no regression tests yet.
+- **Open findings:** no Critical or Important ones. There are 2 Minor, both at `beta/__main__.py:3`; they wait to be reported as deferred in the final integrate report.
+- **Next:** T9, the integrate step (lead, local, any). It merges alpha then beta, promotes the tests, moves the pins forward and files the final report. The merge gate needs your approval.
+- **Nothing is blocked.**
+
+The spec quotes an example spec in a code block, with its own `approved: example-owner 2026-12-01T10:00Z` line and a `Q7` quality check. Neither counts: header lines and headings are only read outside code blocks. So the only approval is demo-owner's, and `quality: none-declared` is the correct result.
+
+Files worth opening:
+- `<scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space/STATUS.md`
+- `<scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space/changes/add-greeting/evidence/20261101T1230Z.md`
+- `<scratch>/runs/20261028T051632Z-test_T7_TS2_spec_quoting_example_spec-a7b0/space/changes/add-greeting/tasks/T8-review.md`
+
+STATE add-greeting: verified
+APPROVED add-greeting: demo-owner 2026-11-01T09:00Z

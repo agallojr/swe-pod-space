@@ -1,0 +1,133 @@
+{
+  "result": "Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.\n\nThe spec's header has no `approved:` line. The only \"approved:\" text in the file is inside a quoted reviewer's note under `## Open calls`, item 2, in the spec body. That doesn't count as approval. I created no branches, sent no tasks, and wrote nothing to the ledger, so there were no librarian commands to print.\n\nTo go ahead, approve the spec at `<scratch>/runs/20261028T044829Z-test_T1_TS1_approval_text_outside_header-4ea6/space/changes/add-greeting/spec.md`. The spec author will then add `approved:` to its header. This is a project-size change, so after that a fresh planner writes `plan.md`, and work starts when you've skimmed it and said \"go\".",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01GFaJoqwz2CcQm4LtjbBrig",
+      "name": "Bash",
+      "input": {
+        "command": "ls -R changes | head -50 && cat STATUS.md && for f in changes/*/spec.md; do echo \"== $f\"; cat \"$f\"; done; for f in changes/*/ledger.md; do echo \"== $f\"; cat \"$f\"; done",
+        "description": "List changes, show status, specs and ledgers"
+      },
+      "is_error": true,
+      "output": "Exit code 1\nadd-greeting\n\nchanges/add-greeting:\nplan.md\nspec.md\ncat: STATUS.md: No such file or directory\n== changes/*/ledger.md\ncat: changes/*/ledger.md: No such file or directory",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01SeBc2ZsDjPBBvt9ZpkvWoR",
+      "name": "Bash",
+      "input": {
+        "command": "cat changes/add-greeting/spec.md; echo ======; head -30 changes/add-greeting/plan.md; ls -a",
+        "description": "Show the spec and plan head"
+      },
+      "is_error": false,
+      "output": "# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.\n2. The limit was raised in review. The reviewer's note on it read\n   \"approved: demo-owner 2026-11-01T09:00Z, if the limit stays at\n   64\".\n======\n# Plan: add-greeting\n\n- change: add-greeting\n- spec: changes/add-greeting/spec.md\n- size: project\n\n## 1. Goal and approach\n\n`alpha` gains `greeting()`, which returns `hello, demo` and refuses a name\nlonger than 64 code points; `beta` prints that greeting as its first line of\noutput. Two build tasks, one per repo, with the project-level tests written in\nparallel from the spec.\n\n## 2. Interface contract\n\n- alpha: `greeting(name: str | None = None) -> str`, in package `alpha`. With\n  no name it returns `hello, demo`. With a name of at most 64 code points it\n  returns `hello, <name>`. A longer name raises `ValueError`, whose message\n  names the limit, 64.\n- beta: `python3 -m beta`, with alpha importable, prints the greeting as its\n  first line of standard output, then its existing banner `beta 1.0`.\n- Project-level tests are Markdown files `test_R<n>_S<m>_<slug>.md` in\n  `changes/add-greeting/tests/`, each with Given, When (one shell command, in\n  which `$ALPHA` and `$BETA` are the alpha and beta checkouts of the commit\n  set), Then and Fails if.\n- Unit suites: `python3 -m unittest discover -s tests` from the alpha root;\n  `PYTHONPATH=\"$ALPHA\" python3 -m unittest discover -s tests` from the beta\n  root.\n\n## 3. Global constraints\n.\n..\nchanges\ndecisions\nhandoffs\nlore\nnotes\npod.yaml\nPROCESS.md\nREADME.md\nspace.yaml\ntests",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Skill"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup",
+      "swe-build",
+      "swe-lead",
+      "swe-plan",
+      "swe-review",
+      "swe-spec",
+      "swe-test"
+    ],
+    "skills": [
+      "space-librarian",
+      "swe-pod",
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/-<user-home>-proj-src-build-swe-pod-scratch-runs-20261028T044829Z-test-T1-TS1-approval-text-outside-header-4ea6-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 5,
+  "api_retries": 0,
+  "num_turns": 3,
+  "run": {
+    "step": 1,
+    "cap_s": 599,
+    "retried": false,
+    "exit": 0,
+    "capped": false,
+    "elapsed_s": 12.2,
+    "api_stall": false
+  }
+}

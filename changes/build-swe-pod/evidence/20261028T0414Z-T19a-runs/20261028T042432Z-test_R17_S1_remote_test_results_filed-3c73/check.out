@@ -1,0 +1,4 @@
+R17.S1.1 fail 3 of 4 result files in the space, byte for byte
+R17.S1.2 fail 0 of 4 staged by name, 0 wildcard add(s), commit False, push to main False
+R17.S1.3 pass T3 DONE line True; 3 of 3 tests named
+R17.S1.4 pass 0 space file(s) hold a mesh task id, agent id or hostname

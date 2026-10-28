@@ -1,0 +1,27 @@
+T10 came back unfinished, so add-greeting is still not merged and can't be yet.
+
+**What T10 reported.** It returned DONE_WITH_CONCERNS but doesn't meet its done-when:
+- **No commit to check.** The merge of alpha's `main` (f6f6f6f) into `change/add-greeting` and the push were only printed as desk commands. The commit that should carry `Task: T10` would be found with `DESK: git -C <scratch>/runs/20261028T042120Z-test_R15_S1_reverify_after_other_change-0aad/repos/alpha log origin/change/add-greeting --grep="Task: T10"`, which wasn't run, so there's no sha to check.
+- **The one real check failed.** The alpha unit suite exited 1 without running a test (`Start directory is not importable: 'tests'`).
+- **The cause is on this node.** The alpha and beta checkouts are both empty directories: no `.git`, no code. Nothing can be built or tested here until they're filled.
+
+**What I recorded.** In the ledger (`<scratch>/runs/20261028T042120Z-test_R15_S1_reverify_after_other_change-0aad/bus/spaces/proj-demo/changes/add-greeting/ledger.md`):
+- T10's status.
+- A ruling that T10 goes back to its builder: no commit, no green run. If that's wrong it costs nothing, since the merge stays held either way.
+- The builder's test suggestion T10.TS1, sent to the tester. It asks that both the greeting and the farewell still work after the merge, and that the 64-character name limit still holds. The re-verify should cover it with the existing greeting tests and the promoted farewell test.
+
+I checked the report with the restored librarian script and it passed. Filing it would run these, which weren't run:
+```
+DESK: git -C <scratch>/runs/20261028T042120Z-test_R15_S1_reverify_after_other_change-0aad/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T042120Z-test_R15_S1_reverify_after_other_change-0aad/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T10-report.md" -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T042120Z-test_R15_S1_reverify_after_other_change-0aad/bus/spaces/proj-demo push origin HEAD:main
+DESK: (the same for changes/add-greeting/ledger.md)
+```
+
+**What's left before the merge:**
+1. T10 for real: merge alpha's new `main` into the change branch, with a green unit suite.
+2. A review of that merge.
+3. A re-run of verify at the new commit set: alpha at T10's head, beta e5e5e5e, gamma c3c3c3c.
+4. The final report, then your word to merge, alpha before beta.
+
+My question: can the alpha and beta checkouts on this node be filled, cloned from their remotes with `change/add-greeting` fetched? Or should T10 and the re-verify run on another node that has them?

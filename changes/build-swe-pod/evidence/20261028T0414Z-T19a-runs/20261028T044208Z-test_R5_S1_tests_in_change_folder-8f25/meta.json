@@ -1,0 +1,8 @@
+{
+  "test": "test_R5_S1_tests_in_change_folder",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": []
+}

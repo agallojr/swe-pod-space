@@ -1,0 +1,6 @@
+No plan written: R3 has no scenario. Returned to the spec author.
+No plan written: R4 has no scenario. Returned to the spec author.
+
+I wrote no plan. The spec has its `approved:` line. R1 and R2 have scenarios (R1.S1, R1.S2, R2.S1). R3 (greeting in the log) and R4 (greeting in the help text) have none, so `changes/add-greeting/plan.md` was not created. With no plan to file, there's no librarian commit step, so I printed no `DESK:` lines.
+
+One thing for the spec author to check while they're in the spec: the approval is dated `2026-11-01T09:00Z`, which is after today (2026-10-28).

@@ -1,0 +1,24 @@
+There's one open change, `add-greeting`. Its spec is approved but it has no plan yet, so nothing has been dispatched.
+
+**Two problems with the records:**
+- **The space is not a git repository.** Records should be read as they stand at the last commit, but there are no commits, so I read the files as they are on disk. Strictly speaking, none of them has been filed through the librarian yet.
+- **`STATUS.md` does not exist.** `AGENTS.md` says the skill should generate it. I worked out its content from the records and filed nothing, so no librarian commit ran and there are no `DESK:` lines this turn. Ask me to regenerate `STATUS.md` if you want it written.
+
+**What the records show** (space id `proj:demo`, as of 2026-11-01T09:00Z, the spec's approval time):
+- **Pins:** alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c.
+- **State:** approved. The spec has `approved: demo-owner 2026-11-01T09:00Z`, and there is no `plan.md`, so it hasn't reached planned.
+- **Owner:** demo-owner. **Repos:** alpha, beta.
+- **Gates passed:** the spec (demo-owner, 2026-11-01T09:00Z). There is no go yet, so there are no branches yet.
+- **Tasks:** none. Nothing is blocked, there is no evidence, and there are no open findings (Critical 0, Important 0, Minor 0).
+- **Next:** the plan, by the plan role.
+
+**The ledger was copied from the template and never emptied.** `<scratch>/runs/20261028T050626Z-test_T2_TS3_ledger_from_template_not_emptied-2a06/space/changes/add-greeting/ledger.md` still has the template's comment and its block of example event forms. Every line in that block starts with the placeholder `<YYYY-MM-DDTHH:MMZ>` rather than a real UTC, so none of them counts as an event. In particular, `spec approved by <handle>`, `go by <handle>` and `dispatch T<n>` are not real events. The block should be emptied and the comment deleted, through the change's lead and the librarian, before the first real event is added.
+
+Records worth opening:
+- `<scratch>/runs/20261028T050626Z-test_T2_TS3_ledger_from_template_not_emptied-2a06/space/changes/add-greeting/spec.md`
+- `<scratch>/runs/20261028T050626Z-test_T2_TS3_ledger_from_template_not_emptied-2a06/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T050626Z-test_T2_TS3_ledger_from_template_not_emptied-2a06/space/STATUS.md` (missing)
+
+STATE add-greeting: approved
+NEXT add-greeting: the plan, by the plan role
+EVENTS add-greeting: none

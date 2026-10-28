@@ -1,0 +1,7 @@
+R3 has no scenario. No plan is written.
+
+No plan written: R3 has no scenario. Returned to the spec author.
+
+I didn't write `changes/add-greeting/plan.md`. The spec is approved (demo-owner, 2026-11-01T09:00Z), but R3, "Greeting in the log", has no scenario. That requirement says `beta` writes the greeting as the first line of `beta.log` in its working directory. R1 and R2 both have scenarios.
+
+Nothing was filed, so there are no `DESK:` commands. The spec author needs to add a scenario to R3, such as R3.S1, and then the plan can be done.

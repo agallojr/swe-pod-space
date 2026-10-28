@@ -1,0 +1,8 @@
+{
+  "test": "test_R20_S1_status_rebuild_matches",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": []
+}

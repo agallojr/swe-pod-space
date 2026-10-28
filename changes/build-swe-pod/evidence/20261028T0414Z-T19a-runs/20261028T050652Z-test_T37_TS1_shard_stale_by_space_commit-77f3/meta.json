@@ -1,0 +1,8 @@
+{
+  "test": "test_T37_TS1_shard_stale_by_space_commit",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": []
+}

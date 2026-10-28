@@ -1,0 +1,30 @@
+**No, add-greeting is not verified.** Both verify shards report passes, but they ran against different commit sets. The T7a shard ran before beta's fix, so it is out of date and has to run again.
+
+**Where the change stands**
+- **Spec and plan:** the spec was approved by demo-owner and the plan is filed. Branches were created from alpha a1a1a1a and beta b2b2b2b.
+- **Build:** T1 (alpha) finished at d4d4d4d and its review (T4) found one Minor. T2 (beta) finished at e5e5e5e. Its review (T5) found one Important issue, fixed in round 1, which moved beta to **f6f6f6f** with nothing left open.
+- **Tests:** T3 wrote the three scenario tests and all three failed at base, as they should. T6 is done.
+- **Verify (T7), sharded:**
+  - **T7a** ran at space 7a7a7a7, alpha d4d4d4d, **beta e5e5e5e**. All its results pass, but beta e5e5e5e is the head from before the fix, and the space commit is not the current shards' space commit. **Out of date.**
+  - **T7b** was blocked at first. Its brief was rewritten and filed again at 13:29, it was dispatched again, and it passed at space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f. **At the current commit set.**
+  - So the two records are not green together, and the change is not verified.
+- **Whole-change review (T8):** it passed with one Minor (the same alpha/greeting.py:9 literal T4 flagged) and no open Critical or Important finding. However, it was dispatched at 14:30, before verify's first green-together run, which comes too early in the process order. Once T7 is green, check that its diffs (alpha ..d4d4d4d, beta ..f6f6f6f) still match the commit set, and run it again if anything moves.
+- **Integrate (T9):** not ready.
+
+**What went wrong:** the fix moved beta's head, so every shard's brief should have been rewritten and every shard dispatched again. Only T7b's was. The T7a brief still says beta e5e5e5e under `## Start from`. To rerun T7a I would either dispatch it again with the current commit set given in the prompt, or file a rewritten T7a brief. Filing a new brief creates a new shards' space commit, which would put T7b out of date as well and mean both shards run again.
+
+**Gaps in the records:**
+- `STATUS.md` doesn't exist in the space, so I worked from the ledger and the records. It should be regenerated the next time something is filed.
+- The space sha 8b8b8b8 appears only in T7b's evidence record. No ledger line names it.
+
+Nothing was dispatched, filed or committed in this run.
+
+Paths worth opening:
+- <scratch>/runs/20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34/space/changes/add-greeting/ledger.md
+- <scratch>/runs/20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34/space/changes/add-greeting/evidence/20261101T1238Z-T7a.md
+- <scratch>/runs/20261028T043838Z-test_R24_S2_stale_shard_not_verified-7b34/space/changes/add-greeting/tasks/T7a-brief.md
+
+STATE add-greeting: verify in progress, not verified (T7b green at the current commit set; T7a out of date, run at beta e5e5e5e and space 7a7a7a7)
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

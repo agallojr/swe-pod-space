@@ -1,0 +1,20 @@
+**Status: BLOCKED.** I wrote the three tests, but couldn't run any of them at the base commit set (space 5c02e1a, alpha 8a4bcfa, beta 10c597d) because every shell command I tried was denied. The task is only done when each test fails at base for its stated reason, so that part is unchecked.
+
+**Files written:**
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- `changes/add-greeting/evidence/20261028T0442Z-T3-report.md` (my report)
+
+**Tests:** none are heavy. The "expected" reasons below are what should happen at base; none has been observed.
+- `test_R1_S1_default_greeting` (R1.S1, about 1 s): checks that `greeting()` returns exactly `hello, demo`, 11 code points with no newline. Result at base: not-run. Expected: fail, because alpha has no `greeting` at base, so the call raises `AttributeError`.
+- `test_R1_S2_name_too_long` (R1.S2, about 1 s): a 65-code-point name, tried once as 65 `a`s and once as 65 `é`s, must raise `ValueError` with `64` in the message and return no greeting. Result at base: not-run. Expected: fail, with `RAISED-OTHER AttributeError` for both names.
+- `test_R2_S1_startup_line` (R2.S1, about 2 s): `python3 -m beta` must print `hello, demo` as its first line within 1.0 s of being started, and exit 0. Result at base: not-run. Expected: fail, because at base the first line is beta's banner.
+
+**Concerns:**
+- **Base runs still needed:** each test's When command must be run with `$ALPHA` and `$BETA` checked out at the base commits, to confirm it fails for the reason above. This needs shell access, granted to me or done by someone who has it.
+- **Report location:** the brief asked for the report at `changes/add-greeting/tasks/T3-report.md`. My role puts a test task's report under `evidence/` and never under `tasks/`, so I filed it there.
+- **Error type:** R1.S2 checks for `ValueError`, which is the type the interface contract names. The spec itself only says "an error".
+- **Timing:** the 1 s limit in R2.S1 includes Python's start-up time, measured from just before beta is launched.
+
+I didn't commit or push anything. Filing these files and the desk-step git commands are for the lead's librarian step; I printed no `DESK:` lines.

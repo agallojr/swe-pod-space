@@ -1,0 +1,41 @@
+Both records passed the checks. The commit step, as a desk step (nothing run):
+
+```
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space cat-file -e origin/main:changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space diff --quiet origin/main -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space log -1 --format=%H -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space fetch origin
+DESK: git -C <scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space merge-base --is-ancestor <commit> origin/main
+```
+
+The T6 brief is written and passed the librarian's checks. It isn't dispatched. Because the commit step was a desk step, nothing has actually been committed yet. That means no `FILED` lines and no `filed` ledger lines so far, and I haven't regenerated `STATUS.md`, since that comes after a filing.
+
+**The brief:** `<scratch>/runs/20261028T052758Z-test_R9_S1_test_brief_contents-7316/space/changes/add-greeting/tasks/T6-brief.md`
+- It follows the test-writing template. It holds T6's plan entry word for word, the spec's path, the interface contract, the global constraints and the test map copied from the plan, the commit sets to start from, the suggestion, and where results go. It ends with the required "Do not read …" line.
+- **The suggestion:** T1.TS1 is the only one. T2 and T3 reported none. Its "for the tester" part asks for a test of R1.S2 with a name of exactly 64 two-byte characters such as `é`, which the limit (counted in code points) should still accept. It gives no expected value and no code, and it covers behaviour the spec states on an input no scenario tests. So it goes to the test agent. The brief carries the "for the tester" part only; the "for the reviewer" part (the file and line numbers) is left out.
+- **No implementation from the builder's report:** the brief leaves out the code snippet and diff in the T1 report, and every build-task step.
+
+**Ledger line added:** `2026-10-28T05:28Z T1.TS1 -> test`
+
+**Two things you may want to settle:**
+1. **Space commit in "Start from":** the space checkout isn't a git repo, so I couldn't read its commit. The base set (space 5c02e1a, alpha a1a1a1a, beta b2b2b2b) reuses what the T3 brief used. For the commit set under test, the space is given as "the commit that files this brief", with alpha d4d4d4d and beta e5e5e5e (the T1 and T2 heads in the ledger). Once the filing really happens, that placeholder should become the actual commit.
+2. **Clock:** the machine's UTC time (2026-10-28T05:28Z) is earlier than the ledger's existing entries, which are dated 2026-11-01. Since the ledger is append-only, I used the real clock, so the new line sorts before the older ones.
+
+Tell me when to dispatch T6. It will go to a local `swe-test` agent and get a `dispatch T6 -> test (local, any)` line.

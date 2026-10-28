@@ -1,0 +1,9 @@
+I've read the project before asking anything. What I found affects your request:
+
+- An earlier change, "add-greeting", is approved but not finished yet. It already says the shared library, alpha, can build a greeting for a given name, and caps names at 64 characters. But beta only prints the default `hello, demo` when it starts.
+- So most of the work is already there. What's left is getting a name into beta and passing it through, so that beta prints something like `hello, Ada` instead.
+- I couldn't open the alpha and beta code itself, because only their remote addresses are recorded here. Everything above comes from that earlier change.
+
+Here's how I understand your request: when someone starts beta, its first line greets them by name, not with the generic `hello, demo`.
+
+My one question: **where should beta get the person's name?** For example, a name typed when starting beta (like `beta Ada`), the name of the account logged into the computer, or a saved setting.

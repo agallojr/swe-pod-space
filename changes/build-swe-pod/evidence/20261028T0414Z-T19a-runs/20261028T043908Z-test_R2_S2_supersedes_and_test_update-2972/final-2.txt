@@ -1,0 +1,28 @@
+I've written the plan for raise-name-limit to `changes/raise-name-limit/plan.md`. It's ready for you to file. The spec is approved, every requirement has at least one scenario, and nothing in the plan goes beyond the approved scope.
+
+**What the plan does**
+- **Build (T1, alpha only):** raises the fixed limit from 64 to 128 code points. The error keeps its form and type (`ValueError`, now `name longer than the 128-character limit`). The task changes `alpha/__init__.py`, updates and adds unit tests in `tests/test_alpha.py`, and adds the Unreleased line to `CHANGELOG.md` that alpha's contributing guide requires. The suite should end with 8 tests passing.
+- **Project-level tests (T2):** one test for each of R1.S1, R1.S2, R1.S3, R2.S1 and R2.S2. All five should fail at the base pin, alpha d4d4d4d.
+- **Superseded test (T3):** writes an updated `add-greeting/R1.S2` test under `changes/raise-name-limit/tests/add-greeting/`. It keeps its name and id, now uses a 129-character name and expects `128` in the error. Integrate (T8) puts it in place of the old file in `tests/`. Until then, verify (T6) runs it in place of the old one, which would now fail because 65 characters are greeted.
+- **The rest:** a review of T1 (T4), a builder-suggestions task (T5), verify (T6), the whole-change review (T7) and integrate (T8).
+- **Order:** T1, T2 and T3 start together at the go. No two tasks touch the same file. The longest chain is T1 → T4 → T6 → T7 → T8.
+
+**Defaults I picked**, for the spec author to list under Open calls:
+1. The superseded add-greeting/R1.S2 test is updated rather than retired.
+2. The error stays a `ValueError`.
+3. Tests read the error message from the caught exception, not from standard error. A traceback's file paths or line numbers could contain `64` by chance and make R2.S2 fail for the wrong reason.
+4. R1.S3's expected output is 135 characters (263 bytes in UTF-8). The scenario doesn't give a length.
+
+**Two other things you should know**
+- Verify is `needs: any`, runs locally and isn't split. The tests only need `python3` and take under 10 seconds, so no particular environment class is required.
+- The space checkout isn't a git repository on this node, so the plan's base commit set gives the space commit as "the commit that files this plan". Fill in the real one when you file it.
+
+No questions for the human.
+
+The librarian's commit step, printed and not run:
+
+DESK: git -C space add changes/raise-name-limit/plan.md
+DESK: git -C space commit -m "raise-name-limit: plan" -m "Change: raise-name-limit" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin main

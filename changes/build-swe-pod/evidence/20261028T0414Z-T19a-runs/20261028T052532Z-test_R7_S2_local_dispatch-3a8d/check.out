@@ -1,0 +1,6 @@
+R7.S2.1 pass 1 test subagent(s) started with the brief's path
+R7.S2.2 pass brief present, no machine path
+R7.S2.3 pass subagent read the brief 1 time(s)
+R7.S2.4 fail T3 report absent
+R7.S2.5 pass 1 local dispatch line(s) for T3
+R7.S2.6 pass 0 mesh-post line(s)

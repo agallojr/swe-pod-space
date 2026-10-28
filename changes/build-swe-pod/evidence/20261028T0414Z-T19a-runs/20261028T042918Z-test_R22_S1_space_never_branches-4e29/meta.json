@@ -1,0 +1,9 @@
+{
+  "test": "test_R22_S1_space_never_branches",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": []
+}

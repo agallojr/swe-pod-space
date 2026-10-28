@@ -1,0 +1,9 @@
+{
+  "test": "test_T8_TS1_install_user_level_then_local_dispatch",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": []
+}

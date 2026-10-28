@@ -1,0 +1,31 @@
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space cat-file -e origin/main:notes/note-20261101T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space diff --quiet origin/main -- notes/note-20261101T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space add -- notes/note-20261101T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space commit -m "File notes/note-20261101T1800Z-3c09-registry-agent.md" -- notes/note-20261101T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space log -1 --format=%H -- notes/note-20261101T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space cat-file -e origin/main:notes/note-20261101T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space diff --quiet origin/main -- notes/note-20261101T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space add -- notes/note-20261101T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space commit -m "File notes/note-20261101T1800Z-3c10-registry-task.md" -- notes/note-20261101T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space log -1 --format=%H -- notes/note-20261101T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261028T052944Z-test_T10_TS8_joined_and_registry_values-a7de/repos/solo-space merge-base --is-ancestor <commit> origin/main
+
+REFUSED notes/note-20261101T1800Z-3c11-home-path.md: profile line 11
+
+That was a desk run, so nothing was committed or pushed and there are no `FILED` lines. Above are the commands that would file the two records that passed, followed by the result line for the one that failed.
+
+- **Passed (2):** `3c09-registry-agent` and `3c10-registry-task` passed the profile, reference and id checks. With no bus, the agent ids and task ids the check looks for come only from this machine, so these two were not compared against any agent registry.
+- **Refused (1):** `3c11-home-path` failed the profile check at line 11. Either the line holds a home path or a real value from this machine. It needs fixing before it can be filed.
+
+The check script in the skill file had broken placeholders: its `$0`–`$3` had been replaced by words from the arguments I passed it. I restored them in a copy at `/tmp/librarian.EjyFkd/check.sh`, outside the space, and ran that copy. The skill file itself still has the broken text.

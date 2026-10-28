@@ -1,0 +1,19 @@
+**add-greeting is not verified.** Every build and review task is done, the alpha and beta code hasn't moved since T7a ran, and both verify shards passed. But they passed at two different space commits, so their records are not green together.
+
+**Why T7a is out of date.** The shards' space commit is the commit that filed the last of the latest shard briefs. The first pair of briefs was filed at 13:29, and T7a ran from that commit, which its evidence records as space `7a7a7a7`. At 14:35 the T7b brief was filed again with the PYTHONPATH ruling. That re-filing is now the last shard brief filed, so it is the shards' space commit. T7b's evidence records `8b8b8b8`, and I take that to be the re-filing commit. I can't confirm it: this copy has no git history.
+- **T7b** (`evidence/20261101T1500Z-T7b.md`): R2.S1 passed and beta's unit suite passed (5 of 5), at alpha `d4d4d4d`, beta `f6f6f6f`, gamma `c3c3c3c` and space `8b8b8b8`. It is current.
+- **T7a** (`evidence/20261101T1412Z-T7a.md`): R1.S1, R1.S2 and alpha's unit suite passed (3 of 3). `tests/` is still empty, so the regression suite had nothing to run. The code shas are the current ones, but it ran at space `7a7a7a7`. It is out of date.
+
+**What has not moved.** The branch heads are still alpha `d4d4d4d` and beta `f6f6f6f`; T2's fix round 1 ended at `f6f6f6f`. gamma is not in the spec, so it stays at its pin `c3c3c3c`. The change's tests were last filed at 11:25, before both shard briefs. Because nothing moved, the briefs don't need rewriting. T7a only needs to be dispatched again from its current brief (`changes/add-greeting/tasks/T7a-brief.md`), local on macos-laptop, at space `8b8b8b8`, with a new dispatch line. T7b does not run again.
+
+**Other points in the records:**
+- **Whole-change review came early.** T8 was dispatched at 15:05, before the shards were green together; the process says to dispatch it after that. Its only finding is the Minor at `alpha/greeting.py:9`, the bare 64 literal, which T4 also found. It has no Critical or Important finding, and the code it reviewed (alpha `a1a1a1a..d4d4d4d`, beta `b2b2b2b..f6f6f6f`) is the current code. If T7a passes again with no code change, I would let T8 stand, and record that as a ruling.
+- **Missing records.** The ledger has no line for the T6 suggestions outcomes, and there is no `STATUS.md` in the space. That file should be regenerated with the `swe-pod` skill after the next filing.
+- **Not done in this run.** Nothing was dispatched, filed or committed, as you asked.
+
+**Next step:** dispatch T7a again at space `8b8b8b8`. When its new record is filed, the two shard records together cover R1.S1, R1.S2, R2.S1, the regression suite and both unit suites. If all of those pass, the change is verified and integrate (T9) waits on your word.
+
+STATE add-greeting: verify incomplete (T7a's evidence is from an earlier shards' space commit), not verified
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a

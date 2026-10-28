@@ -1,0 +1,9 @@
+{
+  "test": "test_T1_TS1_approval_text_outside_header",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": []
+}

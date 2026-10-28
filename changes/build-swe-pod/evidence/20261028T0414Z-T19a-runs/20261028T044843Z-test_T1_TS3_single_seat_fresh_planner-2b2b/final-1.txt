@@ -1,0 +1,27 @@
+I've drafted the spec for add-greeting, recorded your approval, and had a separate planner write the plan. Its state is **planned**, and it stops at your plan skim. Nothing has been sent to build or test, no branches exist, and nothing is committed: the git step was printed above and not run (the space folder isn't a git repo on this node anyway).
+
+**Spec** (`changes/add-greeting/spec.md`), project size, touching alpha and beta:
+- **R1:** alpha provides the greeting as one line of text, `Hello from the demo project!`.
+- **R2:** beta prints that greeting, exactly and alone, as the first line of every run. Then come the unchanged `beta 1.0` banner and the `--count-lines` output.
+- **R3:** beta takes the text from alpha at run time and keeps no copy of it. Run against an alpha with a different greeting, beta prints the different one. If alpha can't be found, beta exits with an error that names `alpha`.
+- **Approval:** recorded as `- approved: demo-owner 2026-10-28T04:49Z`.
+- **Approaches:** alpha supplies the text in Python (picked), alpha ships a data file, or beta keeps a copy. The copy would drift from alpha's text, which is what you wanted to avoid.
+
+**Defaults to check** (under Open calls in the spec):
+- The exact greeting text.
+- The greeting comes before the banner, not after it.
+- There's no option to turn it off.
+- beta finds alpha the way the repos are used today, with no packaging added.
+- alpha stays at version 1.0, with the greeting listed under Unreleased in its changelog.
+- No linter or other quality check.
+- The planner's six minor choices, added afterwards. The ones most worth a look: alpha offers the greeting as `greeting()`, beta's README is updated too, and when alpha is missing beta exits with status 1. These were edits to Open calls only, so your approval stands.
+
+**Plan** (`changes/add-greeting/plan.md`), written by a planner that never saw this conversation. It had no questions for you.
+- **Build:** T1 adds the greeting to alpha. T2 makes beta print it, and its own tests use a stand-in alpha, so the two can run in parallel.
+- **Tests:** T3 writes one test per scenario and starts at the go. T4 takes up the builders' test suggestions. T5 runs verify on `macos-laptop`.
+- **Reviews and merge:** T6 and T7 review the two build tasks, T8 is the whole-change review, and T9 merges alpha before beta.
+- **Self-review:** every requirement has a build task and every scenario has a test.
+
+**Ledger** (`changes/add-greeting/ledger.md`) has the approval line. All three records passed the librarian's checks.
+
+I didn't regenerate `STATUS.md`. When you've skimmed the plan, say go and I'll create the `change/add-greeting` branches in alpha and beta and start T1, T2 and T3.

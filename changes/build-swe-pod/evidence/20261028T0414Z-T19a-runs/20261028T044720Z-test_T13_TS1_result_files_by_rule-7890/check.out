@@ -1,0 +1,4 @@
+T13.TS1.1 fail task A result absent
+T13.TS1.2 pass 0 rule break(s)
+T13.TS1.3 pass stand-in value in 0 outbox file(s); link listed False
+T13.TS1.4 fail task B result absent

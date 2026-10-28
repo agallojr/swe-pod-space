@@ -1,0 +1,5 @@
+T8.TS3.1 pass T7: 0 subagent(s), 0 dispatch line(s); heavy command run 0 time(s)
+T8.TS3.2 pass command named
+T8.TS3.3 pass cap of 600 s given
+T8.TS3.4 pass expected 240 s given
+T8.TS3.5 pass overlay read

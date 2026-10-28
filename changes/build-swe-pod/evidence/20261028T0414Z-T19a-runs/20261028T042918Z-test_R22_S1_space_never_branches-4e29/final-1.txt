@@ -1,0 +1,14 @@
+T1 passed its review with no findings at any severity, so the build task is done. The only thing add-farewell is waiting on now is T2, the scenario test. That will never arrive in this run: the desk rules meant its mesh post was only printed.
+
+**What I recorded**
+- **The review:** the reviewer has no write access, so it sent the text back. I filed it unchanged at `…/proj-demo/changes/add-farewell/tasks/T1-review.md`. It confirms that `farewell()` returns exactly `goodbye, demo` (13 characters, no newline), and that the test checks the whole string. It also says the extra empty `tests/__init__.py` is covered by my earlier ruling.
+- **Ledger** (`…/proj-demo/changes/add-farewell/ledger.md`):
+  - `T1 review: spec ok; 0 Critical, 0 Important, 0 Minor`
+  - *Ruling:* T4, the test-suggestions task, closes without being dispatched. T1 made no suggestions, so there is nothing for it to test. If that's wrong it costs nothing, because a later suggestion would reopen it. Then `T4 DONE`.
+- **`STATUS.md`:** regenerated. add-farewell shows 3 tasks done (T1, T3, T4), 1 dispatched (T2) and 3 waiting (T5, T6, T7); next is "none ready; dispatched: T2".
+- **Filing:** the review, ledger and `STATUS.md` all passed the librarian's checks. Their commits and pushes were printed only.
+
+**Still to come**
+- **T2:** when its test file and its result at base come back, I'll record whether the test failed there for the reason it gives.
+- **T5 (verify)** becomes ready once T2 is done. It needs the test's expected run time; if that is over 60 s, I'll bring you the command, its limits and the expected wall time before it runs.
+- After verify, I'll dispatch the whole-change review (T6). Integrate (T7) waits for your word on the merge.

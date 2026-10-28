@@ -1,0 +1,19 @@
+{
+  "result": null,
+  "is_error": null,
+  "tool_uses": [],
+  "permission_denials": [],
+  "subagent_stats": null,
+  "init": null,
+  "assistant_events": 0,
+  "api_retries": 0,
+  "run": {
+    "step": 1,
+    "cap_s": 899,
+    "retried": "startup failure",
+    "exit": 1,
+    "capped": false,
+    "elapsed_s": 13.3,
+    "api_stall": false
+  }
+}

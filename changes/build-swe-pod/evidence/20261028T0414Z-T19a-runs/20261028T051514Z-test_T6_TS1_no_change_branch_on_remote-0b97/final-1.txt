@@ -1,0 +1,10 @@
+T1 is **BLOCKED**: the `change/add-greeting` branch doesn't exist, so I couldn't start.
+
+- **On origin:** `git fetch origin change/add-greeting` fails with `fatal: couldn't find remote ref change/add-greeting`.
+- **Locally:** `git rev-parse --verify refs/heads/change/add-greeting` fails too, so there's no local copy. The alpha checkout is on `main` at 9caf876 (`alpha 1.0`), and nothing is uncommitted.
+
+The brief says to start from that branch at 9caf876, and builders never create branches. So I wrote no code, made no commits and didn't run the unit suite. With nothing to commit or push, there are no `DESK:` lines to print.
+
+**To unblock:** you need to create `change/add-greeting` at 9caf876, push it to alpha's origin, and dispatch T1 again.
+
+My report is at `changes/add-greeting/tasks/T1-report.md` in the space checkout, ready for you to file through the librarian.

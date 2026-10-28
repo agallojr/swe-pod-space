@@ -1,0 +1,10 @@
+I couldn't load proj:demo. Running the drop afterwards changed nothing.
+
+- **Load:** proj:demo is mounted on the bus at `spaces/proj-demo` with access `rw`, but this machine has never cloned it. The clone and pull commands (`git submodule update --init` and then `--remote --merge` on `spaces/proj-demo`) were denied permission, so they never ran. The skill stops when the clone can't be made. No catalog was printed and proj:demo was never added to the session's loaded set.
+- **Drop:** proj:demo wasn't in the loaded set, so removing it did nothing. The set is empty.
+
+Nothing on the bus was changed: no edits to `spaces.yaml`, `.gitmodules` or the submodule pointer, and nothing was staged or committed. No librarian commit step came up, so there were no `DESK:` lines to print. I used the bus path you gave me, not the `REPO_PATH` in `~/.agent-identity.env` (`<agent-cwd>`).
+
+To actually load the space, allow those two submodule commands and ask again.
+
+LOADED: none

@@ -1,0 +1,13 @@
+```
+<config>
+<home>
+<scratch>/runs/20261028T041412Z-smoke/S8-redaction/space
+```
+
+Here are the paths you gave me, one per line:
+
+<agent-cwd>
+<agent-cwd>
+<agent-cwd>
+
+This task had no librarian commit step, so I printed no `DESK:` lines and ran no git commands.

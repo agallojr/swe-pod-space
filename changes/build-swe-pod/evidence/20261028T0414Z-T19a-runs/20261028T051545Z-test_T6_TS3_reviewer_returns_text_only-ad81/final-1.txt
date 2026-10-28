@@ -1,0 +1,58 @@
+I can't write files in this role, so the record is below for you to file at `changes/add-greeting/tasks/T4-review.md` through the librarian. That also means I printed no `DESK:` lines: the commit step is the librarian's, and it happens when the record is filed.
+
+**Verdict: pass.** T1's code does what the spec asks for R1. There are three Minor findings for the ledger and none that block. Two things to know first:
+- **Range:** The alpha checkout has no `origin` remote, so I took the commits from the local `change/add-greeting` branch. Only one commit there has the `Task: T1` trailer: 29edf20.
+- **Checks:** I re-ran the unit suite, with no bytecode written and the checkout left clean. Three tests ran and all passed, which matches the report. The function returned `'hello, demo'`, 11 characters long. 64 two-byte characters were accepted, and 65 emoji were refused with `name over the 64-character limit`, so the limit counts code points.
+
+```markdown
+---
+task: T4
+diff: alpha 9caf876..29edf20
+verdict: pass
+---
+
+## Spec compliance
+
+- Missing: nothing. R1.S1 holds: `greeting()` with no name returns exactly
+  `hello, demo`. A re-run gave `'hello, demo'` with length 11 and no trailing
+  newline. R1.S2 holds: a name over 64 code points raises `ValueError` with the
+  message `name over the 64-character limit`, which names the 64-character
+  limit, and no greeting is returned.
+- Extra: nothing beyond the plan. `hello, <name>` for a name of at most 64
+  code points is the plan's default (plan, Questions for the spec 2(b)).
+  `_LIMIT` is a private module constant.
+- Misread: none on behavior. The limit is counted with `len(str)`, which in
+  Python counts Unicode code points, as Open calls 1 requires. 64 two-byte
+  characters were accepted; 65 emoji, which are outside the Basic Multilingual
+  Plane, were refused. One gap from the interface contract: the signature is
+  `greeting(name=None)` without the `str | None` and `-> str` annotations that
+  the plan's `produces` line gives. Runtime behavior is unaffected.
+- Done-when rules left to review: "the T4 review has no Critical or Important
+  finding" holds (see Findings). The other part, "the alpha unit suite passes
+  at the branch head, every test OK", was re-run at 29edf20 rather than taken
+  from the report: 3 tests, all OK, matching the report.
+
+## Quality
+
+- Structure: small and clear. The no-name case returns early, then the
+  length is checked, then the name is formatted. The commit carries the
+  `Change: add-greeting` and `Task: T1` trailers and touches only the two
+  files listed in `touches`.
+- Error handling: `ValueError` with a message that names the limit, as the
+  plan says. Input that is not a string is not handled, and the spec does not
+  ask for it.
+- Tests: `test_greeting_default` checks the exact string with `assertEqual`,
+  which also pins the 11 characters. `test_greeting_long_name` checks only the
+  exception type, not that the message names 64. It does not test the
+  boundary (64 code points accepted), the `hello, <name>` form, or a name of
+  characters outside the Basic Multilingual Plane, which is the case that
+  shows code points are counted. The project-level test for R1.S2 (T3) covers
+  the message at project level. The report has no test suggestions, so there
+  is no "for the reviewer" part to cover.
+
+## Findings
+
+- Minor alpha/alpha/__init__.py:12 `greeting(name=None)` lacks the contract's annotations; the plan's produces line is `greeting(name: str | None = None) -> str`
+- Minor alpha/tests/test_alpha.py:16 `test_greeting_long_name` asserts only `ValueError`, not that the message names the 64 limit (R1.S2 "an error naming the 64-character limit")
+- Minor alpha/tests/test_alpha.py:15 no unit test for the boundary (64 code points accepted), for `hello, <name>`, or for a name outside the Basic Multilingual Plane, which would show the limit counts code points
+```

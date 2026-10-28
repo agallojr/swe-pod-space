@@ -1,0 +1,8 @@
+{
+  "test": "test_T2_TS3_ledger_from_template_not_emptied",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": []
+}

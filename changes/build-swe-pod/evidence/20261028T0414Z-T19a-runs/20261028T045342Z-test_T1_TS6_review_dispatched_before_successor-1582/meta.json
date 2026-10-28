@@ -1,0 +1,9 @@
+{
+  "test": "test_T1_TS6_review_dispatched_before_successor",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": []
+}

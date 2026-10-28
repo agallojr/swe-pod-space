@@ -1,0 +1,127 @@
+{
+  "result": "**add-greeting is not verified.** Every build and review task is done, the alpha and beta code hasn't moved since T7a ran, and both verify shards passed. But they passed at two different space commits, so their records are not green together.\n\n**Why T7a is out of date.** The shards' space commit is the commit that filed the last of the latest shard briefs. The first pair of briefs was filed at 13:29, and T7a ran from that commit, which its evidence records as space `7a7a7a7`. At 14:35 the T7b brief was filed again with the PYTHONPATH ruling. That re-filing is now the last shard brief filed, so it is the shards' space commit. T7b's evidence records `8b8b8b8`, and I take that to be the re-filing commit. I can't confirm it: this copy has no git history.\n- **T7b** (`evidence/20261101T1500Z-T7b.md`): R2.S1 passed and beta's unit suite passed (5 of 5), at alpha `d4d4d4d`, beta `f6f6f6f`, gamma `c3c3c3c` and space `8b8b8b8`. It is current.\n- **T7a** (`evidence/20261101T1412Z-T7a.md`): R1.S1, R1.S2 and alpha's unit suite passed (3 of 3). `tests/` is still empty, so the regression suite had nothing to run. The code shas are the current ones, but it ran at space `7a7a7a7`. It is out of date.\n\n**What has not moved.** The branch heads are still alpha `d4d4d4d` and beta `f6f6f6f`; T2's fix round 1 ended at `f6f6f6f`. gamma is not in the spec, so it stays at its pin `c3c3c3c`. The change's tests were last filed at 11:25, before both shard briefs. Because nothing moved, the briefs don't need rewriting. T7a only needs to be dispatched again from its current brief (`changes/add-greeting/tasks/T7a-brief.md`), local on macos-laptop, at space `8b8b8b8`, with a new dispatch line. T7b does not run again.\n\n**Other points in the records:**\n- **Whole-change review came early.** T8 was dispatched at 15:05, before the shards were green together; the process says to dispatch it after that. Its only finding is the Minor at `alpha/greeting.py:9`, the bare 64 literal, which T4 also found. It has no Critical or Important finding, and the code it reviewed (alpha `a1a1a1a..d4d4d4d`, beta `b2b2b2b..f6f6f6f`) is the current code. If T7a passes again with no code change, I would let T8 stand, and record that as a ruling.\n- **Missing records.** The ledger has no line for the T6 suggestions outcomes, and there is no `STATUS.md` in the space. That file should be regenerated with the `swe-pod` skill after the next filing.\n- **Not done in this run.** Nothing was dispatched, filed or committed, as you asked.\n\n**Next step:** dispatch T7a again at space `8b8b8b8`. When its new record is filed, the two shard records together cover R1.S1, R1.S2, R2.S1, the regression suite and both unit suites. If all of those pass, the change is verified and integrate (T9) waits on your word.\n\nSTATE add-greeting: verify incomplete (T7a's evidence is from an earlier shards' space commit), not verified\nVERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server; T7b, mesh, linux-server\nCOMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c\nRERUN: T7a",
+  "is_error": false,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_019LCEEqTE5Jc2FppnvWkvZn",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T050652Z-test_T37_TS1_shard_stale_by_space_commit-77f3/space; find . -type f | sort; cat STATUS.md pod.yaml; cat changes/add-greeting/ledger.md; head -20 changes/add-greeting/spec.md",
+        "description": "List space files and read key records"
+      },
+      "is_error": false,
+      "output": "./AGENTS.md\n./changes/add-greeting/evidence/20261101T1412Z-T7a.md\n./changes/add-greeting/evidence/20261101T1500Z-T7b.md\n./changes/add-greeting/ledger.md\n./changes/add-greeting/plan.md\n./changes/add-greeting/spec.md\n./changes/add-greeting/tasks/T7a-brief.md\n./changes/add-greeting/tasks/T7b-brief.md\n./changes/add-greeting/tasks/T8-review.md\n./changes/add-greeting/tests/test_R1_S1_default_greeting.md\n./changes/add-greeting/tests/test_R1_S2_name_too_long.md\n./changes/add-greeting/tests/test_R2_S1_startup_line.md\n./decisions/.gitkeep\n./handoffs/.gitkeep\n./lore/.gitkeep\n./notes/note-20261101T1100Z-a0b1-demo-context.md\n./pod.yaml\n./PROCESS.md\n./README.md\n./space.yaml\n./tests/.gitkeep\ncat: STATUS.md: No such file or directory\npod: 1\nproject: demo\nprocess: swe-pod-process@1\nrepos:\n  alpha: {remote: \"https://example.invalid/demo/alpha.git\", pin: \"a1a1a1a\"}\n  beta:  {remote: \"https://example.invalid/demo/beta.git\", pin: \"b2b2b2b\"}\n  gamma: {remote: \"https://example.invalid/demo/gamma.git\", pin: \"c3c3c3c\"}\ndepends: {beta: [alpha]}            # merge order: alpha before beta\ngates: {spec: human, plan: human-skim, merge: human}\n# add-greeting: ledger\n\n```\n2026-11-01T09:00Z spec approved by demo-owner\n2026-11-01T09:40Z filed changes/add-greeting/plan.md\n2026-11-01T10:30Z go by demo-owner; branches change/add-greeting: alpha a1a1a1a, beta b2b2b2b\n2026-11-01T10:31Z dispatch T1 -> build (local, any), base alpha a1a1a1a\n2026-11-01T10:31Z dispatch T3 -> test (local, any)\n2026-11-01T11:02Z T1 DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass\n2026-11-01T11:03Z dispatch T4 -> review (local, any)\n2026-11-01T11:03Z dispatch T2 -> build (local, any), base beta b2b2b2b\n2026-11-01T11:20Z T3 DONE\n2026-11-01T11:24Z T3 at base: test_R1_S1_default_greeting fail (no greeting in alpha),\n                  test_R1_S2_name_too_long fail (no greeting in alpha),\n                  test_R2_S1_startup_line fail (beta prints nothing)\n2026-11-01T11:25Z filed changes/add-greeting/tests/test_R1_S1_default_greeting.md,\n                  changes/add-greeting/tests/test_R1_S2_name_too_long.md,\n                  changes/add-greeting/tests/test_R2_S1_startup_line.md\n2026-11-01T11:31Z T4 review: spec ok; 1 Minor alpha/greeting.py:9\n2026-11-01T11:58Z T2 DONE, beta b2b2b2b..e5e5e5e, unit 4/4 pass\n2026-11-01T11:59Z dispatch T5 -> review (local, any)\n2026-11-01T11:59Z dispatch T6 -> test (local, any)\n2026-11-01T12:20Z T5 review: spec issues; 1 Important beta/main.py:14\n2026-11-01T12:21Z T6 DONE\n2026-11-01T12:40Z T2 fix round 1/5: 1 addressed, 0 open, e5e5e5e..f6f6f6f\n2026-11-01T13:29Z filed changes/add-greeting/tasks/T7a-brief.md,\n                  changes/add-greeting/tasks/T7b-brief.md\n2026-11-01T13:30Z dispatch T7a -> test (local, macos-laptop)\n2026-11-01T13:30Z dispatch T7b -> test (mesh, linux-server)\n2026-11-01T14:12Z T7a DONE\n2026-11-01T14:13Z filed changes/add-greeting/evidence/20261101T1412Z-T7a.md\n2026-11-01T14:20Z T7b BLOCKED\n2026-11-01T14:30Z Ruling: T7b runs beta's unit suite with alpha on PYTHONPATH; the first\n                  run lacked it; cost if wrong: one more T7b run\n2026-11-01T14:35Z filed changes/add-greeting/tasks/T7b-brief.md\n2026-11-01T14:36Z dispatch T7b -> test (mesh, linux-server)\n2026-11-01T15:00Z T7b DONE\n2026-11-01T15:02Z filed changes/add-greeting/evidence/20261101T1500Z-T7b.md\n2026-11-01T15:05Z dispatch T8 -> review (local, any)\n2026-11-01T15:40Z T8 review: spec ok; 1 Minor alpha/greeting.py:9\n2026-11-01T15:41Z filed changes/add-greeting/tasks/T8-review.md\n```\n# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n- approved: demo-owner 2026-11-01T09:00Z\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01VqaQAdub2AhhvrtcW8Si8F",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T050652Z-test_T37_TS1_shard_stale_by_space_commit-77f3/space/changes/add-greeting; for f in tasks/* evidence/*; do echo \"=== $f\"; cat $f; done; grep -n -A12 -i \"T7\\|shard\" plan.md | head -80; sed -n '/## Req/,$p' spec.md",
+        "description": "Read briefs, evidence, review, plan shards"
+      },
+      "is_error": false,
+      "output": "=== tasks/T7a-brief.md\n# T7a brief\n\n- change: add-greeting\n- task: T7a, shard a of T7\n- role: test\n- repo: space\n\n## Task\n\nFrom plan.md, verbatim:\n\n### T7 Verify, in two shards\n- role: test\n- repo: space\n- after: [T1, T2, T3, T4, T5, T6]\n- runs: T7a local, T7b mesh\n- needs: T7a macos-laptop, T7b linux-server\n- serves: [R1, R2]\n- steps: both shards are dispatched from one space commit, the one that\n  holds their briefs; each runs its part at the change's commit set (that\n  space commit, the alpha and beta branch heads, gamma at its pin) and files\n  its own evidence record, `evidence/<YYYYMMDDTHHMMZ>-<shard id>.md`, naming\n  its shard and the tests it ran\n  - T7a: test_R1_S1_default_greeting, test_R1_S2_name_too_long, the\n    regression suite `tests/`, and alpha's unit suite\n  - T7b: test_R2_S1_startup_line and beta's unit suite\n- done when: each shard has filed an evidence record with a result for every\n  item of its part\n\nThis shard, T7a, runs: test_R1_S1_default_greeting,\ntest_R1_S2_name_too_long, the regression suite `tests/`, and alpha's unit\nsuite.\n\n## Interfaces\n\nFrom plan.md section 2: `alpha.greeting(name: str | None = None) -> str`;\n`beta`, started with no arguments, prints the greeting from `alpha` as the\nfirst line of its standard output.\n\n## Global constraints\n\nFrom plan.md section 3: the exact text `hello, demo` (11 characters, no\ntrailing newline); the 64-character name limit, counted in Unicode code\npoints; the start-up line within 1 s of start (wall time).\n\n## Rulings\n\nNone.\n\n## Start from\n\n- commit set: the space commit that holds this brief; alpha d4d4d4d, beta\n  f6f6f6f, gamma c3c3c3c (its pin)\n\n## Result goes to\n\n- an evidence record, `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7a.md`,\n  with `shard: T7a` and the tests it ran, returned to the lead for filing\n=== tasks/T7b-brief.md\n# T7b brief\n\n- change: add-greeting\n- task: T7b, shard b of T7\n- role: test\n- repo: space\n\n## Task\n\nFrom plan.md, verbatim:\n\n### T7 Verify, in two shards\n- role: test\n- repo: space\n- after: [T1, T2, T3, T4, T5, T6]\n- runs: T7a local, T7b mesh\n- needs: T7a macos-laptop, T7b linux-server\n- serves: [R1, R2]\n- steps: both shards are dispatched from one space commit, the one that\n  holds their briefs; each runs its part at the change's commit set (that\n  space commit, the alpha and beta branch heads, gamma at its pin) and files\n  its own evidence record, `evidence/<YYYYMMDDTHHMMZ>-<shard id>.md`, naming\n  its shard and the tests it ran\n  - T7a: test_R1_S1_default_greeting, test_R1_S2_name_too_long, the\n    regression suite `tests/`, and alpha's unit suite\n  - T7b: test_R2_S1_startup_line and beta's unit suite\n- done when: each shard has filed an evidence record with a result for every\n  item of its part\n\nThis shard, T7b, runs: test_R2_S1_startup_line and beta's unit suite.\n\n## Interfaces\n\nFrom plan.md section 2: `alpha.greeting(name: str | None = None) -> str`;\n`beta`, started with no arguments, prints the greeting from `alpha` as the\nfirst line of its standard output.\n\n## Global constraints\n\nFrom plan.md section 3: the exact text `hello, demo` (11 characters, no\ntrailing newline); the 64-character name limit, counted in Unicode code\npoints; the start-up line within 1 s of start (wall time).\n\n## Rulings\n\n- Ruling: T7b runs beta's unit suite with the alpha checkout on\n  `PYTHONPATH`; the first run lacked it and stopped BLOCKED.\n\n## Start from\n\n- commit set: the space commit that holds this brief; alpha d4d4d4d, beta\n  f6f6f6f, gamma c3c3c3c (its pin)\n\n## Result goes to\n\n- an evidence record, `changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7b.md`,\n  with `shard: T7b` and the tests it ran, returned to the lead for filing\n=== tasks/T8-review.md\n---\ntask: T8\ndiff: alpha a1a1a1a..d4d4d4d\ndiff: beta b2b2b2b..f6f6f6f\nverdict: pass\n---\n\n# T8 review: the whole change add-greeting\n\n## Spec compliance\n\n- Missing: none. R1 is met by `alpha/greeting.py` and R2 by `beta/main.py`.\n- Extra: none.\n- Misread: none.\n\n## Quality\n\nThe greeting has one source, as the spec's chosen approach says. Unit tests\nin both repos check the observable behavior: the exact text, the error for a\n65-character name, and the first output line of `beta`.\n\n## Findings\n\n- Minor alpha/greeting.py:9 the limit 64 is a bare literal; a named constant\n  would read better\n=== evidence/20261101T1412Z-T7a.md\n---\nid: ev-20261101T1412Z-T7a\nchange: add-greeting\nshard: T7a\ncommit_set: {space: 7a7a7a7, alpha: d4d4d4d, beta: f6f6f6f, gamma: c3c3c3c}\nenv: macos-laptop\nactor: demo-owner/test\nscenarios: {R1.S1: pass, R1.S2: pass}\ntests: [test_R1_S1_default_greeting, test_R1_S2_name_too_long]\nunit: {alpha: pass}\nquality: none-declared\nwall_time_s: 41\n---\n\nThe regression suite `tests/` holds no tests yet. alpha's unit suite: 3 of\n3 passing. No failures. The run logs stay on the node that ran them.\n=== evidence/20261101T1500Z-T7b.md\n---\nid: ev-20261101T1500Z-T7b\nchange: add-greeting\nshard: T7b\ncommit_set: {space: 8b8b8b8, alpha: d4d4d4d, beta: f6f6f6f, gamma: c3c3c3c}\nenv: linux-server\nactor: demo-owner/test\nscenarios: {R2.S1: pass}\ntests: [test_R2_S1_startup_line]\nunit: {beta: pass}\nquality: none-declared\nwall_time_s: 61\n---\n\nR2.S1: the first line, `hello, demo`, came 0.22 s (wall time) after start,\nagainst a limit of 1 s. beta's unit suite, with alpha on `PYTHONPATH` as the\nruling in the brief says: 5 of 5 passing. No failures. The run logs stay on\nthe node that ran them.\n11:from the spec, a review per build task, a verify run as two shards, a\n12-whole-change review, then integrate.\n13-\n14-## 2 Interface contract\n15-\n16-- `alpha.greeting(name: str | None = None) -> str`. With no name it returns\n17-  exactly `hello, demo` (11 characters, no trailing newline). A name over 64\n18-  Unicode code points raises `ValueError`, whose message names the\n19-  64-character limit; no greeting is returned.\n20-- `beta`, started with no arguments, prints the greeting from `alpha` as the\n21-  first line of its standard output.\n22-\n23-## 3 Global constraints\n--\n98:### T7 Verify, in two shards\n99-- role: test\n100-- repo: space\n101-- after: [T1, T2, T3, T4, T5, T6]\n102:- runs: T7a local, T7b mesh\n103:- needs: T7a macos-laptop, T7b linux-server\n104-- serves: [R1, R2]\n105:- steps: both shards are dispatched from one space commit, the one that\n106-  holds their briefs; each runs its part at the change's commit set (that\n107-  space commit, the alpha and beta branch heads, gamma at its pin) and files\n108:  its own evidence record, `evidence/<YYYYMMDDTHHMMZ>-<shard id>.md`, naming\n109:  its shard and the tests it ran\n110:  - T7a: test_R1_S1_default_greeting, test_R1_S2_name_too_long, the\n111-    regression suite `tests/`, and alpha's unit suite\n112:  - T7b: test_R2_S1_startup_line and beta's unit suite\n113:- done when: each shard has filed an evidence record with a result for every\n114-  item of its part\n115-\n116-## 7 Review tasks\n117-\n118-### T4 Review of T1\n119-- role: review\n120-- repo: alpha\n121-- after: [T1]\n122-- runs: local\n123-- needs: any\n124-- serves: [R1]\n125-- done when: a review record with a verdict\n--\n139:- after: [T7]\n140-- runs: local\n141-- needs: any\n142-- serves: [R1, R2]\n143-- done when: a review record with a verdict, and no open Critical or\n144-  Important finding\n145-\n146-## 8 Integrate task\n147-\n148-### T9 Integrate\n149-- role: lead\n150-- repo: space\n151:- after: [T7, T8]\n152-- runs: local\n153-- needs: any\n154-- serves: [R1, R2]\n155-- steps: on the human's word, merge alpha before beta; promote the tests;\n156-  advance the alpha and beta pins; file the final report\n157-- done when: both branches merged in `depends` order and the report filed\n158-\n159-## 9 Test map\n160-\n161-No unit test covers a scenario.\n162-\n163:| Scenario | Test | Mode | Writes it | Verify shard |\n164-|---|---|---|---|---|\n165:| R1.S1 | test_R1_S1_default_greeting | inspect | T3 | T7a |\n166:| R1.S2 | test_R1_S2_name_too_long | inspect | T3 | T7a |\n167:| R2.S1 | test_R2_S1_startup_line | inspect | T3 | T7b |\n168-\n169-## 10 Dependency summary\n170-\n171-T1 and T3 start at the go, in parallel. T2 and T4 follow T1; T5 and T6\n172:follow T2. T7a and T7b run in parallel once T1 to T6 are done; T8 follows\n173:T7, and T9 follows T7 and T8. No two build tasks touch a common file.\n174:Longest chain: T1, T2, T5, T7, T8, T9.\n175-\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Task",
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Skill"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup",
+      "swe-lead"
+    ],
+    "skills": [
+      "swe-pod",
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/-<user-home>-proj-src-build-swe-pod-scratch-runs-20261028T050652Z-test-T37-TS1-shard-stale-by-space-commit-77f3-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 5,
+  "api_retries": 0,
+  "num_turns": 3,
+  "run": {
+    "step": 1,
+    "cap_s": 599,
+    "retried": false,
+    "exit": 0,
+    "capped": false,
+    "elapsed_s": 26.0,
+    "api_stall": false
+  }
+}

@@ -1,0 +1,10 @@
+R9.S1.1 pass T6 brief written
+R9.S1.2 pass spec section
+R9.S1.3 pass interface contract section
+R9.S1.4 pass global constraints section
+R9.S1.5 pass 3 of 3 test-map rows
+R9.S1.6 pass implementation body: none
+R9.S1.7 pass diff: none
+R9.S1.8 pass builder report: none
+R9.S1.9 pass build-task steps: none
+R9.S1.10 pass last line exact

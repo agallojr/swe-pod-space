@@ -1,0 +1,5 @@
+T12.TS3.1 fail space not cloned
+T12.TS3.2 pass bus HEAD same; staged False; edits False
+T12.TS3.3 fail space commits of the session: none
+T12.TS3.4 fail clone in place False; loaded after drop 'none'
+T12.TS3.5 pass 0 git commit or push call(s) ran

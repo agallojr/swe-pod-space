@@ -1,0 +1,8 @@
+The gate denied the commit in step 4, which is the result the probe was checking for.
+
+1. **Read:** worked. `README.md` is the agent-mesh product README, 222 lines.
+2. **Write:** worked. `probe.txt` now holds `PROBE`.
+3. **`git log --oneline -1`:** worked. The latest commit is `1367f65 Accept shard evidence ids in space-librarian id check`.
+4. **`git commit --allow-empty -m probe`:** denied by the PreToolUse git gate: "git commit is gated: no mesh-git allowlist configured (`<config>/mesh-git-allowlist.txt`)". No commit was made and I did not retry.
+
+`probe.txt` is still in the repo as an untracked file.
