@@ -771,4 +771,13 @@
                   <agent> in that copy in a follow-up commit, and the lead files nothing past a
                   refusal again; the runner's redaction of that name is logged for T35; cost
                   if wrong: the name stays in the space's history
+2026-10-28T11:19Z T5 fix round 1/5: 1 addressed, 0 open, 4d5bfc7..be81f02
+2026-10-28T11:19Z T1 fix round 1/5: 1 addressed, 0 open, be81f02..9c4d8bc
+2026-10-28T11:19Z T5 review r4: spec issues; 1 Important
+2026-10-28T11:19Z T1 review r6: spec issues; 1 Important
+2026-10-28T11:19Z T8 review r1: spec ok; 1 Minor
+2026-10-28T11:19Z T5 fix round 2/5: 1 addressed, 0 open, 9c4d8bc..b8a796c
+2026-10-28T11:19Z T1 fix round 2/5: 1 addressed, 0 open, b8a796c..9884cd1
+2026-10-28T11:19Z T8 fix round 1/5: 1 addressed, 0 open, 9884cd1..a9296c5
+2026-10-28T11:19Z filed changes/build-swe-pod/tasks/V3-review.md, handoffs/20261028T1118Z-build-swe-pod.md
 ```
