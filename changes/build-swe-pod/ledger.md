@@ -323,4 +323,9 @@
 2026-10-28T02:27Z T14.TS1 -> test
 2026-10-28T02:27Z T14.TS2 -> test
 2026-10-28T02:27Z T14.TS3 -> test
+2026-10-28T02:30Z operator decision: T5.TS4, T12.TS4 and T13.TS3 are dropped, not proposed
+                  as scenarios, as the lead recommended
+2026-10-28T02:30Z T5.TS4 outcome: dropped
+2026-10-28T02:30Z T12.TS4 outcome: dropped
+2026-10-28T02:30Z T13.TS3 outcome: dropped
 ```
