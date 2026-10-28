@@ -333,4 +333,12 @@
 2026-10-28T02:36Z T37.TS1 -> test
 2026-10-28T02:36Z T37.TS2 -> test
 2026-10-28T02:36Z T37.TS3 -> test
+2026-10-28T02:49Z operator directive: be permissive on time
+2026-10-28T02:49Z Ruling: on that directive, T18 declines no suggestion for its run time
+                  and gives each new test the cap_s it needs, at most 1500 s as the
+                  filed tests have; at verify, each run is capped at its own cap_s
+                  rather than 600 s, and each shard at 180 min rather than 150 min,
+                  inside the overlay's limits for agent test and verify runs (about
+                  3 h per run, about 6 h in all); the heavy ask still comes before
+                  either shard; cost if wrong: longer shards
 ```
