@@ -604,4 +604,11 @@
                   cost if wrong: a plan text that lags its deliverables
 2026-10-28T06:43Z filed changes/build-swe-pod/tasks/V1-review-r1.md
 2026-10-28T06:43Z dispatch T6, T1, T7 -> build (local, any), base swe-pod 3280728: fix round 4
+2026-10-28T06:44Z T18 DONE_WITH_CONCERNS: 13 test and fixture findings from verify fixed, 59
+                  tests and 3 overlay briefs changed; re-judged offline, the changed checks
+                  of I8, R11.S1, R14.S1, R16.S1, R22.S1, T9.TS2, T10.TS6 and T11.TS6 pass;
+                  R17.S1, R23.S1, R23.S2, T3.TS3 and T13.TS1 wait for the re-run
+2026-10-28T06:44Z T18 at base: all 59 changed tests fail for their stated reasons (50 on an
+                  absent deliverable, no agent started; 9 inspect), 0 pass
+2026-10-28T06:44Z filed changes/build-swe-pod/tests/ (T18 fixes), evidence/20261028T0640Z-T18-report.md
 ```
