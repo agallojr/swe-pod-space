@@ -541,4 +541,12 @@
                   the runner's redaction gaps; cost if wrong: none, logs only
 2026-10-28T05:42Z filed changes/build-swe-pod/evidence/20261028T0414Z-T19a.md, its -runs/ and
                   its -report.md
+2026-10-28T05:49Z T19b DONE_WITH_CONCERNS: ev-20261028T0418Z-T19b, linux-server, at space 33c829f,
+                  swe-pod 1cecea0, agent-mesh 1367f65; smoke 8 of 8; 37 pass, 10 fail, 0
+                  not-run of 47; wall 4521 s; the result's 65 files match their sha256
+2026-10-28T05:49Z T19b R7.S1 live: Then items 1 to 3, 5 and 6 pass; item 4 fails, because the
+                  lead's task Context named the role definition through a checkout command,
+                  not as the contract section 2.3 line; a lead error, fixed at the re-post
+2026-10-28T05:49Z filed changes/build-swe-pod/evidence/20261028T0418Z-T19b.md, its -runs/ and
+                  its -report.md, from the remote node's result
 ```
