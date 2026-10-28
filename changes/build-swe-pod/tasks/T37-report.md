@@ -209,3 +209,84 @@ swe-pod has no unit suite: none present.
   records are told apart by their `id: ev-` front matter, not by file
   name, and status-format "As of" takes the UTC at the start of every
   record's name in `evidence/`.
+
+## Fix round 1
+
+Review: `changes/build-swe-pod/tasks/T37-review.md`, verdict fix. I checked
+each of the three Important findings in my touches against the code at
+882cd09. All three held, and I fixed all three. The fourth Important
+finding, the space-librarian id check, is in agent-mesh and routed
+separately. I left the Minor findings for the ledger.
+
+Fix range: swe-pod 882cd09..1cecea0. That is one commit, 1cecea0, with
+trailers `Change: build-swe-pod` and `Task: T37`, committed by pathspec
+and pushed. The merge-base check exited 0, so there was no rebase.
+
+### Findings addressed
+- **A** (PROCESS.md §11, swe-lead "Shards", SKILL.md 1.7): addressed, per
+  the lead's ruling. The shards' space commit is now the commit that files
+  the last of the shard briefs and dispatch lines.
+  - The lead files the ledger with the shard dispatch lines first, then
+    the briefs. The librarian commits each record alone, so the commit
+    that files the last brief is that commit.
+  - The skill's existing lookup, the newest commit that changed a shard
+    brief, still finds it, so a later re-dispatch line does not move it.
+  - The lead gives that commit to every shard at dispatch, on its own line
+    in the local prompt or the mesh task's Context, and starts no shard
+    before it exists.
+  - swe-test verify step 1 now checks out the space at that commit and
+    names it as `space:` in the record.
+  - "One space commit" is gone from every shard rule.
+- **B** (PROCESS.md §7, swe-lead "Sharded verify"): addressed. Both now
+  state the skill's condition. A shard's latest record is at the current
+  commit set only when three things hold: its repo shas are current, its
+  space sha is the shards' space commit, and neither `changes/<id>/tests/`
+  nor `tests/` has changed since. Otherwise it is out of date. Green
+  together now reads "is at the current commit set". PROCESS.md §7,
+  swe-lead and SKILL.md 1.7 now give the same rule.
+- **C** (PROCESS.md §7, swe-lead "Sharded verify", SKILL.md 1.7): addressed.
+  The re-run rule now has three cases.
+  - If the commit set has moved, through a branch head or the tests, every
+    shard's brief is written again and every shard runs at the new shards'
+    space commit. Each brief's `## Start from` names the commit set under
+    test as far as it is known when written: each head by sha, and the
+    newest space commit that changed `changes/<id>/tests/` or `tests/`, by
+    sha. So a re-brief always changes the text and makes a new commit.
+    This rule is in PROCESS.md §11 and swe-lead "Shards" step 1.
+  - If the commit set has not moved, a shard runs again from its brief at
+    the same shards' space commit. That covers a record at another commit
+    set, and a run that failed for a flaky or environmental reason.
+  - A shard that failed on the code or on a test runs again only once the
+    fix lands. The fix moves the commit set, so every shard runs again.
+
+  With this rule, `go` no longer loops on `next: re-run`: after a test
+  fix, the re-briefed shards run at a commit after the test change.
+
+### Check output
+- Fix checks: a scratch script, removed afterwards, with 30 phrase checks
+  over PROCESS.md §7 and §11, swe-lead "Shards" and "Sharded verify",
+  SKILL.md 1.7 and swe-test verify step 1. It checked three things:
+  - for A, no "one space commit", "shards' space commit" present, and
+    "last brief" and "at dispatch" in the dispatch rules;
+  - for B, the tests condition in §7, the lead and the skill;
+  - for C, "through a branch head or the tests" and "flaky or
+    environmental" present, "no branch head has moved" absent, and
+    "commit set under test" in the brief rules.
+  - red, at 882cd09: `RESULT: FAIL (29)` (29 of 30; swe-test already
+    lacked "one space commit").
+  - green, at 1cecea0: `RESULT: PASS` (30 of 30).
+- Done-when (1), re-run at 1cecea0 with the grep equivalent above. The
+  counts are for §4, §7 and §11 `shard`, evidence `shard:` and `tests:`,
+  skill `shard:` and `tests:`, and PROCESS.md `R24`: `11 25 11 1 1 4 2 0`.
+  That is a pass. PROCESS.md lines 1 and 3 and its 15 level-2 headings are
+  unchanged, and no touched file has trailing whitespace.
+- Standard close: shareability: 0 hits. The SPEC.md and spec-process.*
+  diff against 74d23f1 is untouched by this commit.
+- Unit suite: swe-pod has no unit suite, none present.
+
+### Pushback
+None. One note: PROCESS.md §8 step 5 and swe-lead integrate step 5 still
+say "in one space commit" for the integrate update. That text predates
+T37, is not a shard rule, and the review did not raise it. The same
+librarian one-commit-per-record limit may apply there, so the lead may
+want to note it for the whole-change review.
