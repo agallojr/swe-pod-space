@@ -264,10 +264,14 @@ denied rather than run, while a read of a file under `skills/mesh-post/`
 (such as `cat .../skills/mesh-post/SKILL.md`) works. In agent mode the
 preamble makes the librarian's commit step a desk step in the same way, with
 the same rule for the final reply; the git gate denies its commits
-regardless. The preamble defines that step as every git command of the
-librarian's filing procedure, from the first to the last, and names no kinds
-of command: an earlier list of kinds (add, commit, fetch, rebase, push) was
-read as complete, and the closing fetch and ancestor check were left out.
+regardless. The preamble asks the agent to carry the step out as in a real
+run, printing each git command at the point where it would run it, and to
+carry it on to its end, past the push to any confirmation that follows it.
+It names no kinds of command: an earlier list of kinds (add, commit, fetch,
+rebase, push) was read as complete, and the closing fetch and ancestor check
+were left out. Nor does it ask for every command of the procedure, none left
+out: the model API's safeguards stopped most runs that carried that wording,
+reading it as an attempt to extract the agent's instructions.
 
 **Caps.** Every test has `cap_s`: its agent steps share it, and its setup
 and check scripts are each held to it. An agent run ends at the stream's

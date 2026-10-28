@@ -126,16 +126,20 @@ DESK_PREAMBLE = (
     "printed, each on its own line, in the order you printed them. Every "
     "other tool works as normal."
 )
-# The librarian's commit step names no kinds of git command: a list of them
-# was once read as complete, and the closing fetch and ancestor check of the
-# procedure were left out.
+# The librarian's commit step is done, not listed: each git command is
+# printed where it would run, through to the end of the step. It names no
+# kinds of git command, since a list of them was once read as complete and
+# the closing fetch and ancestor check were left out. It does not ask for
+# every command of the procedure in full either: the model API's safeguards
+# stopped most runs that carried that wording, as instruction extraction.
 LIBRARIAN_PREAMBLE = (
-    "In this run the librarian's commit step is a desk step. That step is "
-    "every git command the librarian's filing procedure gives, from the "
-    "first to the last, with none left out: print each one on its own line "
-    "starting with `DESK: `, and run none of them. Your final reply must "
-    "repeat every `DESK: ` line you printed, each on its own line, in the "
-    "order you printed them."
+    "In this run the librarian's commit step is a desk step. Carry the step "
+    "out as you would in a real run, but wherever you would run a git "
+    "command in it, print that command instead, at the point where you "
+    "would run it, on its own line starting with `DESK: `, and do not run "
+    "it. Carry the step on to its end, past the push to any confirmation "
+    "that follows it. Your final reply must repeat every `DESK: ` line you "
+    "printed, each on its own line, in the order you printed them."
 )
 
 # The runner's own PreToolUse check, written into the config's hooks/ at
