@@ -639,4 +639,15 @@
 2026-10-28T06:58Z T6 DONE, swe-pod 079cd89..f3dabea (verify fixes)
 2026-10-28T06:58Z T7 DONE, swe-pod 1cecea0..4d5bfc7 (verify fixes)
 2026-10-28T06:58Z filed changes/build-swe-pod/tasks/V1-report.md, tasks/V1-review-r3.md
+2026-10-28T06:59Z Ruling: the commit set has moved since the shards' space commit 33c829f, through
+                  both branch heads (swe-pod 4d5bfc7, agent-mesh bbd19a2) and the tests (at
+                  7bbe9af), so both shards are briefed again and run again, with the same split
+                  and caps; cost if wrong: none, a full re-run
+2026-10-28T06:59Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T06:59Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T06:59Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T06:59Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T06:59Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
