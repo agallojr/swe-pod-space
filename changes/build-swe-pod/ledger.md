@@ -835,4 +835,15 @@
                   sha256
 2026-10-28T12:26Z filed changes/build-swe-pod/evidence/20261028T1137Z-T19b.md, its -runs/ and
                   its -report.md, from the remote node's result
+2026-10-28T12:28Z T19a BLOCKED: stopped by the lead after its round 5 main pass (44 results, 21
+                  not passing on provider safeguard stops), during the retries; no record
+                  written
+2026-10-28T12:28Z Ruling: the round 5 safeguard stops come from the runner, not the provider
+                  alone: 27 of the 38 macos-laptop runs whose prompt carries the round 4
+                  librarian desk-step wording (print every command of the filing procedure,
+                  none left out) were stopped, and 0 of the 24 runs without it; retries would
+                  not help, so the shard was stopped; the wording goes back to the test role as
+                  T41, proven by live runs before both shards run again, round 6; the 03:23Z
+                  and 12:04Z rulings stand; cost if wrong: one more round
+2026-10-28T12:28Z dispatch T41 -> test (local, any)
 ```
