@@ -1,0 +1,61 @@
+===== meta.json
+{
+  "test": "test_T1_TS2_only_regression_suite_moved",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+Merge add-greeting.
+Checkouts on this node: space <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/export/swe-pod; alpha <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/repos/alpha; beta <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/repos/beta; gamma <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/repos/gamma; mesh bus <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+Both pass. Filing commands for each (desk run, same sequence as before):
+
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo fetch origin**I haven't merged add-greeting.** The only verify run is out of date, so a merge now would rest on a run from before the other repos changed.
+
+**Why it's out of date.** Verify ran on 2026-11-01 (ev-20261101T1230Z). The next day add-farewell was merged, which changed two things after that run:
+- **gamma pin:** moved from c3c3c3c to f6f6f6f. The run used c3c3c3c.
+- **Shared regression tests in `tests/`:** the run says this folder was empty. It now holds `test_R1_S1_default_farewell.md`, which add-greeting has never been tested against.
+
+**No rebase is needed.** The alpha and beta pins are still a1a1a1a and b2b2b2b, the bases of the two branches (alpha head d4d4d4d, beta head e5e5e5e). Only verify has to run again. I recorded this decision as a ruling in the ledger.
+
+**What I did (desk run: no git or mesh command was run):**
+- Wrote the re-verify brief, `<scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md`. It covers alpha d4d4d4d, beta e5e5e5e, gamma f6f6f6f, the space's current main, and the farewell regression test.
+- Added three ledger lines: the ruling, `filed`, and `dispatch T7 -> test (mesh, any)`. The records passed the librarian's checks; the filing commands are printed as `DESK:` lines above.
+- Printed the post that re-dispatches T7 to the mesh test role. It isn't a heavy check: each test expects 1 to 2 s and the last run took 41 s.
+- Regenerated `<scratch>/runs/20261028T050213Z-test_T1_TS2_only_regression_suite_moved-ae08/bus/spaces/proj-demo/STATUS.md` and printed its filing commands.
+
+**Two problems in the records:**
+1. **This node's clock is behind the records.** It reads 2026-10-28T05:02Z, but the existing ledger lines go up to 2026-11-02. My new lines are therefore dated before the T7 DONE line they follow. Because the status reader orders lines by time, STATUS.md reads T7 as done and wrongly gives the merge task (T9) as next. The real next step is the T7 re-verify. The ledger is append-only, so I left the lines as they are; the clock needs fixing before the next entries.
+2. **The status reader can't see the farewell test.** It counts a shared regression test only through the archived change's plan, and `changes/archive/2026-11-02-add-farewell/` has no `plan.md`. So STATUS.md calls the old evidence "green, stale". The new run must still report a result for add-farewell/R1.S1, and the T7 brief asks for it.
+
+**Still open:** two minor review findings (beta/__main__.py line 3 should say why it adds the alpha checkout to the path) and no Critical or Important ones. Both will be listed as deferred in the final report.
+
+**Next:** once T7 comes back green at the current commits, I'll write the final report and ask how you want each repo merged: merge and delete the branch, open a pull request, or keep the branch. alpha merges before beta.
+
+Should I keep the ledger lines dated by this node's clock, or wait until the clock is corrected before adding more?
+===== stderr-1.txt (empty)
+===== check.out
+T1.TS2.1 pass 0 merge(s) into a code repo's main
+T1.TS2.2 pass pins alpha a1a1a1a, beta b2b2b2b, gamma f6f6f6f; integrated False; archived False
+T1.TS2.3 pass re-verify in hand: 1 dispatch line(s), 1 mesh post(s), 0 subagent(s)

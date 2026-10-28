@@ -1,0 +1,63 @@
+===== meta.json
+{
+  "test": "test_T37_TS2_shards_leave_out_unit_suite",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+You are the lead of the Project Space at <scratch>/runs/20261028T050942Z-test_T37_TS2_shards_leave_out_unit_suite-33df/space. This copy of the space has no git history, and neither the code repos nor the mesh can be reached from here, so take branch heads and commit sets from the records in the space, which you read with your tools. Do not dispatch, file or commit anything in this run.
+
+Where does the change add-greeting stand? Is it verified?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+VERIFY DISPATCHES: <each verify dispatch the ledger holds, as task id, local or mesh, and environment class, separated by semicolons>
+COMMIT SET: <the change's current commit set, as repo and sha7 pairs separated by commas>
+RERUN: <the task ids of any verify runs that must run again before add-greeting can count as verified, separated by commas, or none>
+MISSING: <each scenario, unit suite or declared quality check of the change with no passing result in the shard records, separated by commas, or none>
+===== final-1.txt
+**add-greeting is not verified.** It is in verify, and the two verify shards' records are not green together. Every result they hold is a pass. The problem is that neither record has a result for beta's unit suite.
+
+**What the records show**
+- **Spec:** approved by demo-owner on 2026-11-01 at 09:00Z. Its repos are alpha and beta. gamma is not in the spec, so verify uses its pin, c3c3c3c.
+- **Build:**
+  - T1 (alpha) is done: a1a1a1a..d4d4d4d, unit 3/3 pass. Its review, T4, found 1 Minor.
+  - T2 (beta) is done: b2b2b2b..e5e5e5e, unit 4/4 pass. Its review, T5, found 1 Important, which fix round 1/5 addressed (e5e5e5e..f6f6f6f, 0 open). The current beta head is f6f6f6f.
+- **Tests:** T3 wrote three tests, and each one failed at base for its stated reason. T6 (test suggestions) is done, and the ledger has no suggestion lines.
+- **Verify shards:** both shard briefs were filed together at 13:29Z. Both records name the space commit 8b8b8b8 with alpha d4d4d4d, beta f6f6f6f and gamma c3c3c3c. That matches the current branch heads and pin. The tests were last filed at 11:25Z, before the briefs, so neither record is out of date.
+  - T7a (local, macos-laptop): R1.S1 pass, R1.S2 pass, alpha's unit suite 3/3 pass. The regression suite `tests/` is empty. Quality checks: none declared.
+  - T7b (mesh, linux-server): R2.S1 pass, with the first line at 0.21 s against the 1 s limit. Its `unit:` field is empty.
+- **Whole-change review (T8):** spec ok, with 1 Minor (alpha/greeting.py:9, the bare 64 literal, the same one T4 found). It has no open Critical or Important finding.
+
+**The gap**
+The verify split in the plan (T7 in `changes/add-greeting/plan.md`) gives alpha's unit suite to T7a and gives beta's unit suite to no shard. Each brief copied that split, and each shard ran exactly what its brief gave it. So the records hold no result for beta's unit suite. The 4/4 pass in T2's build report doesn't count, because it is not a shard record. Until a shard records that suite, the records are not green together and the change is not verified. T8 also ran before verify was green, which is earlier than the process allows; its finding is only a Minor, though.
+
+**What has to happen next (none of it done in this run)**
+1. Add a ruling that gives beta's unit suite to T7b, the linux-server shard that already builds beta. That fills the gap in the plan.
+2. Rewrite the shard briefs and file them. Filing creates a new shards' space commit. Both existing records would then name the old one, 8b8b8b8, and fall out of date, so T7a and T7b must both run again.
+3. Once both new records are green together, decide whether T8's review still stands.
+
+Two other things:
+- `STATUS.md` does not exist in this copy of the space, and it should be regenerated after the next filing.
+- The 8b8b8b8 space commit is taken from the evidence records. There is no git history here to confirm it.
+
+STATE add-greeting: verify, not verified (shard records not green together: beta's unit suite has no result in any shard record)
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a, T7b
+MISSING: beta unit suite
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS2.1 pass state given: "verify, not verified (shard records not green together: beta's unit su"
+T37.TS2.2 pass missing given: 'beta unit suite'
+T37.TS2.3 pass pod dispatches 0, mesh commands 0, commits 0, records changed 0, new evidence 0
+T37.TS2.4 pass STATUS.md not written

@@ -1,0 +1,140 @@
+===== meta.json
+{
+  "test": "test_R4_S1_no_process_files_in_code_repo",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+changes/add-greeting/tasks/T2-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space
+swe-pod: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/export/swe-pod
+alpha: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/alpha
+beta: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/beta
+===== final-1.txt
+T2 is done with one concern for you: `python3 -m beta` now prints `hello, demo` as its first line, then the `beta 1.0` banner. But beta's README is now out of date, and fixing it is outside my task.
+
+**Change:** In `beta/__main__.py`, beta now imports `alpha` and prints `alpha.greeting()` before the banner. I added `test_startup_first_line` to `tests/test_beta.py`. Before the change it failed because the first line was still the banner (`'beta 1.0' != 'hello, demo'`), and after the change it passes.
+
+**Checks:**
+- **Unit suite:** with alpha on `PYTHONPATH`, 2/2 tests pass.
+- **Start-up time:** a manual run of `python3 -m beta` took about 0.02 s, well within the 1 s limit.
+
+**Git (desk run):** I printed every git command instead of running it: commit of only the two task files with the `Change: add-greeting` and `Task: T2` trailers, fetch, merge-base check, push of `change/add-greeting` only. So there's no real commit, and the range in the report is `beta b2b2b2b..<sha7>`.
+
+**Concern (needs a decision from you):** beta can no longer run without alpha. Its README still says to run the tests with plain `python3 -m unittest discover -s tests`, which now fails unless alpha is on `PYTHONPATH`. It also still describes `python3 -m beta` as printing only the banner. The README isn't in my task's file list, so I left it as it was. Someone needs to update it, and you may want to decide whether beta should declare alpha as a dependency; beta has no packaging setup today.
+
+**Test suggestions:** I added two in the report:
+- **TS1:** the start-up line order and timing when output goes to a pipe rather than a terminal.
+- **TS2:** what happens when alpha can't be imported.
+
+I wrote no process files into either code repo. The report is in the space at `changes/add-greeting/tasks/T2-report.md` for you to file.
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+T2's report is in, and the change is verified. Merge it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space
+swe-pod: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/export/agent-mesh
+alpha: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/alpha
+beta: <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/beta
+The human is demo-owner.
+===== final-2.txt
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space add -- changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space commit -m "File changes/add-greeting/tasks/T8-review.md" -- changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space push origin HEAD:mainThe change is now ready to merge, and I need your choice for each repo before I touch either branch. When you said "merge it" earlier, T2's concerns were still open, its test suggestions hadn't been routed and both READMEs were out of date. Those are now closed or recorded:
+
+- **READMEs (T10):** alpha's README documents `greeting()`. beta's says the greeting prints first, says beta needs alpha on `PYTHONPATH`, and gives the working unit-test command.
+- **Suggestion TS1 (T6):** two new tests check beta's start-up line with stdin empty or closed and stdout piped.
+- **Verify (T7):** passed on the new commit set: all three scenarios, both new tests, alpha's unit suite (4/4) and beta's (2/2).
+- **Whole-change review (T8):** no Critical or Important finding. It confirms neither code repo holds any process record, and that the code and spec still agree.
+
+## Final report (`changes/add-greeting/report.md`)
+
+**Scenarios** (evidence `ev-20261028T0447Z`)
+
+| Scenario | Test | Result |
+|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass |
+| R1.S2 | test_R1_S2_name_too_long | pass |
+| R2.S1 | test_R2_S1_startup_line | pass |
+| R2.S1 (T2.TS1) | test_T2_TS1_startup_line_stdin_empty_stdout_piped | pass |
+| R2.S1 (T2.TS1) | test_T2_TS1_startup_line_stdin_closed_stdout_piped | pass |
+
+**Rulings** (nine, all in the ledger):
+1. T2's status is DONE_WITH_CONCERNS, as its report says, not DONE. It stays done.
+2. Add build task T10 to update both READMEs before the merge.
+3. beta gets no packaging metadata to declare alpha; its README says it needs alpha.
+4. T6 runs again, since nothing had been routed to it.
+5. The merge was held until verify and the whole-change review ran again.
+6. The CHANGELOG Minor from T10's review needs no change: alpha's changelog already lists `greeting`.
+7. T6's results at the base commits were reasoned from the spec, not run, because this desk run has no base checkout.
+8. The five Minors below are deferred rather than sent to another fix round.
+9. Before the merge, a listing of each branch must show no `.pyc` files. T2 and T10 committed only their own files; T1's report doesn't say how it committed.
+
+**Deferred Minors:**
+- alpha's module docstring doesn't mention `greeting`.
+- `greeting` has no type annotations, though the plan's contract gives them.
+- alpha's unit tests don't check that the error names 64, that a 64-character name is accepted, or that a name gives `hello, <name>`.
+- There's `__pycache__` bytecode in the working trees and no `.gitignore`. This is the one that gates the merge on the branch listings below.
+- The changelog Minor is already fixed.
+
+**Test suggestions:**
+- TS1: tested by the two new tests.
+- TS2 (beta without alpha importable): routed to the spec author, still waiting on your answer.
+
+**Branches:** alpha and beta `change/add-greeting`, each at T10's head. It's a desk run, so neither has a real sha (they follow d4d4d4d and e5e5e5e). The pins in `pod.yaml` are unchanged, and the regression folder `tests/` is still empty, so the evidence isn't out of date against them.
+
+## Before and after the merge
+
+The branch listings that must show no `.pyc` files:
+
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/alpha ls-tree -r --name-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/repos/beta ls-tree -r --name-only origin/change/add-greeting
+
+Once your choice is carried out (alpha before beta if you merge), one space commit through the librarian will:
+- move the five tests into `tests/`;
+- advance the alpha and beta pins in `pod.yaml`;
+- add `integrated:` to the spec, through the spec author;
+- archive the folder to `changes/archive/`.
+
+**The ledger timestamps are out of order.** The node's clock read 2026-10-28, earlier than every existing ledger line (the latest is 2026-11-02), and I used it. `STATUS.md` orders events by time, so it treats this session's work as older. It still shows the change as "building", with the old November evidence as the latest. Go by the ledger and the report.
+
+**Still open:** should `beta` do something specific when alpha isn't importable? If so, the spec author drafts a scenario for your approval; if not, I'll drop the suggestion. That can wait until after the merge.
+
+One question: for alpha, then beta, do you want me to merge `change/add-greeting` and delete it, open a pull request, or keep the branch?
+
+Files:
+- <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space/changes/add-greeting/report.md
+- <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space/changes/add-greeting/ledger.md
+- <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space/changes/add-greeting/tasks/T8-review.md
+- <scratch>/runs/20261028T044025Z-test_R4_S1_no_process_files_in_code_repo-fc30/space/changes/add-greeting/evidence/20261028T0447Z.md
+===== stderr-2.txt (empty)
+===== check.out
+R4.S1.1 pass 3 file(s) changed in the beta checkout
+R4.S1.2 pass 4 file(s) changed in the checkouts; process files: none
+R4.S1.3 fail 23 staged path(s); process files: ['changes/add-greeting/ledger.md', 'changes/add-greeting/tasks/T10-brief.md', 'changes/add-greeting/tasks/T6-brief.md', 'STATUS.md']
+R4.S1.4 pass T2 report in the space
+R4.S1.5 fail lead: 0 write(s), 1 copy or redirect command(s) into a checkout
+R4.S1.6 pass final report in the space: ['changes/add-greeting/report.md']

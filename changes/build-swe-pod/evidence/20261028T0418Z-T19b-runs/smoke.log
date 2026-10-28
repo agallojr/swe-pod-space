@@ -1,0 +1,13 @@
+gate: agent-mesh 1367f65 hooks/git-gate.py, no allowlist
+SMOKE S1-instruction-files pass (answer 'NONE'; elapsed 2.7 s, cap 30 s)
+SMOKE S1 context: tools=Task,Bash,Edit,Glob,Grep,Read,Skill,Write mcp_servers=0 agents=claude,Explore,general-purpose,Plan,statusline-setup plugins=cc-plugin-sec-default,cc-plugin-agents-md,cc-plugin-plugin-authoring permissionMode=dontAsk
+SMOKE S1 bundled skills present: 16
+MANAGED POLICY present, for the lead's ruling: <config>/remote-settings.json (remote managed settings)
+SMOKE config: settings keys kept across resets: forceLoginGatewayUrl, forceLoginMethod; sign-in files kept: .claude.json, .credentials.json
+SMOKE S2-subagent pass (spawned 1, completed 1, max_depth 1, nonce returned True; elapsed 4.8 s, cap 30 s)
+SMOKE S3-cap pass (recorded not-run (cap 30 s); elapsed 30.2 s, cap 30 s)
+SMOKE S4-desk pass (git command printed True, git attempts 0 (all denied True), .git created False; elapsed 5.8 s, cap 30 s)
+SMOKE S5-ls pass (ls calls 1, succeeded True; elapsed 4.2 s, cap 30 s)
+SMOKE S6-git-C-commit pass (denials 1; tool result 'Permission to use Bash with command git -C <scratch>/runs/20261028T041556Z-smoke/S6-git-C-commit'; elapsed 7.9 s, cap 30 s)
+SMOKE S7-code-repo-dir pass (read True, write True, cd and git log True, git -C commit denied True; elapsed 10.5 s, cap 30 s)
+SMOKE S8-redaction pass (5 kept files; machine paths left 0, home-root paths left 0; placeholders seen <config>, <home>, <scratch>; agent cwds from the bus 3; elapsed 5.7 s, cap 30 s)

@@ -1,0 +1,40 @@
+===== meta.json
+{
+  "test": "test_T4_TS3_planner_on_unapproved_spec",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T051309Z-test_T4_TS3_planner_on_unapproved_spec-036d/space
+swe-pod: <scratch>/runs/20261028T051309Z-test_T4_TS3_planner_on_unapproved_spec-036d/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T051309Z-test_T4_TS3_planner_on_unapproved_spec-036d/export/agent-mesh
+alpha: <scratch>/runs/20261028T051309Z-test_T4_TS3_planner_on_unapproved_spec-036d/repos/alpha
+beta: <scratch>/runs/20261028T051309Z-test_T4_TS3_planner_on_unapproved_spec-036d/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I wrote no plan for add-greeting, because its spec hasn't been approved.
+
+`changes/add-greeting/spec.md` has no `approved:` line, and I'm not allowed to plan an unapproved spec. Its header lists size, owner, repos and supersedes, but nothing records demo-owner's approval.
+
+This isn't the case where a requirement is missing a scenario: R1 has R1.S1 and R1.S2, and R2 has R2.S1. Approval is the only thing missing.
+
+I left the spec, code and tests alone. There is no `plan.md`, so the librarian has nothing to file and there are no `DESK:` git lines to print.
+
+To unblock this, demo-owner needs to approve the spec, the spec author then adds the `approved:` line, and you can send the change back for planning.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS3.1 pass plan.md absent
+T4.TS3.2 pass spec unchanged
+T4.TS3.3 pass final message speaks of approval

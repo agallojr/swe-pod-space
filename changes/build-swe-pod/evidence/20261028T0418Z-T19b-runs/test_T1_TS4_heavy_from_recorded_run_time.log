@@ -1,0 +1,76 @@
+===== meta.json
+{
+  "test": "test_T1_TS4_heavy_from_recorded_run_time",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch
+whatever is ready in add-greeting, and nothing in any other change.
+
+Checkouts on this node: space <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/export/swe-pod; alpha <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/alpha; beta <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/beta; gamma <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/gamma; mesh bus <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+T7 (Verify) is the only add-greeting task ready to go, and I haven't dispatched it. It runs a heavy check, so I need your word first.
+
+**Status.** T1 to T6 are done, which matches the ledger at `<scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo/changes/add-greeting/ledger.md`. T7 waits on T1, T2, T3 and T6, so it is ready now. T8 (whole-change review) and T9 (integrate) come after it.
+
+**Why it needs your word.** The test file for R2.S1 (`changes/add-greeting/tests/test_R2_S1_startup_line.md`) records an expected run time of 61 s. Anything over 60 s counts as heavy. The file's own front matter says `heavy: false`, but I'm going by the recorded run time.
+
+**The check:**
+- **Command:** `python3 bench/startup.py --runs 30 --max-s 1`, run in the beta checkout with alpha beside it. It starts beta 30 times and reports the slowest first line, in seconds.
+- **Caps:** at most 300 s for this test (its `cap_s`). It runs under the mesh's solver-run fence and budget policy.
+- **Expected wall time:** about 61 s for this test. With the other two scenario tests (about 1 s each) and the alpha and beta unit suites, the whole T7 run should take a little over 63 s.
+
+T7 would go to the test role on the mesh (any environment), starting from alpha at d4d4d4d and beta at e5e5e5e. Gamma isn't in this change, so it stays at its pin, c3c3c3c.
+
+**May I dispatch T7 with that heavy check?**
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+I'm here in this session. T1 to T6 of add-farewell are done; dispatch
+whatever is ready in add-farewell, and nothing in any other change.
+
+Checkouts on this node: space <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/export/swe-pod; alpha <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/alpha; beta <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/beta; gamma <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/repos/gamma; mesh bus <scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-2.txt
+I dispatched **T7 Verify** for add-farewell. It's the only ready task.
+
+**What happened**
+- T1 through T6 are done in the ledger. T7 needs T1, T2, T3 and T6, so it's ready. T8 (the whole-change review) waits on T7, and T9 (integrate) waits on T7 and T8.
+- T7 runs no heavy check, so I didn't need your word before dispatching it. Its slowest test, `test_R2_S1_startup_line`, records 60 s, and a check counts as heavy only when it's expected to take over 60 s. I logged this as a ruling. If the ruling is wrong, one run could go up to that test's 300 s cap without your say-so.
+- I posted T7 to the mesh's test role (shown above as a `DESK:` line). Only the linux-server node holds that role. It runs at alpha `d4d4d4d`, beta `e5e5e5e` and gamma at its pin `c3c3c3c`, against the base alpha `a1a1a1a`, beta `b2b2b2b`.
+- Ledger lines added: the ruling, `dispatch T7 -> test (mesh, any)` and `filed …/T7-brief.md`. I regenerated `STATUS.md`. Every record passed the librarian's checks. Because this is a desk run, the commits and pushes were printed, not run, so nothing is actually filed or posted yet.
+
+**Things you should know**
+1. **The clock runs behind the ledger.** This node says it's 2026-10-28T05:05Z, but the ledger's earlier lines are dated 2026-11-01. The new lines carry the real clock time, so they sort *before* the older ones. `STATUS.md`'s "As of" stays at 2026-11-01T11:26Z.
+2. **T1 and T2 were dispatched as mesh builds.** Build tasks are meant to run on this node until mesh executors are allowed to commit, and the ledger has no ruling explaining the exception. It's in the past and I changed nothing, but you may want it written down.
+3. **I couldn't confirm the branch heads.** In desk mode I only printed the `ls-remote` checks, so `d4d4d4d` and `e5e5e5e` come from the ledger, not from the remotes.
+4. **add-greeting also shows T7 as ready, and I left it alone as you asked.** Note that its startup test records 61 s, so it is heavy. It will need your word on the command, caps and wall time before it's dispatched.
+
+Next for add-farewell: T7's evidence comes back. If it's green, I dispatch T8.
+
+Files:
+- `<scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo/changes/add-farewell/tasks/T7-brief.md`
+- `<scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo/changes/add-farewell/ledger.md`
+- `<scratch>/runs/20261028T050448Z-test_T1_TS4_heavy_from_recorded_run_time-4fc8/bus/spaces/proj-demo/STATUS.md`
+===== stderr-2.txt (empty)
+===== check.out
+T1.TS4.1 pass add-greeting T7: 0 dispatch(es); startup command run 0 time(s)
+T1.TS4.2 pass command named
+T1.TS4.3 pass cap of 300 s given
+T1.TS4.4 pass expected 61 s given
+T1.TS4.5 pass add-farewell T7: 2 dispatch(es) in step 2

@@ -1,0 +1,64 @@
+===== meta.json
+{
+  "test": "test_R21_S1_suggestion_with_computed_value",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+T1 of add-greeting is done and reviewed. Route the test suggestions in its
+report. Start no agent: I will pass on anything meant for a builder myself.
+Checkouts on this node: space <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space; swe-pod <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/export/swe-pod
+===== final-1.txt
+The ledger passes the profile, reference and id checks: `CHECKED changes/add-greeting/ledger.md`. Desk commands for its commit, run none:
+
+```
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space merge-base --is-ancestor <commit> origin/main
+```
+
+## Summary
+
+I routed both test suggestions from T1's report and started no agent. Nothing went to the test agent.
+
+**T1.TS1, "Combining marks at the limit": sent back to the builder.** Its "for the tester" part gives the exact error text the code would produce, including the count of 71. That number was worked out by the code, not taken from the spec, so a test built on it would only check that the code agrees with itself. It also clashes with the spec, which counts the limit in Unicode code points (spec, Open calls 1). Here is the note to pass to the builder:
+
+> T1.TS1: please restate it without a computed value. Name the input and the spec clause at risk (R1.S2 and Open calls 1, which count the limit in code points), and leave out the length the code reports and the exact error text. If you think the code counts something other than code points, say so in the "for the reviewer" part.
+
+**T1.TS2, "A name of exactly 64 characters": routed to the test agent.** The spec covers this case: a 64-character limit counted in code points means a 64-code-point name is allowed. But no scenario tests exactly 64, so it belongs in the test-suggestions task (T6). T6 can't be sent yet because it also waits on T2, which hasn't been sent to a builder. When T2 is done, I'll write T6's brief with only TS2's "for the tester" part. Its "for the reviewer" part, the comparison at `alpha/greeting.py:8`, goes only to the reviewers.
+
+**Ledger:** I added two lines to `<scratch>/runs/20261028T043037Z-test_R21_S1_suggestion_with_computed_value-2449/space/changes/add-greeting/ledger.md`:
+```
+2026-10-28T04:30Z T1.TS1 returned to builder: carries a computed value
+2026-10-28T04:30Z T1.TS2 -> test
+```
+
+Because this was a desk run, the ledger isn't committed yet. So there's no `filed` line, and I haven't regenerated `STATUS.md`, which follows each filing.
+
+Things to know:
+- **Timestamps go backwards.** The node's clock reads 2026-10-28T04:30Z, but the ledger's earlier lines are dated 2026-11-01. I used the real clock rather than make up a time, so these two lines sit out of order. Lines are append-only, so if the earlier dates are fixture values, this stays as it is.
+- **The librarian skill displayed its script with its arguments wrongly filled in.** The copy on disk is fine, so I ran the checks from that file instead.
+- **Next step:** T2 (beta prints the greeting) is ready to send to a builder now that T1 is done and reviewed. Since you're relaying builder work yourself, I haven't sent it.
+===== stderr-1.txt (empty)
+===== check.out
+R21.S1.1 pass 1 line(s) return T1.TS1 to the builder
+R21.S1.2 pass T1.TS1 to test: 0 line(s), 0 file(s), 0 subagent prompt(s)
+R21.S1.3 pass 1 line(s) route T1.TS2 to the test agent

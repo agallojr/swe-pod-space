@@ -1,0 +1,104 @@
+===== meta.json
+{
+  "test": "test_R8_S1_test_result_in_lane",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+T3 has finished. Its report is at changes/add-greeting/tasks/T3-report.md.
+File its result.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space
+swe-pod: <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+I checked T3's result and sorted its five files by lane. The three test files are in lane and passed the librarian's checks. The other three files are out of lane and stay unfiled. Because this is a desk run, I printed the librarian's git commands below and ran none of them, so nothing is committed and the ledger has no `filed` lines yet.
+
+**In lane, ready to commit:**
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+
+**Refused as out of lane** (each recorded as `refused <path>: lane line 1`):
+- `tests/test_R1_S1_default_greeting.md`: the test agent added this copy to the space-wide regression suite. Only the lead writes there, and only at integrate, when `changes/add-greeting/tests/` moves into `tests/`.
+- `changes/add-greeting/spec.md`: the test agent says it changed R1.S2 to count "code points". Only the spec author edits the spec, so the approved spec stands. The approved text already says "65 characters (Unicode code points)", so nothing is lost.
+- `changes/add-greeting/tasks/T3-report.md`: a test report belongs at `changes/add-greeting/evidence/<UTC>-T3-report.md`. The fault is mine: the T3 brief named the wrong path. I recorded a ruling that the tester refiles the report at the evidence path.
+
+**T3 status:** DONE. All three tests exist and each fails at the base commit set (alpha a1a1a1a, beta b2b2b2b) for its stated reason:
+- `test_R1_S1_default_greeting` fails because alpha has no greeting.
+- `test_R1_S2_name_too_long` fails because alpha has no greeting.
+- `test_R2_S1_startup_line` fails because the first line is the banner.
+
+I added those lines to `changes/add-greeting/ledger.md`, and the ledger passed the checks too.
+
+**Two things for you:**
+- The refused copies of `tests/test_R1_S1_default_greeting.md` and `spec.md` are still sitting in the space checkout. Discarding work needs your word, so I haven't removed them. Shall I put both back to their filed state?
+- `STATUS.md` isn't regenerated, because nothing was actually filed. Once the commits run, I'll regenerate it, record the `filed` lines, and send T3 back to its tester to write the report at the evidence path.
+
+**Commands, in order** (shown here and not run):
+
+```
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space cat-file -e origin/main:changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space diff --quiet origin/main -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space log -1 --format=%H -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space cat-file -e origin/main:changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space diff --quiet origin/main -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space log -1 --format=%H -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space fetch origin
+DESK: git -C <scratch>/runs/20261028T045546Z-test_R8_S1_test_result_in_lane-57cc/space merge-base --is-ancestor <commit> origin/main
+```
+
+The space checkout here isn't a git repository, so these commands need a real clone with `origin` to work.
+===== stderr-1.txt (empty)
+===== check.out
+R8.S1.1 pass 3 of 3 in-lane tests filed
+R8.S1.2 pass out-of-lane filed: none; wholesale staging: False
+R8.S1.3 pass 2 of 2 refusals recorded

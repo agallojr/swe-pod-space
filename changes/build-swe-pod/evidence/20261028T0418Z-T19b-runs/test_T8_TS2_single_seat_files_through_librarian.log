@@ -1,0 +1,43 @@
+===== meta.json
+{
+  "test": "test_T8_TS2_single_seat_files_through_librarian",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore
+space. You are the lead of this Project Space, and its librarian. File the
+note notes/note-20261101T1400Z-e3a7-handover.md into the space.
+Checkouts on this node: space <scratch>/runs/20261028T053307Z-test_T8_TS2_single_seat_files_through_librarian-925f/space; swe-pod <scratch>/runs/20261028T053307Z-test_T8_TS2_single_seat_files_through_librarian-925f/export/swe-pod; agent-mesh <scratch>/runs/20261028T053307Z-test_T8_TS2_single_seat_files_through_librarian-925f/export/agent-mesh
+===== final-1.txt
+I didn't file the note. The librarian's check refused it on profile:
+
+```
+REFUSED notes/note-20261101T1400Z-e3a7-handover.md: profile line 11
+```
+
+Line 11 contains a home path for a single user. Records in this space can't hold machine paths or home paths, so the note can't go in as written. The profile check runs before the other two, so the reference and id checks didn't run, and I printed no `DESK:` git commands, since only records that pass all the checks get to the commit step. Nothing was committed or pushed, and the space checkout isn't a git repo on this node anyway.
+
+**How to fix it:** on line 11, say where the handover list lives without the per-user path: a generic `~/` path (which the check allows), a description like "kept in the operator's local handover file", or the list itself in the note. Then ask me to file it again.
+
+**Two other points:**
+- **No ledger line.** I didn't write a `refused` line, because `changes/add-greeting/` has only `spec.md` and no `ledger.md`. If you want the refusal recorded against add-greeting, tell me and I'll start its ledger through the librarian.
+- **Copied check script.** The check script in the librarian skill had some of its arguments filled in with the wrong values, so I ran a corrected copy of its profile check from a scratch directory outside the space, then deleted it. It still includes the pattern for absolute per-user home paths, which is the one this line hit. The skill text should be fixed before the full script is used for other records.
+
+The note is still unfiled at `<scratch>/runs/20261028T053307Z-test_T8_TS2_single_seat_files_through_librarian-925f/space/notes/note-20261101T1400Z-e3a7-handover.md`.
+===== stderr-1.txt (empty)
+===== check.out
+T8.TS2.1 pass refusal line printed
+T8.TS2.2 pass record still holds the path True; 0 add or commit command(s) name it
+T8.TS2.3 pass home path not printed
+T8.TS2.4 pass 0 git commit or push call(s) ran

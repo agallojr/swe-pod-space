@@ -1,0 +1,59 @@
+===== meta.json
+{
+  "test": "test_T10_TS6_commit_stage_order",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo. The mesh bus is at <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus. The records, as space paths: notes/note-20261101T1600Z-2a01-first.md notes/note-20261101T1600Z-2a02-second.md
+===== final-1.txt
+Both records passed all three checks (profile, reference, id). Here are the desk commands for the commit step. None of them were run.
+
+```
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261101T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261101T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo add -- notes/note-20261101T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo commit -m "File notes/note-20261101T1600Z-2a01-first.md" -- notes/note-20261101T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261101T1600Z-2a01-first.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261101T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261101T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo add -- notes/note-20261101T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo commit -m "File notes/note-20261101T1600Z-2a02-second.md" -- notes/note-20261101T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261101T1600Z-2a02-second.md
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T045951Z-test_T10_TS6_commit_stage_order-0a6e/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+```
+
+Since this was a desk run, there are no `FILED` lines. As the skill requires, the list includes the check and confirm commands around add, commit, fetch, rebase and push.
+
+Things to know:
+- **The check script had to be repaired before it would run.** In the skill text, the shell and awk placeholders were filled in by mistake: `$0` became `space`, `$1` became `root`, and `$2` became the space root path. As written, every check would have been wrong. I restored the original variables and ran the fixed copy from `/tmp/librarian-desk/check.sh`, outside the space. The skill file itself still has the broken script and should be fixed.
+- **The space checkout is not a git repo**, so it has no `origin` and no `origin/main`. The checks still worked: both records were treated as new, which is correct. But these commands would fail if run against it as it is now.
+- **There is no `spaces.yaml` in the bus**, so I couldn't confirm that this space is assigned to this librarian role with `access: rw`.
+===== stderr-1.txt (empty)
+===== check.out
+T10.TS6.1 fail 2 commit(s), covering notes/note-20261101T1600Z-2a01-first.md; nothing
+T10.TS6.2 fail fetch at 19, rebase at -1, push at 16; 1 push(es)
+T10.TS6.3 pass fresh fetch at 17, ancestor check at 18
+T10.TS6.4 pass 0 forced push, branch or wholesale add line(s)
+T10.TS6.5 fail 2 FILED line(s) printed
+T10.TS6.6 pass 0 git commit or push call(s) ran

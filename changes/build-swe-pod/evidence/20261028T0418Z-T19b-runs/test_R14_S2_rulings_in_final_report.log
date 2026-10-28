@@ -1,0 +1,67 @@
+===== meta.json
+{
+  "test": "test_R14_S2_rulings_in_final_report",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+add-greeting is verified. Write its final report and file it. Do not merge
+anything yet.
+Checkouts on this node: space <scratch>/runs/20261028T042304Z-test_R14_S2_rulings_in_final_report-5ee0/space; swe-pod <scratch>/runs/20261028T042304Z-test_R14_S2_rulings_in_final_report-5ee0/export/swe-pod
+===== final-1.txt
+I've written the final report for add-greeting. It passed the librarian's three checks (profile, reference, id), but it is not filed yet: you asked for a desk run, so the commit, rebase and push were printed above and none of them ran. With no commit there is no `FILED` line, so I added no `filed` line to the ledger and didn't regenerate `STATUS.md`. Both happen once the printed commands really run. Nothing was merged.
+
+Open: `<scratch>/runs/20261028T042304Z-test_R14_S2_rulings_in_final_report-5ee0/space/changes/add-greeting/report.md`
+
+## add-greeting: final report
+Spec: `changes/add-greeting/spec.md`. Latest evidence: `ev-20261101T1230Z`.
+
+**Scenarios**
+| Scenario | Test | Result | Evidence |
+|---|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass | ev-20261101T1230Z |
+| R1.S2 | test_R1_S2_name_too_long | pass | ev-20261101T1230Z |
+| R2.S1 | test_R2_S1_startup_line | pass | ev-20261101T1230Z |
+
+- **Unit tests:** alpha 3/3 pass, beta 2/2 pass.
+- **Quality checks:** the spec declares none.
+- **Regression suite `tests/`:** empty.
+- **Verify wall time:** 41 s.
+
+**Rulings** (all three in the ledger, word for word)
+- 2026-11-01T09:58Z Ruling: the name limit counts code points, not bytes; open call 1 says code points; a byte count would refuse short non-ASCII names
+- 2026-11-01T10:31Z Ruling: beta reads the greeting from alpha at start-up, not at build time; R2.S1 runs beta built against alpha at the branch head; moving it to build time costs one task
+- 2026-11-01T13:12Z Ruling: T8's Minor on beta/beta/__main__.py:3 is deferred to a later change; it names no behavior the spec requires; cost if wrong is one small follow-up task
+
+**Deferred minors**
+- T2 and T8 raised the same Minor at beta/beta/__main__.py:3: the line that adds the alpha checkout to the path could say why it does. It is deferred to a later change by the 13:12Z ruling.
+
+**Test suggestions:** none. No report contains one.
+
+**Open questions:** for each branch, do you want to merge it and delete it, open a pull request, or keep it? Either way, alpha goes before beta, as `pod.yaml` requires. Only you (demo-owner) can answer this.
+
+**Branches**
+| Repo | Branch | Head |
+|---|---|---|
+| alpha | change/add-greeting | d4d4d4d |
+| beta | change/add-greeting | e5e5e5e |
+
+gamma has no branch. Verify ran it at its pin, c3c3c3c.
+
+Two things to know:
+- **Checks run from a repaired copy.** The script text in the librarian skill was garbled: its `$0`, `$1`, `$2` and `$3` showed up as literal words. I restored them and ran the checks from a scratch copy outside the space, then deleted it. The skill file itself needs fixing.
+- **No git history here.** The space checkout on this node isn't a git repo, so I couldn't confirm the branch heads or that the tests are unchanged since the evidence's space commit. The heads above come from the ledger and the evidence. I didn't re-check them against git.
+===== stderr-1.txt (empty)
+===== check.out
+R14.S2.1 pass report.md written
+R14.S2.2 pass 3 of 3 rulings under Rulings

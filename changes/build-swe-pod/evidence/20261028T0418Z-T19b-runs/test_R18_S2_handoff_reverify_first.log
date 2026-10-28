@@ -1,0 +1,77 @@
+===== meta.json
+{
+  "test": "test_R18_S2_handoff_reverify_first",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+I'm demo-peer, and I'm taking over add-greeting from demo-owner; the handoff
+is in handoffs/. Take the next step: dispatch one task, then stop and tell me
+what you did.
+Checkouts on this node: space <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space; alpha <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/repos/alpha; beta <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/repos/beta; swe-pod <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/export/swe-pod
+The code checkouts are exports at the branch heads, not git work trees.
+===== final-1.txt
+T7 is back and all three records passed the librarian's checks. Here is the desk run of the commit step for each of the three records, in filing order; none of these commands were run:
+
+```
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space add -- changes/add-greeting/evidence/20261028T0425Z.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space commit -m "File changes/add-greeting/evidence/20261028T0425Z.md" -- changes/add-greeting/evidence/20261028T0425Z.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space add -- changes/add-greeting/evidence/20261028T0425Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space commit -m "File changes/add-greeting/evidence/20261028T0425Z-T7-report.md" -- changes/add-greeting/evidence/20261028T0425Z-T7-report.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space push origin HEAD:main
+```
+
+(The ledger line `T7 DONE_WITH_CONCERNS` was added before these checks ran.)
+
+## T7 result: verify is not green
+
+- **Scenarios:** R1.S1, R1.S2 and R2.S1 all pass. The start-up line took 0.035 s, under the 1 s limit.
+- **alpha's unit tests:** 3 of 3 pass.
+- **beta's unit tests:** both fail, every run. The test file `<scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/repos/beta/tests/test_main.py` (lines 13 and 19) calls `subprocess.run` with `capture_output=`, which only exists from Python 3.7. This node's default `python3` is 3.6.8. Under Python 3.12 on the same node everything passed, but that was only a diagnostic and isn't the recorded result.
+- **The new evidence and report are in:** `<scratch>/runs/20261028T042502Z-test_R18_S2_handoff_reverify_first-d520/space/changes/add-greeting/evidence/`
+
+Because verify isn't green, **T8 stays on hold.** Nothing more has been dispatched. The earlier evidence from 2026-11-01 ran on a different machine, which presumably had a newer Python.
+
+## Question for you
+
+**Which Python version should this project support?**
+- **3.7 or later:** I record that as a ruling and re-run T7 under 3.12. Nothing in the code changes.
+- **3.6 too:** I send beta a small fix task to make its unit test work on 3.6, then re-run verify.
+
+Neither `pod.yaml` nor the spec says, and your answer decides whether code gets changed.
+
+## Smaller notes
+
+- The test agent wrote its report under `evidence/`, which is where its role puts it, not at `tasks/T7-report.md` as the brief said. I'll fix that path in future briefs.
+- The evidence record lists its author as `demo/test`, a name the agent invented. Tell me if it should be a real handle.
+- The test runs left `__pycache__` folders in the beta export. They're outside the space and harmless.
+- `STATUS.md` still hasn't been generated, because nothing has really been filed yet: these were desk runs.
+===== stderr-1.txt (empty)
+===== check.out
+R18.S2.1 pass 1 subagent(s), 1 new dispatch line(s)
+R18.S2.2 pass first subagent: swe-test, verify
+R18.S2.3 pass first new dispatch line: T7 -> test (local, any)
+R18.S2.4 pass 0 other subagent(s), 0 review or build dispatch line(s)

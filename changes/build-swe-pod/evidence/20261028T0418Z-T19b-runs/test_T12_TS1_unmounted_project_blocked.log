@@ -1,0 +1,74 @@
+===== meta.json
+{
+  "test": "test_T12_TS1_unmounted_project_blocked",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/bus as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-1.txt
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/bus add -A
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/bus commit -m "status 20261101T1701-0021 -> blocked"
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/bus push origin HEADI ran one poll cycle as `demo-linux-01` (roles `swe.build`, `swe.test`). There was one task, and it is now **blocked**, not done.
+
+**Task `20261101T1701-0021`** (sent by `demo-mac-01` to the `swe.test` queue, `project: proj:demo`)
+- **Claimed:** I wrote `status/20261101T1701-0021.json` as `accepted`.
+- **Credentials:** the task lists none, so nothing was missing.
+- **Blocked:** the bus has no `spaces.yaml` and no `.gitmodules`, so `proj:demo` is not mounted. A `spaces/proj-demo/` directory exists, but by the skill's rules that doesn't count as mounted. The status file now reads `blocked` with `error: "NOT MOUNTED proj:demo"`. Mounting is a step the operator does by hand, so I didn't mount the space, write into it, or start an executor. There is no result file or `library.submit`, because the task produced nothing.
+- The `swe.build` queue and my direct inbox `tasks/demo-linux-01/` were empty.
+
+**Simulated commands:** every git command above (`pull`, and `add`/`commit`/`push` after each status write) was printed as a `DESK:` line and not run. I also didn't launch the scanner script. It runs `git pull` itself, so I scanned the queues by hand instead. Nothing ran in the background.
+
+**Things that differ from the skill:**
+- `~/.agent-identity.env` on this machine describes a different node (`<agent-id>`, roles `geworker,swe.test`, a different repo path). I used the identity and bus path you gave me.
+- This bus has no `guidance/` or `product/` directory, so I couldn't load the operating-rule chain the skill calls for.
+
+To unblock the task, the operator needs to add a `proj:demo` entry to `spaces.yaml` and a matching submodule to `.gitmodules`. A later cycle won't pick the task up on its own, because it now has a status file.
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/repos/bus-two as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-2.txt
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/repos/bus-two commit -m "status 20261101T1702-0022 and 20261101T1703-0023 -> blocked, project not mounted"
+DESK: git -C <scratch>/runs/20261028T050057Z-test_T12_TS1_unmounted_project_blocked-0327/repos/bus-two push origin HEAD
+
+The poll cycle on `bus-two` is done for demo-linux-01. I claimed both tasks in the `swe.test` queue and marked each one `blocked`, because the project space each one names isn't mounted on this bus.
+
+| Task | Project | Result | Reason |
+|---|---|---|---|
+| `20261101T1702-0022` | `proj:ghost` | `blocked`, error `NOT MOUNTED proj:ghost` | `spaces.yaml` has no entry for it |
+| `20261101T1703-0023` | `proj:other` | `blocked`, error `NOT MOUNTED proj:other` | `spaces.yaml` lists it at `spaces/proj-other`, but the bus has no `.gitmodules` file, so there's no submodule at that path |
+
+**How the cycle differed from the skill:**
+- **No executor or result:** I didn't dispatch an executor, write an outbox result, or send a `runs` submission, since neither task got that far. I didn't mount either space; that's the operator's job.
+- **No scanner:** the bus has no `product/` checkout and no `BUS_LAYOUT` file, so the scanner script couldn't run there. I scanned `tasks/roles/swe.build/` (absent) and `swe.test/` by hand.
+- **No guidance:** the bus has no `guidance/CLAUDE.md`, so there were no operating rules to load.
+- **Identity:** `~/.agent-identity.env` describes a different node (`<agent-id>` on another bus). I used the identity you gave me instead.
+
+**Status files:** both are written in the new `status/` folder.
+
+**Commits:** the git commands are printed as `DESK:` lines above. My first commit message names only `20261101T1702-0022`, though that commit covers both claims; the second message names both tasks. I printed one `pull --rebase` and no submodule commands, and none were run.
+===== stderr-2.txt (empty)
+===== check.out
+T12.TS1.1 pass 0 executor subagent(s), 0 probe note(s)
+T12.TS1.2 pass 0 mount command(s); registries and mounts unchanged
+T12.TS1.3 pass statuses: each blocked on its project

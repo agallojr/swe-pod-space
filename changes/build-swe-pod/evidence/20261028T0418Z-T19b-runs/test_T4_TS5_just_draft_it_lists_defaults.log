@@ -1,0 +1,54 @@
+===== meta.json
+{
+  "test": "test_T4_TS5_just_draft_it_lists_defaults",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+I'd like beta to greet people by name when it starts. Call the change
+greet-by-name. Just draft it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T051316Z-test_T4_TS5_just_draft_it_lists_defaults-39de/space
+swe-pod: <scratch>/runs/20261028T051316Z-test_T4_TS5_just_draft_it_lists_defaults-39de/export/swe-pod
+alpha: <scratch>/runs/20261028T051316Z-test_T4_TS5_just_draft_it_lists_defaults-39de/repos/alpha
+beta: <scratch>/runs/20261028T051316Z-test_T4_TS5_just_draft_it_lists_defaults-39de/repos/beta
+The human is demo-owner.
+===== final-1.txt
+The first draft of greet-by-name is written. It hasn't been approved yet; it needs your read.
+
+**Spec:** `<scratch>/runs/20261028T051316Z-test_T4_TS5_just_draft_it_lists_defaults-39de/space/changes/greet-by-name/spec.md`
+
+**What I found first:** `alpha` can already greet a given name ("hello, Ada"), and it already refuses names over 64 characters. Today `beta` always asks it for the plain greeting, `hello, demo`. So only `beta` needs to change: it needs a way to take a name and pass it along.
+
+**What the draft asks for:**
+- `beta --name Ada` prints `hello, Ada` as its first line.
+- With no name, `beta` still prints `hello, demo`.
+- An empty name, a name over 64 characters, or `--name` with nothing after it is refused. `beta` shows an error and prints no greeting.
+
+**Choices I made for you to check first** (each is under "Open calls" in the spec):
+1. **Where the name comes from.** I used a `--name` option you type when starting `beta`. It does not read the name from your login account. Account names are often things like `jdoe`, and reading them would change what `beta` prints when given no name. Using the account name, or falling back to it, could be a separate change later.
+2. **With no name, nothing changes.** `beta` keeps printing `hello, demo`, so the earlier greeting spec still holds.
+3. **The name is printed exactly as typed.** No capitals added, no spaces trimmed. A name made only of spaces is accepted.
+4. **When a name is refused,** the error goes to the error output, nothing else is printed (not even the usual `beta 1.0` line), and `beta` exits with a failure code. Which failure code is left open.
+5. **Size is small:** one repo, `beta`, low risk.
+6. **Order:** this builds on the greeting change, which is approved but not finished yet. It should land after that one.
+
+When you review, start with "Why" and "Scope" to check this is the change you meant. Then read "Requirements": the case you care about most should have a scenario. Then go through the open calls above.
+
+**For the lead:** the spec is at `changes/greet-by-name/spec.md`, it is proposed and not yet approved, and no `SPEC.md` copy exists or was made. Filing it through the librarian is your step. I haven't printed or run its commit commands, because committing isn't part of my role.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS5.1 pass draft written
+T4.TS5.2 pass no approved: line
+T4.TS5.3 pass Open calls items: 8
+T4.TS5.4 pass Open calls speaks of how the name is given

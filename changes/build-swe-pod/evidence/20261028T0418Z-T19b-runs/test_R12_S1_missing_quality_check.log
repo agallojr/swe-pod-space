@@ -1,0 +1,44 @@
+===== meta.json
+{
+  "test": "test_R12_S1_missing_quality_check",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Where are we on add-greeting?
+===== final-1.txt
+**add-greeting is still building, not verified.** The verify run (T7) is missing one quality check, so the change can't move to integrate yet.
+
+**Why it isn't verified.** The only evidence record is `changes/add-greeting/evidence/20261101T1230Z.md`. It passes every scenario (R1.S1, R1.S2, R2.S1) and the unit tests in both repos. Its quality results are `quality: {Q1: pass}` only. The spec also declares **Q2, docs build** (`demo-docs --strict` in beta), and that result is missing. A missing result counts as a fail, so the record isn't green. The plan's own done-when for T7 also asks for "Q1 and Q2".
+
+**Task by task (from the ledger):**
+- **Done:** T1 (alpha `d4d4d4d`), T2 (beta `e5e5e5e`), T3 (three scenario tests, all failing at base as they should), T6 (test suggestions).
+- **Reviews:** T1, T2 and the whole-change review (T8) are all closed. None has a Critical or Important finding. One Minor finding is still open at `beta/__main__.py:3`: the path set-up line could say why it adds the alpha checkout.
+- **T7, verify:** reported DONE, but its evidence is incomplete.
+- **T9, integrate:** not started. It shouldn't be dispatched until the change is verified.
+
+**Next:** run T7 again at the same commits (space `5d5d5d5`, alpha `d4d4d4d`, beta `e5e5e5e`, gamma `c3c3c3c`), this time including Q2, and file a new evidence record. Nothing is blocked, and no Critical or Important finding is open.
+
+**Limits on this answer:**
+- The space directory isn't a git repository. I read the files as they sit on disk, not as committed, so I couldn't confirm what has actually been filed or check the space sha `5d5d5d5`.
+- I couldn't reach the code repos' remotes (they point at `example.invalid`). The branch heads above come from the ledger, not from the remotes.
+- There's no `STATUS.md` (and no `AGENTS.md`) in the space. This answer is built from the records instead, and I haven't written or filed a `STATUS.md`. Nothing was filed, so there were no librarian `DESK:` commands to print.
+
+Records worth opening:
+- `<scratch>/runs/20261028T042121Z-test_R12_S1_missing_quality_check-feb7/space/changes/add-greeting/evidence/20261101T1230Z.md`
+- `<scratch>/runs/20261028T042121Z-test_R12_S1_missing_quality_check-feb7/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T042121Z-test_R12_S1_missing_quality_check-feb7/space/changes/add-greeting/spec.md` (Quality section: Q1, Q2)
+===== stderr-1.txt (empty)
+===== check.out
+R12.S1.1 pass add-greeting reported not verified; STATUS.md state absent
+R12.S1.2 pass Q2 named
+R12.S1.3 pass 0 record(s) added, changed or removed besides STATUS.md

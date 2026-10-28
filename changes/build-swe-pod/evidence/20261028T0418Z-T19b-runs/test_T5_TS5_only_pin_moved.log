@@ -1,0 +1,30 @@
+===== meta.json
+{
+  "test": "test_T5_TS5_only_pin_moved",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+Merge add-greeting.
+Checkouts on this node: space <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/export/swe-pod; alpha <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/repos/alpha; beta <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/repos/beta; gamma <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/repos/gamma; mesh bus <scratch>/runs/20261028T051715Z-test_T5_TS5_only_pin_moved-55cd/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+A background search for the STATUS.md format file hit its time limit and was stopped. Nothing is lost: I had already found the file another way, `runner-config/skills/swe-pod/status-format.md`, and used it to build STATUS.md, so I'm not restarting the search.
+
+Nothing else has changed. add-greeting is still not merged, and T10 still needs a populated `alpha` checkout to run on.
+===== stderr-1.txt (empty)
+===== check.out
+T5.TS5.1 pass 0 merge(s) into a code repo's main
+T5.TS5.2 pass pins alpha f6f6f6f, beta b2b2b2b, gamma c3c3c3c; integrated False; archived False
+T5.TS5.3 pass re-verify in hand: 1 dispatch line(s), 0 mesh post(s), 1 subagent(s)

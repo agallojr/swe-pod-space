@@ -1,0 +1,86 @@
+===== meta.json
+{
+  "test": "test_R21_S2_every_suggestion_has_outcome",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+add-greeting is verified. Write its final report and file it. Do not merge
+anything yet.
+Checkouts on this node: space <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space; swe-pod <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/export/swe-pod
+===== final-1.txt
+The report passes the profile, reference and id checks. Desk commit step for it (printed, not run):
+
+```
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space fetch origin
+DESK: git -C <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space merge-base --is-ancestor <commit> origin/main
+```
+
+I've written the final report for add-greeting and it passed the librarian's checks. But it isn't filed yet. In a desk run nothing is committed, so the librarian gave no `FILED` line, and I have not added a `filed` line to the ledger. For the same reason I haven't regenerated `STATUS.md`. The space checkout isn't a git repo, so the commands above couldn't run here anyway. Nothing was merged.
+
+Report: <scratch>/runs/20261028T043244Z-test_R21_S2_every_suggestion_has_outcome-00c6/space/changes/add-greeting/report.md
+
+## Scenarios
+All passed in the latest test run (evidence ev-20261101T1230Z). The code tested was space 5d5d5d5, alpha d4d4d4d, beta e5e5e5e, and gamma at its pin c3c3c3c.
+
+| Scenario | Test | Result |
+|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass |
+| R1.S2 | test_R1_S2_name_too_long | pass |
+| R2.S1 | test_R2_S1_startup_line | pass |
+| T1.TS1 (suggestion) | test_T1_TS1_combining_marks | pass |
+
+- **Unit tests:** alpha 3/3 pass, beta 2/2 pass.
+- **Quality checks:** the spec declares none.
+- **Regression suite `tests/`:** empty.
+
+## Rulings
+None.
+
+## Deferred minors
+- One Minor at `beta/beta/__main__.py:3`: the path set-up line doesn't say why it adds the alpha checkout. The T2 review raised it and the whole-change review raised it again. It is deferred.
+
+## Test suggestions
+- **T1.TS1:** tested as test_T1_TS1_combining_marks, and it passes.
+- **T1.TS2:** recorded as unit-tested.
+- **T2.TS1:** declined. R2.S1 limits start-up time only on the environment class used for testing, and a slow network disk isn't one.
+- **T2.TS2 (start-up line with NO_COLOR set):** proposed as a scenario. You haven't approved or dropped it yet.
+
+## Open questions
+1. **T2.TS2:** add a NO_COLOR scenario to the spec, or drop it? Adding it means approval, a new test and another test run before merge. This is the question that most affects what gets merged.
+2. **T1.TS2:** the ledger records no alpha commit after d4d4d4d, and T1 still has 3 unit tests. Which test covers the cached greeting is unconfirmed; I'll check alpha's branch log.
+3. **test_T1_TS1_combining_marks.md:** the ledger has no `filed` line for it, though the test run used it. I'll check the space's log and file it if it's missing.
+4. **Merge:** when you decide, the choices are merge and delete each branch, open a pull request, or keep the branches. alpha must merge before beta.
+
+## Branches
+| Repo | Branch | Head |
+|---|---|---|
+| alpha | change/add-greeting | d4d4d4d |
+| beta | change/add-greeting | e5e5e5e |
+| gamma | none (not in the spec) | pin c3c3c3c |
+
+These heads come from the ledger and the test evidence. I couldn't check them against the remotes from here.
+===== stderr-1.txt (empty)
+===== check.out
+R21.S2.1 pass report.md written
+R21.S2.2 pass 4 of 4 suggestions named
+R21.S2.3 pass 4 of 4 with their outcome

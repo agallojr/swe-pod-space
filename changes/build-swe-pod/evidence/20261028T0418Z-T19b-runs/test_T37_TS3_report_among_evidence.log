@@ -1,0 +1,54 @@
+===== meta.json
+{
+  "test": "test_T37_TS3_report_among_evidence",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Regenerate STATUS.md, then tell me where add-greeting stands.
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+LATEST EVIDENCE add-greeting: <the id of its latest evidence record>
+===== final-1.txt
+I wrote STATUS.md, but I couldn't check it against the remotes or against git, so treat it as provisional. It's at `<scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space/STATUS.md`, and I haven't filed it.
+
+**Filing (desk step, nothing run):** there was no committed STATUS.md to compare against. These are the librarian's commit commands, printed only:
+
+DESK: git -C <scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space commit -m "STATUS.md: regenerate as of 2026-11-01T13:11Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space fetch origin
+DESK: git -C <scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T051009Z-test_T37_TS3_report_among_evidence-185a/space push origin HEAD:main
+
+Because nothing ran, there is no `FILED` or `REFUSED` line. The branch name `main` is a guess, since the space has no remote set up.
+
+**What I couldn't check:**
+- **The space isn't a git repository.** I read the files as they are on disk, not "as committed". I also couldn't confirm that the tests haven't changed since the evidence's space commit, `5d5d5d5`.
+- **The code repos' remotes (`example.invalid`) don't resolve.** The `change/add-greeting` heads (alpha `d4d4d4d`, beta `e5e5e5e`) come from the ledger's T1 and T2 lines, not from the remotes. Those same heads are what makes the evidence count as current.
+
+**Where add-greeting stands:** it's **verified**. All the work is finished and only integrating it is left.
+- **Tasks:** 8 of 9 are done: both builds (T1 alpha, T2 beta), their reviews, the scenario tests, the test suggestions, the verify and the whole-change review.
+- **Evidence:** the latest evidence record is `ev-20261101T1230Z` (`changes/add-greeting/evidence/20261101T1230Z.md`), and it's green: all 3 scenarios pass, unit tests pass in alpha and beta, and the spec declares no quality checks.
+  - `evidence/20261101T1240Z-T7-report.md` has a newer name, but it's T7's task report, not an evidence record (it has no `id: ev-…`), so it doesn't replace the 12:30 record.
+- **Findings:** no Critical or Important finding is open. The status counts 2 Minor because it adds up every review line. In fact it's one Minor at `beta/beta/__main__.py:3`: a comment explaining why the path set-up line adds the alpha checkout. T2's review raised it and the T8 review carried it forward.
+- **Nothing is blocked.**
+- **Next:** T9 Integrate (lead, run locally): merge alpha before beta, promote the tests and advance the pins. Merging needs your sign-off.
+
+STATE add-greeting: verified
+LATEST EVIDENCE add-greeting: ev-20261101T1230Z
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS3.1 pass state given: 'verified'
+T37.TS3.2 pass latest evidence given: 'ev-20261101T1230Z'
+T37.TS3.3 pass STATUS.md state verified; evidence line '- latest evidence: ev-20261101T1230Z, macos-laptop, green: scenarios 3'
+T37.TS3.4 pass 0 other record(s) touched

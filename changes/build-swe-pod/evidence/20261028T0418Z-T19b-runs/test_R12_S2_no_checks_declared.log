@@ -1,0 +1,61 @@
+===== meta.json
+{
+  "test": "test_R12_S2_no_checks_declared",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Brief: changes/add-greeting/tasks/T7-brief.md
+Checkouts on this node: space <scratch>/runs/20261028T042144Z-test_R12_S2_no_checks_declared-ba2e/space; alpha <scratch>/runs/20261028T042144Z-test_R12_S2_no_checks_declared-ba2e/repos/alpha; beta <scratch>/runs/20261028T042144Z-test_R12_S2_no_checks_declared-ba2e/repos/beta; swe-pod <scratch>/runs/20261028T042144Z-test_R12_S2_no_checks_declared-ba2e/export/swe-pod
+The code checkouts are exports at the commit set of the brief, not git work
+trees.
+===== final-1.txt
+**Status: DONE_WITH_CONCERNS.** The three spec scenarios pass, but beta's unit suite fails on this node's default `python3` (3.6.8).
+
+The run used commit set space 5d5d5d5, alpha d4d4d4d, beta e5e5e5e and gamma c3c3c3c (gamma at its pin), in env class `any`. Total wall time was about 1 s.
+
+| Check | Result | What I saw |
+|---|---|---|
+| R1.S1 default greeting | pass | It returned `'hello, demo'` and exited 0 |
+| R1.S2 name too long | pass | It exited 1 with nothing on standard output; the error names the 64-character limit |
+| R2.S1 start-up line | pass | First line was `hello, demo`, in 0.04 s (limit: under 1 s) |
+| alpha unit suite | pass | 3 tests |
+| beta unit suite | **fail** | 2 errors |
+| Regression suite `tests/` | no results | It holds only `.gitkeep` |
+| Quality checks | none run | The spec has no Quality section (`quality: none-declared`) |
+
+**The beta failure:** both tests call `subprocess.run(capture_output=...)`. Python 3.6 doesn't accept that keyword (it needs 3.7 or later), so both raise `TypeError` before checking anything. I re-ran the suite under `python3.12` on the same node to diagnose it, and it passed. The test is fragile, but the behavior is fine: R2.S1 passes even on 3.6.8. The fix is either to require Python 3.7+ for env class `any`, or to drop that keyword from the suite. I edited neither the test nor the code.
+
+**Other concerns:**
+- The brief puts the report at `tasks/T7-report.md`, but my role says a test task's report goes under `evidence/` and never under `tasks/`. I followed the role.
+- No actor handle was given, so I used `demo/test` (the project name). Correct it if the pod uses another handle.
+
+Files written:
+- `changes/add-greeting/evidence/20261028T0421Z.md` (the evidence record)
+- `changes/add-greeting/evidence/20261028T0421Z-T7-report.md` (the report)
+- `changes/add-greeting/evidence/20261028T0421Z-logs/unit-beta-python3.6.log` (the failing run)
+- `changes/add-greeting/evidence/20261028T0421Z-logs/unit-beta-python3.12.log` (the passing re-run)
+
+The librarian's commit step, as desk lines (none run):
+```
+DESK: git -C space add changes/add-greeting/evidence/20261028T0421Z.md changes/add-greeting/evidence/20261028T0421Z-T7-report.md changes/add-greeting/evidence/20261028T0421Z-logs
+DESK: git -C space commit -m "add-greeting: T7 verify evidence ev-20261028T0421Z" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin HEAD
+```
+===== stderr-1.txt (empty)
+===== check.out
+R12.S2.1 fail 2 evidence record(s) written
+R12.S2.2 fail quality: absent
+R12.S2.3 pass 0 call(s) of a lint, format or type-check tool
+R12.S2.4 fail 0 of 3 scenarios have a result

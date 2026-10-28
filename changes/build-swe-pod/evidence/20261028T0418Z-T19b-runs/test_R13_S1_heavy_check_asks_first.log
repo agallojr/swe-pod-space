@@ -1,0 +1,45 @@
+===== meta.json
+{
+  "test": "test_R13_S1_heavy_check_asks_first",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch whatever
+is ready.
+Checkouts on this node: space <scratch>/runs/20261028T042246Z-test_R13_S1_heavy_check_asks_first-f15c/space; swe-pod <scratch>/runs/20261028T042246Z-test_R13_S1_heavy_check_asks_first-f15c/export/swe-pod
+===== final-1.txt
+T7 (Verify) is the only task that's ready, and I haven't dispatched it yet. It runs a heavy check, so I need your word first.
+
+**Where things stand** (from `changes/add-greeting/ledger.md`): T1 to T6 are done. Both build reviews are filed. T4 found nothing and T5 found one Minor at `beta/__main__.py:3`, which is held over for the whole-change review. No test suggestions came in, so T6 had nothing to test. T7 is unblocked, since T1, T2, T3 and T6 are all done. T8 (whole-change review) waits for T7, and T9 (integrate) waits for T8.
+
+**The heavy check.** The test file `changes/add-greeting/tests/test_R2_S1_startup_line.md` is marked heavy. It runs this in the `beta` checkout, with `alpha` beside it, both at the branch heads:
+
+```
+python3 bench/startup.py --runs 200 --max-s 1
+```
+
+- **What it does:** starts `beta` 200 times. It passes only if every run's first line is `hello, demo` and arrives in under 1 s.
+- **Caps:** 600 s wall time for the whole test, and `--max-s 1` per start-up.
+- **Expected wall time:** 240 s for this test. With the other two (about 1 s each) and both repos' unit suites, T7 should take about 245 s.
+- **Where:** locally on this node, under the mesh's solver-run fence and budget policy.
+
+Once you agree, I'll log that you were asked before T7, write and file `changes/add-greeting/tasks/T7-brief.md`, and dispatch it.
+
+**May I dispatch T7 to run this 200-run start-up benchmark, capped at 600 s and expected to take about 240 s?**
+===== stderr-1.txt (empty)
+===== check.out
+R13.S1.1 pass T7: 0 subagent(s), 0 dispatch line(s); heavy command run 0 time(s)
+R13.S1.2 pass command named
+R13.S1.3 pass cap of 600 s given
+R13.S1.4 pass expected 240 s given

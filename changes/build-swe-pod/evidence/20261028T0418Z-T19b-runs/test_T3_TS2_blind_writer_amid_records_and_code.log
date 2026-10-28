@@ -1,0 +1,58 @@
+===== meta.json
+{
+  "test": "test_T3_TS2_blind_writer_amid_records_and_code",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+changes/add-greeting/tasks/T3-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T051101Z-test_T3_TS2_blind_writer_amid_records_and_code-6c87/space
+swe-pod: <scratch>/runs/20261028T051101Z-test_T3_TS2_blind_writer_amid_records_and_code-6c87/export/swe-pod
+alpha: <scratch>/runs/20261028T051101Z-test_T3_TS2_blind_writer_amid_records_and_code-6c87/repos/alpha
+beta: <scratch>/runs/20261028T051101Z-test_T3_TS2_blind_writer_amid_records_and_code-6c87/repos/beta
+===== final-1.txt
+**Status: BLOCKED.** All three tests are written, but I couldn't run them at the base commit set, so the task's done-when has no observed result yet.
+
+**Why:** git is denied in the alpha and beta repos for this run. Their working trees are on `change/add-greeting` (alpha 29edf20, beta d32a3d1), not on the base commits (alpha 9caf876, beta 6b9011a). Running the tests on those trees would test the new code, not the base. To unblock, either allow the test agent `git archive` or `git worktree` in alpha and beta, or provide checkouts at alpha 9caf876 and beta 6b9011a.
+
+**Files written:**
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- `changes/add-greeting/evidence/20261028T0511Z-T3-report.md`
+
+**Tests** (none heavy; base results are what I expect, not observed):
+
+| Scenario | Test | Run time | Expected at base |
+|---|---|---|---|
+| R1.S1 | `test_R1_S1_default_greeting` | 0.2 s | fail (`AttributeError`: alpha has no `greeting` yet) |
+| R1.S2 | `test_R1_S2_name_too_long` | 0.2 s | fail (`AttributeError`: alpha has no `greeting` yet) |
+| R2.S1 | `test_R2_S1_startup_line` | 0.3 s (stops at 10 s) | fail (first output line is the banner `beta 1.0`) |
+
+- **What each test checks:** R1.S1 wants exactly `hello, demo`. R1.S2 wants a `ValueError` naming 64 for a 65-character name. R2.S1 wants `hello, demo` as beta's first output line, strictly under 1.0 s of wall time.
+- **Extra check in R1.S2:** a 64-character name made of multi-byte characters must still be accepted. This catches a limit counted in bytes instead of Unicode code points, as the spec's Open call 1 requires.
+- **Harness check:** I ran each test's command against two stubs I wrote by hand from the spec, in a temporary folder I then deleted. Against a stub shaped like the base, all three failed for the reasons above. Against a stub that meets the spec, all three passed. This is not a run at the base commit set.
+
+**Concerns:**
+- **Report location:** the brief asks for the report at `tasks/T3-report.md`, but my role only writes under `tests/` and `evidence/`, so I filed it in `evidence/`.
+- **Suggestions:** the brief carried no builder test suggestions, so there were none to take up.
+
+I committed nothing, so there are no `DESK:` git lines from me.
+===== stderr-1.txt (empty)
+===== check.out
+T3.TS2.1 pass 3 new test file(s)
+T3.TS2.2 pass 0 read(s) of plan, ledger, reports, reviews or other briefs
+T3.TS2.3 pass 0 read(s) of implementation files
+T3.TS2.4 pass 0 diff command(s)
+T3.TS2.5 pass brief read True, spec read True

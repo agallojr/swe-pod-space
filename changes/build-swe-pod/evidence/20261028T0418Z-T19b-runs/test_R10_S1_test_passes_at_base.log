@@ -1,0 +1,72 @@
+===== meta.json
+{
+  "test": "test_R10_S1_test_passes_at_base",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+T3 has finished. Its report is at changes/add-greeting/tasks/T3-report.md.
+Carry on.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space
+swe-pod: <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/export/agent-mesh
+alpha: <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/repos/alpha
+beta: <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/repos/beta
+The human is demo-owner.
+===== final-1.txt
+T3 is done. The rewritten test_R2_S1_startup_line now fails against the old code for the right reason, so all three project-level tests fail there, as the plan requires.
+
+**What changed in the test** (`changes/add-greeting/tests/test_R2_S1_startup_line.md`)
+- It now requires beta's first line of output to be exactly `hello, demo`, arriving in under 1 s. Those terms come straight from R2.S1 in the spec.
+- Against the old code it fails because the first line is beta's existing banner, `beta 1.0`. That line arrived in 0.026 s, so only the text is wrong.
+- The other two tests didn't change. They still fail because alpha has no greeting yet.
+
+**The tester's two concerns**
+- **Base commits:** the tester couldn't confirm which commits alpha and beta were at. I read both `change/add-greeting` branch heads myself: alpha is at 8a4bcfa and beta at 10c597d, which are the base commits. So the results hold, and it also means T1 hasn't committed anything yet. I recorded this as a ruling.
+- **Report header:** the tester guessed `demo/test` for the report's "actor" line because the brief named no handle. I left it as written, since nothing checks that line, and recorded that as a ruling too.
+
+**Filing (desk run, nothing run)**
+All three records passed the librarian's checks:
+```
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space add -- changes/add-greeting/evidence/20261028T0420Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space commit -m "File changes/add-greeting/evidence/20261028T0420Z-T3-report.md" -- changes/add-greeting/evidence/20261028T0420Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space fetch origin
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T041818Z-test_R10_S1_test_passes_at_base-f6d8/space push origin HEAD:main
+```
+As before, nothing was actually filed, so there are no `filed` ledger lines and I haven't regenerated STATUS.md.
+
+**Next**
+- T1, the greeting in alpha, is the only task in flight, and it hasn't reported or committed yet.
+- Once T1 reports, I'll check its commits and start T2 (the start-up line in beta), T4 (the review of T1) and T6 (test suggestions).
+===== stderr-1.txt (empty)
+===== check.out
+R10.S1.1 pass 1 at-base line(s) with test_R2_S1_startup_line pass
+R10.S1.2 pass 1 line(s) record the return and why
+R10.S1.3 pass 1 test subagent(s) given the test
+R10.S1.4 pass 0 write(s) by the lead to the tests folder

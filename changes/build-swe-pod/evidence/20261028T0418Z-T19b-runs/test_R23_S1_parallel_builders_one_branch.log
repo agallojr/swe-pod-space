@@ -1,0 +1,48 @@
+===== meta.json
+{
+  "test": "test_R23_S1_parallel_builders_one_branch",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+Dispatch T1 and T2 of add-greeting now, in parallel; both work in alpha.
+Dispatch nothing else. Pass this run's desk rule on to each builder, word for
+word, at the top of its prompt.
+Checkouts on this node: space <scratch>/runs/20261028T043351Z-test_R23_S1_parallel_builders_one_branch-37d6/space; alpha <scratch>/runs/20261028T043351Z-test_R23_S1_parallel_builders_one_branch-37d6/repos/alpha; swe-pod <scratch>/runs/20261028T043351Z-test_R23_S1_parallel_builders_one_branch-37d6/export/swe-pod
+===== final-1.txt
+T1 and T2 are both built and their tests pass, but neither is done yet. Each still needs its review, and nothing reached the alpha branch: the commits and pushes were only printed as `DESK:` lines, so there are no commits to check.
+
+**Results:**
+- **T2 (the name limit), status DONE:** `check_name()` in `alpha/limits.py` refuses names over 64 code points with an error that names the limit. Its report shows the new tests failing first and then passing (5 tests).
+- **T1 (the greeting), status DONE_WITH_CONCERNS:** `greeting()` in `alpha/greeting.py` returns `hello, demo` with no name and `hello, <name>` with one. Its report shows its tests failing first and then passing (6 tests).
+- **Full suite:** I ran alpha's unit suite myself at the end and it passes 11 of 11. The two builders kept to their own files.
+
+**Two rulings I made**, now in the ledger:
+1. **T1 went beyond its task.** It also checks the 64-character limit inside `greeting()`, which was meant to come in T3 through T2's `check_name()`. I kept it: the agreed interface already has `greeting()` raise for a long name. When T3 is briefed, it will replace that inline check with a call to `check_name()`, so the limit is defined in one place. If I'm wrong, T3 just has a little more to undo.
+2. **Python 3.6.** Alpha runs Python 3.6.8, which can't parse the plan's `str | None`, so T1 wrote `Optional[str]` instead. It means the same thing. If wrong, it's one annotation to change.
+
+**Test suggestions:** both builders suggested testing names of exactly 64 and 65 code points, including non-ASCII names. Neither gives a value computed from the code, so I've routed both to the test agent for the later test-suggestions task (T10). Their "for the reviewer" parts are kept for the reviews.
+
+**Filing:** the briefs, both reports and the ledger all pass the librarian's checks; the commands are the `DESK:` lines above. The ledger records the briefs and ledger as filed, as if the printed commands had succeeded. `STATUS.md` still hasn't been regenerated.
+
+**Not dispatched, as you asked:** the reviews of T1 and T2 (T6 and T7). Each task counts as done only once its review has no Critical or Important finding, and T3 can't start until both are done. Say the word and I'll send each to a fresh reviewer with its brief, its report and its diff.
+
+Reports:
+- `<scratch>/runs/20261028T043351Z-test_R23_S1_parallel_builders_one_branch-37d6/space/changes/add-greeting/tasks/T1-report.md`
+- `<scratch>/runs/20261028T043351Z-test_R23_S1_parallel_builders_one_branch-37d6/space/changes/add-greeting/tasks/T2-report.md`
+===== stderr-1.txt (empty)
+===== check.out
+R23.S1.1 pass builders started for: T1, T2
+R23.S1.2 pass builders ran in parallel
+R23.S1.3 fail builders with a trailered commit and a push to change/add-greeting: none
+R23.S1.4 pass 0 branch(es) created, 0 push(es) to another branch or forced

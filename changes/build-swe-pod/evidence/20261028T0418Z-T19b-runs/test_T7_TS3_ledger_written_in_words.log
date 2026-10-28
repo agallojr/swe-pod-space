@@ -1,0 +1,58 @@
+===== meta.json
+{
+  "test": "test_T7_TS3_ledger_written_in_words",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Where are we?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+NEXT add-greeting: <the task ids it can dispatch now, separated by commas, or none>
+IN FLIGHT add-greeting: <the task ids dispatched and not yet reported, separated by commas, or none>
+===== final-1.txt
+**add-greeting** is building. The spec was approved by demo-owner at 2026-11-01T09:00Z and they gave the go at 09:20Z. Nothing has happened in the ledger since 2026-11-01T09:56Z. No change is blocked and no review has reported a finding yet.
+
+**Two things to know first:**
+- **STATUS.md doesn't exist.** The space folder also isn't a git checkout, so I read the records from disk instead of as committed at `HEAD`. I worked out the status from those files and filed nothing, so no librarian commit ran and there are no `DESK:` lines to print.
+- **I couldn't see the branches.** The remotes (`example.invalid`) don't resolve, so the heads of `change/add-greeting` in alpha and beta are unknown.
+
+**Tasks:**
+
+| task | role | state | latest |
+|---|---|---|---|
+| T0 | lead | ready | - |
+| T1 | build | dispatched | 2026-11-01T09:55Z DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass |
+| T2 | build | waiting | - |
+| T3 | test | dispatched | 2026-11-01T09:26Z dispatch -> test (local, any) |
+| T4 | review | dispatched | - |
+| T5–T9 | | waiting | - |
+
+- **T0 is not counted as done.** The ledger line at 09:25Z says the branches were made "so T0 is finished". That is plain words, not a status line, and only `T0 complete` or `T0 DONE` would count. So T0 shows as ready even though the branches seem to exist. Filing a `T0 DONE` line through the librarian would fix this.
+- **T1 (greeting in alpha)** has reported DONE (`changes/add-greeting/tasks/T1-report.md`). It isn't done yet because its review, T4, has filed nothing. T2 (beta) can't start until T1 is done.
+- **T3 (scenario tests)** was dispatched at 09:26Z and hasn't reported.
+- **T4 (review of T1)** counts as dispatched because T1 has reported.
+- **Evidence:** none yet. Findings: Critical 0, Important 0, Minor 0.
+- **next:** T0 -> lead (local, any)
+
+Files worth opening: `space/changes/add-greeting/ledger.md`, `space/changes/add-greeting/plan.md`, `space/changes/add-greeting/tasks/T1-report.md`. STATUS.md would go at `space/STATUS.md`. All paths are under `<scratch>/runs/20261028T053237Z-test_T7_TS3_ledger_written_in_words-9bd5/`.
+
+STATE add-greeting: building
+NEXT add-greeting: T0
+IN FLIGHT add-greeting: T3, T4
+===== stderr-1.txt (empty)
+===== check.out
+T7.TS3.1 pass state given: 'building'
+T7.TS3.2 fail next given: T0
+T7.TS3.3 fail in flight given: T3, T4
+T7.TS3.4 pass 0 other record(s) touched

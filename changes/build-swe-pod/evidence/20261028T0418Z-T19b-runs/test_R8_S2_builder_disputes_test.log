@@ -1,0 +1,56 @@
+===== meta.json
+{
+  "test": "test_R8_S2_builder_disputes_test",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+changes/add-greeting/tasks/T10-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T045718Z-test_R8_S2_builder_disputes_test-5bcc/space
+swe-pod: <scratch>/runs/20261028T045718Z-test_R8_S2_builder_disputes_test-5bcc/export/swe-pod
+alpha: <scratch>/runs/20261028T045718Z-test_R8_S2_builder_disputes_test-5bcc/repos/alpha
+beta: <scratch>/runs/20261028T045718Z-test_R8_S2_builder_disputes_test-5bcc/repos/beta
+===== final-1.txt
+T10 is finished as **DONE_WITH_CONCERNS**: the project test is wrong, not the code, so the test still fails and the brief's "done when" can't be met without breaking R1.S2.
+
+**Disputed test:** test_R1_S2_name_too_long expects an error for a 40-character name. The spec says the error is for a name of 65 characters (R1.S2), with the limit at 64 code points (Open call 1). A 40-character name is under the limit, so alpha should greet it, and it does. The T7 run routed this failure the wrong way round: alpha agrees with the spec and the test doesn't. The test's owner needs to restate it with a name over 64 code points. I left the test unchanged.
+
+**What I did:**
+- Reproduced the failure at 51682dc: the test command exits 0 on a 40-character name.
+- Checked the spec boundary by hand: 64 characters are greeted, 65 raise `ValueError: name longer than the 64-character limit`, and the length is counted in code points, not bytes.
+- Left `alpha/__init__.py` unchanged.
+- Added four unit tests to `tests/test_alpha.py` that pin the 64/65 boundary, so nobody "fixes" the code to match the wrong test. They passed on their first run, because the code already behaves this way. The unit suite passes 8/8.
+- Committed it as alpha 51682dc..d391b53, with the `Change: add-greeting` and `Task: T10` trailers.
+
+**Not pushed:** the alpha checkout has no remote, so the fetch failed and commit d391b53 exists only on the local `change/add-greeting` branch. You'll need to publish it, or tell me where the remote is.
+
+The report includes two test suggestions: a name of exactly 64 characters, and 64 characters that each take more than one byte.
+
+Filing the report is a desk step in this run, so I printed these commands and ran none of them:
+
+```
+DESK: git -C <space> add -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <space> commit -m "File T10 report (add-greeting)" --trailer "Change: add-greeting" --trailer "Task: T10" -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <space> fetch origin <space-branch>
+DESK: git -C <space> rebase --no-autostash origin/<space-branch>
+DESK: git -C <space> push origin <space-branch>
+```
+
+The report is at `changes/add-greeting/tasks/T10-report.md` in the space checkout.
+===== stderr-1.txt (empty)
+===== check.out
+R8.S2.1 pass status DONE_WITH_CONCERNS (from the report)
+R8.S2.2 pass concerns name the test
+R8.S2.3 pass concerns name the clause (R1.S2)
+R8.S2.4 pass 0 test file(s) changed

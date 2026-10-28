@@ -1,0 +1,17 @@
+===== meta.json
+{
+  "test": "test_T11_TS6_memory_spaces_scope_in_docs",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": []
+}
+===== setup.out (empty)
+===== check.out
+T11.TS6.1 pass status table with 10 row(s)
+T11.TS6.2 pass rows: mount impl, load impl, librarian impl
+T11.TS6.3 fail 1 not-yet part(s) marked implemented
+T11.TS6.4 fail 1 implemented row(s) outside §4 to §6
+T11.TS6.5 pass README 2 sentence(s) on manual mounting
+T11.TS6.6 pass README: 1 sentence(s) on one librarian
+T11.TS6.7 fail README: 2 claim(s) of a not-yet part; See [](docs/product-data-split.md) for the rationale.

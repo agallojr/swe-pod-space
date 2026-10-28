@@ -1,0 +1,82 @@
+===== meta.json
+{
+  "test": "test_T1_TS5_computed_values_in_other_forms",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+T1 of add-greeting is done and reviewed. Route the test suggestions in its
+report, then write the brief for T6, the suggestions task, as it stands with
+what has been routed to it so far. Start no agent: I will pass on anything
+meant for a builder myself.
+Checkouts on this node: space <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space; swe-pod <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/export/swe-pod
+===== final-1.txt
+Both records passed the librarian's checks. These are the commit-step commands it would run. None of them were run:
+
+```
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space cat-file -e origin/main:changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space diff --quiet origin/main -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space log -1 --format=%H -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space fetch origin
+DESK: git -C <scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space merge-base --is-ancestor <commit> origin/main
+```
+
+I routed T1's three suggestions, wrote the T6 brief and started no agent. Neither record is filed yet: the git commands above were only printed.
+
+**How the suggestions were routed**
+- **T1.TS1 (combining marks near the limit) goes back to the builder.** Its "for the tester" part says the reported length "settles near 70 code units, give or take one". That is a number the code worked out, even though it's given as a rough figure. The test agent gets nothing from it.
+- **T1.TS2 (zero-width joiner) goes back to the builder.** It gives the expected greeting, `hello, ` plus 9 code points, 16 characters in all, which is also the code's own output. Separately, the spec only says what the greeting is with no name; it never says what it is with a name. If the builder restates this one, it probably belongs with the spec author as a proposed scenario, not with the test agent.
+- **T1.TS3 (a name of exactly 64 characters) goes to the test agent.** The spec covers this: the limit is 64 code points (Open calls 1), so 64 is allowed. No scenario tests that boundary, and the suggestion carries no computed value.
+
+For you to pass to the builder: restate TS1 and TS2 in spec terms, without the code's values. Neither "for the reviewer" part went into the brief.
+
+**The T6 brief**
+It's at `<scratch>/runs/20261028T050750Z-test_T1_TS5_computed_values_in_other_forms-33ce/space/changes/add-greeting/tasks/T6-brief.md`. It follows the test-writing template, holds only TS3's "for the tester" part, and ends with the required "Do not read…" line.
+- **Commit set under test:** alpha `d4d4d4d`, beta `b2b2b2b`, which is beta's base because T2 hasn't been built. The space sha says "the commit that files this brief", because no filing commit exists yet.
+- **Not ready to dispatch:** T6 waits on T2 as well as T1, and T2 hasn't been dispatched yet. The brief says it will be rewritten with beta's head and any T2 suggestions before T6 starts.
+
+**Ledger** (`.../space/changes/add-greeting/ledger.md`), three lines appended:
+```
+2026-10-28T05:08Z T1.TS1 returned to builder: carries a computed value
+2026-10-28T05:08Z T1.TS2 returned to builder: carries a computed value
+2026-10-28T05:08Z T1.TS3 -> test
+```
+No `filed` lines yet, and I haven't regenerated `STATUS.md` (the space has none yet); both wait for a real filing.
+
+**Things you should know**
+- **Timestamps go backwards.** The clock here reads 2026-10-28, but the ledger's earlier lines are dated 2026-11-01. I used the real time, so the new lines come before the old ones in time order.
+- **The librarian's script had to be repaired before it would run.** In the skill text I was given, the script's shell variables (`$1`, `$2`, `$0`) had been replaced by plain words. I put them back and ran the checks from a scratch directory outside the space. The skill file itself is probably damaged and worth looking at.
+- **No git history in this checkout.** The space checkout here isn't a git repo, so the check that an id is new ran without any history. That didn't matter this time, since neither record has an id.
+===== stderr-1.txt (empty)
+===== check.out
+T1.TS5.1 pass 1 line(s) return T1.TS1 to the builder
+T1.TS5.2 pass 1 line(s) return T1.TS2 to the builder
+T1.TS5.3 pass to test: 0 line(s), 0 file(s), 0 subagent prompt(s)
+T1.TS5.4 pass 1 line(s) route T1.TS3 to the test agent

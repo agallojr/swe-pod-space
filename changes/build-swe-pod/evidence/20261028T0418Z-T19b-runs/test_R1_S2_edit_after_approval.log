@@ -1,0 +1,60 @@
+===== meta.json
+{
+  "test": "test_R1_S2_edit_after_approval",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+The spec author has edited R2 of add-greeting at my request: beta's start-up
+line must now appear within 0.5 s of start, not 1 s. I have not approved
+that edit yet. Carry on with the change.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/space
+swe-pod: <scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/export/agent-mesh
+alpha: <scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/repos/alpha
+beta: <scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/repos/beta
+The human is demo-owner.
+===== final-1.txt
+Approval of add-greeting is reopened for R2 only, and everything that serves R2 is on hold until you approve the 0.5 s edit. The one task still free to run was T4, the review of the alpha work (T1). It passed.
+
+**The edit.** The only changed requirement is R2. The approved text, still quoted word for word in `plan.md` §3 and in the T1 and T3 briefs, says "within 1 s of start". The spec now says "within 0.5 s". R1 is unchanged.
+
+**Held:** T2 (beta start-up line), T3 (project-level tests), T5, T6, T7, T8 and T9. None will be dispatched or marked done until you approve. T3 was dispatched earlier with a brief that quotes "1 s", but it has filed no tests yet.
+
+**Carried on (R1 only):**
+- **T1 (alpha):** commit `51682dc` is on `change/add-greeting`, with the `Change:` and `Task:` trailers. The diff matches the plan. I ran the alpha unit suite at that head and got 4/4 pass. Its report claims a red run before the code but shows no output for it, so that part is unproven.
+- **T4 (review of T1):** passed, with no Critical or Important findings and 6 Minor. The Minors cover gaps in the alpha unit tests, missing type annotations, a CHANGELOG edit outside the task's files, and the stale "1 s" quote in the plan. They stay in the ledger for the whole-change review. With T4 passed, T1 is done.
+
+**Filing (desk run).** All three records passed the librarian's checks: `T4-brief.md`, `T4-review.md` and the ledger. Following your instruction, I printed the commit commands as `DESK:` lines (above) and ran none of them. So there is no `filed` ledger line yet, and I haven't regenerated `STATUS.md`.
+
+**Things to know:**
+- **Script fix:** the librarian's check script reached me with `$1`, `$2`, `$3` and `$0` garbled. I restored them in a copy at `/tmp/lib-check-add-greeting/check.sh` to run the checks.
+- **Clock:** this node's UTC clock reads 2026-10-28, earlier than the fixture's 2026-11-01 entries. My new ledger lines carry the real time, so they sort before the lines above them.
+- **Reviewer:** the reviewer is read-only, so I wrote its record text, unedited, at its path.
+
+**After you approve:** `plan.md` §3 still quotes "1 s", and only the planner can change that file. I'll ask the planner to correct the quote, then rewrite and redispatch T3 with the 0.5 s text, then dispatch T2.
+
+Files worth opening:
+- `<scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/space/changes/add-greeting/spec.md`
+- `<scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T042712Z-test_R1_S2_edit_after_approval-3305/space/changes/add-greeting/tasks/T4-review.md`
+
+My question: do you approve the R2 edit, that beta's start-up line must appear within 0.5 s of start?
+===== stderr-1.txt (empty)
+===== check.out
+R1.S2.1 pass spec unchanged, approved line stands
+R1.S2.2 pass 1 reopen line(s), 1 for R2 only
+R1.S2.3 pass T2: 0 subagent(s), 0 dispatch line(s)
+R1.S2.4 pass T4: 1 subagent(s) started with its brief

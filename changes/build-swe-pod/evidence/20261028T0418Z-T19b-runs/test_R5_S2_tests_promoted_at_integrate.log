@@ -1,0 +1,72 @@
+===== meta.json
+{
+  "test": "test_R5_S2_tests_promoted_at_integrate",
+  "commit_set": {
+    "swe-pod": "1cecea0",
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Every other tool works as normal.
+
+Merge add-greeting. Then write the brief for T4, the verify task of
+add-farewell, and stop there: do not dispatch it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T045037Z-test_R5_S2_tests_promoted_at_integrate-6f27/space
+swe-pod: <scratch>/runs/20261028T045037Z-test_R5_S2_tests_promoted_at_integrate-6f27/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T045037Z-test_R5_S2_tests_promoted_at_integrate-6f27/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+add-greeting is merged and integrated (as a desk run), and the T4 verify brief for add-farewell is written but not dispatched. Every git command was printed as a `DESK:` line rather than run, so nothing has reached a remote or the space's git yet. That includes the push of `main` in alpha and beta: I never push a code repo's `main`, so those two commands are yours to run for real.
+
+**Merge**
+- The evidence (ev-20261102T1412Z) was current, assuming the printed `ls-remote` and `diff` checks pass: the alpha and beta pins were still the branch bases, and the tests hadn't changed since that run. No rebase was needed.
+- Alpha merged first, then beta, as `pod.yaml` requires. Both are fast-forwards to the branch heads, and each `change/add-greeting` branch is deleted after its merge.
+
+**Integrate**
+- The three add-greeting tests are now in the regression suite, `tests/`.
+- Pins: alpha a1a1a1a → d4d4d4d, beta b2b2b2b → e5e5e5e. Gamma stays at c3c3c3c.
+- The spec author added `integrated: demo-owner 2026-10-28T04:54Z` to the spec.
+- The change folder moved to `changes/archive/2026-10-28-add-greeting/`.
+- I updated the space's README, regenerated `STATUS.md`, and added a ledger line to add-farewell naming what moved.
+
+**Final report** (`changes/archive/2026-10-28-add-greeting/report.md`)
+
+| Scenario | Test | Result | Evidence |
+|---|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass | ev-20261102T1412Z |
+| R1.S2 | test_R1_S2_name_too_long | pass | ev-20261102T1412Z |
+| R2.S1 | test_R2_S1_startup_line | pass | ev-20261102T1412Z |
+
+- **Unit suites:** alpha and beta both pass. No quality checks were declared, and the whole-change review (T8) had no findings.
+- **Ruling:** I integrated without the alpha and beta README updates the plan's integrate task lists. No build report names a README, the spec has no doc requirement, and you asked to merge. If that's wrong, the two READMEs don't describe the greeting until a follow-up change.
+- **Deferred minor:** T4's review noted that `alpha/__init__.py:5`'s module docstring doesn't mention `greeting()`.
+- **Test suggestions:** none were made.
+- **Open question:** should a follow-up change add the README text and the docstring?
+- **Branches** (before deletion): alpha at d4d4d4d, beta at e5e5e5e.
+
+**T4 brief** (`changes/add-farewell/tasks/T4-brief.md`)
+- It covers the farewell test, the three promoted add-greeting tests, and gamma's unit suite.
+- The commit set under test is alpha d4d4d4d, beta e5e5e5e (the new pins) and gamma f6f6f6f.
+- Gamma's pin didn't move, so `change/add-farewell` needs no rebase.
+- The brief can't give the space commit's sha yet, because nothing was filed in this desk run. It says the sha comes at dispatch, from the commit that files the brief.
+
+**Decision for you:** this node's clock reads 2026-10-28, which is before every existing record (2026-11-01 and later). I used the real clock rather than invent times. As a result, the new ledger lines sort before older ones, `integrated:` is dated before `approved:`, and the archive folder carries 2026-10-28. Should I fix the clock and re-stamp these entries, or keep them as they are?
+
+Files are in `<scratch>/runs/20261028T045037Z-test_R5_S2_tests_promoted_at_integrate-6f27/space/`:
+- `changes/archive/2026-10-28-add-greeting/report.md`
+- `changes/add-farewell/tasks/T4-brief.md`
+- `STATUS.md`
+===== stderr-1.txt (empty)
+===== check.out
+R5.S2.1 pass 3 of 3 tests promoted to tests/
+R5.S2.2 pass T4 brief written
+R5.S2.3 pass T4 brief runs the regression suite
+R5.S2.4 pass add-farewell's test stays in its change folder

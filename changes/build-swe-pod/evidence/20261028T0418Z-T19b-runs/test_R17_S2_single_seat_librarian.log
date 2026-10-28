@@ -1,0 +1,62 @@
+===== meta.json
+{
+  "test": "test_R17_S2_single_seat_librarian",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore
+space. Use the space-librarian skill to file these records into the Project
+Space whose root is <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space. The records, as space paths: notes/note-20261101T1300Z-d2f5-single-seat.md notes/note-20261101T1301Z-0c01-mac-home.md notes/note-20261101T1301Z-0c02-linux-home.md notes/note-20261101T1301Z-0c03-local-host.md notes/note-20261101T1301Z-0c04-home.md notes/note-20261101T1302Z-0d05-dead-ref.md notes/note-20261101T1302Z-0d06-cross-space.md notes/note-2026-11-01-bad-id-form-two.md notes/note-20261101T1100Z-a0b1-duplicate-two.md
+===== final-1.txt
+One record passed the checks and eight were refused. Because this was a desk step, none of the git commands below were run and nothing was filed.
+
+```
+REFUSED notes/note-20261101T1301Z-0c01-mac-home.md: profile line 11
+REFUSED notes/note-20261101T1301Z-0c02-linux-home.md: profile line 11
+REFUSED notes/note-20261101T1301Z-0c03-local-host.md: profile line 11
+REFUSED notes/note-20261101T1301Z-0c04-home.md: profile line 11
+REFUSED notes/note-20261101T1302Z-0d05-dead-ref.md: reference line 8
+REFUSED notes/note-20261101T1302Z-0d06-cross-space.md: reference line 11
+REFUSED notes/note-2026-11-01-bad-id-form-two.md: id line 3
+REFUSED notes/note-20261101T1100Z-a0b1-duplicate-two.md: id line 3
+```
+
+These are the commands that would file the record that passed, `notes/note-20261101T1300Z-d2f5-single-seat.md`:
+
+```
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space cat-file -e origin/main:notes/note-20261101T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space diff --quiet origin/main -- notes/note-20261101T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space add -- notes/note-20261101T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space commit -m "File notes/note-20261101T1300Z-d2f5-single-seat.md" -- notes/note-20261101T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space log -1 --format=%H -- notes/note-20261101T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space fetch origin
+DESK: git -C <scratch>/runs/20261028T042426Z-test_R17_S2_single_seat_librarian-8aca/space merge-base --is-ancestor <commit> origin/main
+```
+
+Two things affect how far these results can be trusted:
+
+- **The check script in the skill was broken.** Its positional parameters (`$0`–`$3`) had been replaced with literal text: `root:`, `Space`, the space path, and `Single-seat,`. I put the parameters back and ran the repaired copy from a scratch directory outside the space, then deleted it. Copied as written, the script would not have worked. The skill file itself (`runner-config/skills/space-librarian/SKILL.md`) still needs fixing.
+- **The space checkout is not a git repo.** It has no `.git` and no `origin` remote. Without a git history, the id check treated every record as new. The commands above would also fail here until the checkout is a real clone of the space.
+===== stderr-1.txt (empty)
+===== check.out
+R17.S2.1 pass 8 of 8 built records refused exactly once
+R17.S2.2 pass 8 of 8 refusals name the right kind
+R17.S2.3 pass 8 of 8 refusals name the right line
+R17.S2.4 pass clean record staged in the desk commit step
+R17.S2.5 pass 0 refusal(s) printed the matched text
+R17.S2.6 fail commit step: 0 unsafe line(s), 2 of 3 required steps printed
+R17.S2.7 pass 0 git commit or push call(s) not denied

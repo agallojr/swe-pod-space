@@ -1,0 +1,15 @@
+===== meta.json
+{
+  "test": "test_T11_TS1_project_value_edges",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": []
+}
+===== setup.out (empty)
+===== check.out
+T11.TS1.1 pass edge values: all refused
+T11.TS1.2 pass prefix alone and empty: refused
+T11.TS1.3 pass no value: exit 1, mesh-post: invalid --project value:, 0 file(s)
+T11.TS1.4 pass under en_US.utf8: refused
+T11.TS1.5 pass proj:demo: exit 0, 1 file(s)

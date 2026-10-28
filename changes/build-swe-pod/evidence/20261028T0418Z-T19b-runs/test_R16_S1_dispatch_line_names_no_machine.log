@@ -1,0 +1,13 @@
+===== meta.json
+{
+  "test": "test_R16_S1_dispatch_line_names_no_machine",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": []
+}
+===== check.out
+R16.S1.1 pass swe-pod 1cecea0: 1 of 1 template dispatch line(s) in the form
+R16.S1.2 pass 56 agent-written dispatch line(s) in 30 ledger(s) of 46 other run(s)
+R16.S1.3 fail 10 dispatch line(s) not in the form; 20261028T043649Z-test_R24_S1_two_shards_verified-fa8c:changes/add-greeting/ledger.md:28; 20261028T043649Z-test_R24_S1_two_shards_verified-fa8c:changes/add-greeting/ledger.md:29; 20261028T050942Z-test_T37_TS2_shards_leave_out_unit_suite-33df:changes/add-greeting/ledger.md:28
+R16.S1.4 pass 0 machine value hit(s) in dispatch lines

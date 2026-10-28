@@ -1,0 +1,58 @@
+===== meta.json
+{
+  "test": "test_R6_S2_shared_files_ordered",
+  "commit_set": {
+    "swe-pod": "1cecea0"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T045406Z-test_R6_S2_shared_files_ordered-93da/space
+swe-pod: <scratch>/runs/20261028T045406Z-test_R6_S2_shared_files_ordered-93da/export/swe-pod
+alpha: <scratch>/runs/20261028T045406Z-test_R6_S2_shared_files_ordered-93da/repos/alpha
+beta: <scratch>/runs/20261028T045406Z-test_R6_S2_shared_files_ordered-93da/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've written the plan for add-greeting to `changes/add-greeting/plan.md` and committed nothing. The lead files it through the librarian.
+
+**The plan:**
+- **T1** adds `greeting()` to alpha. With no name it returns `hello, demo`. A name over 64 code points raises a `ValueError` whose message contains `64-character limit`.
+- **T2** adds `farewell()` to alpha, which returns `goodbye, demo`.
+- **T3** makes beta print the greeting as its first line, with the existing `beta 1.0` banner moving to the second line.
+- **Order:** T1 and T2 both edit the same four alpha files (`alpha/__init__.py`, `tests/test_alpha.py`, `CHANGELOG.md`, `README.md`), so T2 waits for T1. T3 waits for T1 only because it needs `greeting()`. It shares no file with T2, so T2 and T3 run at the same time once T1 is done.
+- **Tests:** the project-level tests (T4) start at the go, alongside T1. There is one review per build task and one verify run on `linux-server`, not split into shards. The spec has no Quality section, so verify records `quality: none-declared`.
+- **Not needed:** a test-update task, because the spec supersedes nothing.
+- **Longest chain:** T1 → T7 → T2 → T8 → T5 → T6 → T10 → T11.
+- **Defaults I chose** (to go under the spec's Open calls):
+  - A name of exactly 64 code points is accepted.
+  - The error is a `ValueError`.
+  - The banner stays, as the second line.
+  - beta finds alpha by having both checkouts on `PYTHONPATH`.
+  - The 1 s limit is timed from just before beta starts to its first line.
+
+**Question for demo-owner (one):**
+1. What should `greeting(name)` return for a valid name of 64 code points or fewer? The spec only gives the text for no name (`hello, demo`). The plan builds `hello, <name>`, for example `hello, alice`. A different answer changes T1's code and unit tests, and the function other tools will import.
+
+For the lead's librarian, the commit steps printed, not run. The commit message is my suggestion:
+```
+DESK: git -C space add changes/add-greeting/plan.md
+DESK: git -C space commit -m "add-greeting: plan" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C space fetch origin
+DESK: git -C space rebase origin/main
+DESK: git -C space push origin main
+```
+===== stderr-1.txt (empty)
+===== check.out
+R6.S2.1 pass plan written
+R6.S2.2 pass 3 build task(s); 1 pair(s) touch a common file
+R6.S2.3 pass unordered pairs: none

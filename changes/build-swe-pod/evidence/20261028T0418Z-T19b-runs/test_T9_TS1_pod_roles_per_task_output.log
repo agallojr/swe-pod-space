@@ -1,0 +1,14 @@
+===== meta.json
+{
+  "test": "test_T9_TS1_pod_roles_per_task_output",
+  "commit_set": {
+    "agent-mesh": "1367f65"
+  },
+  "absent": []
+}
+===== setup.out (empty)
+===== check.out
+T9.TS1.1 pass identity template: names 6 of 6 roles
+T9.TS1.2 pass operator manual: names 6 of 6 roles
+T9.TS1.3 pass README: names 6 of 6 roles
+T9.TS1.4 pass described as per-task-output roles any number of nodes may hold: identity template True, operator manual True, README True
