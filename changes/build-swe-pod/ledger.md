@@ -532,4 +532,13 @@
                   inside the 240 min cap, and records both passes, each test's result
                   being its last run's; the runner's startup retry missing that case is
                   logged for T35; cost if wrong: about 25 min more shard time
+2026-10-28T05:42Z T19a DONE_WITH_CONCERNS: ev-20261028T0414Z-T19a, macos-laptop, at space 33c829f,
+                  swe-pod 1cecea0, agent-mesh 1367f65; smoke 8 of 8; 28 pass, 15 fail, 1
+                  not-run (cap) of 44; wall 4747 s
+2026-10-28T05:42Z Ruling: one run log copy named a bus inbox name that the shipped mesh-post
+                  skill uses as its default sender; the lead redacted it to <agent> in that
+                  copy before filing, as the shard agent redacted others; logged for T35 with
+                  the runner's redaction gaps; cost if wrong: none, logs only
+2026-10-28T05:42Z filed changes/build-swe-pod/evidence/20261028T0414Z-T19a.md, its -runs/ and
+                  its -report.md
 ```
