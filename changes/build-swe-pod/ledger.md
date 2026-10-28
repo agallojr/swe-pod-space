@@ -578,4 +578,14 @@
 2026-10-28T06:11Z Ruling: T10's touches extend to skills/space-librarian/check.sh by the
                   verify fix; cost if wrong: none, the file is the old script byte for byte
 2026-10-28T06:11Z filed changes/build-swe-pod/tasks/V2-report.md, tasks/T10-review-r2.md
+2026-10-28T06:25Z T1 fix round 2/5: 1 addressed, 0 open, 1cecea0..b830ab2
+2026-10-28T06:25Z T2 fix round 1/5: 1 addressed, 0 open, b830ab2..ec10cf6
+2026-10-28T06:25Z T5 fix round 2/5: 3 addressed, 0 open, ec10cf6..f174cf8
+2026-10-28T06:25Z T7 fix round 2/5: 3 addressed, 1 open, f174cf8..2a01192
+2026-10-28T06:25Z T1 review r2: spec ok; none
+2026-10-28T06:25Z T2 review r1: spec ok; none
+2026-10-28T06:25Z T5 review r2: spec ok; 1 Minor
+2026-10-28T06:25Z T7 review r2: spec issues; 3 Important, 2 Minor
+2026-10-28T06:25Z filed changes/build-swe-pod/tasks/V1-report.md, tasks/V1-review.md
+2026-10-28T06:25Z dispatch T7, T1 -> build (local, any), base swe-pod 2a01192: fix round 3
 ```
