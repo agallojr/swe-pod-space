@@ -372,4 +372,8 @@
 2026-10-28T03:01Z operator decision: the space-librarian id finding from the T37 review is
                   fixed by a new agent-mesh build task, T42, with its review, T43, before
                   T19a and T19b; the plan is revised by a fresh planner to add them
+2026-10-28T03:05Z operator directive, before leaving the session unattended: continue on the
+                  macos-laptop and linux-server nodes; run the tests, fix the bugs, and
+                  check in and push the products agent-mesh and swe-pod; keep the
+                  linux-server node pulling the latest products and space as needed
 ```
