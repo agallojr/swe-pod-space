@@ -376,4 +376,11 @@
                   macos-laptop and linux-server nodes; run the tests, fix the bugs, and
                   check in and push the products agent-mesh and swe-pod; keep the
                   linux-server node pulling the latest products and space as needed
+2026-10-28T03:07Z plan.md revision 4.3 filed: T42 and T43 added, T19a and T19b wait on T42,
+                  and the shards' space commit is the one that files the last shard brief
+2026-10-28T03:07Z Ruling: T18 keeps its after list; T42's test suggestions, if any, go to
+                  T35 as T39's did, so that T18 does not wait on T42; cost if wrong: those
+                  suggestions get a review instead of a test
+2026-10-28T03:07Z dispatch T42 -> build (local, any), base agent-mesh e0f6af0
+2026-10-28T03:07Z filed changes/build-swe-pod/tasks/T42-brief.md
 ```
