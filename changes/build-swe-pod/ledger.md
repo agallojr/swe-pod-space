@@ -828,4 +828,11 @@
                   same commit set and inside its cap, then test_R16_S1 again last; each test's
                   result is its last run's, and one still stopped is not-run (environment);
                   cost if wrong: up to about 40 min more shard time
+2026-10-28T12:26Z T19b DONE_WITH_CONCERNS: ev-20261028T1137Z-T19b, linux-server, round 5 at space
+                  b5d9d59, swe-pod 83eaef9, agent-mesh bbd19a2; 25 pass, 22 fail, 0 not-run of
+                  47; 21 of the fails are provider safeguard stops (23 of 42 agent steps), not
+                  answers; wall 1999 s; R7.S1 live 7 of 7; the result's 85 files match their
+                  sha256
+2026-10-28T12:26Z filed changes/build-swe-pod/evidence/20261028T1137Z-T19b.md, its -runs/ and
+                  its -report.md, from the remote node's result
 ```
