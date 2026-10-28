@@ -680,4 +680,15 @@
                   probe hardening applied to one more case; cost if wrong: none
 2026-10-28T07:40Z filed changes/build-swe-pod/tests/runner.sh, tests/README.md,
                   evidence/20261028T0739Z-T41-report.md
+2026-10-28T07:49Z T18 DONE: fixture world shifted back one month (no 2026-11 date left; ids
+                  still match file names), R11.S1 counts only id: ev- records, R14.S1, R20.S1
+                  and T8.TS3 match exact paths, R22.S1 states G1 and counts commands handed
+                  over
+2026-10-28T07:49Z T18 at base: all 90 tests fail for their stated reasons (74 on an absent
+                  deliverable, no agent started), 0 pass
+2026-10-28T07:49Z Ruling: 21 fixture files refused on id and 2 on reference (fixture notes
+                  citing core/, which the demo space's may_reference lists) are test data,
+                  filed as at 04:09Z; cost if wrong: none, no space record holds or cites them
+2026-10-28T07:49Z filed changes/build-swe-pod/tests/ (T18 round 2 fixes),
+                  evidence/20261028T0745Z-T18-report.md
 ```
