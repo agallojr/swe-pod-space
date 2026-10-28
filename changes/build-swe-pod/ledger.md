@@ -715,4 +715,14 @@
                   and the dispatch line at e8fa318
 2026-10-28T09:08Z filed changes/build-swe-pod/evidence/20261028T0755Z-T19b.md, its -runs/ and
                   its -report.md, from the remote node's result
+2026-10-28T09:09Z Ruling: of the 14 round 3 failures, 11 are on the test side and go back to the
+                  test role: printed heredocs and echo blocks read as git calls or reads (I8,
+                  T10.TS8, T10.TS1, T3.TS2), the request Context in a body file (R7.S1), a
+                  builder's desk merge counted as a merge into main (R15.S1), dispatch lines
+                  judged against the template form instead of the spec's Then (R16.S1), prose
+                  read as a branch name (R23.S2), and bytecode left by a read-only check
+                  (T6.TS3); T13.TS1 stopped on a provider safeguard and is re-run; R17.S2, R4.S1
+                  and T4.TS5 are triaged against the deliverables; the lead's own dispatch
+                  lines keep to the template form from here on; cost if wrong: one more round
+2026-10-28T09:09Z dispatch T18 -> test (local, any)
 ```
