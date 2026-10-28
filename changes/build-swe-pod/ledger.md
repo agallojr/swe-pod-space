@@ -249,4 +249,6 @@
 2026-10-28T01:46Z T12 review: spec ok; 4 Minor
 2026-10-28T01:46Z T13 review: spec ok; 7 Minor
 2026-10-28T01:46Z T14 review: spec ok; 4 Minor
+2026-10-28T02:22Z dispatch T37 -> build (local, any), base swe-pod 6f8ed78
+2026-10-28T02:22Z filed changes/build-swe-pod/tasks/T37-brief.md
 ```
