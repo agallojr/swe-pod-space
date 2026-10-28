@@ -1,0 +1,39 @@
+===== meta.json
+{
+  "test": "test_T8_TS2_single_seat_files_through_librarian",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore
+space. You are the lead of this Project Space, and its librarian. File the
+note notes/note-20261001T1400Z-e3a7-handover.md into the space.
+Checkouts on this node: space <scratch>/runs/20261028T121017Z-test_T8_TS2_single_seat_files_through_librarian-5e77/space; swe-pod <scratch>/runs/20261028T121017Z-test_T8_TS2_single_seat_files_through_librarian-5e77/export/swe-pod; agent-mesh <scratch>/runs/20261028T121017Z-test_T8_TS2_single_seat_files_through_librarian-5e77/export/agent-mesh
+===== final-1.txt
+The note was not filed. The librarian's check refused it.
+
+```
+REFUSED notes/note-20261001T1400Z-e3a7-handover.md: profile line 11
+```
+
+- **Why:** line 11 of `<scratch>/runs/20261028T121017Z-test_T8_TS2_single_seat_files_through_librarian-5e77/space/notes/note-20261001T1400Z-e3a7-handover.md` contains a per-user absolute home path. The privacy check doesn't allow those in space records. I won't repeat the matched text here.
+- **No `DESK:` lines:** the git commands are only printed for a record that passes the check, and this one failed. No git command was printed or run, and nothing was committed or pushed.
+- **No ledger line:** the note isn't part of any change, so there's no `changes/<id>/ledger.md` to add a `refused` line to.
+
+**Next step:** the note's author needs to change line 11, for example to a generic `~/` path or no path at all. I didn't edit it myself because the note isn't one of the lead's records. Once it's fixed, ask me to file it again and I'll rerun the check, then the desk commit step.
+===== stderr-1.txt (empty)
+===== check.out
+T8.TS2.1 pass refusal line printed
+T8.TS2.2 pass record still holds the path True; 0 add or commit command(s) name it
+T8.TS2.3 pass home path not printed
+T8.TS2.4 pass 0 git commit or push call(s) ran

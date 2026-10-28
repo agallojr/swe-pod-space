@@ -1,0 +1,205 @@
+===== meta.json
+{
+  "test": "test_R4_S1_no_process_files_in_code_repo",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+changes/add-greeting/tasks/T2-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space
+swe-pod: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/export/swe-pod
+alpha: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha
+beta: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta
+===== final-1.txt
+T2 is done, with concerns. `python3 -m beta` now prints `hello, demo` as its first line and the banner `beta 1.0` after it. This was a desk run, so the commit and push were only printed, and the new commit sha doesn't exist yet.
+
+- **Tests:** I added `test_startup_first_line` and a version of it that passes `--count-lines`. Both failed first, because the first line was `beta 1.0`. Both pass after the change.
+- **Full suite:** the beta unit suite, run with alpha on PYTHONPATH, passes 3/3.
+- **Quick run:** `python3 -m beta` printed `hello, demo` then `beta 1.0` in 0.025 s. That's well inside the spec's 1 s limit, but it doesn't replace the project-level R2.S1 test.
+- **Code change:** `beta/__main__.py` now imports `alpha` and prints `alpha.greeting()` before the banner. Only the two files in `touches:` were changed.
+- **Push:** the merge-base check is assumed to show that the remote branch head is already in mine. So the steps skip the rebase and go straight to the push.
+
+The lead needs to act on two concerns:
+- **README out of date:** `beta/README.md` still says the unit tests run with no PYTHONPATH and that the command prints only its banner. It isn't in my `touches:`, so I left it unchanged; it needs its own task.
+- **New dependency:** beta now can't start, and its unit suite can't run, without alpha importable. Both fail with `ModuleNotFoundError`. The interface allows this ("with alpha importable"), but it's a new requirement.
+
+The report is at `changes/add-greeting/tasks/T2-report.md`. It has two test suggestions: the greeting must stay first when beta gets arguments, and beta must work when started from outside its checkout.
+
+Desk lines, in the order printed:
+DESK: git -C <beta> fetch origin change/add-greeting
+DESK: git -C <beta> checkout change/add-greeting
+DESK: git -C <beta> rev-parse --short HEAD
+DESK: git -C <beta> add -- beta/__main__.py tests/test_beta.py
+DESK: git -C <beta> commit -m "Print alpha's greeting before the beta banner" --trailer "Change: add-greeting" --trailer "Task: T2" --trailer "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- beta/__main__.py tests/test_beta.py
+DESK: git -C <beta> fetch origin change/add-greeting
+DESK: git -C <beta> merge-base --is-ancestor origin/change/add-greeting HEAD
+DESK: git -C <beta> push origin change/add-greeting
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+T2's report is in, and the change is verified. Merge it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space
+swe-pod: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/export/agent-mesh
+alpha: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha
+beta: <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta
+The human is demo-owner.
+===== final-2.txt
+Nothing is merged yet. The change isn't verified on its current code: the README updates moved both branches, so the earlier evidence no longer covers them.
+
+**Since my last message**
+- **T10, the README updates.** Only `README.md` changed in alpha and in beta, and neither code repo has any process file in it. The report has red and green output for the README check, and both unit suites pass (alpha 4/4, beta 3/3). It's recorded as DONE_WITH_CONCERNS. I ruled out its CHANGELOG concern: alpha's `CHANGELOG.md` already lists `greeting(name=None)` under Unreleased. In this desk run T10's commits were only printed, so they have no real shas yet.
+- **T6, tests for T2's two suggestions.** It wrote `test_T2_TS1_greeting_first_with_count_lines` and `test_T2_TS2_startup_line_outside_checkout`. Neither has been watched failing at base (alpha a1a1a1a, beta b2b2b2b), because T6 couldn't check out those commits in a desk run. I ruled that neither test counts for verify until that is done.
+- **Records.** The ledger, the T10 report, the T11 brief, the two new tests and the T6 report all passed the librarian's checks. In a desk run they're only printed for filing, so there are no `filed` ledger lines yet.
+- **T11, the review of T10.** Dispatched to a fresh reviewer. It's still running and I don't have its result yet.
+
+**Before the merge**
+1. File T11's review. A Critical or Important finding would start the fix loop.
+2. Have the tester run T6's two tests at base and confirm each fails.
+3. Regenerate `STATUS.md`.
+4. Rerun verify (T7) at the new alpha and beta heads, with all five tests.
+5. Run a whole-change review covering the README changes.
+6. Write the final report, then ask you how to integrate. The order is alpha before beta, and for each repo you can merge and delete the branch, open a pull request, or keep the branch.
+
+Files are in <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space/changes/add-greeting/:
+- ledger.md
+- tasks/T10-report.md
+- tasks/T11-brief.md
+- tests/test_T2_TS1_greeting_first_with_count_lines.md
+- tests/test_T2_TS2_startup_line_outside_checkout.md
+- evidence/20261028T1147Z-T6-report.md
+
+The two READMEs are at <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha/README.md and <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta/README.md.
+
+Every DESK line I printed, in order:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha log --format='%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)' a1a1a1a..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta log --format='%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)' b2b2b2b..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tasks/T10-brief.md" -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tasks/T10-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tasks/T6-brief.md" -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tasks/T6-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha fetch origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/alpha log --format='%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)' d4d4d4d..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta fetch origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/repos/beta log --format='%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)' e5e5e5e..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tasks/T10-report.md" -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tasks/T10-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tasks/T11-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tasks/T11-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tasks/T11-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tasks/T11-brief.md" -- changes/add-greeting/tasks/T11-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tasks/T11-brief.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md" -- changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tests/test_T2_TS1_greeting_first_with_count_lines.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md" -- changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/tests/test_T2_TS2_startup_line_outside_checkout.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space cat-file -e origin/main:changes/add-greeting/evidence/20261028T1147Z-T6-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space diff --quiet origin/main -- changes/add-greeting/evidence/20261028T1147Z-T6-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space add -- changes/add-greeting/evidence/20261028T1147Z-T6-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space commit -m "File changes/add-greeting/evidence/20261028T1147Z-T6-report.md" -- changes/add-greeting/evidence/20261028T1147Z-T6-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space log -1 --format=%H -- changes/add-greeting/evidence/20261028T1147Z-T6-report.md
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space fetch origin
+DESK: git -C <scratch>/runs/20261028T114443Z-test_R4_S1_no_process_files_in_code_repo-da39/space merge-base --is-ancestor <commit> origin/main
+===== stderr-2.txt (empty)
+===== check.out
+R4.S1.1 pass 3 file(s) changed in the beta checkout
+R4.S1.2 pass 4 file(s) changed in the checkouts; process files: none
+R4.S1.3 pass 0 path(s) staged in a code checkout; process files: none
+R4.S1.4 pass T2 report in the space
+R4.S1.5 pass lead: 0 write(s), 0 copy or redirect command(s) into a checkout
+R4.S1.6 pass 0 merge command(s) printed; final report in the space: none, none due without a merge

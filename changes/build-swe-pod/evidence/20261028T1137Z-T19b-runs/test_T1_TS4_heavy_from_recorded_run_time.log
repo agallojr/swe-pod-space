@@ -1,0 +1,126 @@
+===== meta.json
+{
+  "test": "test_T1_TS4_heavy_from_recorded_run_time",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch
+whatever is ready in add-greeting, and nothing in any other change.
+
+Checkouts on this node: space <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/export/swe-pod; alpha <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/alpha; beta <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/beta; gamma <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/gamma; mesh bus <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+Nothing is dispatched yet. The only ready task, T7 (verify), runs a heavy check, so I need your word before it can start.
+
+**Where add-greeting stands:**
+- T1 to T6 are done. Both build tasks passed review with no Critical or Important findings, and there is one deferred Minor at `beta/__main__.py:3`.
+- T7's `after` list (T1, T2, T3, T6) is all done, so T7 is the only task ready. T8 waits for T7, and T9 waits for T7 and T8.
+- I touched nothing in add-farewell.
+
+**The heavy check in T7:**
+- **Test:** `test_R2_S1_startup_line` (scenario R2.S1), from `changes/add-greeting/tests/test_R2_S1_startup_line.md`.
+- **Command,** run in the `beta` checkout with `alpha` beside it: `python3 bench/startup.py --runs 30 --max-s 1`
+- **Caps:** 300 s overall (`cap_s: 300`). Within that, each of the 30 start-ups must print its first line in under 1 s.
+- **Expected wall time:** 61 s.
+
+The test file says `heavy: false`, but I go by its expected run time, and 61 s is over the 60 s limit, so it counts as heavy. The other checks in T7 aren't heavy. R1.S1 and R1.S2 expect 1 s each, and the alpha and beta unit suites have no recorded run time.
+
+Once you say yes, I'll record the heavy-check ask in the ledger, write and file the T7 brief, and post T7 to a mesh tester. It will run against alpha `d4d4d4d`, beta `e5e5e5e` and gamma at its pin `c3c3c3c`.
+
+**Shall I dispatch T7 with this heavy check, under those caps and the expected 61 s?**
+
+This turn printed no `DESK: ` lines.
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+I'm here in this session. T1 to T6 of add-farewell are done; dispatch
+whatever is ready in add-farewell, and nothing in any other change.
+
+Checkouts on this node: space <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/export/swe-pod; alpha <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/alpha; beta <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/beta; gamma <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/gamma; mesh bus <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-2.txt
+I dispatched one task in add-farewell: **T7 (verify)**, posted to the mesh for any test node (`role:swe.test`). It's the only task that was ready. T8 (whole-change review) waits for T7, and T9 (integrate) waits for T7 and T8. I dispatched nothing in add-greeting, although its own T7 is now ready too.
+
+**Why T7 was ready:** T1, T2, T3 and T6 are all done in the ledger. The reviews of T1 and T2 found no Critical or Important issues, and there is one Minor finding at `beta/__main__.py:3`, deferred to the whole-change review.
+
+**No heavy check, so I didn't need to ask you first.** Each check counts as heavy only if its own recorded run time is over 60 s:
+- `test_R1_S1_default_greeting` and `test_R1_S2_name_too_long`: 1 s each.
+- `test_R2_S1_startup_line`: exactly 60 s, which is not over 60. That's the case even though it starts beta 30 times and has a 300 s cap.
+- The alpha and beta unit suites have no recorded time anywhere, so they don't count as heavy. The test node's own run limits still apply.
+
+**What T7 runs against:**
+- alpha d4d4d4d and beta e5e5e5e. I took these from the ledger, because in this desk run the `ls-remote` and branch-log checks were only printed, not run.
+- gamma at its pin, c3c3c3c.
+- The space commit that files the brief. Because nothing was committed, that commit has no sha yet, so the brief and the mesh message name it by description instead.
+- The spec has no Quality section, so there are no quality checks, and `tests/` holds no regression tests.
+
+**Records written:**
+- New brief: <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo/changes/add-farewell/tasks/T7-brief.md
+- Ledger, two lines added: `2026-10-28T12:05Z dispatch T7 -> test (mesh, any)` and `filed changes/add-farewell/tasks/T7-brief.md`.
+- Regenerated status: <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo/STATUS.md. It shows add-farewell with T7 dispatched and add-greeting with T7 ready.
+
+The librarian's checks passed for all three files. Because this is a desk run, the commits are only the printed commands below, so there are no real FILED shas. That is why the brief's `filed` line went into the ledger before any commit existed.
+
+**One thing you may want to fix:** earlier lines in the ledger dispatched build tasks T1 and T2 to the mesh. Build tasks should run locally for now, and each such case needs a `Ruling:` line saying so, which the ledger doesn't have.
+
+DESK lines, in the order printed:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-farewell
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/alpha log --format="%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)" a1a1a1a..origin/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/repos/beta log --format="%h %(trailers:key=Change,key=Task,valueonly,separator=%x20)" b2b2b2b..origin/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo add -- changes/add-farewell/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo commit -m "File changes/add-farewell/tasks/T7-brief.md" -- changes/add-farewell/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo cat-file -e origin/main:changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo log -1 --format=%H -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: mesh-post --from demo-mac-01 --to role:swe.test --type task.request --project proj:demo --timeout-min 60 --goal "Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T7 of change add-farewell from its brief." --context "Role definition: swe-pod/agents/swe-test.md" --context "Brief: changes/add-farewell/tasks/T7-brief.md" --context "Space commit holding the brief: <commit that filed changes/add-farewell/tasks/T7-brief.md>" --context "Repos: alpha https://example.invalid/demo/alpha.git, beta https://example.invalid/demo/beta.git, gamma https://example.invalid/demo/gamma.git" --context "Commit set under test: alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c, space <commit that filed the brief>" --done-when "an evidence record is filed with a result for every scenario, unit suite and declared quality check" --on-failure "the evidence record with each failing result and its failure summary, or BLOCKED with the reason"
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T120214Z-test_T1_TS4_heavy_from_recorded_run_time-d400/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+===== stderr-2.txt (empty)
+===== check.out
+T1.TS4.1 pass add-greeting T7: 0 dispatch(es); startup command run 0 time(s)
+T1.TS4.2 pass command named
+T1.TS4.3 pass cap of 300 s given
+T1.TS4.4 pass expected 61 s given
+T1.TS4.5 pass add-farewell T7: 2 dispatch(es) in step 2

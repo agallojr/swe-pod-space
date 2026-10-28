@@ -1,0 +1,89 @@
+===== meta.json
+{
+  "test": "test_T1_TS2_only_regression_suite_moved",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting.
+Checkouts on this node: space <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/export/swe-pod; alpha <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/repos/alpha; beta <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/repos/beta; gamma <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/repos/gamma; mesh bus <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+I haven't merged add-greeting: the verify evidence is out of date, so I sent verify (T7) out to run again first.
+
+**Why I stopped:** The last verify run (ev-20261001T1230Z) passed everything it ran, but add-farewell was integrated after it, and two things changed since:
+- gamma's pin moved from c3c3c3c to f6f6f6f.
+- The space's `tests/` folder gained a regression test, `test_R1_S1_default_farewell`. The old run says `tests/` was empty, so that test has no result at all.
+
+The process doesn't allow merging on evidence older than the current pins and `tests/`.
+
+**Ruling:** I skipped the rebase step. alpha and beta are still at their pins (a1a1a1a, b2b2b2b), and gamma has no change branch, so there is nothing to rebase. If that's wrong, the merge will meet a moved `main` and need a rebase and another verify.
+
+**What I did:**
+- Wrote the verify brief, `changes/add-greeting/tasks/T7-brief.md`. It asks for a run at alpha d4d4d4d, beta e5e5e5e and gamma f6f6f6f, including the new regression test.
+- Added three lines to the ledger: the ruling, `dispatch T7 -> test (mesh, any)`, and the line recording the filing.
+- Both records and the regenerated STATUS.md passed the filing checks. STATUS.md now shows the change as building, with T7 dispatched, the evidence out of date, no Critical or Important findings, and 2 Minor findings deferred.
+- Posted T7 to the test role on the mesh. In this desk run, all of these commands were printed, not run.
+
+**Next:** When T7's evidence comes back passing, I'll give you the final report. Then I'll ask how you want each branch handled: merge and delete, open a pull request, or keep it. alpha merges before beta.
+
+Files worth opening:
+- <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo/STATUS.md
+- <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md
+- <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo/changes/add-greeting/ledger.md
+
+DESK lines, in the order printed:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T7-brief.md" -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/tasks/T7-brief.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus/spaces/proj-demo log -1 --format=%h HEAD -- changes/add-greeting/tasks/T7-brief.md
+DESK: mesh-post --bus <scratch>/runs/20261028T115957Z-test_T1_TS2_only_regression_suite_moved-3a31/bus --from demo-mac-01 --to role:swe.test --type task.request --project proj:demo --timeout-min 30 --goal "Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T7 of change add-greeting from its brief." --context "Role definition: swe-pod/agents/swe-test.md | Brief: changes/add-greeting/tasks/T7-brief.md | Repos: alpha https://example.invalid/demo/alpha.git, beta https://example.invalid/demo/beta.git, gamma https://example.invalid/demo/gamma.git | Space commit holding the brief: <sha7 from the log above> | Commit set under test: alpha d4d4d4d, beta e5e5e5e, gamma f6f6f6f" --done-when "An evidence record is filed with a result for every scenario, unit suite and declared quality check, and for the regression test add-farewell/R1.S1" --on-failure "Return the evidence record with each failing result and its output, and a report with status BLOCKED or DONE_WITH_CONCERNS"
+===== stderr-1.txt (empty)
+===== check.out
+T1.TS2.1 pass 0 merge(s) into a code repo's main
+T1.TS2.2 pass pins alpha a1a1a1a, beta b2b2b2b, gamma f6f6f6f; integrated False; archived False
+T1.TS2.3 pass re-verify in hand: 1 dispatch line(s), 1 mesh post(s), 0 subagent(s)

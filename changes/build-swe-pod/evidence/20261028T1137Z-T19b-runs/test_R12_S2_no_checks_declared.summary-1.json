@@ -1,0 +1,169 @@
+{
+  "result": "API Error: Opus 5.5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.5.\n\nTry rephrasing the request in a new session or change your model.\n\nLearn more: https://support.claude.com/en/articles/8106465\n\nDetails: `[reasoning_extraction]`\n\nRequest ID: 96e4f939-1f9b-4278-a088-b97e4eb9db78\n\nMessage ID: msg_bdrk_jgwcbadbtedmw77nkvte3mkwjixgf25pqk2jjjn7hcirzpqpmazq",
+  "is_error": true,
+  "tool_uses": [
+    {
+      "id": "toolu_bdrk_01UTQDjH2TmMLdQad1ydXByX",
+      "name": "Read",
+      "input": {
+        "file_path": "<scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/space/changes/add-greeting/tasks/T7-brief.md"
+      },
+      "is_error": false,
+      "output": "1\t# T7 brief\n2\t\n3\t- change: add-greeting\n4\t- task: T7\n5\t- role: test\n6\t- repo: space\n7\t\n8\t## Task\n9\t\n10\tFrom plan.md, verbatim:\n11\t\n12\t### T7 Verify\n13\t- role: test\n14\t- repo: space\n15\t- after: [T1, T2, T3, T6]\n16\t- runs: local\n17\t- needs: any\n18\t- serves: [R1, R2]\n19\t- steps: run every project-level test in changes/add-greeting/tests/\n20\t  and tests/, each affected repo's unit tests, and every quality\n21\t  check the spec declares, at the commit set of the brief\n22\t- done when: an evidence record is filed with a result for every\n23\t  scenario, unit suite and declared quality check\n24\t\n25\t## Interfaces\n26\t\n27\tFrom plan.md section 2:\n28\t\n29\t- `alpha`: `greeting(name: str | None = None) -> str`, in `alpha/greeting.py`.\n30\t  With no name it returns `hello, demo`. A name of more than 64 code points\n31\t  raises `ValueError`, whose message names the 64-character limit.\n32\t- `beta`: `python3 -m beta`, run in the `beta` checkout with the `alpha`\n33\t  checkout beside it, prints `greeting()` as its first line.\n34\t\n35\t## Global constraints\n36\t\n37\t- \"The name limit is 64 characters, counted as Unicode code points.\" (spec,\n38\t  Open calls 1)\n39\t- \"its first line of standard output is `hello, demo`, within 1 s of start\n40\t  (wall time)\" (spec, R2.S1)\n41\t- Every number carries its unit.\n42\t\n43\t## Rulings\n44\t\n45\tNone.\n46\t\n47\t## Start from\n48\t\n49\t- commit set under test: space 5d5d5d5, alpha d4d4d4d, beta e5e5e5e,\n50\t  gamma c3c3c3c (gamma is not named by the spec and stays at its pin)\n51\t\n52\t## Result goes to\n53\t\n54\t- the evidence record: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>.md\n55\t- the T7 report: changes/add-greeting/evidence/<YYYYMMDDTHHMMZ>-T7-report.md\n56\t",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_018Cnw9K8dE8Bq4CaFMEKgVZ",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f; find space repos -not -path '*/.git/*' | head -100; ls export/swe-pod",
+        "description": "List space and repo files"
+      },
+      "is_error": false,
+      "output": "space\nspace/lore\nspace/lore/.gitkeep\nspace/changes\nspace/changes/add-greeting\nspace/changes/add-greeting/spec.md\nspace/changes/add-greeting/plan.md\nspace/changes/add-greeting/ledger.md\nspace/changes/add-greeting/tests\nspace/changes/add-greeting/tests/test_R1_S1_default_greeting.md\nspace/changes/add-greeting/tests/test_R1_S2_name_too_long.md\nspace/changes/add-greeting/tests/test_R2_S1_startup_line.md\nspace/changes/add-greeting/tasks\nspace/changes/add-greeting/tasks/T6-report.md\nspace/changes/add-greeting/tasks/T1-report.md\nspace/changes/add-greeting/tasks/T7-brief.md\nspace/changes/add-greeting/tasks/T1-review.md\nspace/changes/add-greeting/tasks/T2-review.md\nspace/changes/add-greeting/tasks/T2-report.md\nspace/changes/add-greeting/tasks/T3-report.md\nspace/PROCESS.md\nspace/decisions\nspace/decisions/.gitkeep\nspace/handoffs\nspace/handoffs/.gitkeep\nspace/tests\nspace/tests/.gitkeep\nspace/README.md\nspace/notes\nspace/notes/note-20261001T1100Z-a0b1-demo-context.md\nspace/space.yaml\nspace/pod.yaml\nrepos\nrepos/alpha\nrepos/alpha/alpha\nrepos/alpha/alpha/__init__.py\nrepos/alpha/alpha/greeting.py\nrepos/alpha/tests\nrepos/alpha/tests/__init__.py\nrepos/alpha/tests/test_greeting.py\nrepos/alpha/README.md\nrepos/beta\nrepos/beta/tests\nrepos/beta/tests/__init__.py\nrepos/beta/tests/test_main.py\nrepos/beta/README.md\nrepos/beta/beta\nrepos/beta/beta/__init__.py\nrepos/beta/beta/__main__.py\nagents\nPROCESS.md\ntemplates\nShell cwd was reset to <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/space",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_017CjeURyGCoKHvq3gKqrojC",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f; cat space/changes/add-greeting/spec.md space/pod.yaml space/changes/add-greeting/tests/*.md; ls export/swe-pod/templates export/swe-pod/templates/*; cat export/swe-pod/templates/records/evidence.md export/swe-pod/templates/records/report.md",
+        "description": "Read spec, pod.yaml, tests, templates"
+      },
+      "is_error": false,
+      "output": "# add-greeting: let alpha produce a greeting that beta prints\n\n- size: project\n- owner: demo-owner\n- repos: [alpha, beta]\n- supersedes: []\n- approved: demo-owner 2026-10-01T09:00Z\n\n## Why\n\nUsers of `beta` want a greeting on start-up, and the text belongs in `alpha`,\nthe shared library, so that other tools can use it too.\n\n## Scope\n\nIn: the greeting text in `alpha`; printing it in `beta`.\n\nOut: translations; any change to `gamma`.\n\n## Requirements\n\n### R1 Greeting text\n`alpha` SHALL provide the greeting `hello, demo` for a caller that asks for it.\n\n#### R1.S1 Default greeting\n- GIVEN `alpha` at the branch head\n- WHEN a caller asks for the greeting with no name\n- THEN it gets the exact text `hello, demo` (11 characters, no trailing\n  newline)\n\n#### R1.S2 Name too long\n- GIVEN a name of 65 characters\n- WHEN a caller asks for the greeting with that name\n- THEN it gets an error naming the 64-character limit, and no greeting\n\n### R2 beta prints the greeting\n`beta` SHALL print the greeting from `alpha` as its first line of output.\n\n#### R2.S1 Start-up line\n- GIVEN `beta` built against `alpha` at the branch head\n- WHEN `beta` starts with no arguments\n- THEN its first line of standard output is `hello, demo`, within 1 s of\n  start (wall time)\n\n## Approaches\n\n1. Greeting in `alpha`, printed by `beta` (picked: one source of the text).\n2. Greeting in `beta` only (rejected: other tools would copy the text).\n\n## Open calls\n\n1. The name limit is 64 characters, counted as Unicode code points.\npod: 1\nproject: demo\nprocess: swe-pod-process@1\nrepos:\n  alpha: {remote: \"https://example.invalid/demo/alpha.git\", pin: \"a1a1a1a\"}\n  beta:  {remote: \"https://example.invalid/demo/beta.git\", pin: \"b2b2b2b\"}\n  gamma: {remote: \"https://example.invalid/demo/gamma.git\", pin: \"c3c3c3c\"}\ndepends: {beta: [alpha]}            # merge order: alpha before beta\ngates: {spec: human, plan: human-skim, merge: human}\n---\nscenario: R1.S1\nmode: inspect\nexpected_s: 1\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R1.S1 Default greeting\n\n## Given\n\n`alpha` at the commit set under test.\n\n## When\n\nIn the `alpha` checkout:\n\n    python3 -c \"from alpha.greeting import greeting; print(repr(greeting()))\"\n\n## Then\n\n1. It prints `'hello, demo'` (11 characters, no trailing newline in the value) and exits 0.\n\n## Fails if\n\n- The text differs by any character, or the call raises.\n---\nscenario: R1.S2\nmode: inspect\nexpected_s: 1\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R1.S2 Name too long\n\n## Given\n\n`alpha` at the commit set under test; a name of 65 characters.\n\n## When\n\nIn the `alpha` checkout:\n\n    python3 -c \"from alpha.greeting import greeting; print(greeting('x' * 65))\"\n\n## Then\n\n1. It exits non-zero, and its error output contains `64`.\n2. It prints no greeting on standard output.\n\n## Fails if\n\n- A greeting is printed, or the error does not name the limit.\n---\nscenario: R2.S1\nmode: inspect\nexpected_s: 2\nheavy: false\nenv: any\ncap_s: 30\n---\n\n# R2.S1 Start-up line\n\n## Given\n\n`beta` and `alpha` at the commit set under test, checked out side by side.\n\n## When\n\nIn the `beta` checkout:\n\n    python3 -m beta\n\n## Then\n\n1. The first line of standard output is `hello, demo`.\n2. It finishes within 1 s of start (wall time).\n\n## Fails if\n\n- Another first line, or 1 s or more.\nexport/swe-pod/templates:\nrecords\n\nexport/swe-pod/templates/records:\nbrief.md\nevidence.md\nfinal-report.md\nhandoff.md\nledger.md\nplan.md\nreport.md\nreview.md\nspec.md\ntest-brief.md\n---\n# Record: changes/<id>/evidence/<YYYYMMDDTHHMMZ>.md, one file per verify run,\n# named by its UTC start. A verify shard's record is\n# changes/<id>/evidence/<YYYYMMDDTHHMMZ>-<shard id>.md, one file per shard run.\n# Replace every <placeholder> and drop these comments.\n# a shard's record: id: ev-<YYYYMMDDTHHMMZ>-<shard id>\nid: ev-<YYYYMMDDTHHMMZ>\nchange: <id>\n# a shard's record only: its shard id, and the tests the record ran, by test\n# name; leave both keys out of an unsharded record\nshard: <shard id>\ntests: [<test name>, ...]\n# every repo in pod.yaml; a repo the spec does not name, at its pin\ncommit_set: {space: <sha7>, <repo>: <sha7>, ...}\nenv: <environment class>\nactor: <handle>/test\n# every scenario of this change, then the regression suite's scenario tests\n# under <change>/R<n>.S<m>; a shard gives only those it ran\nscenarios: {<Rn.Sm>: pass|fail|not-run, ...}\n# each affected repo's unit suite; none-present when the repo has none; a\n# shard gives only those it ran\nunit: {<repo>: pass|fail|none-present}\n# a result for every check the spec declares, or for a shard every check it\n# ran; when the spec has no Quality section, write this line instead:\n# quality: none-declared\nquality: {<Qn>: pass|fail}\n# optional: the plan's inspection checks and the builders' test suggestions,\n# then the regression suite's: <change>/I<n> under x-checks: and\n# <change>/T<n>.TS<k> under x-suggestions:; leave either key out when there\n# are none\nx-checks: {<In>: pass|fail}\nx-suggestions: {T<n>.TS<k>: pass|fail}\n# the whole run, in s\nwall_time_s: <integer>\n---\n<!--\nThe body holds failure summaries only. Logs appear only as pointers, which\nare space-relative paths or URLs, never a machine path; never paste a log.\nA <result key> is any key above with a result: a scenario, a repo's unit\nsuite, a Qn, an In or a T<n>.TS<k>. A not-run (cap) result names its cap.\n-->\n## Failures\n### <result key> fail\n- summary: <what failed, against which expectation from the spec>\n- log: <space-relative path or URL>\n\n### <result key> not-run (cap)\n- cap: <the cap that stopped it, with its value and unit>\n- log: <space-relative path or URL>\n# T<n> report\n\n- change: <id>\n- task: T<n>\n- actor: <handle>/<build|test>\n\n<!--\nRecord: changes/<id>/tasks/T<n>-report.md. A test task's report goes in its\nlane instead, as changes/<id>/evidence/<YYYYMMDDTHHMMZ>-T<n>-report.md. A\nreport is a claim; the commits and the test output are the evidence. Replace\nevery <placeholder>, then delete these comments.\n-->\n\n## Status\n<one of: DONE, DONE_WITH_CONCERNS, BLOCKED, NEEDS_CONTEXT>\n\n## What I did\n<what was built, step by step, test first>\n\n## Files\n- <repo>/<path>: <created|changed>, <what it holds>\n\n## Test output\n<!--\nFor each check: the command, its red output before the change and its green\noutput after. Logs go in as pointers, never pasted whole.\n-->\n### <check or test name>\n- command: <command>\n- red: <output before the change>\n- green: <output after the change>\n\n## Concerns\n- <a concern, or None>\n<!--\nA builder disputing a project-level test writes one line per test:\nDisputed test: <test name>; spec clause: <clause>\n-->\n\n## Test suggestions\n<!--\nOptional. The for-the-tester part is in spec terms: the requirement or\nscenario at risk, the input, and the failure expected; no code, no diff, and\nno expected value the code computed. The for-the-reviewer part names the code\nlocation.\n-->\n### T<n>.TS<k> <title>\n- for the tester: <the requirement or scenario at risk, the input, and the\n  failure expected>\n- for the reviewer: <repo>/<path>:<line>[-<line>], <what is fragile there>\nShell cwd was reset to <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/space",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01RRqQiB6mXd34tTdoiuUBvC",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f; diff space/PROCESS.md export/swe-pod/PROCESS.md && echo same; grep -n '^#' space/PROCESS.md; ls export/swe-pod/agents; grep -rn -i 'librarian' space/PROCESS.md | head -40",
+        "description": "Locate sections and librarian mentions"
+      },
+      "is_error": false,
+      "output": "same\n1:# SWE Pod process\n18:## 1 Shape of a project\n40:### pod.yaml\n63:### Branches\n109:## 2 Stages and states\n143:## 3 Spec\n151:### Draw out intent\n165:### Write the spec\n184:### R1 VQLS linear solver option\n187:#### R1.S1 Converges on the subsonic reference case\n193:#### R1.S2 Rejects an unknown ansatz name\n198:### Q1 Linter clean\n203:### Requirements and scenarios\n224:### Human review and approval\n239:## 4 Plan\n256:### Plan sections\n307:### Parallel tasks and shards\n330:### Self-review\n337:### The go\n344:## 5 Build\n415:## 6 Project-level tests\n452:### Test suggestions from builders\n462:### T3.TS1 High CFL near the stability limit\n498:## 7 Verify\n584:### Sharded verify\n632:## 8 Integrate\n663:## 9 Sizes\n680:## 10 Roles\n725:## 11 Dispatch\n846:## 12 The Project Space\n926:## 13 When things go wrong\n956:## 14 Talking to the pod\n972:## 15 Status view\nswe-test.md\n690:| **lead** | ledger, briefs, rulings, final report; creates each `change/<id>` branch at the go; files every record of the change through the space's librarian | writes code, tests or the spec |\n716:planner, lead and the space's librarian, and dispatches fresh local subagents\n719:file every record through agent-mesh's `space-librarian` skill. It applies\n720:the same profile, reference and id checks a mesh librarian applies (\u00a712) and\n797:  - The librarian commits each record alone, so the commit that files the\n810:  through the Project Space's librarian, which commits. Usually your node is\n811:  that librarian and commits directly. Builders' code reaches the others\n882:**Writers.** Every commit to the space goes through its librarian.\n884:- The space's librarian is its only mesh writer (memory-spaces \u00a76.3, in\n885:  agent-mesh's `spec/memory-spaces.md`), and one librarian may manage\n887:  `space-librarian` itself (\u00a710).\n889:  librarian commits it.\n897:- The librarian checks each record's header profile, references and id\nShell cwd was reset to <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/space",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01L6CESdgVbqPPJD6SV32xF1",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f; sed -n 498,584p space/PROCESS.md; sed -n 705,730p space/PROCESS.md; sed -n 790,815p space/PROCESS.md; sed -n 878,926p space/PROCESS.md",
+        "description": "Read verify and librarian sections"
+      },
+      "is_error": false,
+      "output": "## 7 Verify\n\nYou are the test agent running verify. When the build tasks are done, or at\na checkpoint the lead picks, run at the commit set and in the environment\nclass the task names:\n\n- the change's project-level tests and the space's regression suite\n  `tests/`;\n- each affected repo's unit tests;\n- every quality check in the spec's Quality section.\n\nA repo in `pod.yaml` that the spec does not name is used at its pin.\n\nReturn an evidence record, `changes/<id>/evidence/<YYYYMMDDTHHMMZ>.md`, from\n`templates/records/evidence.md`:\n\n```yaml\n---\nid: ev-20261102T1412Z\nchange: add-vqls-backend\ncommit_set: {space: 5c02e1a, qutil: 77b01d4, fvm: 3f9c2ab}\nenv: linux-server\nactor: <handle>/test\nscenarios: {R1.S1: pass, R1.S2: fail}\nunit: {qutil: pass, fvm: pass}\nquality: {Q1: pass}\nwall_time_s: 212\n---\nFailure output for R1.S2; pointers to logs, never the logs themselves.\n```\n\n- `commit_set` names every repo in `pod.yaml`. `env` is an environment\n  class. `wall_time_s` is the run's wall time in s.\n- Give a result for every scenario, every unit suite and every declared\n  quality check, and for every regression test. A regression test is a\n  `test_*.md` directly in `tests/`, or directly in a folder\n  `tests/<change>/` for which `changes/archive/<yyyy-mm-dd>-<change>/`\n  exists. Nothing deeper is one: fixture data such as\n  `tests/<change>/fixtures/` holds none. Give its result under its key,\n  `<change>/<value>`, the key the `swe-pod` skill reads:\n  - `<change>`: for a test in `tests/<change>/`, that folder's name. For a\n    test directly in `tests/`, the archived change whose plan test map has\n    a row with its test name (its file name without `.md`), else the one\n    whose final report's `## Scenarios` table has such a row; where several\n    do, the one whose archive folder name sorts last. With neither, the\n    change of a `scenario:` value that is one id written `<change>/<value>`.\n  - `<value>`: the scenario id in that change's row, from its archived plan\n    test map, else from its archived final report. With no such row, the\n    test's `scenario:` front-matter value, less any `<change>/` part, when\n    that value is exactly one id. When it is not (it lists several ids, or\n    the test has none), the id its file name carries:\n    `test_R<n>_S<m>_<slug>` gives `R<n>.S<m>`, `test_I<n>_<slug>` gives\n    `I<n>` and `test_T<n>_TS<k>_<slug>` gives `T<n>.TS<k>`. So each test\n    has at most one key.\n  - Put `<change>/R<n>.S<m>` under `scenarios:`, `<change>/I<n>` under\n    `x-checks:` and `<change>/T<n>.TS<k>` under `x-suggestions:`. A test\n    with no key still counts: name it in the body as having none.\n- A repo with no unit tests is `none-present`. A spec with no Quality\n  section gets `quality: none-declared`, and you run no quality check. A\n  `not-run (cap)` result names its cap.\n- Put failure summaries in the body. Logs appear only as pointers:\n  space-relative paths or URLs, never a machine path.\n- A change is not verified while any project-level test, regression test,\n  unit suite or declared quality check lacks a passing result.\n\n**Lead.** Route each failure:\n\n| Failure | Goes to | Carrying |\n|---|---|---|\n| Test agrees with the spec, code does not | a builder, as a fix task | scenario id, failing output |\n| A builder says the test is wrong | the test agent, who re-derives the expectation from the spec and fixes the test or keeps it with a reason | the spec clause |\n| Spec ambiguous, intent settles it | the lead, as a ruling | the clause and the reading chosen |\n| Spec ambiguous or wrong, only the human can say | the human, through the spec author | a proposed edit to the spec |\n| Flaky or environmental | the test agent, debugging per \u00a713 | the runs that disagree |\n\n**Whole-change review.** After the first green run (for a sharded verify,\nthe first time its shards' records are green together, below), dispatch a\nfresh reviewer on the most capable model available. It reviews the whole\nchange: the spec, the plan, every repo's diff, the latest evidence, and the\nledger's deferred minors and rulings. It checks completeness (every\nrequirement has code and a passing test), correctness (the code does what\nthe spec means, edge cases included) and coherence (the plan's decisions\nshow in the code). It uses the review format of \u00a75, under its own task\nnumber. Its findings go to one builder in one fix wave, then one re-review.\nThe lead rules on what remains.\n\n### Sharded verify\n|---|---|\n| spec, lead | local, with the human |\n| plan | local, or remote at project size |\n| build | local or remote; several at once when the plan allows |\n| test | remote, on a node of the environment class the checks need; tests are heavy |\n| review | anywhere, on the most capable model available for the whole-change review |\n\nRemote build waits on the executor git exception (\u00a711); until then, build\nruns local.\n\n**Single seat.** Without a mesh, one interactive session is spec author,\nplanner, lead and the space's librarian, and dispatches fresh local subagents\nfor build, test and review. At project size it plans through a fresh local\nsubagent too, since spec and plan must be different agents. Without a mesh,\nfile every record through agent-mesh's `space-librarian` skill. It applies\nthe same profile, reference and id checks a mesh librarian applies (\u00a712) and\nmakes the commit. That needs the Agent Mesh product's code, but no bus,\ncore, lore or remote agent. The records are the same either way, so a\nproject can move between single-seat and mesh use at any stage boundary.\n\n## 11 Dispatch\n\nYou are the lead. Dispatch every task from the same brief,\n`changes/<id>/tasks/T<n>-brief.md`, whatever runs it (\u00a75, \u00a76). The brief\nholds the task text, the interfaces it touches, the global constraints, any\nruling that bears on it, the commit set to start from, and where the result\n    set under test as far as it is known when you write it: each branch\n    head by sha, and the newest space commit that changed\n    `changes/<id>/tests/` or `tests/`, by sha.\n  - Record one dispatch line per shard, such as\n    `dispatch T7a -> test (local, macos-laptop)` and\n    `dispatch T7b -> test (mesh, linux-server)`. File the ledger with those\n    lines first, then the briefs.\n  - The librarian commits each record alone, so the commit that files the\n    last brief is the last of the shard briefs and dispatch lines. It is\n    the shards' space commit; with the branch heads, it is the shards'\n    commit set. Start no shard before it exists, and give it to every\n    shard at dispatch, on its own line in the local prompt or in the mesh\n    task's Context.\n  - Test shards run local and mesh together, each as its entry's `runs:`\n    and `needs:` say. Build shards run local, like every build task, until\n    the mesh executor's git exception lands.\n- **Results.** A mesh agent returns its files (report, tests, review,\n  evidence) in its task result, listed under `files:` with each file's\n  space-relative path and sha256: text only, at most 1048576 bytes each.\n  Check every result, local or mesh, and file it, with your own records,\n  through the Project Space's librarian, which commits. Usually your node is\n  that librarian and commits directly. Builders' code reaches the others\n  through the pushed `change/<id>` branches.\n- **Lanes.** File only what the task's role writes (\u00a710). Every file a test\n  task changed, its report included (\u00a712), must be under\n  `changes/<id>/tests/` or `changes/<id>/evidence/`. Refuse to file anything\nthe space and the code repos alone you can tell each open change's state and\nits next task. Answer \"where are we?\" from those records, naming each open\nchange's state and next task.\n\n**Writers.** Every commit to the space goes through its librarian.\n\n- The space's librarian is its only mesh writer (memory-spaces \u00a76.3, in\n  agent-mesh's `spec/memory-spaces.md`), and one librarian may manage\n  several spaces. Without a mesh, the session runs agent-mesh's\n  `space-librarian` itself (\u00a710).\n- What goes into a change folder comes from that change's lead; the\n  librarian commits it.\n- Space-wide files (`tests/`, `pod.yaml`, `changes/archive/`) change only at\n  integrate, one integrate at a time. `STATUS.md` is regenerated, so it\n  never conflicts.\n- Decisions, handoffs and evidence are one file per event, named by UTC\n  time. Any other new record id is collision-free (memory-spaces \u00a73.4):\n  `<category>-<YYYYMMDDTHHMMZ>-<4 hex>`, since more than one mesh may write\n  the space.\n- The librarian checks each record's header profile, references and id\n  before filing it, and refuses one that fails. Record a refusal as\n  `refused <space path>: <profile|reference|id|lane> line <n>`, and never\n  quote the text that matched.\n\n**Header profile.** Records use the shareable profile of the memory-spaces\nconcept: actors are human handles or `<handle>/<role>`, machines are\nenvironment classes, and paths are relative to the space or are URLs. Write\nno hostname, agent id, mesh task id, home path or credential name into any\nrecord.\n\n**The ledger**, `changes/<id>/ledger.md`, from\n`templates/records/ledger.md`, is the change's log. It is what lets anyone\npick the change up after a context loss or a handoff. Trust it, and the git\nlogs, over memory. It is one fenced block, one event per line, as\n`<YYYY-MM-DDTHH:MMZ> <event>`, with continuation lines indented 18 spaces.\nThe template lists every event form:\n\n```\n2026-11-02T14:05Z dispatch T3 -> build (local, any), base qutil 77b01d4\n2026-11-02T14:06Z dispatch T5 -> test (mesh, linux-server)\n2026-11-02T14:41Z T3 DONE, qutil 77b01d4..8e1d0c4, unit 14/14 pass\n2026-11-02T14:50Z T3 review: spec ok; 1 Important qutil/linsolve/vqls.py:88\n2026-11-02T15:02Z T3 fix round 1/5: 1 addressed, 0 open, 8e1d0c4..a91f2e0\n2026-11-02T15:20Z T5 at base: R1.S1 fail (no VQLS backend), R1.S2 fail (flag unknown)\n2026-11-02T15:31Z Ruling: flag named --vqls-ansatz, not --ansatz; existing\n                  backend flags carry a prefix; rename costs one task\n```\n\n## 13 When things go wrong\nShell cwd was reset to <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/space",
+      "subagent": false
+    },
+    {
+      "id": "toolu_bdrk_01HwAXPKsUUyGS8NuSRid8HV",
+      "name": "Bash",
+      "input": {
+        "command": "cd <scratch>/runs/20261028T113752Z-test_R12_S2_no_checks_declared-795f/repos; date -u +%Y%m%dT%H%MZ; S=$(date +%s);\ncd alpha; echo \"== R1.S1\"; timeout 30 python3 -c \"from alpha.greeting import greeting; print(repr(greeting()))\"; echo \"exit=$?\";\necho \"== R1.S2\"; timeout 30 python3 -c \"from alpha.greeting import greeting; print(greeting('x' * 65))\" >/tmp/r12out 2>/tmp/r12err; echo \"exit=$?\"; echo \"stdout:\"; cat /tmp/r12out; echo \"stderr-tail:\"; tail -1 /tmp/r12err;\ncd ../beta; echo \"== R2.S1\"; t0=$(date +%s.%N); timeout 30 python3 -m beta > /tmp/r21out; e=$?; t1=$(date +%s.%N); echo \"exit=$e\"; head -1 /tmp/r21out | cat -A; echo \"elapsed=$(echo \"$t1 - $t0\" | bc) s\";\necho \"== unit alpha\"; cd ../alpha; timeout 60 python3 -m unittest discover -s tests -t . 2>&1 | tail -3;\necho \"== unit beta\"; cd ../be"
+      },
+      "is_error": true,
+      "output": "Exit code 1\n20261028T1138Z\n== R1.S1\n'hello, demo'\nexit=0\n== R1.S2\nexit=1\nstdout:\nstderr-tail:\nValueError: name is over the 64-character limit\n== R2.S1\nexit=0\nhello, demo$\n/bin/bash: line 8: bc: command not found\nelapsed= s\n== unit alpha\nRan 3 tests in 0.000s\n\nOK\n== unit beta\n/bin/bash: line 10: cd: ../be: No such file or directory",
+      "subagent": false
+    }
+  ],
+  "permission_denials": [],
+  "subagent_stats": {
+    "spawned": 0,
+    "requested": {
+      "background": 0,
+      "foreground": 0,
+      "unset": 0
+    },
+    "started_in_background": 0,
+    "max_depth": 0,
+    "spawned_by_subagents": 0,
+    "completed": 0,
+    "failed": 0,
+    "killed": {
+      "parent": 0,
+      "user": 0,
+      "system": 0
+    },
+    "refused": {
+      "depth_limit": 0,
+      "concurrency_limit": 0,
+      "budget": 0
+    },
+    "by_type": {}
+  },
+  "init": {
+    "tools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash",
+      "Write",
+      "Task"
+    ],
+    "agents": [
+      "claude",
+      "Explore",
+      "general-purpose",
+      "Plan",
+      "statusline-setup",
+      "swe-test"
+    ],
+    "skills": [
+      "deep-research",
+      "dataviz",
+      "update-config",
+      "verify",
+      "debug",
+      "code-review",
+      "simplify",
+      "batch",
+      "fewer-permission-prompts",
+      "doctor",
+      "loop",
+      "claude-api",
+      "workflow-authoring",
+      "run",
+      "run-skill-generator",
+      "plugin-authoring"
+    ],
+    "mcp_servers": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-sec-default",
+        "path": "builtin",
+        "source": "cc-plugin-sec-default@builtin"
+      },
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "memory_paths": {
+      "auto": "<config>/projects/<scratch-dashed>-runs-20261028T113752Z-test-R12-S2-no-checks-declared-795f-space/memory/"
+    },
+    "model": "claude-opus-5-5"
+  },
+  "assistant_events": 12,
+  "api_retries": 0,
+  "num_turns": 8,
+  "run": {
+    "step": 1,
+    "cap_s": 899,
+    "retried": false,
+    "exit": 1,
+    "elapsed_s": 24.5,
+    "capped": false,
+    "result_s": 24.5,
+    "stopped_after_result": false,
+    "no_turn": false,
+    "api_stall": false
+  }
+}

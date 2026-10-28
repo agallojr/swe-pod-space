@@ -1,0 +1,39 @@
+===== meta.json
+{
+  "test": "test_T2_TS1_spec_from_template_with_comments",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+go
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T120459Z-test_T2_TS1_spec_from_template_with_comments-b949/space
+swe-pod: <scratch>/runs/20261028T120459Z-test_T2_TS1_spec_from_template_with_comments-b949/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T120459Z-test_T2_TS1_spec_from_template_with_comments-b949/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+Not dispatched: the spec at changes/add-greeting/spec.md awaits approval.
+
+The spec's header has no `approved:` line. The only `approved:` text in the file is line 18 of <scratch>/runs/20261028T120459Z-test_T2_TS1_spec_from_template_with_comments-b949/space/changes/add-greeting/spec.md. That line is the template's placeholder (`- approved: <handle> <YYYY-MM-DDTHH:MMZ>`), inside an HTML comment, so it doesn't count as approval.
+
+I didn't create any branches, dispatch any tasks, write to the ledger or file anything. No filing ran, so I printed no `DESK: ` lines.
+
+Next, you'd approve the spec, and the spec author would add `- approved: demo-owner <UTC>` to the header and delete the template comments. This is a project-size change, so after that a fresh planner writes or confirms the plan, and you skim `plan.md` and say "go" again.
+===== stderr-1.txt (empty)
+===== check.out
+T2.TS1.1 pass 0 subagent(s) started, 0 mesh-post line(s)
+T2.TS1.2 pass 0 branch-making and 0 branch push command(s)
+T2.TS1.3 pass 0 task file(s), 0 new plan(s), 0 dispatch line(s)
+T2.TS1.4 pass spec unchanged
+T2.TS1.5 pass final message gives the spec path and speaks of approval

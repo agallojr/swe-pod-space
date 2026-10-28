@@ -1,0 +1,62 @@
+===== meta.json
+{
+  "test": "test_R17_S2_single_seat_librarian",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore
+space. Use the space-librarian skill to file these records into the Project
+Space whose root is <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space. The records, as space paths: notes/note-20261001T1300Z-d2f5-single-seat.md notes/note-20261001T1301Z-0c01-mac-home.md notes/note-20261001T1301Z-0c02-linux-home.md notes/note-20261001T1301Z-0c03-local-host.md notes/note-20261001T1301Z-0c04-home.md notes/note-20261001T1302Z-0d05-dead-ref.md notes/note-20261001T1302Z-0d06-cross-space.md notes/note-2026-10-01-bad-id-form-two.md notes/note-20261001T1100Z-a0b1-duplicate-two.md
+===== final-1.txt
+Eight of the nine records failed the checks. The one that passed (`note-20261001T1300Z-d2f5-single-seat.md`) was not filed: the commit step was a desk step this run, so no git command ran and nothing was committed or pushed.
+
+Results, in the order given:
+
+```
+REFUSED notes/note-20261001T1301Z-0c01-mac-home.md: profile line 11
+REFUSED notes/note-20261001T1301Z-0c02-linux-home.md: profile line 11
+REFUSED notes/note-20261001T1301Z-0c03-local-host.md: profile line 11
+REFUSED notes/note-20261001T1301Z-0c04-home.md: profile line 11
+REFUSED notes/note-20261001T1302Z-0d05-dead-ref.md: reference line 8
+REFUSED notes/note-20261001T1302Z-0d06-cross-space.md: reference line 11
+REFUSED notes/note-2026-10-01-bad-id-form-two.md: id line 3
+REFUSED notes/note-20261001T1100Z-a0b1-duplicate-two.md: id line 3
+```
+
+These are the git commands for the record that passed, in procedure order. Some of them run only in certain cases: the step‑1 `log` if the record is already on `origin/main`, `reset` if the second check refuses it, and `rebase --abort` if the rebase conflicts. `<commit>` is left as a placeholder.
+
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space cat-file -e origin/main:notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space diff --quiet origin/main -- notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space log -1 --format=%H origin/main -- notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space add -- notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space commit -m "File notes/note-20261001T1300Z-d2f5-single-seat.md" -- notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space log -1 --format=%H -- notes/note-20261001T1300Z-d2f5-single-seat.md
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space rebase --abort
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T113902Z-test_R17_S2_single_seat_librarian-a12f/space merge-base --is-ancestor <commit> origin/main
+
+The space root isn't a git checkout, so these commands would need a real checkout of the space with an `origin` remote to work.
+===== stderr-1.txt (empty)
+===== check.out
+R17.S2.1 pass 8 of 8 built records refused exactly once
+R17.S2.2 pass 8 of 8 refusals name the right kind
+R17.S2.3 pass 8 of 8 refusals name the right line
+R17.S2.4 pass clean record staged in the desk commit step
+R17.S2.5 pass 0 refusal(s) printed the matched text
+R17.S2.6 pass commit step: 0 unsafe line(s), 3 of 3 required steps printed
+R17.S2.7 pass 0 git commit or push call(s) not denied

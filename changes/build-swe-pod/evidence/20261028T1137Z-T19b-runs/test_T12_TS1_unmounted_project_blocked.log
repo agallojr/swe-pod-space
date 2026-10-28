@@ -1,0 +1,90 @@
+===== meta.json
+{
+  "test": "test_T12_TS1_unmounted_project_blocked",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-1.txt
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus commit -m "status 20261001T1701-0021 -> blocked"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus push origin HEAD
+
+I ran one poll cycle as `demo-linux-01` and stopped. There was one claimable task, `20261001T1701-0021` in `swe.test`, and it is now **blocked** because its project space `proj:demo` isn't mounted on this bus.
+
+- **Why it's blocked:** the task sets `project: proj:demo`, but the bus has no `spaces.yaml` and no `.gitmodules`. Without those the space doesn't count as mounted, even though a `spaces/proj-demo/` folder exists.
+- **What I did:** I claimed the task (`accepted`), then rewrote `status/20261001T1701-0021.json` to `blocked` with `error: "NOT MOUNTED proj:demo"`. I didn't mount the space myself, since that's the operator's job. I started no executor and wrote no result file or `library.submit`.
+- **What's left:** `swe.build` and my inbox had nothing in them. No upgrade, stop file or replies came up, and nothing is running in the background.
+- **Setup gaps:** the bus has no `guidance/CLAUDE.md`, `product/` folder or `BUS_LAYOUT`, and `~/.agent-identity.env` is missing. I took the identity values from `agents/demo-linux-01.yaml` and read the status format from the exported `PROTOCOL.md`. The status timestamps are filled-in placeholder values.
+
+DESK lines, in order:
+
+DESK: <config>/skills/mesh-on/mesh-scan-loop.sh <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus swe.build,swe.test demo-linux-01 300
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus commit -m "status 20261001T1701-0021 -> accepted"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus commit -m "status 20261001T1701-0021 -> blocked"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/bus push origin HEAD
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-2.txt
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1703-0023 -> accepted"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1702-0022 -> blocked NOT MOUNTED proj ghost"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1703-0023 -> blocked NOT MOUNTED proj other"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEADI ran one poll cycle on bus-two as demo-linux-01. There were two claimable tasks, both in the `swe.test` queue, and I blocked both because neither task's project space is mounted on bus-two.
+
+| Task | Project | Result | Reason |
+|---|---|---|---|
+| `20261001T1702-0022` | `proj:ghost` | `blocked`, error `NOT MOUNTED proj:ghost` | `spaces.yaml` has no entry for it |
+| `20261001T1703-0023` | `proj:other` | `blocked`, error `NOT MOUNTED proj:other` | `spaces.yaml` lists it at `spaces/proj-other`, but the bus has no `.gitmodules`, so no submodule exists at that path |
+
+- **Claims:** I wrote both `accepted` status files in one step, then overwrote each with `blocked`. Both are in `repos/bus-two/status/`. The two claim commits shared one `add -A`.
+- **Not done:** I started no executor, published no result files and filed nothing for the librarian, since neither task got past the mount check. I did not try to mount either space; that's left to the operator.
+- **Missed DESK line:** I didn't print one for the scanner. Instead of `mesh-scan-loop.sh` I read the queue and status folders directly, and that shows up nowhere in the list below. It would have been:
+  `DESK: <config>/skills/mesh-on/mesh-scan-loop.sh <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two swe.build,swe.test demo-linux-01 300`
+- **Skipped steps:** bus-two has no `BUS_LAYOUT`, `product/` or `guidance/`, so I did no layout check and loaded no operating-rules chain. No `~/.agent-identity.env` was planted either, so the identity values came from your prompt and `agents/demo-linux-01.yaml`.
+
+DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1702-0022 -> accepted"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1703-0023 -> accepted"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1702-0022 -> blocked NOT MOUNTED proj ghost"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two commit -m "status 20261001T1703-0023 -> blocked NOT MOUNTED proj other"
+DESK: git -C <scratch>/runs/20261028T115820Z-test_T12_TS1_unmounted_project_blocked-f863/repos/bus-two push origin HEAD
+===== stderr-2.txt (empty)
+===== check.out
+T12.TS1.1 pass 0 executor subagent(s), 0 probe note(s)
+T12.TS1.2 pass 0 mount command(s); registries and mounts unchanged
+T12.TS1.3 pass statuses: each blocked on its project

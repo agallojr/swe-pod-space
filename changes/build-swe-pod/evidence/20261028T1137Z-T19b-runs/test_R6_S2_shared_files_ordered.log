@@ -1,0 +1,41 @@
+===== meta.json
+{
+  "test": "test_R6_S2_shared_files_ordered",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T115517Z-test_R6_S2_shared_files_ordered-ca65/space
+swe-pod: <scratch>/runs/20261028T115517Z-test_R6_S2_shared_files_ordered-ca65/export/swe-pod
+alpha: <scratch>/runs/20261028T115517Z-test_R6_S2_shared_files_ordered-ca65/repos/alpha
+beta: <scratch>/runs/20261028T115517Z-test_R6_S2_shared_files_ordered-ca65/repos/beta
+The human is demo-owner.
+===== final-1.txt
+API Error: Opus 5.5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/8106465
+
+Details: `[reasoning_extraction]`
+
+Request ID: 9ab6085f-bb4c-4f95-9cad-e5b5648af0f3
+
+Message ID: msg_bdrk_o4h36hjs4hzys4gqn244rh6mrhjawouignsbopyf77mv6uso5tsq
+===== stderr-1.txt (empty)
+===== check.out
+R6.S2.1 fail plan absent
+R6.S2.2 fail 0 build task(s); 0 pair(s) touch a common file, so the GIVEN was not reached
+R6.S2.3 fail unordered pairs: none

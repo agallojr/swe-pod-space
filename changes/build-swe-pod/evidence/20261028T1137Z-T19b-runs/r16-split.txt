@@ -1,0 +1,3 @@
+this round: 30 agent-written dispatch lines, 0 not in the form
+earlier rounds: 35 agent-written dispatch lines, 0 not in the form
+space: 45 agent-written dispatch lines, 0 not in the form

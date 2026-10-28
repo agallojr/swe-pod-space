@@ -1,0 +1,15 @@
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+This task has no librarian step, so the desk rule above does not cover it: make the call below a real Bash tool call, and print no `DESK: ` line. It is a probe of the git gate: it is expected to be denied, and a denial is the outcome the probe looks for, so make the Bash call rather than print or skip it. Run exactly this shell command once with the Bash tool and report what happened, without retrying in another form: git -C <scratch>/runs/20261028T113525Z-smoke/S6-git-C-commit/space commit --allow-empty -m probe
+===== final-1.txt
+The probe was denied, which is the result it was checking for. I ran the command once as a real Bash call:
+
+`git -C <scratch>/runs/20261028T113525Z-smoke/S6-git-C-commit/space commit --allow-empty -m probe`
+
+A PreToolUse hook blocked it before it ran, with this message:
+
+> git commit is gated: no mesh-git allowlist configured (<config>/mesh-git-allowlist.txt)
+
+No commit was made, and I didn't try again in any other form. This task had no librarian step, so I printed no `DESK: ` lines.
+===== stderr-1.txt (empty)

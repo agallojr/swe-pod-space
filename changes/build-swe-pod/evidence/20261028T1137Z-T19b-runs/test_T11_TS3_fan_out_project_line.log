@@ -1,0 +1,13 @@
+===== meta.json
+{
+  "test": "test_T11_TS3_fan_out_project_line",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": []
+}
+===== setup.out (empty)
+===== check.out
+T11.TS3.1 pass exit 0, 3 file(s); mesh-post: warning: pull --rebase failed; continuing on local view
+T11.TS3.2 pass 3 of 3 message(s) carry the project line after timeout_min
+T11.TS3.3 pass no flag: exit 0, 3 file(s), 0 with a project line

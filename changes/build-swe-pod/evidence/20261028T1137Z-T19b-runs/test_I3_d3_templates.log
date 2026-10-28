@@ -1,0 +1,23 @@
+===== meta.json
+{
+  "test": "test_I3_d3_templates",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": []
+}
+===== check.out
+I3.1 pass swe-pod 83eaef9 templates/space: complete
+I3.2 pass swe-pod 83eaef9 templates/records: complete
+I3.3 pass spec template header lines and sections
+I3.4 pass plan template: 12 level-2 sections against the 12 of contract 2.4, and the question sorting
+I3.5 pass brief template sections
+I3.6 pass test-brief template sections and exact last line
+I3.7 pass report template sections, statuses and suggestion form
+I3.8 pass review template front-matter, sections and finding line form
+I3.9 pass evidence template front-matter keys: missing none
+I3.10 pass ledger template has one fenced block
+I3.11 pass handoff template sections
+I3.12 pass final-report template sections and scenario table
+I3.13 pass space.yaml: missing none; extra none; kind and header_profile as spec
+I3.14 pass pod.yaml keys and pinned process

@@ -1,0 +1,48 @@
+test_I1_process_md: 0 agent step(s), 0 stopped
+test_I3_d3_templates: 0 agent step(s), 0 stopped
+test_I5_templates_placeholders_only: 0 agent step(s), 0 stopped
+test_I7_agent_mesh_documents: 0 agent step(s), 0 stopped
+test_R10_S1_test_passes_at_base: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R12_S1_missing_quality_check: 1 agent step(s), 1 stopped: stream-1 (6 turns, 3 tool calls)
+test_R12_S2_no_checks_declared: 1 agent step(s), 1 stopped: stream-1 (8 turns, 6 tool calls)
+test_R13_S1_heavy_check_asks_first: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R14_S2_rulings_in_final_report: 1 agent step(s), 1 stopped: stream-1 (9 turns, 6 tool calls)
+test_R17_S2_single_seat_librarian: 1 agent step(s), 0 stopped
+test_R18_S2_handoff_reverify_first: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R1_S1_go_without_approval: 1 agent step(s), 0 stopped
+test_R1_S2_edit_after_approval: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R21_S1_suggestion_with_computed_value: 1 agent step(s), 1 stopped: stream-1 (6 turns, 4 tool calls)
+test_R21_S2_every_suggestion_has_outcome: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R23_S1_parallel_builders_one_branch: 1 agent step(s), 0 stopped
+test_R24_S1_two_shards_verified: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_R2_S1_first_change_no_specs: 2 agent step(s), 1 stopped: stream-1 (11 turns, 9 tool calls)
+test_R4_S1_no_process_files_in_code_repo: 2 agent step(s), 0 stopped
+test_R5_S2_tests_promoted_at_integrate: 1 agent step(s), 0 stopped
+test_R6_S2_shared_files_ordered: 1 agent step(s), 1 stopped: stream-1 (6 turns, 4 tool calls)
+test_R8_S1_test_result_in_lane: 1 agent step(s), 1 stopped: stream-1 (11 turns, 8 tool calls)
+test_R8_S2_builder_disputes_test: 1 agent step(s), 1 stopped: stream-1 (6 turns, 4 tool calls)
+test_T10_TS1_reference_rule: 1 agent step(s), 0 stopped
+test_T10_TS6_commit_stage_order: 1 agent step(s), 0 stopped
+test_T11_TS1_project_value_edges: 0 agent step(s), 0 stopped
+test_T11_TS3_fan_out_project_line: 0 agent step(s), 0 stopped
+test_T11_TS6_memory_spaces_scope_in_docs: 0 agent step(s), 0 stopped
+test_T12_TS1_unmounted_project_blocked: 2 agent step(s), 0 stopped
+test_T12_TS2_scan_list_initialized_spaces: 0 agent step(s), 0 stopped
+test_T1_TS2_only_regression_suite_moved: 1 agent step(s), 0 stopped
+test_T1_TS4_heavy_from_recorded_run_time: 2 agent step(s), 0 stopped
+test_T1_TS5_computed_values_in_other_forms: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_T2_TS1_spec_from_template_with_comments: 1 agent step(s), 0 stopped
+test_T37_TS2_shards_leave_out_unit_suite: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_T37_TS3_report_among_evidence: 1 agent step(s), 1 stopped: stream-1 (6 turns, 3 tool calls)
+test_T3_TS2_blind_writer_amid_records_and_code: 1 agent step(s), 1 stopped: stream-1 (12 turns, 10 tool calls)
+test_T4_TS2_approval_relayed_by_lead: 1 agent step(s), 0 stopped
+test_T4_TS3_planner_on_unapproved_spec: 1 agent step(s), 0 stopped
+test_T4_TS5_just_draft_it_lists_defaults: 1 agent step(s), 1 stopped: stream-1 (6 turns, 4 tool calls)
+test_T5_TS3_edit_while_serving_task_runs: 1 agent step(s), 1 stopped: stream-1 (4 turns, 2 tool calls)
+test_T5_TS5_only_pin_moved: 1 agent step(s), 0 stopped
+test_T7_TS1_same_minute_events: 2 agent step(s), 2 stopped: stream-1 (8 turns, 5 tool calls); stream-2 (9 turns, 6 tool calls)
+test_T7_TS3_ledger_written_in_words: 1 agent step(s), 1 stopped: stream-1 (8 turns, 5 tool calls)
+test_T8_TS2_single_seat_files_through_librarian: 1 agent step(s), 0 stopped
+test_R16_S1_dispatch_line_names_no_machine: 0 agent step(s), 0 stopped
+test_T9_TS1_pod_roles_per_task_output: 0 agent step(s), 0 stopped
+total: 42 agent steps, 23 with a response stopped by the safeguards, in 22 test(s)

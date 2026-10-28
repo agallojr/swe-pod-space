@@ -1,0 +1,108 @@
+===== meta.json
+{
+  "test": "test_T10_TS1_reference_rule",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo; the mesh bus is at <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus. The records, as space paths: notes/note-20261001T1500Z-1a01-same-space.md notes/note-20261001T1500Z-1a02-change-and-task.md notes/note-20261001T1500Z-1a03-archived-change.md notes/note-20261001T1500Z-1a04-url-and-code.md notes/note-20261001T1500Z-1b05-unlisted-space.md
+
+Then use it to file this record into the Project Space whose root is <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b, which is not mounted in any bus: notes/note-20261001T1500Z-1c06-listed-space.md
+===== final-1.txt
+This was a desk run: I ran the record checks, which only read files, and printed the git commands without running any of them. Nothing was committed or pushed, so no record was filed.
+
+```
+REFUSED notes/note-20261001T1500Z-1b05-unlisted-space.md: reference line 11
+```
+
+- **proj-demo** (checked against the bus): records 1a01–1a04 passed. Record 1b05 was refused because a citation on line 11 doesn't resolve. `space.yaml` there lists only `core` in `may_reference`.
+- **space-b** (no bus): record 1c06 passed. It has no superproject and there is no `~/.agent-identity.env`, so the check used only this machine's own values.
+- **Commands printed:** for each passing record I printed every command in the filing steps once, in order. That includes the ones that only run in some cases (the skip check, `reset`, `rebase --abort`). The step-3 repeat after a rejected push isn't listed again, and `<commit>` is left as a placeholder as a desk run requires.
+- **space-b may not be a git repo:** `ls -a` of its root showed no `.git`. If these commands are run for real there, they will probably fail until it's a checkout with an `origin` remote.
+
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H origin/main -- notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo add -- notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo commit -m "File notes/note-20261001T1500Z-1a01-same-space.md" -- notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1500Z-1a01-same-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --abort
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H origin/main -- notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo add -- notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo commit -m "File notes/note-20261001T1500Z-1a02-change-and-task.md" -- notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1500Z-1a02-change-and-task.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --abort
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H origin/main -- notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo add -- notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo commit -m "File notes/note-20261001T1500Z-1a03-archived-change.md" -- notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1500Z-1a03-archived-change.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --abort
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H origin/main -- notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo add -- notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo commit -m "File notes/note-20261001T1500Z-1a04-url-and-code.md" -- notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1500Z-1a04-url-and-code.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo rebase --abort
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b cat-file -e origin/main:notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b diff --quiet origin/main -- notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b log -1 --format=%H origin/main -- notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b add -- notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b commit -m "File notes/note-20261001T1500Z-1c06-listed-space.md" -- notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b log -1 --format=%H -- notes/note-20261001T1500Z-1c06-listed-space.md
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b reset -q HEAD~1
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b rebase --abort
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b fetch origin
+DESK: git -C <scratch>/runs/20261028T115641Z-test_T10_TS1_reference_rule-e126/repos/space-b merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+T10.TS1.1 pass 4 of 4 shareable records filed
+T10.TS1.2 pass unlisted-space record refusals: [('reference', 11)]
+T10.TS1.3 pass listed-space record filed
+T10.TS1.4 pass cited id not printed
+T10.TS1.5 pass 0 git commit or push call(s) ran

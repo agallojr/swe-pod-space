@@ -1,0 +1,43 @@
+===== meta.json
+{
+  "test": "test_T4_TS5_just_draft_it_lists_defaults",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'd like beta to greet people by name when it starts. Call the change
+greet-by-name. Just draft it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T120635Z-test_T4_TS5_just_draft_it_lists_defaults-bbc2/space
+swe-pod: <scratch>/runs/20261028T120635Z-test_T4_TS5_just_draft_it_lists_defaults-bbc2/export/swe-pod
+alpha: <scratch>/runs/20261028T120635Z-test_T4_TS5_just_draft_it_lists_defaults-bbc2/repos/alpha
+beta: <scratch>/runs/20261028T120635Z-test_T4_TS5_just_draft_it_lists_defaults-bbc2/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I haven't written the draft. My attempt to save `changes/greet-by-name/spec.md` was stopped and the file doesn't exist, so there's nothing for you to review yet.
+
+What I found in the code and the earlier greeting change:
+
+- **The library already supports names.** alpha can already make a greeting for a name (`hello, <name>`) and refuses names over 64 characters. So this change should only touch beta.
+- **beta never passes a name.** It always prints the default `hello, demo` as its first line, then `beta 1.0`. That default is a requirement of the earlier greeting change (approved, not yet finished). As long as starting beta with no name still prints `hello, demo`, that change isn't affected.
+- **Nothing else needs updating.** No code repo keeps its own copy of the spec.
+
+To get a draft written, I need you or the lead to start a fresh run of this step.
+
+I printed no `DESK:` lines. Saving the spec to the project's history is the librarian's job, which the lead hands off. I don't run any of those commands, so there are none to repeat here.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS5.1 fail draft not written
+T4.TS5.2 fail approved: line present or no draft
+T4.TS5.3 fail Open calls items: 0
+T4.TS5.4 fail Open calls does not speak of how the name is given

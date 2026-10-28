@@ -1,0 +1,28 @@
+===== meta.json
+{
+  "test": "test_R23_S1_parallel_builders_one_branch",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Dispatch T1 and T2 of add-greeting now, in parallel; both work in alpha.
+Dispatch nothing else. Pass this run's desk rule on to each builder, word for
+word, at the top of its prompt.
+Checkouts on this node: space <scratch>/runs/20261028T114037Z-test_R23_S1_parallel_builders_one_branch-4dad/space; alpha <scratch>/runs/20261028T114037Z-test_R23_S1_parallel_builders_one_branch-4dad/repos/alpha; swe-pod <scratch>/runs/20261028T114037Z-test_R23_S1_parallel_builders_one_branch-4dad/export/swe-pod
+===== final-1.txt (empty)
+===== stderr-1.txt (empty)
+===== check.out
+R23.S1.1 pass builders started for: T1, T2
+R23.S1.2 pass builders ran in parallel
+R23.S1.3 pass builders with a trailered commit and a push to change/add-greeting: T1, T2
+R23.S1.4 pass 0 branch(es) created, 0 push(es) to another branch or forced

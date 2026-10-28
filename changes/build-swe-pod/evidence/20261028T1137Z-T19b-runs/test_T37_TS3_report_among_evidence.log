@@ -1,0 +1,39 @@
+===== meta.json
+{
+  "test": "test_T37_TS3_report_among_evidence",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. That step is every git command the librarian's filing procedure gives, from the first to the last, with none left out: print each one on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md, then tell me where add-greeting stands.
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+LATEST EVIDENCE add-greeting: <the id of its latest evidence record>
+===== final-1.txt
+API Error: Opus 5.5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/8106465
+
+Details: `[reasoning_extraction]`
+
+Request ID: f74450ee-a553-4f38-b5cc-ee070b48dbca
+
+Message ID: msg_bdrk_m2pua5ndttiw6cytrqor2bdoj6vqn3t4fz6axyuzoycdl3ool4qq
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS3.1 fail state given: no such line
+T37.TS3.2 fail latest evidence given: ''
+T37.TS3.3 fail STATUS.md absent
+T37.TS3.4 pass 0 other record(s) touched

@@ -1,0 +1,160 @@
+===== meta.json
+{
+  "test": "test_R5_S2_tests_promoted_at_integrate",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting. Then write the brief for T4, the verify task of
+add-farewell, and stop there: do not dispatch it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space
+swe-pod: <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+add-greeting is merged and integrated, and add-farewell's T4 verify brief is written and filed but not dispatched. This was a desk run: none of the git commands below ran, and filing showed no `FILED` lines, so the space commit shas are unknown.
+
+**add-greeting**
+- **Merge check:** the verify evidence (ev-20261002T1412Z) covers exactly the branch heads and pins. Neither `pod.yaml` nor `tests/` changed after it, so nothing needed rebasing.
+- **Merge:** alpha first, then beta, as plain fast-forwards. The new pins are alpha d4d4d4d and beta e5e5e5e; gamma stays at c3c3c3c. I kept both `change/add-greeting` branches because you said merge, not delete.
+- **Tests promoted:** the three tests moved to `tests/add-greeting/` and are now part of the regression suite.
+- **Archive:** the spec author added `integrated: demo-owner 2026-10-28T11:55Z`, and the folder moved to `changes/archive/2026-10-28-add-greeting/`. I also updated the space README.
+- **Final report:** `changes/archive/2026-10-28-add-greeting/report.md`. All 3 scenarios pass and both unit suites pass. No test suggestions were made.
+
+Decisions I made and recorded in the ledger, all listed in the report:
+1. Merge on the existing evidence, since nothing moved after it.
+2. Leave the one minor review finding (alpha's module docstring doesn't mention `greeting()`) for later.
+3. Merge without the alpha and beta README updates the plan wanted. No build task in the plan was given them.
+4. Fast-forward only, keeping the branches.
+5. File the whole integrate update as one space commit, as the process asks, instead of the librarian's usual one record per commit.
+
+**add-farewell T4 brief**
+- **Path:** `changes/add-farewell/tasks/T4-brief.md`.
+- **Runs at:** gamma `change/add-farewell` f6f6f6f, with alpha d4d4d4d and beta e5e5e5e at their new pins. The space commit is the one that files the brief, which comes after the integrate commit.
+- **What it runs:** add-farewell's own test, gamma's unit suite, and the three regression tests promoted from add-greeting. Those need alpha and beta checked out.
+- **Heavy checks:** none (every check takes about 1 s), so the human doesn't need to clear it before it runs.
+- **Rebase:** gamma's pin didn't move, so the branch doesn't need one (recorded as a decision).
+
+**One gap:** the regenerated `STATUS.md` shows T1 and T3 as still in flight and T4 as waiting. The ledger recorded T1's review as `T3 review: ...` (the review task's id), but the status tool reads that as a review *of* T3, so T1's review never counts as closed. The same naming was used throughout add-greeting's ledger. Also, `changes/add-farewell/tasks/T3-review.md` was never filed. I wrote the brief because T1's done-when holds per the ledger, but the status won't show T4 as ready until T1's review is recorded under T1's id.
+
+Open questions for you:
+1. Do you want a follow-up docs change for the alpha and beta READMEs?
+2. Should I delete `change/add-greeting` in alpha and beta now that both are merged?
+
+DESK lines, in order:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log --format=%h 5c02e1a..origin/main -- tests/ pod.yaml
+DESK: SPACE=<scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space sh <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh/skills/space-librarian/check.sh changes/add-greeting/report.md changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: git clone https://example.invalid/demo/alpha.git <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/alpha
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/alpha fetch origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/alpha checkout main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/alpha push origin main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git clone https://example.invalid/demo/beta.git <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/beta
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/beta fetch origin change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/beta checkout main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/work/beta push origin main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: SPACE=<scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space sh <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh/skills/space-librarian/check.sh changes/archive/2026-10-28-add-greeting/spec.md changes/archive/2026-10-28-add-greeting/ledger.md changes/archive/2026-10-28-add-greeting/report.md tests/add-greeting/test_R1_S1_default_greeting.md tests/add-greeting/test_R1_S2_name_too_long.md tests/add-greeting/test_R2_S1_startup_line.md README.md pod.yaml
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -A -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File integrate of add-greeting" -- changes/add-greeting changes/archive/2026-10-28-add-greeting tests/add-greeting pod.yaml README.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- tests/add-greeting
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: git ls-remote https://example.invalid/demo/gamma.git refs/heads/change/add-farewell
+DESK: SPACE=<scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space sh <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh/skills/space-librarian/check.sh changes/archive/2026-10-28-add-greeting/ledger.md changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File changes/archive/2026-10-28-add-greeting/ledger.md" -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File changes/add-farewell/tasks/T4-brief.md" -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: SPACE=<scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space sh <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh/skills/space-librarian/check.sh changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+DESK: SPACE=<scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space sh <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/export/agent-mesh/skills/space-librarian/check.sh STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space fetch origin
+DESK: git -C <scratch>/runs/20261028T115022Z-test_R5_S2_tests_promoted_at_integrate-da6f/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R5.S2.1 pass 3 of 3 tests promoted to tests/
+R5.S2.2 pass T4 brief written
+R5.S2.3 pass T4 brief runs the regression suite
+R5.S2.4 pass add-farewell's test stays in its change folder
