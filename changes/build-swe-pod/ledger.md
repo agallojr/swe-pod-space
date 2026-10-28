@@ -702,4 +702,9 @@
 2026-10-28T07:50Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T07:50Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T07:50Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-28T09:01Z T19a DONE_WITH_CONCERNS: ev-20261028T0751Z-T19a, macos-laptop, round 3 at space
+                  e8fa318, swe-pod 4d5bfc7, agent-mesh bbd19a2; smoke 8 of 8; 36 pass, 8 fail,
+                  0 not-run of 44; wall 3785 s
+2026-10-28T09:01Z filed changes/build-swe-pod/evidence/20261028T0751Z-T19a.md, its -runs/ and
+                  its -report.md
 ```
