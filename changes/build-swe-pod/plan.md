@@ -25,8 +25,9 @@ inspection checks, from the spec alone. Verify then runs them, each agent
 under test as an isolated headless process briefed only with the
 deliverables, against a fixture Project Space.
 
-Every task runs `local` except T20, the linux-server verify, which runs last
-before integrate through the mesh. M4 is not built: spec §14 says "later",
+Every task runs `local` except T19, the verify, which a remote pod agent in
+the test role runs on a linux-server node, dispatched through the mesh
+(§3 OD6). M4 is not built: spec §14 says "later",
 so PROCESS.md and the lead's definition carry its interim rule. T8 writes
 the G1 to G3 text, and the operator applies it to the private overlay in
 T36. Models: T1, T5 and T35 run on the most capable model available; the
@@ -84,7 +85,7 @@ README.md  INSTALL.md          shipped docs; INSTALL carries the G1 to G3 text
   root) and `Brief: changes/<id>/tasks/T<n>-brief.md` (relative to the space).
   The Goal tells the executor to read the role definition before anything
   else. Front-matter has `project: proj:<name>`. For a node that may predate the
-  change (T20), the Context also gives the repo URLs, the space commit that
+  change (T19), the Context also gives the repo URLs, the space commit that
   holds the brief, and the commit set under test, as separate lines.
 - **Where outputs go.** A local agent writes its outputs at their final
   space-relative path. A mesh agent returns them as result files (§2.7). The
@@ -332,11 +333,12 @@ Verbatim from the spec:
 Operator decisions and directives for this change. The ledger records each
 one; elsewhere the plan cites them by id.
 
-- **OD1** (question 1). The nine scenarios R4.S1, R5.S2, R7.S1, R14.S1,
-  R15.S1, R17.S1, R22.S1, R23.S1 and R23.S2, plus the commit step of R17.S2,
-  are desk-verified in this change, and the pilot must run those nine live.
-  The final report says, verbatim: "9 scenarios desk-verified, live
-  confirmation at pilot".
+- **OD1** (question 1, amended by OD6). Seven scenarios are desk-verified
+  in this change, and the pilot must run them live: R4.S1, R5.S2, R14.S1,
+  R15.S1, R22.S1, R23.S1 and R23.S2, plus the commit step of R17.S2. R7.S1
+  and R17.S1 are verified live by T19's own dispatch (OD6). The final report
+  says, verbatim: "7 scenarios desk-verified, live confirmation at pilot;
+  R7.S1 and R17.S1 verified live at T19".
 - **OD2** (question 2). Within G1's scope, the pod's agents make the commits
   and pushes:
   - the lead creates `change/build-swe-pod` in both code repos and makes T0's
@@ -358,6 +360,13 @@ one; elsewhere the plan cites them by id.
   swe-pod branch, and no build task writes them. For R4 they count as docs
   that ship with the product. A change spec is only `changes/<id>/spec.md` in
   a Project Space.
+- **OD6** (directive). Verify is one task, T19, and the former T20 is merged
+  into it. It is run by a remote pod agent that holds `swe.test` on a
+  linux-server node, dispatched through the mesh. The operator keeps that
+  agent standing by, with read access to the three private repos and its own
+  signed-in isolated runner config. Its dispatch is the live evidence for
+  R7.S1, and the filing of its returned files is the live evidence for
+  R17.S1.
 
 Repo rule, not from the spec: agent-mesh carries no operator content
 (PROTOCOL §12), and swe-pod follows the same rule. Templates use `<handle>`
@@ -390,7 +399,7 @@ and similar placeholders, never a real name, path or host.
 | agent-mesh | `skills/mesh-load/SKILL.md` | create | load and drop a space (M2) | T12 |
 | agent-mesh | `README.md` | change | new skills, spaces, `swe.*` roles | T14 |
 | space | `changes/build-swe-pod/tests/**` | create | project-level tests, runner and fixtures | T15 to T18 |
-| space | `changes/build-swe-pod/evidence/*.md` | create | verify evidence | T19, T20 |
+| space | `changes/build-swe-pod/evidence/*` | create | verify evidence and test outputs | T19 |
 
 ### 4.1 Build checkouts, commits and filing
 
@@ -860,9 +869,11 @@ depends on §4.1 or §5, which the test agent never reads.
 - steps:
   - **Isolated runner** (`runner.sh`; the protocol is in `README.md`). Each
     agent under test is a separate headless Claude Code process.
-    - **Config.** At the go, the operator signs in one isolated config at a
-      fixed path, which is given only in the dispatch prompt. Runs are
-      serial, and before each one the runner resets that config in place:
+    - **Config.** On each node that runs the runner, the operator signs in
+      one isolated config at a fixed path. That is this node for T15's smoke
+      test, and the linux-server node for T19. The path is given only in the
+      dispatch prompt and Context. Before each run, the runner resets that
+      config in place:
       it replaces the agents, skills and settings, and clears per-project
       memory and session state. The agents and skills are the test's
       `deliverables:`. There is no CLAUDE.md or other guidance. The provider
@@ -881,8 +892,9 @@ depends on §4.1 or §5, which the test agent never reads.
       and the config directory. Fixtures have no `.git`.
     - **Desk steps.** In desk mode, and for every librarian commit step, the
       agent prints commands and runs none.
-    - **Caps.** A run is stopped at its cap and recorded as
-      `not-run (cap)`.
+    - **Caps and output.** A run is stopped at its cap and recorded as
+      `not-run (cap)`. Each run writes one output file, in which the scratch
+      root is rewritten to `<scratch>`, so no machine path reaches it.
     - **Deliverables.** They are exported read-only by sha (`git archive`)
       from the brief's `## Start from`, never read from a working copy. The
       runner takes machine paths as arguments and holds none.
@@ -976,71 +988,67 @@ depends on §4.1 or §5, which the test agent never reads.
   Without suggestions, the lead logs `no suggestions` and T18 closes without
   a dispatch.
 
-### T19 Verify (macos-laptop)
+### T19 Verify, by a remote pod agent (linux-server, mesh)
 - role: test
 - repo: space, swe-pod, agent-mesh
 - after: [T0 to T18]
-- runs: local
-- needs: macos-laptop
+- runs: mesh
+- needs: linux-server
 - serves: [R1 to R23]
-- touches: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>.md
+- touches: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>.md,
+  changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>-runs/<test name>.txt,
+  changes/build-swe-pod/tasks/T19-report.md
+- prerequisite: the operator has signed in the node's isolated runner config
+  (T15 Config). If that config or sign-in fails, T19 reports BLOCKED, for the
+  operator.
 - steps:
-  - Run every test in `changes/build-swe-pod/tests/` with the runner, at the
-    commit set in `## Start from`: the space, plus both branch heads, by sha.
-  - Runs are serial, since the budget policy keeps a laptop serial. Each is
-    capped at its `cap_s`, which is at most 600 s.
-  - `test_R16_S1` runs last, over the ledgers of all earlier runs, whose
-    scratch directories are kept until it finishes.
+  - **Dispatch** (§3 OD6). The lead files the T19 brief and the ledger line
+    `dispatch T19 -> test (mesh, linux-server)` in one space commit. It then
+    posts a `task.request` to `role:swe.test` with `project: proj:swe-pod`.
+    The Context holds the role-definition line, the brief line, the three
+    repo URLs, that space commit, the commit set under test (the space plus
+    both branch heads, by sha), and the runner config path (§2.3).
+  - **Brief.** The tester reads `agents/swe-test.md` from the swe-pod branch
+    commit first. The brief grants read-only git (clone, fetch, archive) into
+    a scratch directory outside the bus; for I6, `git init` of throwaway
+    repos there and staging into them, and nothing else; and running the
+    runner. These permissions live in the brief only. The node's product
+    predates M3, so the brief carries the §2.7 result-files format.
+  - **Run.** Run every test in `changes/build-swe-pod/tests/` (I1 to I8 and
+    every scenario and suggestion test) with the isolated runner, at the
+    commit set. The node is not a laptop, so up to 4 runs go in parallel,
+    and never more than half the node's cores. Caps are each test's `cap_s`
+    (at most 600 s) and 240 min in total. `test_R16_S1` runs last, over the
+    ledgers of all earlier runs.
+  - **R7.S1, live.** The tester checks test_R7_S1's Then items against its
+    own task.request and the dispatch line in the space commit it was given,
+    and records that result for R7.S1. The desk run is also kept, in the
+    report.
   - Neither repo has a unit suite, and the spec has no Quality section.
-  - **Heavy.** Before dispatch, the lead gives the human the runner command,
-    the caps (600 s per run, 240 min in total) and an expected 90 to 150 min
-    (R13.S1).
-- done when: an evidence record has every §2.4 key:
-  - results for all 35 scenarios;
-  - I1 to I8 under `x-checks`;
-  - every suggestion test under `x-suggestions`;
-  - `unit: {swe-pod: none-present, agent-mesh: none-present}`;
-  - `quality: none-declared`;
-  - `env: macos-laptop` and `wall_time_s`.
+  - **Heavy.** Before dispatch, the lead gives the operator the runner
+    command, the caps and an expected 45 to 90 min (R13.S1).
+  - **Return.** The evidence record, every test's output file and the report
+    come back as result files (`files:`, with sha256). The lead pulls the bus
+    by hand (§3 OD3), checks each sha256, and files them through the
+    librarian.
+- done when:
+  1. The result's `files:` matches the returned files by sha256.
+  2. The evidence has every §2.4 key:
+     - results for all 35 scenarios, with R7.S1 judged live;
+     - I1 to I8 under `x-checks`;
+     - every suggestion test under `x-suggestions`;
+     - `unit: {swe-pod: none-present, agent-mesh: none-present}`;
+     - `quality: none-declared`;
+     - `env: linux-server` and `wall_time_s`;
+     - log pointers to the `-runs/` files only.
+  3. The librarian has filed every file, each `FILED` after the ancestor
+     check. Those filings, checked by T35 against test_R17_S1's Then items,
+     are R17.S1's live evidence.
+  4. No mesh task id or agent id enters the space.
 
   Green means every result passes.
 
-### T20 Verify portability (linux-server), last before integrate
-- role: test
-- repo: space, swe-pod, agent-mesh
-- after: [T0 to T19, T21 to T35] (every task except T36, including any
-  re-run of T19 after T35's fix wave)
-- runs: mesh
-- needs: linux-server
-- serves: [R7, R16, R17]
-- touches: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>.md
-- steps:
-  - The lead posts this to the test agent standing by on a linux-server
-    node.
-  - Its brief and Context carry what a node predating the change needs
-    (§2.3):
-    - the three remote URLs;
-    - the space commit that holds this brief;
-    - the commit set under test, which is the latest green T19's;
-    - permission for read-only git (clone, fetch, archive) into a scratch
-      directory outside the bus;
-    - for I6, permission to `git init` one throwaway repo there and stage
-      into it, and nothing else;
-    - the instruction to read the role definition from the swe-pod commit.
-
-    These permissions live in the brief only, not in the product.
-  - The agent runs I5, I6 and I8 under GNU userland. Log pointers in its
-    evidence are space-relative, or left out.
-- done when:
-  1. An evidence record with `env: linux-server`, I5, I6 and I8 under
-     `x-checks`, and `scenarios: {}` comes back in the task result, as a
-     result file if the node's product has M3 and in the body otherwise. The
-     lead files it.
-  2. All three checks pass.
-  3. The dispatch ledger line and the Context lines are recorded as
-     supplementary live observations for R7.S1, and the filed result for
-     R17.S1 if it came as a file. They add to the desk results and replace
-     none of them. No mesh task id enters the space.
+T20 is merged into T19 (§3 OD6), and its id is not reused.
 
 ## 7. Review tasks
 
@@ -1087,7 +1095,9 @@ the ledger.
   - completeness: every requirement has a deliverable and a passing test;
   - correctness: each deliverable says what the spec means;
   - coherence: the decisions in §2 and §3 show up in the deliverables;
-  - that each "for the reviewer" part is covered.
+  - that each "for the reviewer" part is covered;
+  - that T19's filings meet test_R17_S1's Then items, which is R17.S1's
+    live evidence (§3 OD6).
 - done when: the record is filed; one builder fixes its findings in one
   wave; one re-review follows; the lead rules on what remains; verify is
   re-run if a deliverable changed.
@@ -1097,7 +1107,7 @@ the ledger.
 ### T36 Integrate
 - role: lead, with the operator
 - repo: space, swe-pod, agent-mesh
-- after: [T19, T20, T35]
+- after: [T19, T35]
 - runs: local
 - needs: any
 - serves: [R5, R14, R15]
@@ -1106,12 +1116,13 @@ the ledger.
   notes/note-20261027T2142Z-0a31-memory-spaces-design.md (header only),
   changes/build-swe-pod/report.md
 - steps:
-  1. **Fresh evidence.** If `tests/` or a pin moved since T19 and T20, rebase
+  1. **Fresh evidence.** If `tests/` or a pin moved since T19, rebase
      and run verify again.
   2. **Reconcile** the spec with the deliverables, and confirm that T0's
      check (3) still holds.
   3. **Final report**, in the §2.4 format. It gives OD1's sentence verbatim
-     and lists the nine scenarios, plus T20's supplementary observations.
+     and lists the seven desk-verified scenarios, citing T19's dispatch and
+     filings for R7.S1 and R17.S1.
      Under open questions it records that R7 holds only for local builds
      until the deferred exception lands (§3 OD4).
   4. **Overlay.** The operator applies T8's G1 to G3 text to the private
@@ -1148,7 +1159,7 @@ the ledger.
 ## 9. Test map
 
 No scenario is covered by a unit test, because neither repo has a unit
-suite. The desk rows follow §3 OD1.
+suite. The desk rows follow §3 OD1, and the live rows follow OD6.
 
 | Scenario | Test | Mode | Writes it |
 |---|---|---|---|
@@ -1162,7 +1173,7 @@ suite. The desk rows follow §3 OD1.
 | R5.S2 | test_R5_S2_tests_promoted_at_integrate | desk (lead) | T16 |
 | R6.S1 | test_R6_S1_complete_test_map | agent (plan) | T16 |
 | R6.S2 | test_R6_S2_shared_files_ordered | agent (plan) | T16 |
-| R7.S1 | test_R7_S1_mesh_dispatch | desk (lead), plus T20's live observation | T16 |
+| R7.S1 | test_R7_S1_mesh_dispatch | live, at T19's own dispatch; desk run kept | T16 |
 | R7.S2 | test_R7_S2_local_dispatch | agent (lead) | T16 |
 | R8.S1 | test_R8_S1_test_result_in_lane | agent (lead) | T16 |
 | R8.S2 | test_R8_S2_builder_disputes_test | agent (build) | T16 |
@@ -1176,7 +1187,7 @@ suite. The desk rows follow §3 OD1.
 | R14.S2 | test_R14_S2_rulings_in_final_report | agent (lead) | T17 |
 | R15.S1 | test_R15_S1_reverify_after_other_change | desk (lead) | T17 |
 | R16.S1 | test_R16_S1_dispatch_line_names_no_machine | inspect (all ledgers from the runs, plus the template), run last | T17 |
-| R17.S1 | test_R17_S1_remote_test_results_filed | desk (lead, with a fixture outbox) | T17 |
+| R17.S1 | test_R17_S1_remote_test_results_filed | live, T19's filings checked by T35; desk run kept | T17 |
 | R17.S2 | test_R17_S2_single_seat_librarian | agent (space-librarian); the commit step in desk | T17 |
 | R18.S1 | test_R18_S1_fresh_agent_where_are_we | agent (fresh, with the skill) | T17 |
 | R18.S2 | test_R18_S2_handoff_reverify_first | agent (lead) | T17 |
@@ -1203,7 +1214,7 @@ because the spec declares no Quality section; the standard close covers it.
   - T7 after T0 and T2. T8 after T1 to T7.
   - T12 after T9. T13 after T11 and T12. T14 after T10 and T13.
   - T16 and T17 after T15, in parallel.
-  - T19, then T35. T20 runs after every task except T36, and T36 last.
+  - T19 (mesh), then T35, then T36.
 - **Ordering of shared files:**
   - `guidance/agent-operating.md` and `skills/mesh-on/poller-prompt.md`: T12,
     then T13.
@@ -1212,8 +1223,8 @@ because the spec declares no Quality section; the standard close covers it.
   - swe-pod `README.md`: T0, then T8.
   - `SPEC.md` and `spec-process.*`: T0 only, plus T0-style re-copies (§4.1).
   - No other file is touched by two tasks. Test tasks write only new files.
-- **Longest chain** (14 tasks): T0 > T9 > T29 > T12 > T32 > T13 > T33 > T14
-  > T34 > T18 > T19 > T35 > T20 > T36.
+- **Longest chain** (13 tasks): T0 > T9 > T29 > T12 > T32 > T13 > T33 > T14
+  > T34 > T18 > T19 > T35 > T36.
 
 ## Self-review
 
@@ -1246,7 +1257,7 @@ because the spec declares no Quality section; the standard close covers it.
 
 ## Questions for the spec
 
-The questions that needed the operator are settled (§3, OD1 to OD5). Several
+The questions that needed the operator are settled (§3, OD1 to OD6). Several
 earlier defaults are now fixed in §2 or in their tasks, and are no longer
 open: result files (§2.7); M4 deferred (§1); mesh builds deferred (§3 OD4,
 T36 step 3); results with no scenario (§2.4); no layout bump (§2.7);

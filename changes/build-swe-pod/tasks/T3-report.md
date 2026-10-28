@@ -2,15 +2,12 @@
 
 ## Status
 
-BLOCKED
+DONE
 
-The content is written, and every done-when check passes on the working tree.
-The commit step of the standard close is not done: the build session's
-permission layer denied `git commit` (with `git add` already done), and after
-that it also denied read-only git commands. Nothing is committed or pushed for
-T3. Question for the lead: who commits the T3 files to `change/build-swe-pod`
-in swe-pod? The operator can allow the commit for this builder, or the lead can
-commit them under the same trailers.
+A first builder wrote and staged the files, and the node refused its commit.
+A second builder, with the commit now permitted, checked the staged files
+against the brief, ran the done-when checks again, and committed and pushed
+them. The review is still to run.
 
 ## What I did
 
@@ -38,10 +35,16 @@ commit them under the same trailers.
   `STATUS.md`, and shows the space layout from spec §8.
 - Staged the 10 files by pathspec (`templates/space`) and ran the shareability
   check: 0 hits.
+- Second builder: checked the staged content against the brief and the
+  `pod.yaml` form in spec §4, with no change to any file. Ran the checks again
+  (green), ran the shareability check (0 hits), then committed by pathspec
+  with trailers `Change: build-swe-pod` and `Task: T3`, and pushed (see
+  Concerns). Ran the shareability check again after the commit: 0 hits.
 
 ## Files
 
-All in swe-pod, staged and not committed:
+All in swe-pod, committed on `change/build-swe-pod`, range
+`swe-pod 8770c1a..0ee5f01` (one commit, 0ee5f01):
 
 - `templates/space/space.yaml`
 - `templates/space/pod.yaml`
@@ -54,7 +57,7 @@ All in swe-pod, staged and not committed:
 - `templates/space/notes/.gitkeep`
 - `templates/space/lore/.gitkeep`
 
-Staged diff: 10 files, 87 insertions.
+Commit diff: 10 files, 87 insertions.
 
 ## Test output
 
@@ -146,28 +149,88 @@ ok   git diff 854e87c -- SPEC.md spec-process.* is empty
 Hygiene, on the same run: no trailing whitespace, and no line over 88
 characters.
 
-Shareability check, run on the staged files (the final line):
+Shareability check, first builder, run on the staged files (the final line):
 
 ```
 shareability: 0 hits
 ```
 
-The post-commit run was not possible: there is no T3 commit.
+Green again, second builder, on the staged files before the commit. The same
+four checks, the same inline form and the same Ruby Psych parser, with the
+hygiene checks folded in:
+
+```
+== check 1: section 2.1 files and folders exist
+ok   templates/space/space.yaml
+ok   templates/space/pod.yaml
+ok   templates/space/AGENTS.md
+ok   templates/space/README.md
+ok   templates/space/changes/.gitkeep
+ok   templates/space/tests/.gitkeep
+ok   templates/space/decisions/.gitkeep
+ok   templates/space/handoffs/.gitkeep
+ok   templates/space/notes/.gitkeep
+ok   templates/space/lore/.gitkeep
+ok   no templates/space/STATUS.md
+== check 2: YAML loads; space.yaml has the 11 keys; pod.yaml fields
+ok   space.yaml has exactly the 11 keys
+ok   space.yaml kind
+ok   space.yaml writer_model
+ok   space.yaml header_profile
+ok   space.yaml may_reference
+ok   space.yaml categories
+ok   pod.yaml keys in spec 4 order
+ok   pod.yaml process
+ok   pod.yaml gates
+ok   pod.yaml repos remote and pin
+== check 3: AGENTS.md test-agent exception and standing rules
+ok   AGENTS.md: test-writing agent reads only its brief and `spec.md`
+ok   AGENTS.md: one branch, `main`
+ok   AGENTS.md: through the librarian
+ok   AGENTS.md: shareable profile
+ok   AGENTS.md: collision-free
+ok   AGENTS.md: code, unit tests and shipped docs
+== check 4 (part): SPEC.md and spec-process.* unchanged since the T0 commit
+ok   git diff 854e87c -- SPEC.md spec-process.* is empty
+== hygiene
+ok   no trailing whitespace
+ok   no line over 88 characters
+== result: PASS
+```
+
+Shareability check, second builder, before the commit (the final line):
+
+```
+shareability: 0 hits
+```
+
+Shareability check, second builder, after the commit and push (the final
+line):
+
+```
+shareability: 0 hits
+```
+
+Unit suite: swe-pod has no unit suite. It holds Markdown and YAML only, and
+nothing in it is compiled or run.
 
 Standard close:
 
-- shareability 0 hits: pass, on the staged files.
+- shareability 0 hits: pass, before and after the commit.
 - SPEC.md and spec-process.* unchanged since T0: pass.
-- committed with the trailers and pushed: not done (see Status).
+- committed with the trailers by pathspec, and pushed: pass, 0ee5f01 is on
+  the remote `change/build-swe-pod`.
 - review: not yet run.
 
 ## Concerns
 
-- **Commit and push are not done.** The 10 files are staged in the shared
-  swe-pod checkout. The other builders commit by pathspec, so the T3 files do
-  not go into their commits. Their shareability checks do scan all staged
-  lines, though, so until T3 is committed those checks also cover the T3
-  files. T3 has 0 hits, so this does not change their results.
+- **How the push landed.** After the T3 commit (0ee5f01), the T2 builder
+  committed aa84b73 on top of it in the shared checkout and pushed first. That
+  push carried 0ee5f01. My own push was then rejected because the remote ref
+  had already moved to aa84b73. A fresh fetch shows the remote
+  `change/build-swe-pod` at aa84b73, with 0ee5f01 as an ancestor, and a
+  second push reports up to date. No rebase was needed and none was run. The
+  T3 diff is commit 0ee5f01 alone, found by its `Task: T3` trailer.
 - **Content beyond the listed steps,** for the reviewer to judge. `AGENTS.md`
   has a "Specs first" rule, which restates spec decision 1 and R1 and matches
   this space's own `AGENTS.md`. `README.md` has a layout block from spec §8 and

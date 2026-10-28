@@ -130,4 +130,11 @@
                   after list closes
 2026-10-28T00:20Z filed changes/build-swe-pod/tasks/T7-brief.md, T8-brief.md,
                   T12-brief.md, T13-brief.md, T14-brief.md
+2026-10-28T00:26Z operator directive: T20 is not a rerun of the suite on another node;
+                  it uses a linux-server node as a remote pod agent in the test role,
+                  dispatched through the mesh, returning its results as files for the
+                  librarian to file; plan T20 to be revised accordingly
+2026-10-28T00:27Z operator directive, refining the last: merge T19 and T20 into one
+                  verify task, run by the remote linux-server pod agent in the test
+                  role through the mesh; no separate verify on the lead's node
 ```

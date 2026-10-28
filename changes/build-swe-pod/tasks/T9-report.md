@@ -7,19 +7,13 @@
 
 ## Status
 
-BLOCKED
+DONE
 
-The content is written and staged, and every content check passes. The commit
-step was refused by the build node's permission layer (auto-mode classifier,
-reason "Git Destructive") on the first `git commit` attempt. No commit was made
-and nothing was pushed. The two files sit staged, by pathspec, in the shared
-agent-mesh build checkout on `change/build-swe-pod` at 8ee5364. The standard
-close's commit and push items are therefore open, and so is done-when (2),
-which is checked against the `Task: T9` commits.
-
-To close: someone with commit authority on that checkout (the lead, or a
-re-dispatched builder once the permission is granted) runs the three commands
-under "Concerns". No content change is needed.
+The first builder wrote and staged the content, and the node refused its
+commit. On re-dispatch, with the commit permitted, the staged files were
+checked against the brief unchanged, committed by pathspec with both
+trailers, and pushed. Every done-when check and the standard close's
+checkable items now pass. The review (§7) is still to come.
 
 ## What I did
 
@@ -49,12 +43,20 @@ under "Concerns". No content change is needed.
   because the commit was refused.
 - Staged both files with `git add -- <touches>`. Ran the shareability check
   before the commit attempt and again afterwards. Both runs report 0 hits.
+- Re-dispatch: checked the staged diff against the brief (both files, +11
+  lines, nothing else staged or modified) and confirmed that every identity
+  file parser in the repo skips `#` lines. The branch had moved to 7430aeb
+  (T10 and T11 commits, none touching these files). Re-ran the checks, ran
+  the shareability check, committed with `git commit -- <touches>`, found the
+  remote head already an ancestor (merge-base exit 0, no rebase needed),
+  pushed, and ran the checks and the shareability check again.
 
 ## Files
 
-- `templates/agent-identity.env.template` (agent-mesh), +4 lines, staged, not
-  committed
-- `docs/operator-manual.md` (agent-mesh), +7 lines, staged, not committed
+- `templates/agent-identity.env.template` (agent-mesh), +4 lines
+- `docs/operator-manual.md` (agent-mesh), +7 lines
+- Commit range: `agent-mesh 7430aeb..97b35a2` (one commit, 97b35a2, trailers
+  `Change: build-swe-pod` and `Task: T9`), pushed to `change/build-swe-pod`
 - `changes/build-swe-pod/tasks/T9-report.md` (space), this report, for the
   librarian to file
 
@@ -109,6 +111,9 @@ ok   swe.review docs/operator-manual.md
 check1 exit=0
 ```
 
+Re-dispatch: the same 12 `ok` lines and `check1 exit=0` on the staged tree,
+and again read from `origin/change/build-swe-pod` after the push.
+
 Check 1b, from the steps; an aid only, since the reviewer confirms the wording.
 This counts the lines with `swe.` and with "per-task-output" in each file.
 
@@ -131,6 +136,16 @@ commit was refused. Pre-commit proxy: `git status --short` lists only
 `M  docs/operator-manual.md` and `M  templates/agent-identity.env.template`,
 both staged, nothing else modified.
 
+Re-dispatch, before the commit: `no Task: T9 commit`, `check2 exit=1`.
+Green, after the commit:
+
+```
+commits: 97b35a2
+docs/operator-manual.md
+templates/agent-identity.env.template
+check2 exit=0
+```
+
 Check 3a, standard close. swe-pod `SPEC.md` and `spec-process.*` are unchanged
 since the latest `Task: T0` commit:
 
@@ -141,38 +156,29 @@ git diff "$t0" -- SPEC.md 'spec-process.*'
 ```
 
 Before: `T0=854e87c diff-bytes=0`. After: `T0=854e87c diff-bytes=0`. Passes
-both times, since T9 does not touch swe-pod.
+both times, since T9 does not touch swe-pod. Re-dispatch, before and after
+the commit: `T0=854e87c diff-bytes=0`.
 
 Check 3b, standard close. A `Task: T9` commit carrying both trailers is on
 `origin/change/build-swe-pod`:
 
 Red, before the content: `T9 commits on origin=0 with both trailers=0`.
 After the content: `T9 commits on origin=0 with both trailers=0`. Still fails,
-because the commit was refused.
+because the commit was refused. Re-dispatch, before the commit: the same.
+Green, after the push: `T9 commits on origin=1 with both trailers=1`.
+
+Push: `7430aeb..97b35a2  change/build-swe-pod -> change/build-swe-pod`.
 
 Shareability check (§2.8), final line, staged before the commit attempt:
 `shareability: 0 hits`. Run again after the refusal: `shareability: 0 hits`.
+Re-dispatch, after staging: `shareability: 0 hits`. After the commit and
+push: `shareability: 0 hits`.
+
+Unit suite: agent-mesh has no unit suite (no test files or test runner in
+the repo), so there is no `unit <p>/<n>` line.
 
 ## Concerns
 
-- **The commit and push were refused, so T9 is not closed.** The refusal came
-  from the node's permission layer, not from the git gate, and I did not try
-  to get around it. These commands, run from the agent-mesh build checkout
-  with its absolute path in place of `<checkout>`, close it unchanged:
-
-  ```
-  git -C <checkout> commit -m "Register the six swe roles in the identity template and operator manual" --trailer "Change: build-swe-pod" --trailer "Task: T9" --trailer "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- templates/agent-identity.env.template docs/operator-manual.md
-  git -C <checkout> push origin change/build-swe-pod
-  ```
-
-  Then run checks 2 and 3b again. The files are already staged, but the
-  commit uses pathspecs, so it commits only these two files whatever else is
-  staged.
-- **Staged state in a shared index.** My two files stay staged in the shared
-  checkout until someone commits them. A parallel builder's `git commit --
-  <its touches>` leaves them out, so they cannot leak into another task's
-  commit. Another task's shareability check does scan staged lines, though,
-  so it will scan these 11 lines too. They gave 0 hits.
 - **Wording choice.** The brief says "registration only". I read that as
   documenting how a node opts in, so the template's default `AGENT_ROLES=`
   value is unchanged and no node holds a pod role by default. If the plan
@@ -207,6 +213,6 @@ Shareability check (§2.8), final line, staged before the commit attempt:
   change no file in PROTOCOL, guidance, the poller or any skill, and that
   the only change to the identity template is comments, so the template's
   consumers parse the file as before.
-- for the reviewer: the diff of the `Task: T9` commits, once made. Check that
+- for the reviewer: the diff of the `Task: T9` commit, 97b35a2. Check that
   the template's added lines all start with `#`, and that `mesh-post.sh`
   reads the identity file with start-anchored patterns.

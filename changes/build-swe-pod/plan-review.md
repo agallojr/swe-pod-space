@@ -793,3 +793,27 @@ questions list dropped six items now fixed in §2 or in their tasks, naming
 them in one sentence; two self-review items were merged.
 
 Tally: 5 accepted (A27 to A31), 0 partial, 0 rebutted.
+
+## Planner note: OD6 (T19 and T20 merged)
+
+This follows the operator directive in the ledger: verify is one mesh task,
+T19, run by a remote `swe.test` agent on a linux-server node, and T20 is
+merged into it. Plan changes:
+- §1 and §2.3;
+- §3, where OD1 now has 7 desk-verified scenarios, plus new OD6;
+- the file map;
+- T15 Config, with one signed-in config per runner node, and outputs with
+  `<scratch>` paths;
+- T19, rewritten: dispatch, brief permissions, full suite with up to 4
+  parallel runs and at most half the node's cores, the heavy ask, return as
+  result files, `env: linux-server`;
+- T20, removed;
+- T35, T36, §9, §10 and the questions intro.
+
+The longest chain is now 13 tasks, and the plan has 36.
+
+One judgment call. The remote tester can judge R7.S1 live from its own
+task.request and the dispatch line in the space commit it was given. It
+cannot see the filing of its own returned files, which is the THEN of
+R17.S1. That live check therefore goes to T35, which confirms the filings
+against test_R17_S1's Then items. The final report cites both.
