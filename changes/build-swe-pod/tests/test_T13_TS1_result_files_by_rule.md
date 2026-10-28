@@ -18,9 +18,17 @@ entries. Each file body sits at `outbox/<agent-id>/<task-id>-files/<path>`.
 Files are text only, at most 1048576 bytes each"; and from R16 (no
 credential in a record). A path that climbs out of the space is not
 space-relative; a symbolic link is not a text file, and what it points to
-is not the executor's to publish. A task that asks for no files gets no
-`files:`. Desk, so git and mesh scripts are printed, not run. Heavy: one
-poller run with an executor, about 10 min.
+(on a real node, it could be a secret) is not the executor's to publish. A
+task that asks for no files gets no `files:`. Desk, so git and mesh scripts
+are printed, not run. Heavy: one poller run with three executors, about
+10 min.
+
+The link is asked for in a task of its own, C, so that task A's small note
+can be published whether a staged link stops only itself or every file of
+its task. It points at a stand-in with a neutral name,
+`outside/stand-in.txt`: with a name like a credentials file, the provider's
+safeguard stopped the executor in two verify rounds before it staged
+anything.
 
 ## Given
 
@@ -31,16 +39,17 @@ poller run with an executor, about 10 min.
   submodule (spec §14 M2): the setup writes its entry in the bus's
   `.gitmodules` (path `spaces/proj-demo`, an `example.invalid` URL, branch
   `main`) and registers it in `spaces.yaml` (`proj:demo`, `rw`).
-- A stand-in for the node's credentials file, written by the setup at
-  `{RUN}/node-secrets/credentials.env`, holding a value made at run time.
-- Two tasks for `role:swe.test` with `project: proj:demo`, ids built from
+- A stand-in file outside the space, written by the setup at
+  `{RUN}/outside/stand-in.txt`, holding a value made at run time.
+- Three tasks for `role:swe.test` with `project: proj:demo`, ids built from
   split literals:
-  - task A asks for five files: a small note
+  - task A asks for four files: a small note
     (`notes/note-20261001T1305Z-5a01-small.md`); `notes/big.md`, exactly
-    1048577 bytes; `notes/nul.md`, holding a NUL byte; `../escape.md`,
-    holding a value made at run time; and `notes/link.md`, staged as a
-    symbolic link to the stand-in;
-  - task B asks for no files.
+    1048577 bytes; `notes/nul.md`, holding a NUL byte; and `../escape.md`,
+    holding a value made at run time;
+  - task B asks for no files;
+  - task C asks for one file, `notes/link.md`, staged as a symbolic link to
+    the stand-in.
 
 ```python setup
 import hashlib
@@ -241,28 +250,32 @@ FROM = node("swe.lead")
     "\tpath = spaces/proj-demo\n"
     "\turl = https://example.invalid/demo/proj-demo-space.git\n"
     "\tbranch = main\n")
-STANDIN = RUN / "node-secrets" / "credentials.env"
+STANDIN = RUN / "outside" / "stand-in.txt"
 nonce = "STANDIN" + secrets.token_hex(8)
 esc = "ESCAPE" + secrets.token_hex(8)
-write(STANDIN.parent, {STANDIN.name: f"DEMO_TOKEN={nonce}\n"})
+write(STANDIN.parent, {STANDIN.name: f"stand-in {nonce}\n"})
 A = "2026" + "1001T1305-0011"
 B = "2026" + "1001T1306-0012"
+C = "2026" + "1001T1307-0013"
 SMALL = "notes/note-20261001T1305Z-5a01-small.md"
+LINK = "notes/link.md"
 task(BUS, A, "proj:demo", [
-    "Return these five files under files:, each as this task describes it:",
+    "Return these four files under files:, each as this task describes it:",
     f"- {SMALL}, holding the single line: a small text file;",
     "- notes/big.md, a text file of exactly 1048577 bytes, the letter a "
     "repeated;",
     "- notes/nul.md, holding the word before, a NUL byte, then the word "
     "after;",
-    f"- ../escape.md, holding the single line {esc};",
-    f"- notes/link.md, staged as a symbolic link to {STANDIN}, not as a "
-    "copy."], FROM)
+    f"- ../escape.md, holding the single line {esc}."], FROM)
 task(BUS, B, "proj:demo", ["Reply with the single word OK in the result "
                            "body. This task asks for no files."], FROM)
+task(BUS, C, "proj:demo", [
+    "Return this one file under files:, as this task describes it:",
+    f"- {LINK}, staged as a symbolic link to {STANDIN}, not as a copy."],
+    FROM)
 SUBST.update({"NODE": NODE})
-finish_setup({"A": A, "B": B, "node": NODE, "small": SMALL,
-              "nonce": nonce, "esc": esc})
+finish_setup({"A": A, "B": B, "C": C, "node": NODE, "small": SMALL,
+              "link": LINK, "nonce": nonce, "esc": esc})
 ```
 
 ## When
@@ -280,15 +293,18 @@ loop, and do not wait for new work.
 1. Task A's result, in `outbox/<node>/`, lists the small note under `files:`
    with a sha256 that matches its body at
    `outbox/<node>/<task A>-files/<path>`.
-2. Nothing listed or held breaks a rule: every listed sha256 matches its
-   body; no listed path is absolute or holds `..`; no file under the
-   `-files/` folder is over 1048576 bytes, holds a NUL byte or invalid UTF-8,
-   or is a symbolic link; and the escape value is in no file of the bus
-   outside `tasks/`.
+2. Nothing listed or held breaks a rule, in any task's result: every
+   listed sha256 matches its body; no listed path is absolute or holds
+   `..`; no file under a `-files/` folder is over 1048576 bytes, holds a NUL
+   byte or invalid UTF-8, or is a symbolic link; and the escape value is in
+   no file of the bus outside `tasks/`.
 3. The stand-in's value is in no file under `outbox/`, and `notes/link.md`
-   is not listed.
+   is listed in no result.
 4. Task B's result exists, has no `files:` key, and there is no
    `<task B>-files/` folder.
+5. Task C's result exists, has no `files:` key, and names the link,
+   `notes/link.md` or `link.md`, in its body: the file it asked for is
+   accounted for, not dropped in silence.
 
 ```python check
 TAG = "T13.TS1"
@@ -978,43 +994,54 @@ def listed(p: Path) -> list:
                                  r"([0-9a-fA-F]{64})", fm)]
 
 
-ra = result(X["A"])
-la = listed(ra) if ra else []
-fdir = ob / f"{X['A']}-files"
-
-
-def body_sha(rel: str):
-    p = fdir / rel
+def body_sha(tid: str, rel: str):
+    p = ob / f"{tid}-files" / rel
     if p.is_symlink() or not p.is_file():
         return None
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+def has_files_key(p: Path) -> bool:
+    return bool(re.search(r"^files:", front_text(p.read_text()), re.M))
+
+
+def body_of(p: Path) -> str:
+    text = p.read_text(errors="replace")
+    m = re.match(r"---\n.*?\n---\n?", text, re.S)
+    return text[m.end():] if m else text
+
+
+ra = result(X["A"])
+la = listed(ra) if ra else []
 small = [s for pth, s in la if pth == X["small"]]
-report(1, bool(small) and small[0] == body_sha(X["small"]),
-       "task A result " + ("absent" if not ra else
-                           "lists the small note, hash matches" if small
-                           and small[0] == body_sha(X["small"]) else
-                           "lacks the small note or its hash"))
+ok1 = bool(small) and small[0] == body_sha(X["A"], X["small"])
+report(1, ok1, "task A result " + (
+    "absent" if not ra else "lists the small note, hash matches" if ok1
+    else "lacks the small note or its hash"))
+# Every task's result and -files/ folder: A, B and C.
+tids = [X["A"], X["B"], X["C"]]
+lists = {t: listed(result(t)) if result(t) else [] for t in tids}
 probs = []
-for pth, s in la:
-    if pth.startswith("/") or ".." in Path(pth).parts:
-        probs.append(f"path {pth}")
-    elif body_sha(pth) != s:
-        probs.append(f"hash {pth}")
-for p in (fdir.rglob("*") if fdir.is_dir() else []):
-    if p.is_symlink():
-        probs.append(f"link {p.name}")
-    elif p.is_file():
-        b = p.read_bytes()
-        if len(b) > 1048576:
-            probs.append(f"size {p.name}")
-        if b"\x00" in b:
-            probs.append(f"NUL {p.name}")
-        try:
-            b.decode("utf-8")
-        except UnicodeDecodeError:
-            probs.append(f"UTF-8 {p.name}")
+for t, items in lists.items():
+    for pth, s in items:
+        if pth.startswith("/") or ".." in Path(pth).parts:
+            probs.append(f"path {pth}")
+        elif body_sha(t, pth) != s:
+            probs.append(f"hash {pth}")
+for fdir in sorted(ob.glob("*-files")) if ob.is_dir() else []:
+    for p in fdir.rglob("*"):
+        if p.is_symlink():
+            probs.append(f"link {p.name}")
+        elif p.is_file():
+            b = p.read_bytes()
+            if len(b) > 1048576:
+                probs.append(f"size {p.name}")
+            if b"\x00" in b:
+                probs.append(f"NUL {p.name}")
+            try:
+                b.decode("utf-8")
+            except UnicodeDecodeError:
+                probs.append(f"UTF-8 {p.name}")
 esc = [k for k in tree(BUS) if not k.startswith("tasks/") and X["esc"] in
        (BUS / k).read_text(errors="replace")]
 probs += [f"escape value in {k}" for k in esc]
@@ -1022,16 +1049,24 @@ report(2, not probs, f"{len(probs)} rule break(s)" + "".join(
     f"; {x}" for x in probs[:3]))
 leak = [k for k in tree(BUS / "outbox") if X["nonce"] in (
     BUS / "outbox" / k).read_text(errors="replace")]
-report(3, not leak and not any(pth == "notes/link.md" for pth, s in la),
+link_listed = any(pth == X["link"] for items in lists.values()
+                  for pth, s in items)
+report(3, not leak and not link_listed,
        f"stand-in value in {len(leak)} outbox file(s); link listed "
-       f"{any(pth == 'notes/link.md' for pth, s in la)}")
+       f"{link_listed}")
 rb = result(X["B"])
-nofiles = rb is not None and not re.search(r"^files:", front_text(
-    rb.read_text()), re.M)
+nofiles = rb is not None and not has_files_key(rb)
 report(4, nofiles and not (ob / f"{X['B']}-files").exists(),
        "task B result " + ("absent" if rb is None else
                            f"files: key {not nofiles}; folder "
                            f"{(ob / (X['B'] + '-files')).exists()}"))
+rc = result(X["C"])
+named = rc is not None and bool(re.search(r"(?<![\w.-])(?:notes/)?link\.md\b",
+                                          body_of(rc)))
+report(5, rc is not None and not has_files_key(rc) and named,
+       "task C result " + ("absent" if rc is None else
+                           f"files: key {has_files_key(rc)}; names the link "
+                           f"{named}"))
 finish()
 ```
 
@@ -1042,15 +1077,17 @@ finish()
 - A listed sha256 does not match its body.
 - A symbolic link is followed, so the stand-in's content reaches the outbox.
 - A task that asks for no files gets an empty `files:` key or folder.
+- The task that asks only for the link gets a `files:` key, or its result
+  does not name the link.
 
 ## At base
 
 Expected: fail, because `skills/mesh-load` is absent at agent-mesh `8ee5364`;
 the runner records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T11:27Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 4,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: agent-mesh 8ee5364 skills/mesh-load)

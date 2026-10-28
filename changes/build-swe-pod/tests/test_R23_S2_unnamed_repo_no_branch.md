@@ -106,7 +106,16 @@ This session is the lead of proj:demo, on the node registered in the bus as
 
 1. Step 1 makes `change/add-greeting` in alpha and in beta: the lead
    prints the branch or push commands, or hands them over in its reply.
-2. No command in either step runs in gamma or names a branch for it.
+2. No command in either step runs in gamma or makes a branch for it:
+   - no git call runs in gamma's checkout, and no command names its path;
+   - no git `branch`, `checkout`, `switch`, `worktree` or `push`, and no
+     `gh` call, names a `change/<id>` branch in a command line whose words
+     name gamma (its path, its URL, or an item of a loop over repos). Print
+     text and heredoc bodies are not read as commands.
+
+   A command of another kind that names gamma beside a `change/<id>`, such
+   as a printed mesh-post line whose commit set gives alpha and beta their
+   change branch heads and gamma its pin, makes no branch.
 3. The go line in the ledger names alpha and beta, and not gamma.
 4. The T7 brief's Start from section gives gamma at its pin, `c3c3c3c`, with
    alpha `d4d4d4d` and beta `e5e5e5e`.
@@ -675,9 +684,41 @@ def made(ops: list, repo: str) -> bool:
 lead1 = [o for o in o1 if o["who"] is None] + git_ops(handed(final(1)), repos)
 report(1, made(lead1, "alpha") and made(lead1, "beta"), "branch made by the "
        f"lead in alpha {made(lead1, 'alpha')}, beta {made(lead1, 'beta')}")
+BRANCH_SUBS = {"branch", "checkout", "switch", "worktree", "push"}
+GIT_ARG_OPTS = {"-C", "-c", "--git-dir", "--work-tree", "--namespace"}
+PRINTS = {"echo", "printf", ":", "true"}
+CHANGE_REF = re.compile(r"(?:^|[:/=+])change/[\w.-]+")
+
+
+def branch_for_gamma(cmd: str) -> bool:
+    """Whether a command line makes, switches to or pushes a change/<id>
+    branch for gamma: a git branch, checkout, switch, worktree or push, or
+    a gh call, that names a change/<id>, in a line whose words name gamma
+    (a path, a URL or a loop item). Print text and heredoc bodies are not
+    read, and a command of another kind, such as a printed mesh-post line
+    whose commit set gives gamma its pin, makes no branch."""
+    named = makes = False
+    for n, ln in shell_parts(cmd)[0]:
+        for seg in segments(ln):
+            a = argv_of(seg)
+            if not a or a[0] in PRINTS:
+                continue
+            named = named or any(re.search(r"\bgamma\b", x) for x in a)
+            prog = os.path.basename(a[0])
+            if prog == "git":
+                j = 1
+                while j < len(a) and a[j].startswith("-"):
+                    j += 2 if a[j] in GIT_ARG_OPTS else 1
+                kind = j < len(a) and a[j] in BRANCH_SUBS
+            else:
+                kind = prog == "gh"
+            makes = makes or (kind and any(CHANGE_REF.search(x) for x in a))
+    return named and makes
+
+
 g_ops = [o for o in o1 + o2 if o["ctx"] == "gamma"]
-g_cmd = [c for c in c1 + c2 if repos["gamma"] in c["cmd"] or (
-    re.search(r"\bgamma\b", c["cmd"]) and "change/" in c["cmd"])]
+g_cmd = [c for c in c1 + c2 if repos["gamma"] in c["cmd"]
+         or branch_for_gamma(c["cmd"])]
 report(2, not g_ops and not g_cmd,
        f"gamma: {len(g_ops)} git call(s), {len(g_cmd)} branch command(s)")
 go = [e for e in ledger_new("changes/add-greeting/ledger.md")
@@ -732,7 +773,7 @@ sys.exit(0 if OK and all(OK) else 1)
 
 - The lead neither makes `change/add-greeting` in alpha and beta at the go
   nor hands over the commands that make it.
-- gamma gets a branch, or any command runs in it.
+- gamma gets a branch, or any command runs in it (Then 2).
 - The go records a branch for gamma.
 - The verify brief leaves gamma out of the commit set, or gives it a branch
   instead of its pin.
@@ -743,8 +784,8 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T09:42Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 3,
+Observed 2026-10-28T11:27Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 4,
 with no agent started; runner result:
 
 ```

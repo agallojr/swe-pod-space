@@ -126,9 +126,13 @@ DESK_PREAMBLE = (
     "printed, each on its own line, in the order you printed them. Every "
     "other tool works as normal."
 )
+# The librarian's commit step names no kinds of git command: a list of them
+# was once read as complete, and the closing fetch and ancestor check of the
+# procedure were left out.
 LIBRARIAN_PREAMBLE = (
-    "In this run the librarian's commit step is a desk step: print each git "
-    "command of it (add, commit, fetch, rebase, push) on its own line "
+    "In this run the librarian's commit step is a desk step. That step is "
+    "every git command the librarian's filing procedure gives, from the "
+    "first to the last, with none left out: print each one on its own line "
     "starting with `DESK: `, and run none of them. Your final reply must "
     "repeat every `DESK: ` line you printed, each on its own line, in the "
     "order you printed them."
@@ -370,6 +374,15 @@ def bus_registry(bus: str | None) -> dict:
     return out
 
 
+def bus_inboxes(bus: str | None) -> list:
+    """The bus's direct-inbox names: each folder tasks/<name>/ but roles/."""
+    root = Path(bus) / "tasks" if bus else None
+    if root is None or not root.is_dir():
+        return []
+    return sorted(p.name for p in root.iterdir() if p.is_dir()
+                  and p.name != "roles" and not p.name.startswith((".", "_")))
+
+
 def dashed(path: str) -> str:
     """A path in the CLI's dash encoding: each non-alphanumeric is a dash."""
     return re.sub(r"[^A-Za-z0-9]", "-", path)
@@ -401,7 +414,9 @@ def make_redactor(args):
     dash-encoded form (placeholder `<...-dashed>`): the scratch root, the
     config dir, each registered agent's cwd, $HOME, the temp folders. Then
     any other per-user path under a home root; then, as whole words, each
-    registered agent id, agent name and hostname, and this node's hostname.
+    direct-inbox name of the bus, each registered agent id, agent name and
+    hostname, and this node's hostname. An inbox named by an agent id is
+    rewritten as the agent id.
     """
     pairs = []
 
@@ -426,7 +441,7 @@ def make_redactor(args):
     pairs.sort(key=lambda x: -len(x[0]))
     roots = re.compile("(?:/" + "Us" + "ers|/" + "ho" + "me)/[A-Za-z0-9._-]*")
     host = socket.gethostname()
-    holders = {}
+    holders = {v: "<inbox>" for v in bus_inboxes(args.bus)}
     for k, holder in (("hostname", "<host>"), ("agent_name", "<agent-name>"),
                       ("agent_id", "<agent-id>")):
         for v in reg[k]:
@@ -1555,13 +1570,16 @@ def smoke(args) -> int:
         attempted=attempted_s7)
 
     # S8: kept output and logs carry placeholders, not machine paths, agent
-    # ids or agent names. The agent prints the config dir, its own $HOME (the
-    # case folder) and its cwd, then repeats the node's $HOME, the CLI's
-    # dash-encoded forms of the home, config and temp paths and, with --bus,
-    # each registered agent's cwd, id and name.
+    # ids, agent names or inbox names. The agent prints the config dir, its
+    # own $HOME (the case folder) and its cwd, then repeats the node's $HOME,
+    # the CLI's dash-encoded forms of the home, config and temp paths and,
+    # with --bus, each registered agent's cwd, id and name and each
+    # direct-inbox name.
     reg = bus_registry(args.bus)
     cwds = reg["cwd"]
-    names = reg["agent_id"] + reg["agent_name"]
+    inboxes = [v for v in bus_inboxes(args.bus) if v not in
+               reg["agent_id"] + reg["agent_name"] + reg["hostname"]]
+    names = reg["agent_id"] + reg["agent_name"] + inboxes
     home = os.environ.get("HOME", "")
     dash = [dashed(p) for p in (home, str(args.config), temp_paths()[0][0])
             if p]
@@ -1582,7 +1600,8 @@ def smoke(args) -> int:
                  "<cli-tmp-dashed>"]
                 + (["<agent-cwd>"] if cwds else [])
                 + (["<agent-id>"] if reg["agent_id"] else [])
-                + (["<agent-name>"] if reg["agent_name"] else []))
+                + (["<agent-name>"] if reg["agent_name"] else [])
+                + (["<inbox>"] if inboxes else []))
         seen = [h for h in need + ["<home>", "<user-home>"] if h in text]
         forms = {str(run), os.path.realpath(run)}
         scratch_home = any(
@@ -1595,8 +1614,9 @@ def smoke(args) -> int:
                     f"left {leaks}, home-root paths left {stray}; "
                     f"placeholders seen {', '.join(seen) or 'none'}; from "
                     f"the bus: agent cwds {len(cwds)}, ids "
-                    f"{len(reg['agent_id'])}, names {len(reg['agent_name'])};"
-                    f" agent $HOME is the case folder {scratch_home}")
+                    f"{len(reg['agent_id'])}, names {len(reg['agent_name'])},"
+                    f" other inbox names {len(inboxes)}; agent $HOME is the "
+                    f"case folder {scratch_home}")
 
     case("S8-redaction", False, lambda sp: (
         "Run this shell command once and reply with its output verbatim: "

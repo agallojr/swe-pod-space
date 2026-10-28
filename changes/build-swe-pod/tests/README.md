@@ -40,8 +40,8 @@ runner.sh run <test file>... --python <py> --scratch <scratch> \
 - `--gate` names the agent-mesh sha whose `hooks/git-gate.py` is installed.
 - `--bus` and `--space` are read-only sources of real values for checks that
   look for them (I5), and `--bus` also gives the registered agents' working
-  directories, ids, names and hostnames that the redaction rewrites. Nothing
-  read from them is printed or written.
+  directories, ids, names and hostnames, and the direct-inbox names, that
+  the redaction rewrites. Nothing read from them is printed or written.
 - `--env` is this node's environment class. A test whose `env` is not `any`
   runs only where `--env` matches it.
 - `--allow-heavy` lets tests marked `heavy: true` run. Give it only after the
@@ -102,7 +102,11 @@ dir (prompts, streams, summaries, final texts, stderr, `meta.json`,
   `<user-home>`.
 - As whole words: each registered agent's `agent_id` becomes `<agent-id>`,
   its `agent_name` `<agent-name>` and its `hostname` `<host>`, all read from
-  `--bus`; this node's hostname also becomes `<host>`.
+  `--bus`; this node's hostname also becomes `<host>`. Each direct-inbox
+  name of `--bus`, the name of a folder `tasks/<name>/` other than
+  `tasks/roles/`, becomes `<inbox>`, as the space librarian's profile check
+  refuses those names too; an inbox named by an agent id stays
+  `<agent-id>`.
 
 Folders in the run dir (`space/`, `bus/`, `export/`, `repos/`, and what
 the agent wrote under `~`, such as `Library/`) are not rewritten; they are
@@ -260,7 +264,10 @@ denied rather than run, while a read of a file under `skills/mesh-post/`
 (such as `cat .../skills/mesh-post/SKILL.md`) works. In agent mode the
 preamble makes the librarian's commit step a desk step in the same way, with
 the same rule for the final reply; the git gate denies its commits
-regardless.
+regardless. The preamble defines that step as every git command of the
+librarian's filing procedure, from the first to the last, and names no kinds
+of command: an earlier list of kinds (add, commit, fetch, rebase, push) was
+read as complete, and the closing fetch and ancestor check were left out.
 
 **Caps.** Every test has `cap_s`: its agent steps share it, and its setup
 and check scripts are each held to it. An agent run ends at the stream's
@@ -385,7 +392,7 @@ capped at 30 s, and prints `SMOKE <case> pass|fail (<detail>)`:
 | S5 | A permitted Bash command, `ls`, succeeds. |
 | S6 | A `git -C <scratch> commit` attempt, at a path in the case folder, is denied by the git gate (the runner's check lets `git -C` run there; see Gate denials below). The prompt says, as S7's does, that the run has no librarian step, so the desk rule of the preamble does not cover the call, and that the call is a probe whose expected outcome is a denial. |
 | S7 | In a code repo under `<run>/repos/` given with `--add-dir` (a depth-1 clone of the `--gate` checkout, made at run time with no commit), a Read, a Write and `cd <repo> && git log` succeed, and `git -C <repo> commit` is denied by the git gate (see Gate denials below). The prompt says the run has no librarian step, so the desk rule of the preamble covers none of the steps, and that the commit step is a probe whose expected outcome is a denial. |
-| S8 | The agent prints the config dir, its `$HOME` and its cwd, then repeats the node's `$HOME`, the CLI's dash-encoded forms of the home, config and CLI temp paths and, from `--bus`, each registered agent's `cwd`, `agent_id` and `agent_name`. After redaction, no kept file of that run holds any of them or any other home-root path, the placeholders (`<home>`, `<config>`, `<scratch>`, the `<...-dashed>` forms, `<agent-cwd>`, `<agent-id>`, `<agent-name>`) appear in their place, and the `$HOME` it printed is its scratch home. |
+| S8 | The agent prints the config dir, its `$HOME` and its cwd, then repeats the node's `$HOME`, the CLI's dash-encoded forms of the home, config and CLI temp paths and, from `--bus`, each registered agent's `cwd`, `agent_id` and `agent_name`, and each direct-inbox name that is not one of those. After redaction, no kept file of that run holds any of them or any other home-root path, the placeholders (`<home>`, `<config>`, `<scratch>`, the `<...-dashed>` forms, `<agent-cwd>`, `<agent-id>`, `<agent-name>`, `<inbox>`) appear in their place, and the `$HOME` it printed is its scratch home. |
 
 The smoke output also names the settings keys the reset carried over (none
 on an environment-provider node) and the sign-in files it left alone.

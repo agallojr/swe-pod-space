@@ -30,7 +30,8 @@ agent run of about 3 min.
   - one dispatch line naming two tasks, T1 and T3;
   - `T1 DONE` and its report filed; T1's review, T4, is not yet dispatched.
   T3 has not reported. So the next task is T4 alone (T2 waits for T1, whose
-  done-when needs T4's review), and T3 is in flight.
+  done-when needs T4's review), and T3 is in flight: of the tasks sent out,
+  it is the only one whose own report has not come back.
 
 ```python setup
 import hashlib
@@ -219,16 +220,21 @@ Where are we?
 End your answer with these lines, filled in from the records:
 STATE add-greeting: <its state>
 NEXT add-greeting: <the task ids it can dispatch now, separated by commas, or none>
-IN FLIGHT add-greeting: <the task ids dispatched and not yet reported, separated by commas, or none>
+IN FLIGHT add-greeting: <the task ids sent out whose own report has not come back, separated by commas, or none>
 ```
 
 ## Then
 
 The closing lines are only the test's way to read the agent's conclusions.
+The IN FLIGHT line does not use the word `dispatched`: the task state of
+that name (contract §2.5) can still hold for a build task that has reported
+but whose review is not closed, as T1 here, and the line asks for a
+different set.
 
 1. The state given is `building`.
 2. The tasks it can dispatch now are exactly T4.
-3. The tasks in flight are exactly T3.
+3. The tasks in flight, those sent out whose own report has not come back,
+   are exactly T3. T1 has reported, though its review T4 has not run.
 4. No record but a new `STATUS.md` is added, changed or removed.
 
 ```python check
@@ -929,9 +935,9 @@ finish()
 Expected: fail, because `skills/swe-pod` is absent at swe-pod `8fc5294`; the
 runner records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
-runner result:
+Observed 2026-10-28T11:27Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 4,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 skills/swe-pod)

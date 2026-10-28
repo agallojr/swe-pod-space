@@ -58,8 +58,18 @@ I'd like beta to greet people by name when they start it.
 
 ## Then
 
-1. The agent's message holds exactly one question: one `?` outside code,
-   quotes and fenced blocks.
+1. The agent's message asks exactly one question (spec R19.S1, "one
+   question per message"). Questions are counted, not question marks, in
+   the text outside code, quotes and fenced blocks, sentence by sentence; a
+   list item is a paragraph of its own. A sentence holding a `?` opens a
+   question when it is the first such sentence, or when it opens with a
+   question word (what, which, where, when, who, why, how, or a verb that
+   leads a question, such as is, do, can, should or would) after any list
+   marker, emphasis, short label ending in a colon (`My question:`) and
+   joining word (and, also, then, next, second). Any other sentence holding
+   a `?`, such as examples or choices after the question (`For example:
+   ..., or something else?`, `Or should alpha read it?`), is part of the
+   question before it, not a second one.
 2. It writes no spec, plan or other file under `changes/`.
 3. The question does not ask what the space already answers: it is not about
    the name limit.
@@ -149,9 +159,67 @@ def pin(pod: str, name: str):
                       r"\s*\"?([0-9a-f]{7,40})", pod, re.M)
     return m.group(1)[:7] if m else None
 
+QWORDS = {
+    "what", "which", "where", "when", "who", "whom", "whose", "why", "how",
+    "am", "is", "are", "was", "were", "do", "does", "did", "can", "could",
+    "should", "shall", "will", "would", "may", "might", "must", "have",
+    "has", "had", "isn't", "aren't", "wasn't", "weren't", "don't", "doesn't",
+    "didn't", "can't", "couldn't", "shouldn't", "won't", "wouldn't",
+    "haven't", "hasn't"}
+JOINERS = {"and", "also", "then", "plus", "next", "finally", "second",
+           "secondly", "third", "thirdly", "lastly", "separately", "besides",
+           "additionally"}
+MARKER = re.compile(r"^(?:[-*+]|\d+[.)]|\(\d+\)|[a-z][.)]|#+)\s+")
+
+
+def blocks(text: str) -> list:
+    """Paragraphs of text, lines joined; each list item is a block too."""
+    out, cur = [], []
+    for ln in text.splitlines():
+        s = ln.strip()
+        if not s or MARKER.match(s):
+            if cur:
+                out.append(" ".join(cur))
+            cur = [s] if s else []
+        else:
+            cur.append(s)
+    if cur:
+        out.append(" ".join(cur))
+    return out
+
+
+def opener(s: str) -> list:
+    """A sentence's words after any list marker, emphasis, short label
+    ending in a colon, and joining words."""
+    s = MARKER.sub("", s.replace("\u2019", "'")).lstrip("*_\"'([ ")
+    m = re.match(r"^[^:?]{1,40}:[*_]*\s+", s)
+    if m:
+        s = s[m.end():].lstrip("*_\"'([ ")
+    w = re.findall(r"[a-z']+", s.lower())
+    while w and w[0] in JOINERS:
+        w = w[1:]
+    return w
+
+
+def questions(text: str) -> list:
+    """The questions a message asks, each as the sentence that opens it.
+
+    A sentence holding a `?` opens a question when it is the first such
+    sentence or opens with a question word; any other one, such as examples
+    or choices after the question, is part of the question before it."""
+    qs = []
+    for b in blocks(text):
+        for s in re.split(r"(?<=[.?!])[)\]\"'*_]*\s+", b):
+            w = opener(s)
+            if "?" in s and (not qs or (w and w[0] in QWORDS)):
+                qs.append(s.strip())
+    return qs
+
+
 text = prose(final())
-n = text.count("?")
-report(1, n == 1, f"{n} question mark(s) in the message")
+asked = questions(text)
+report(1, len(asked) == 1, f"{len(asked)} question(s) in the message, "
+       f"{text.count('?')} question mark(s)")
 added, mod, gone = changed()
 wrote = [p for p in added + mod + gone if p.startswith("changes/")]
 report(2, not wrote, f"{len(wrote)} file(s) written under changes/")
@@ -166,7 +234,8 @@ sys.exit(0 if OK and all(OK) else 1)
 
 ## Fails if
 
-- More than one question in the message, or none.
+- More than one question in the message, or none, counted as Then 1 says:
+  examples or choices that follow the one question do not count again.
 - A spec is written before the human has answered.
 - The question asks for the name limit, which add-greeting already settles.
 
@@ -176,8 +245,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T00:43Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T11:27Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 test fixes of verify round 4,
+with no agent started; runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 agents/swe-spec.md)
