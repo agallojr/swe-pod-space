@@ -526,4 +526,10 @@
 2026-10-28T04:11Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T04:11Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T04:11Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-28T04:48Z Ruling: in T19a, a gateway outage (about 04:45Z to 04:47Z) gave five tests
+                  no agent turn; the shard re-runs those five once after its main pass,
+                  then test_R16_S1 again so it stays last, at the same commit set and
+                  inside the 240 min cap, and records both passes, each test's result
+                  being its last run's; the runner's startup retry missing that case is
+                  logged for T35; cost if wrong: about 25 min more shard time
 ```
