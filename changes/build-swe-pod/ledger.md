@@ -627,4 +627,16 @@
 2026-10-28T06:52Z T7 review r4: spec ok; none
 2026-10-28T06:52Z filed changes/build-swe-pod/tasks/V1-review-r2.md
 2026-10-28T06:52Z dispatch T1, T6, T7 -> build (local, any), base swe-pod 079cd89: fix round 5
+2026-10-28T06:58Z T1 fix round 5/5: 1 addressed, 0 open, 079cd89..f7545b1
+2026-10-28T06:58Z T6 fix round 3/5: 2 addressed, 0 open, f7545b1..f3dabea
+2026-10-28T06:58Z T7 fix round 5/5: 1 addressed, 0 open, f3dabea..4d5bfc7
+2026-10-28T06:58Z T1 review r5: spec ok; none
+2026-10-28T06:58Z T6 review r4: spec ok; none
+2026-10-28T06:58Z T7 review r5: spec ok; none
+2026-10-28T06:58Z T1 DONE, swe-pod 1cecea0..f7545b1 (verify fixes)
+2026-10-28T06:58Z T2 DONE, swe-pod 1cecea0..3280728 (verify fixes)
+2026-10-28T06:58Z T5 DONE, swe-pod 1cecea0..f833f72 (verify fixes)
+2026-10-28T06:58Z T6 DONE, swe-pod 079cd89..f3dabea (verify fixes)
+2026-10-28T06:58Z T7 DONE, swe-pod 1cecea0..4d5bfc7 (verify fixes)
+2026-10-28T06:58Z filed changes/build-swe-pod/tasks/V1-report.md, tasks/V1-review-r3.md
 ```
