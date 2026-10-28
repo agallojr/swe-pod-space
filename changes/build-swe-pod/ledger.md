@@ -707,4 +707,12 @@
                   0 not-run of 44; wall 3785 s
 2026-10-28T09:01Z filed changes/build-swe-pod/evidence/20261028T0751Z-T19a.md, its -runs/ and
                   its -report.md
+2026-10-28T09:08Z T19b DONE_WITH_CONCERNS: ev-20261028T0755Z-T19b, linux-server, round 3 at space
+                  e8fa318, swe-pod 4d5bfc7, agent-mesh bbd19a2; smoke 8 of 8, the gate denying
+                  under the runner's interpreter; 41 pass, 6 fail, 0 not-run of 47; wall
+                  3446 s; the result's 66 files match their sha256
+2026-10-28T09:08Z T19b R7.S1 live: Then items 1 to 7 pass against the round 3 task.request
+                  and the dispatch line at e8fa318
+2026-10-28T09:08Z filed changes/build-swe-pod/evidence/20261028T0755Z-T19b.md, its -runs/ and
+                  its -report.md, from the remote node's result
 ```
