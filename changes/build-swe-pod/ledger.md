@@ -414,4 +414,6 @@
 2026-10-28T03:26Z T41 on linux-server, run by the lead: runner.sh smoke at space 0500c12,
                   gate agent-mesh 1367f65, 8 of 8 pass in two runs, none retried; the
                   managed policy it reports is the kind ruled on at 02:59Z
+2026-10-28T03:29Z T42 review: spec ok; 1 Minor
+2026-10-28T03:29Z filed changes/build-swe-pod/tasks/T42-review.md
 ```
