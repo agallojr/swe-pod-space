@@ -691,4 +691,15 @@
                   filed as at 04:09Z; cost if wrong: none, no space record holds or cites them
 2026-10-28T07:49Z filed changes/build-swe-pod/tests/ (T18 round 2 fixes),
                   evidence/20261028T0745Z-T18-report.md
+2026-10-28T07:50Z Ruling: the commit set has moved since the shards' space commit f128c46,
+                  through the tests (now at b1feac6: the runner's gate fix and the round 2 test
+                  fixes), so both shards are briefed again and run again, round 3, with the
+                  same split and caps; cost if wrong: none, a full re-run
+2026-10-28T07:50Z heavy: asked agallojr before T19a: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11473 s
+2026-10-28T07:50Z heavy: asked agallojr before T19b: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, shard 240 min; expected 11472 s
+2026-10-28T07:50Z dispatch T19a -> test (local, macos-laptop)
+2026-10-28T07:50Z dispatch T19b -> test (mesh, linux-server)
+2026-10-28T07:50Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
 ```
