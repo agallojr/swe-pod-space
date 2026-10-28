@@ -202,4 +202,16 @@
                   after T15, before both shards) and A44 to A46 fixed
 2026-10-28T00:53Z Ruling: the runner follow-up already in progress under the test role
                   is filed as T41; cost if wrong: none
+2026-10-28T00:54Z T39 DONE_WITH_CONCERNS: test_R24_S1, test_R24_S2 to the R24 evidence
+                  contract, with overlays
+2026-10-28T00:54Z T39 at base: test_R24_S1_two_shards_verified fail (deliverable
+                  absent: swe-pod 8fc5294 agents/swe-lead.md),
+                  test_R24_S2_stale_shard_not_verified fail (deliverable absent: swe-pod
+                  8fc5294 agents/swe-lead.md)
+2026-10-28T00:54Z Ruling: the R24.S2 fixture's deliberate rule breaks stand, and the space
+                  commit is checked only when the lead names one; cost if wrong: a
+                  weaker space-commit check
+2026-10-28T00:54Z T39.TS1 to T39.TS3 (the tester's own) -> logged for T35, not T18
+2026-10-28T00:54Z filed changes/build-swe-pod/tests/ (T39: test_R24 and overlays),
+                  evidence/20261028T0053Z-T39-report.md
 ```
