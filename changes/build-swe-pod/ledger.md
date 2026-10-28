@@ -116,4 +116,18 @@
 2026-10-28T00:05Z dispatch T16 -> test (local, any)
 2026-10-28T00:05Z dispatch T17 -> test (local, any)
 2026-10-28T00:05Z filed changes/build-swe-pod/tasks/T16-brief.md, T17-brief.md
+2026-10-28T00:20Z operator decision: temporary allow rules in the lead node's agent
+                  permission settings for git add, commit, push and pull of
+                  change/build-swe-pod (and read-only git) in the two build
+                  checkouts, after the classifier refused T2, T3 and T9; removed at T36
+2026-10-28T00:20Z Ruling: wave 2 agents read the reviewed role definitions
+                  agents/swe-build.md and agents/swe-review.md at swe-pod 8770c1a
+                  first, as plan section 2.3 directs before install; cost if wrong:
+                  a definition gap shows up as a review finding
+2026-10-28T00:20Z dispatch T2, T3, T9 again -> build (local, any): finish the refused
+                  commits
+2026-10-28T00:20Z dispatch T7, T12, T13, T14, T8 -> build (local, any), each when its
+                  after list closes
+2026-10-28T00:20Z filed changes/build-swe-pod/tasks/T7-brief.md, T8-brief.md,
+                  T12-brief.md, T13-brief.md, T14-brief.md
 ```
