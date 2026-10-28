@@ -395,4 +395,8 @@
                   instead of now
 2026-10-28T03:09Z dispatch T18 -> test (local, any)
 2026-10-28T03:09Z filed changes/build-swe-pod/tasks/T18-brief.md
+2026-10-28T03:10Z operator decision, in the operator's words: "yes to heavy, yes to merge
+                  when done"; the heavy yes covers the verify shards, quoted in their
+                  heavy: line; the merge word is for T36, once the change is verified and
+                  the whole-change review has no open Critical or Important finding
 ```
