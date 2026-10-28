@@ -37,8 +37,8 @@ after the fix round moved beta.
   | `ledger.md` | both shard briefs filed at 12:04Z, both shards dispatched at 12:05Z; T7a done and filed at 12:39Z; `T2 fix round 1/5: 1 addressed, 0 open, e5e5e5e..f6f6f6f` at 12:40Z; `T7b BLOCKED` at 12:52Z; T7b's brief filed again at 13:29Z and T7b dispatched again at 13:31Z, done and filed; T8 review spec ok, one Minor |
   | `tasks/T7a-brief.md` | starts from alpha `d4d4d4d`, beta `e5e5e5e`, gamma `c3c3c3c` |
   | `tasks/T7b-brief.md` | the later brief: alpha `d4d4d4d`, beta `f6f6f6f`, gamma `c3c3c3c` |
-  | `evidence/20261101T1238Z-T7a.md` | `ev-20261101T1238Z-T7a`, `shard: T7a`, macos-laptop, at `{space: 7a7a7a7, alpha: d4d4d4d, beta: e5e5e5e, gamma: c3c3c3c}`: R1.S1 pass, R1.S2 pass, unit alpha pass |
-  | `evidence/20261101T1426Z-T7b.md` | `ev-20261101T1426Z-T7b`, `shard: T7b`, linux-server, at `{space: 8b8b8b8, alpha: d4d4d4d, beta: f6f6f6f, gamma: c3c3c3c}`: R2.S1 pass, unit beta pass |
+  | `evidence/20261001T1238Z-T7a.md` | `ev-20261001T1238Z-T7a`, `shard: T7a`, macos-laptop, at `{space: 7a7a7a7, alpha: d4d4d4d, beta: e5e5e5e, gamma: c3c3c3c}`: R1.S1 pass, R1.S2 pass, unit alpha pass |
+  | `evidence/20261001T1426Z-T7b.md` | `ev-20261001T1426Z-T7b`, `shard: T7b`, linux-server, at `{space: 8b8b8b8, alpha: d4d4d4d, beta: f6f6f6f, gamma: c3c3c3c}`: R2.S1 pass, unit beta pass |
   | `tasks/T8-review.md` | whole-change review over `beta b2b2b2b..f6f6f6f`, verdict pass, one Minor finding |
   | `tests/` | the three project-level tests of the change |
 
@@ -106,7 +106,7 @@ CHANGE = "add-greeting"
 CURRENT = {"alpha": "d4d4d4d", "beta": "f6f6f6f"}
 SPACE_SHA = "8b8b8b8"
 STALE = "T7a"
-EVIDENCE = ["20261101T1238Z-T7a.md", "20261101T1426Z-T7b.md"]
+EVIDENCE = ["20261001T1238Z-T7a.md", "20261001T1426Z-T7b.md"]
 
 
 def report(n: int, ok: bool, why: str) -> None:

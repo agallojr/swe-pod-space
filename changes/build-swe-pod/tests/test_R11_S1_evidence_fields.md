@@ -53,8 +53,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -400,10 +400,12 @@ Environment class of this node: {ENVCLASS}
 
 ## Then
 
-1. Exactly one new evidence record is in `changes/add-greeting/evidence/`, named
+1. Exactly one new evidence record, a file whose front matter has an
+   `id: ev-` line, is in `changes/add-greeting/evidence/`, named
    `<YYYYMMDDTHHMMZ>.md`, with `id: ev-<that stamp>` and `change: add-greeting`.
-   The task's report, `<YYYYMMDDTHHMMZ>-T7-report.md` beside it (plan §2.4),
-   is not a record and is not counted.
+   Other new files there are not records and are not counted: the task's
+   report, `<YYYYMMDDTHHMMZ>-T7-report.md` (plan §2.4), and any log the record
+   points to (spec §5.5, plan §2.4: logs appear as pointers).
 2. `commit_set` names the space and every repo of `pod.yaml`, each with a sha7:
    alpha and beta at the commit set under test, gamma at its pin `c3c3c3c`.
 3. `env` is this node's environment class.
@@ -591,8 +593,21 @@ def read(rel: str) -> str:
 
 EXP = json.loads((RUN / "expected.json").read_text())
 added, _, _ = changed()
+
+
+def is_record(rel: str) -> bool:
+    """An evidence record: a file whose front matter has an `id: ev-` line.
+    A report, or a log a record points to, is not one."""
+    try:
+        t = (SPACE / rel).read_text()
+    except (OSError, UnicodeDecodeError):
+        return False
+    fm = re.match(r"---\n(.*?)\n---", t, re.S)
+    return bool(fm and re.search(r"^id:\s*['\"]?ev-", fm.group(1), re.M))
+
+
 recs = [p for p in added if p.startswith(CHANGE + "/evidence/")
-        and not p.endswith("-report.md")]
+        and is_record(p)]
 named = [p for p in recs if re.fullmatch(r"\d{8}T\d{4}Z\.md", Path(p).name)]
 text = read(named[0]) if len(named) == 1 else ""
 m = re.match(r"---\n(.*?)\n---\n?(.*)", text, re.S)
@@ -678,8 +693,8 @@ finish()
 Expected: fail, because `agents/` is absent at swe-pod `8fc5294`; the runner
 records the absent deliverable and starts no agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+Observed 2026-10-28T07:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 fixes of verify round 2,
 runner result:
 
 ```

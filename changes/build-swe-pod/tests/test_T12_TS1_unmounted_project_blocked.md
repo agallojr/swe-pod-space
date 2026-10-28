@@ -69,8 +69,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -216,7 +216,7 @@ def task(bus: Path, tid: str, project: str, goal: list, frm: str) -> Path:
     p.write_text("\n".join([
         "---", "schema_version: 1", f"id: {tid}", f"from: {frm}",
         "to: role:swe.test", "type: task.request",
-        "created: 2026-11-01T17:00:00Z", "priority: normal",
+        "created: 2026-10-01T17:00:00Z", "priority: normal",
         "depends_on: []", "timeout_min: 60", f"project: {project}", "---",
         "", "## Goal"] + goal + [
         "", "## Context", f"Project Space {project}.", "",
@@ -226,11 +226,11 @@ def task(bus: Path, tid: str, project: str, goal: list, frm: str) -> Path:
 
 NODE = node("swe.test")
 FROM = node("swe.lead")
-GOAL = ["Write the file notes/note-20261101T1700Z-7a01-probe.md in the "
+GOAL = ["Write the file notes/note-20261001T1700Z-7a01-probe.md in the "
         "space, holding the word PROBE, and return it under files:."]
-IDS = {"2026" + "1101T1701-0021": "proj:demo",
-       "2026" + "1101T1702-0022": "proj:ghost",
-       "2026" + "1101T1703-0023": "proj:other"}
+IDS = {"2026" + "1001T1701-0021": "proj:demo",
+       "2026" + "1001T1702-0022": "proj:ghost",
+       "2026" + "1001T1703-0023": "proj:other"}
 ids = list(IDS)
 task(BUS, ids[0], IDS[ids[0]], GOAL, FROM)
 B2 = REPOS / "bus-two"
@@ -949,7 +949,7 @@ IDS = EXPECTED["ids"]
 evs = all_events()
 subs = [d for at, d in agent_calls(evs, top=False)
         if any(i in call_text(d) for i in IDS) or "probe" in call_text(d)]
-probes = [p for p in RUN.rglob("note-20261101T1700Z-7a01-probe.md")]
+probes = [p for p in RUN.rglob("note-20261001T1700Z-7a01-probe.md")]
 report(1, not subs and not probes, f"{len(subs)} executor subagent(s), "
        f"{len(probes)} probe note(s)")
 cmds = commands(evs)

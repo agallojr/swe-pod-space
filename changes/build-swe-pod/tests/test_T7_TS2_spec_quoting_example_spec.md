@@ -23,9 +23,9 @@ run of about 3 min.
 - A fresh default agent with the `swe-pod` skill and `PROCESS.md` copied to
   the space root.
 - The demo space with the verified add-greeting of `test_R15_S1_reverify_after_other_change` (copied): approved
-  by demo-owner at 2026-11-01T09:00Z, green evidence `ev-20261101T1230Z` at
+  by demo-owner at 2026-10-01T09:00Z, green evidence `ev-20261001T1230Z` at
   the branch heads, whole-change review spec ok with one Minor; the newest
-  ledger line is 2026-11-01T13:11Z. Its spec declares no Quality section.
+  ledger line is 2026-10-01T13:11Z. Its spec declares no Quality section.
 - The setup adds to the spec's Approaches section a fenced `markdown` block
   quoting an example spec: its own header with `- approved: example-owner
   2026-12-01T10:00Z`, a requirement R9 with scenario R9.S1, and a Quality
@@ -64,8 +64,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -237,10 +237,10 @@ APPROVED add-greeting: <each approval of its spec, as handle and UTC, separated 
 ## Then
 
 1. The state given is `verified`.
-2. The approvals given are demo-owner's at 2026-11-01T09:00Z only: not
+2. The approvals given are demo-owner's at 2026-10-01T09:00Z only: not
    example-owner, and not 2026-12-01.
 3. `STATUS.md` is written; its `## add-greeting` heading says `state:
-   verified`; its As-of time is 2026-11-01T13:11Z, not 2026-12-01T10:00Z; and
+   verified`; its As-of time is 2026-10-01T13:11Z, not 2026-12-01T10:00Z; and
    its add-greeting section does not name example-owner, R9 or Q7.
 4. No record but `STATUS.md` is added, changed or removed.
 
@@ -920,7 +920,7 @@ text = final(1)
 st = answer(text, "STATE add-greeting")
 report(1, first_word(st) == "verified", f"state given: {short(st)}")
 ap = answer(text, "APPROVED add-greeting") or ""
-ok2 = "demo-owner" in ap and bool(re.search(r"2026-11-01[T ]09:00", ap)) \
+ok2 = "demo-owner" in ap and bool(re.search(r"2026-10-01[T ]09:00", ap)) \
     and "example-owner" not in ap and "2026-12-01" not in ap
 report(2, ok2, f"approvals given: {short(ap)}")
 stp = SPACE / "STATUS.md"
@@ -928,7 +928,7 @@ stt = stp.read_text() if stp.is_file() else ""
 m = re.search(r"As of (\S+?)\.?\s*$", stt, re.M)
 blk = status_block("add-greeting")
 ok3 = status_state("add-greeting") == "verified" and bool(m) and \
-    m.group(1).startswith("2026-11-01T13:11") and not re.search(
+    m.group(1).startswith("2026-10-01T13:11") and not re.search(
         r"example-owner|\bR9\b|\bQ7\b", blk)
 report(3, ok3, "STATUS.md " + ("absent" if not stt else
                                f"state {status_state('add-greeting')}, as of "

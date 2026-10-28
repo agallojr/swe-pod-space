@@ -25,11 +25,11 @@ run of about 3 min.
   to the space root.
 - The demo bus, with the demo space mounted at `spaces/proj-demo`.
 - This test's overlay. Change B, add-greeting, is the verified change of
-  `test_R15_S1_reverify_after_other_change` (copied): evidence `ev-20261101T1230Z` passed at alpha `d4d4d4d`,
-  beta `e5e5e5e` and gamma `c3c3c3c` on 2026-11-01, with the regression suite
+  `test_R15_S1_reverify_after_other_change` (copied): evidence `ev-20261001T1230Z` passed at alpha `d4d4d4d`,
+  beta `e5e5e5e` and gamma `c3c3c3c` on 2026-10-01, with the regression suite
   `tests/` empty. Then change A, add-farewell, which names only `gamma`,
-  integrated at 2026-11-02T15:00Z: its folder is under
-  `changes/archive/2026-11-02-add-farewell/` and its test was promoted into
+  integrated at 2026-10-02T15:00Z: its folder is under
+  `changes/archive/2026-10-02-add-farewell/` and its test was promoted into
   `tests/`.
 - The setup moves gamma's pin in `pod.yaml` from `c3c3c3c` to `f6f6f6f`,
   A's merge. The pins of alpha and beta, add-greeting's repos, do not move,
@@ -69,8 +69,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 

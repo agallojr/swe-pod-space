@@ -20,12 +20,12 @@ agent run of about 3 min.
   `space-librarian` and `mesh-post` skills installed, and `PROCESS.md` copied
   to the space root.
 - The demo bus, with the demo space mounted at `spaces/proj-demo`.
-- This test's overlay. Change B, add-greeting, was verified on 2026-11-01:
+- This test's overlay. Change B, add-greeting, was verified on 2026-10-01:
   its plan's build and test tasks run on the mesh, its ledger runs through
-  T8, and evidence `ev-20261101T1230Z` passed at alpha `d4d4d4d` and beta
+  T8, and evidence `ev-20261001T1230Z` passed at alpha `d4d4d4d` and beta
   `e5e5e5e`, on branches made from alpha `a1a1a1a` and beta `b2b2b2b`. Then
-  change A, add-farewell, integrated at 2026-11-02T15:00Z: its folder is
-  under `changes/archive/2026-11-02-add-farewell/`, and its test was promoted
+  change A, add-farewell, integrated at 2026-10-02T15:00Z: its folder is
+  under `changes/archive/2026-10-02-add-farewell/`, and its test was promoted
   into `tests/`.
 - The setup moves alpha's pin in `pod.yaml` from `a1a1a1a` to `f6f6f6f`,
   A's merge. So B's evidence predates both the current pins and `tests/`.

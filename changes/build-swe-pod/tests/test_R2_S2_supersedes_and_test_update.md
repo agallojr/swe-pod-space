@@ -19,7 +19,7 @@ the lead asks the operator before it runs (spec §5.4, §7).
 - Step 1 is a fresh `swe-spec` session, step 2 a fresh `swe-plan` session,
   with the role definitions and `PROCESS.md`.
 - add-greeting is integrated. The setup moves its spec to
-  `changes/archive/2026-11-02-add-greeting/spec.md` with an `integrated:`
+  `changes/archive/2026-10-02-add-greeting/spec.md` with an `integrated:`
   line, and advances the pins. The overlay adds its final report there and
   its three promoted tests under `tests/add-greeting/`, among them
   `test_R1_S2_name_too_long.md` for its R1.S2 (a 65-character name is
@@ -51,8 +51,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -359,12 +359,12 @@ BETA_T2 = {
     ),
 }
 
-arch = SPACE / "changes" / "archive" / "2026-11-02-add-greeting"
+arch = SPACE / "changes" / "archive" / "2026-10-02-add-greeting"
 arch.mkdir(parents=True, exist_ok=True)
 spec = (SPACE / "changes/add-greeting/spec.md").read_text().replace(
-    "- approved: demo-owner 2026-11-01T09:00Z\n",
-    "- approved: demo-owner 2026-11-01T09:00Z\n"
-    "- integrated: demo-owner 2026-11-02T16:00Z\n")
+    "- approved: demo-owner 2026-10-01T09:00Z\n",
+    "- approved: demo-owner 2026-10-01T09:00Z\n"
+    "- integrated: demo-owner 2026-10-02T16:00Z\n")
 (arch / "spec.md").write_text(spec)
 shutil.rmtree(SPACE / "changes" / "add-greeting")
 pod = SPACE / "pod.yaml"
@@ -406,7 +406,7 @@ The human is demo-owner.
 ## Then
 
 1. The new spec is `changes/raise-name-limit/spec.md`, and the integrated spec
-   in `changes/archive/2026-11-02-add-greeting/` is unchanged.
+   in `changes/archive/2026-10-02-add-greeting/` is unchanged.
 2. Its `supersedes` lists the qualified id of add-greeting's R1 (`add-greeting/R1`,
    or one of its scenarios such as `add-greeting/R1.S2`), and no id of
    add-greeting's R2.
@@ -620,7 +620,7 @@ def role(task: dict) -> str:
 
 
 NEW = "changes/raise-name-limit/spec.md"
-OLD = "changes/archive/2026-11-02-add-greeting/spec.md"
+OLD = "changes/archive/2026-10-02-add-greeting/spec.md"
 added, modified, removed = changed()
 report(1, NEW in added and OLD not in modified + removed,
        f"new spec {'present' if NEW in added else 'absent'}; integrated "

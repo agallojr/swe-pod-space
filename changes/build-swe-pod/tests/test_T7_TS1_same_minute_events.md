@@ -25,12 +25,12 @@ about 2.5 min each.
   the space root.
 - The demo space with the overlay of `test_R20_S1_status_rebuild_matches` (two open changes, no
   `STATUS.md`), to which this test's overlay adds T2's run to add-greeting:
-  dispatched at 10:30Z, then, all at 2026-11-01T11:05Z, T2's `DONE` line, its
+  dispatched at 10:30Z, then, all at 2026-10-01T11:05Z, T2's `DONE` line, its
   report filed, the dispatch of its review T5, the review (`spec issues; 1
   Important`), the review filed, and `T2 fix round 1/5: 1 addressed, 0 open,
   e5e5e5e..f6f6f6f`, in that order; with T2's report and review. The newest
   ledger line of the space is still add-farewell's approval,
-  2026-11-02T08:00Z.
+  2026-10-02T08:00Z.
 - Step 1's `STATUS.md` stands for the committed one; step 2 rebuilds it from
   the same records without reading it.
 
@@ -67,8 +67,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -227,7 +227,7 @@ want to compare the two.
 ## Then
 
 1. Step 1 writes `STATUS.md`, whose first non-empty line is `# Status:
-   proj:demo`, and whose As-of time is 2026-11-02T08:00Z, the newest ledger
+   proj:demo`, and whose As-of time is 2026-10-02T08:00Z, the newest ledger
    line.
 2. Step 2 neither reads nor writes the space's `STATUS.md`, and writes
    `x-rebuild/STATUS.md`. A command that names `STATUS.md` only to leave it
@@ -923,7 +923,7 @@ rb = rb_p.read_text() if rb_p.is_file() else ""
 lines = [ln for ln in norm(st) if ln.strip()]
 gen = next((ln for ln in lines if ln.startswith(GEN)), "")
 ok1 = bool(lines) and lines[0] == "# Status: proj:demo" and bool(
-    re.match(r"2026-11-02[T ]08:00", gen[len(GEN):] if gen else ""))
+    re.match(r"2026-10-02[T ]08:00", gen[len(GEN):] if gen else ""))
 report(1, ok1, "STATUS.md " + ("absent" if not st else
                                "header and As-of " + ("right" if ok1
                                                       else "wrong")))

@@ -24,9 +24,9 @@ the current commit set"). Heavy: one agent run of about 3 min.
   the space root.
 - The demo space with the verified add-greeting of `test_R15_S1_reverify_after_other_change` (copied), whose
   verify task's report is filed in its lane, after the evidence:
-  `evidence/20261101T1240Z-T7-report.md`, filed at 12:40Z, while the latest
-  evidence record is `evidence/20261101T1230Z.md`
-  (`ev-20261101T1230Z`), green at the branch heads.
+  `evidence/20261001T1240Z-T7-report.md`, filed at 12:40Z, while the latest
+  evidence record is `evidence/20261001T1230Z.md`
+  (`ev-20261001T1230Z`), green at the branch heads.
 
 ```python setup
 import hashlib
@@ -61,8 +61,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -218,9 +218,9 @@ LATEST EVIDENCE add-greeting: <the id of its latest evidence record>
 ## Then
 
 1. The state given is `verified`.
-2. The latest evidence given is `ev-20261101T1230Z`.
+2. The latest evidence given is `ev-20261001T1230Z`.
 3. `STATUS.md` is written; its `## add-greeting` heading says `state:
-   verified`, and its section names `ev-20261101T1230Z` and not the report
+   verified`, and its section names `ev-20261001T1230Z` and not the report
    as the latest evidence.
 4. No record but `STATUS.md` is added, changed or removed.
 
@@ -899,13 +899,13 @@ text = final(1)
 st = answer(text, "STATE add-greeting")
 report(1, first_word(st) == "verified", f"state given: {short(st)}")
 le = answer(text, "LATEST EVIDENCE add-greeting") or ""
-report(2, "ev-20261101T1230Z" in le and "report" not in le.lower(),
+report(2, "ev-20261001T1230Z" in le and "report" not in le.lower(),
        f"latest evidence given: {short(le)}")
 blk = status_block("add-greeting")
 ev_line = next((ln for ln in blk.splitlines()
                 if re.search(r"evidence", ln, re.I)), "")
 ok3 = status_state("add-greeting") == "verified" and \
-    "ev-20261101T1230Z" in ev_line and "report" not in ev_line.lower()
+    "ev-20261001T1230Z" in ev_line and "report" not in ev_line.lower()
 report(3, ok3, "STATUS.md " + ("absent" if status_state("add-greeting")
                                is False else f"state "
                                f"{status_state('add-greeting')}; evidence "

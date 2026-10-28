@@ -31,7 +31,7 @@ credential key names. Heavy: two agent runs of about 4 min each.
   The setup adds to the bus copy a third registration whose agent id is
   twelve hex digits and whose `cwd` lies outside every home root,
   `/srv/demo-runner/demo-bus`; a task status under `status/`; and an
-  archived task message under `_archive/2026-10/`, named
+  archived task message under `_archive/2026-09/`, named
   `<task id>-greeting-tests.md`. Task ids are built from split literals.
 - Step 1's records, each refused as `profile` at line 11: the archived task
   id in its file-name form `<task id>-greeting-tests`; `task-<task id>`;
@@ -78,8 +78,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -219,15 +219,15 @@ def finish_setup(expected: dict = None) -> None:
             dst.write_bytes((SPACE / rel).read_bytes())
     (RUN / "expected.json").write_text(json.dumps(expected or {}, indent=1))
 
-T1 = "2026" + "1101T1205-0007"
-T2 = "2026" + "1030T0815-0004"
+T1 = "2026" + "1001T1205-0007"
+T2 = "2026" + "0930T0815-0004"
 HEX = "c0ffee" + "1234ab"
 AG = node("librarian")
 (BUS / "status").mkdir(exist_ok=True)
 (BUS / "status" / f"{T1}.json").write_text(
     json.dumps({"task_id": T1, "state": "done"}) + "\n")
-(BUS / "_archive" / "2026-10").mkdir(parents=True, exist_ok=True)
-(BUS / "_archive" / "2026-10" / f"{T2}-greeting-tests.md").write_text(
+(BUS / "_archive" / "2026-09").mkdir(parents=True, exist_ok=True)
+(BUS / "_archive" / "2026-09" / f"{T2}-greeting-tests.md").write_text(
     "\n".join(["---", "schema_version: 1", f"id: {T2}", "from: " + AG,
                "to: role:swe.test", "type: task.request", "---", "",
                "## Goal", "Archived probe.", ""]))
@@ -240,14 +240,14 @@ AG = node("librarian")
 
 
 def rec(root: Path, stem: str, line: str) -> str:
-    rid = "note-20261101T1800Z-" + stem.split("-")[0]
+    rid = "note-20261001T1800Z-" + stem.split("-")[0]
     lines = ["---", "schema_version: 1", f"id: {rid}",
              "title: A record for the profile checks", "category: notes",
              "contexts: [macos-laptop]", "tags: [demo, librarian]",
              "related: []", "---", "", line, ""]
-    (root / "notes" / f"note-20261101T1800Z-{stem}.md").write_text(
+    (root / "notes" / f"note-20261001T1800Z-{stem}.md").write_text(
         "\n".join(lines))
-    return f"notes/note-20261101T1800Z-{stem}.md"
+    return f"notes/note-20261001T1800Z-{stem}.md"
 
 
 SHA = "9f8e7d6c5b4a3928" + HEX + "17263544536271808f9e8d7c6b5a4938271605f4"
@@ -265,7 +265,7 @@ step1_refuse = [
     (rec(SPACE, "3a06-cwd-root", "The copy sits at /srv/demo-runner/cache/"
          "out.txt for now."), "/srv/demo-runner")]
 step1_accept = [
-    rec(SPACE, "3b07-utc-record-id", "See note-20261101T1205Z-0007 for that."),
+    rec(SPACE, "3b07-utc-record-id", "See note-20261001T1205Z-0007 for that."),
     rec(SPACE, "3b08-sha256", f"Its sha256 is {SHA}.")]
 SOLO = REPOS / "solo-space"
 shutil.copytree(FIXTURES / "demo-space", SOLO)

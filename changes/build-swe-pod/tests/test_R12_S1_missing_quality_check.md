@@ -21,7 +21,7 @@ run of about 2 min, so the lead asks the operator before it runs.
 - The demo space with this test's overlay: change `add-greeting` with its
   plan, a ledger through the whole-change review (T8: spec ok, one Minor),
   every build, test and review record, and one evidence record,
-  `ev-20261101T1230Z`, at the branch heads (alpha `d4d4d4d`, beta
+  `ev-20261001T1230Z`, at the branch heads (alpha `d4d4d4d`, beta
   `e5e5e5e`). Its scenarios and unit suites all pass, and its `quality:` is
   `{Q1: pass}`.
 - The setup adds a Quality section to the copied spec, declaring Q1

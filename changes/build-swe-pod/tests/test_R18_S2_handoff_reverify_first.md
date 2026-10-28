@@ -21,8 +21,8 @@ verify subagent the lead is expected to start.
   space root.
 - The demo space with this test's overlay: add-greeting through T7, with its
   plan, a ledger up to T7 DONE and its evidence filed, the reports, reviews,
-  tests and evidence `ev-20261101T1230Z`, the T7 brief, and the handoff
-  `handoffs/20261102T0900Z-add-greeting.md` from demo-owner to demo-peer.
+  tests and evidence `ev-20261001T1230Z`, the T7 brief, and the handoff
+  `handoffs/20261002T0900Z-add-greeting.md` from demo-owner to demo-peer.
   The handoff's next command is to dispatch T8, the whole-change review.
 - The setup writes exports of `alpha` and `beta` at the branch heads into
   the run dir, so a verify run there can pass.

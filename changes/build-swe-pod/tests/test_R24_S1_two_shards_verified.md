@@ -34,8 +34,8 @@ linux-server), is also a live instance of this scenario.
   | `plan.md` | T1 to T9; T7 is verify in two shards, dispatched from one space commit: T7a local on macos-laptop runs the R1 tests, the regression suite and alpha's unit suite; T7b mesh on linux-server runs the R2.S1 test and beta's unit suite |
   | `ledger.md` | the go; T1 to T6 done, with T2's fix round moving beta `e5e5e5e..f6f6f6f`; both shard briefs filed in one entry; then two dispatch lines, `dispatch T7a -> test (local, macos-laptop)` and `dispatch T7b -> test (mesh, linux-server)`, both done and their records filed; T8 review spec ok, one Minor |
   | `tasks/T7a-brief.md`, `tasks/T7b-brief.md` | the shard briefs, each starting from alpha `d4d4d4d`, beta `f6f6f6f`, gamma `c3c3c3c` and the space commit that holds them |
-  | `evidence/20261101T1412Z-T7a.md` | `ev-20261101T1412Z-T7a`, `shard: T7a`, `env: macos-laptop`; tests the two R1 tests; R1.S1 pass, R1.S2 pass, unit alpha pass |
-  | `evidence/20261101T1426Z-T7b.md` | `ev-20261101T1426Z-T7b`, `shard: T7b`, `env: linux-server`; tests the R2.S1 test; R2.S1 pass, unit beta pass |
+  | `evidence/20261001T1412Z-T7a.md` | `ev-20261001T1412Z-T7a`, `shard: T7a`, `env: macos-laptop`; tests the two R1 tests; R1.S1 pass, R1.S2 pass, unit alpha pass |
+  | `evidence/20261001T1426Z-T7b.md` | `ev-20261001T1426Z-T7b`, `shard: T7b`, `env: linux-server`; tests the R2.S1 test; R2.S1 pass, unit beta pass |
   | `tasks/T8-review.md` | whole-change review, verdict pass, one Minor finding |
   | `tests/` | the three project-level tests of the change |
 
@@ -98,7 +98,7 @@ CHANGE = "add-greeting"
 CURRENT = {"alpha": "d4d4d4d", "beta": "f6f6f6f"}
 SPACE_SHA = "8b8b8b8"
 SHARDS = {"T7a": ("local", "macos-laptop"), "T7b": ("mesh", "linux-server")}
-EVIDENCE = ["20261101T1412Z-T7a.md", "20261101T1426Z-T7b.md"]
+EVIDENCE = ["20261001T1412Z-T7a.md", "20261001T1426Z-T7b.md"]
 
 
 def report(n: int, ok: bool, why: str) -> None:

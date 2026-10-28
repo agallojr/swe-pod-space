@@ -21,7 +21,7 @@ runs of about 2 min each.
   the space root.
 - The demo space with this test's overlay: the two open changes of R18.S1,
   and no `STATUS.md`. The newest ledger line or record is
-  2026-11-02T08:00Z.
+  2026-10-02T08:00Z.
 - Step 1's `STATUS.md` stands for the committed one; step 2 rebuilds it from
   the same records without reading it.
 
@@ -69,18 +69,23 @@ want to compare the two.
 1. Step 1 writes `STATUS.md`, whose first non-empty line is `# Status:
    proj:demo`, with the line `Generated from the records; never edited by
    hand. As of <UTC>.`
-2. The As-of time is 2026-11-02T08:00Z, the newest ledger line, not the wall
+2. The As-of time is 2026-10-02T08:00Z, the newest ledger line, not the wall
    clock.
 3. The pins line names alpha `a1a1a1a`, beta `b2b2b2b` and gamma `c3c3c3c`.
-4. Step 2 neither reads nor writes the space's `STATUS.md`.
+4. Step 2 neither reads nor writes the space's root `STATUS.md`: no Read,
+   Edit, Write or Grep call names it as its path, and no Bash command names
+   it as a path. DESK lines, commit-message text and printed text do not
+   count.
 5. Step 2's `x-rebuild/STATUS.md` matches `STATUS.md` line for line, trailing
    spaces and blank lines at the end aside.
 
 ```python check
 TAG = "R20.S1"
+import fnmatch
 import json
 import os
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -154,11 +159,207 @@ def call_text(d: dict) -> str:
                     ("subagent_type", "description", "prompt"))
 
 
-def tool_blob(d: dict) -> str:
+PT_OPS = {";", "&&", "||", "|", "&", "|&", "(", ")", ";;", "{", "}"}
+PT_OUT = {">", ">>", ">|", "&>", "&>>", ">&"}
+PT_HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_]\w*)\1")
+PT_WRAP = {"env", "nohup", "timeout", "time", "command", "exec", "nice",
+           "xargs", "!", "do", "then", "else", "elif", "if", "while",
+           "until"}
+PT_CODE = re.compile(r"^(python[\d.]*|perl|ruby|node|awk|gawk)$")
+PT_SHELL = {"bash", "sh", "zsh"}
+PT_LIST = {"ls", "find", "stat", "test", "[", "du", "file", "realpath",
+           "readlink", "dirname", "basename", "echo", "printf"}
+PT_RUN = re.compile(r"[\w.~/${}*?@%+-]+")
+
+
+def pt_resolve(tok: str, cwd: str, env: dict) -> str:
+    """A token as an absolute normalized path, or "" when it is none."""
+    tok = tok.strip("'\"`,;")
+    if re.match(r"-[\w-]*=", tok):
+        tok = tok.split("=", 1)[1]
+    elif not tok or tok.startswith("-"):
+        return ""
+    tok = re.sub(r"\$\{(\w+)\}|\$(\w+)",
+                 lambda m: env.get(m.group(1) or m.group(2), "\0"), tok)
+    if "\0" in tok or "$" in tok:
+        return ""
+    if tok == "~" or tok.startswith("~/"):
+        tok = str(RUN) + tok[1:]
+    return os.path.normpath(os.path.join(cwd, tok))
+
+
+def pt_match(path: str, target: str) -> bool:
+    """Whether a resolved path, or glob pattern, names the target file."""
+    if not path:
+        return False
+    if any(ch in path for ch in "*?["):
+        return fnmatch.fnmatchcase(target, path)
+    return (path == target
+            or os.path.realpath(path) == os.path.realpath(target))
+
+
+def pt_lex(text: str) -> list:
+    try:
+        lx = shlex.shlex(text, posix=True, punctuation_chars=True)
+        lx.whitespace_split = True
+        lx.commenters = ""
+        return [t.strip("`") for t in lx]
+    except ValueError:
+        return [t.strip("`'\"") for t in text.split()]
+
+
+def pt_join(lines: list) -> str:
+    """Lines as one command text: unquoted line ends become `;`."""
+    out, q, esc = [], None, False
+    for ch in "\n".join(lines):
+        if esc:
+            esc = False
+            if ch == "\n":
+                out[-1] = " "
+            else:
+                out.append(ch)
+            continue
+        if ch == "\\" and q != "'":
+            esc = True
+            out.append(ch)
+            continue
+        if q is None and ch in "'\"":
+            q = ch
+        elif q == ch:
+            q = None
+        out.append(" ; " if ch == "\n" and q is None else ch)
+    return "".join(out)
+
+
+def pt_bash(cmd: str, cwd: str, env: dict = None) -> tuple:
+    """(commands, cwd after) of one Bash call started in cwd.
+
+    Each command is a dict: prog, words, paths (each word resolved), out and
+    inp (redirect targets, resolved), code (an interpreter's program) and
+    text. Lines holding DESK text, git and gh commit-message text (-m,
+    --message) and the bodies of heredocs that feed no interpreter are left
+    out; a heredoc that feeds one becomes a code command of its own. A cd
+    moves the folder later relative paths resolve in."""
+    env = {} if env is None else env
+    main, bodies, ends = [], [], []
+    for ln in cmd.splitlines():
+        if "DESK:" in ln:
+            continue
+        if ends:
+            word, prog, body = ends[0]
+            if ln.strip() == word:
+                ends.pop(0)
+                if prog:
+                    bodies.append((prog, "\n".join(body)))
+            elif prog:
+                body.append(ln)
+            continue
+        main.append(ln)
+        for m in PT_HEREDOC.finditer(ln):
+            head = re.split(r"&&|\|\||[;|(]", ln[:m.start()])[-1].split()
+            head = [w for w in head if w not in PT_WRAP
+                    and not re.match(r"[A-Za-z_]\w*=", w)]
+            prog = os.path.basename(head[0]) if head else ""
+            keep = bool(PT_CODE.match(prog)) or prog in PT_SHELL
+            ends.append((m.group(2), prog if keep else "", []))
+    simple, cur = [], []
+    for t in pt_lex(pt_join(main)):
+        if t in PT_OPS:
+            simple.append(cur)
+            cur = []
+        else:
+            cur.append(t)
+    simple.append(cur)
+    out = []
+    for c in simple:
+        words, outs, ins, i = [], [], [], 0
+        while i < len(c):
+            t = c[i]
+            if t in ("<<", "<<-", "<<<"):
+                i += 2
+            elif t in PT_OUT or re.fullmatch(r"\d+>>?", t):
+                outs += c[i + 1:i + 2]
+                i += 2
+            elif t == "<":
+                ins += c[i + 1:i + 2]
+                i += 2
+            else:
+                words.append(t)
+                i += 1
+        while words and (words[0] in PT_WRAP
+                         or re.match(r"[A-Za-z_]\w*=", words[0])):
+            w = words.pop(0)
+            if re.match(r"[A-Za-z_]\w*=", w):
+                k, v = w.split("=", 1)
+                if "$" in v:
+                    env.pop(k, None)
+                else:
+                    env[k] = v
+            while w in ("timeout", "env", "nice") and words and (
+                    words[0].startswith("-")
+                    or re.fullmatch(r"\d+[smhd]?", words[0])):
+                words.pop(0)
+        prog = os.path.basename(words[0]) if words else ""
+        if prog == "cd":
+            p = pt_resolve(words[1], cwd, env) if len(words) > 1 else ""
+            cwd = p or cwd
+            continue
+        if prog in PT_SHELL and "-c" in words[:-1]:
+            sub, cwd = pt_bash(words[words.index("-c") + 1], cwd, env)
+            out += sub
+            continue
+        if prog in ("git", "gh"):
+            kept, skip = [], False
+            for w in words:
+                if skip:
+                    skip = False
+                elif w in ("-m", "--message"):
+                    skip = True
+                elif not re.match(r"-m.|--message=", w):
+                    kept.append(w)
+            words = kept
+        code = bool(PT_CODE.match(prog))
+        toks = list(words)
+        if code:
+            toks += [r for w in words[1:] for r in PT_RUN.findall(w)]
+        out.append({"prog": prog, "words": words,
+                    "paths": [pt_resolve(w, cwd, env) for w in toks],
+                    "out": [pt_resolve(w, cwd, env) for w in outs],
+                    "inp": [pt_resolve(w, cwd, env) for w in ins],
+                    "code": code, "text": " ".join(words)})
+    for prog, body in bodies:
+        out.append({"prog": prog, "words": [prog],
+                    "paths": [pt_resolve(r, cwd, env)
+                              for r in PT_RUN.findall(body)],
+                    "out": [], "inp": [], "code": True, "text": body})
+    return out, cwd
+
+
+def pt_names(c: dict, target: str) -> bool:
+    """Whether a Bash command names the target as a path it may read or
+    write: a word, or, for an interpreter, a path in its program, or a
+    redirect. Listing and printing commands name no file they open."""
+    return (any(pt_match(p, target) for p in c["out"] + c["inp"])
+            or (c["prog"] not in PT_LIST
+                and any(pt_match(p, target) for p in c["paths"])))
+
+
+def pt_tool_paths(d: dict, cwd: str) -> list:
+    """The resolved paths a Read, Edit, Write or Grep call names; a Grep
+    over a folder with a file glob names the files the glob matches."""
     inp = d.get("input") or {}
-    return " ".join(str(inp.get(k, "")) for k in (
-        "file_path", "path", "command", "pattern", "glob", "content",
-        "new_string"))
+    name = d.get("name")
+    if name in ("Read", "Edit", "Write", "MultiEdit", "NotebookEdit"):
+        return [pt_resolve(str(inp.get(k) or ""), cwd, {})
+                for k in ("file_path", "notebook_path") if inp.get(k)]
+    if name == "Grep":
+        base = pt_resolve(str(inp.get("path") or "."), cwd, {})
+        out = [base]
+        g = str(inp.get("glob") or "")
+        if g:
+            out.append(os.path.join(base, re.sub(r"^(\*\*/)+", "", g)))
+        return out
+    return []
 
 st_p = SPACE / "STATUS.md"
 st = st_p.read_text() if st_p.is_file() else ""
@@ -170,20 +371,25 @@ report(1, head_ok, "STATUS.md " + (
     "absent" if not st else "header and Generated line " + (
         "present" if head_ok else "wrong")))
 asof = gen[len(GEN):] if gen else ""
-report(2, bool(re.match(r"2026-11-02[T ]08:00", asof)),
+report(2, bool(re.match(r"2026-10-02[T ]08:00", asof)),
        "As of " + ("the newest ledger line" if re.match(
-           r"2026-11-02[T ]08:00", asof) else "another time"))
+           r"2026-10-02[T ]08:00", asof) else "another time"))
 pins = next((ln for ln in lines if ln.startswith("- pins: ")), "")
 report(3, all(x in pins for x in ("alpha a1a1a1a", "beta b2b2b2b",
                                   "gamma c3c3c3c")), "pins line " + (
     "complete" if pins else "absent"))
-peek = []
+TARGET = os.path.normpath(str(SPACE / "STATUS.md"))
+peek, here = [], {}
 for at, k, p, d in events(stream(2)):
-    if k != "use" or d.get("name") not in ("Read", "Grep", "Edit", "Write",
-                                           "Bash"):
+    if k != "use":
         continue
-    b = tool_blob(d)
-    if "STATUS.md" in b.replace("x-rebuild/STATUS.md", ""):
+    if d.get("name") == "Bash":
+        cmds, here[p] = pt_bash(str((d.get("input") or {}).get(
+            "command", "")), here.get(p, str(SPACE)))
+        hit = any(pt_names(c, TARGET) for c in cmds)
+    else:
+        hit = any(pt_match(x, TARGET) for x in pt_tool_paths(d, str(SPACE)))
+    if hit:
         peek.append(d.get("name"))
 report(4, not peek, f"step 2 touched the space's STATUS.md {len(peek)} "
        "time(s)")
@@ -219,8 +425,9 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T00:43Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), runner result:
+Observed 2026-10-28T07:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 fixes of verify round 2,
+runner result:
 
 ```
 fail (deliverable absent: swe-pod 8fc5294 skills/swe-pod)

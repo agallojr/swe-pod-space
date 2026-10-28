@@ -61,8 +61,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -916,7 +916,7 @@ report(2, bool(re.search(r"\bplan", nx, re.I)), f"next given: {short(nx)}")
 ev = answer(text, "EVENTS add-greeting") or ""
 bad = re.findall(r"\bT\d+\b|\bdispatch\b|\bgo by\b", ev, re.I)
 fake = [s for s in EXPECTED.get("stamps", []) if s[:16] in ev
-        and not s.startswith("2026-11-01T09:00")]
+        and not s.startswith("2026-10-01T09:00")]
 report(3, not bad and not fake, f"events given: {short(ev)}; "
        f"{len(bad)} task or dispatch word(s), {len(fake)} template time(s)")
 report(4, not other, f"{len(other)} other record(s) touched"

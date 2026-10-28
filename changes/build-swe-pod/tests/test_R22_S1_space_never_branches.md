@@ -26,6 +26,10 @@ agent run of about 4 min.
   the mesh; its ledger holds only the approval. add-farewell names alpha
   only.
 - The setup makes empty folders for the code checkouts in the run dir.
+- The go's words state this deployment's G1 guidance (spec §14), as plan §3
+  OD2 does for this change: the lead may create and push `change/<id>` in
+  the code repos the spec names, so the lead under test need not hand the
+  branch commands to the human; if it does hand them over, that counts.
 
 ```python setup
 import hashlib
@@ -81,6 +85,9 @@ snapshot()
 
 ```text
 I've skimmed the plan for add-farewell. Go.
+This deployment's guidance lets the lead create `change/add-farewell`
+in each code repo the spec names, at the go, and push it; build agents
+commit to and push only that branch.
 Checkouts on this node: space {SPACE}; swe-pod {EXPORT}/swe-pod; alpha {RUN}/repos/alpha; beta {RUN}/repos/beta; gamma {RUN}/repos/gamma; mesh bus {BUS}
 This session is the lead of proj:demo, on the node registered in the bus as
 {LEAD_NODE}.
@@ -88,8 +95,8 @@ This session is the lead of proj:demo, on the node registered in the bus as
 
 ## Then
 
-1. `change/add-farewell` is made in alpha, by a printed branch or push
-   command.
+1. `change/add-farewell` is made in alpha: the lead prints the branch or
+   push command, or hands it over in its reply.
 2. No git command for the space creates a branch or pushes anything but
    `main`.
 3. Every space file added, changed or removed in the run is under
@@ -434,6 +441,24 @@ def commands(evs: list) -> list:
                 add(at + (1, n), parent, x, "bash")
     return out
 
+
+def handed(text: str) -> list:
+    """Git and cd commands a reply hands over for someone to run: lines that
+    start with one, and inline code spans that hold one, outside DESK lines.
+    Items are shaped as commands() items, for the session."""
+    out = []
+    for n, ln in enumerate(text.splitlines()):
+        if "DESK:" in ln:
+            continue
+        s = re.sub(r"^\s*(?:[-*+>]\s+|\d+[.)]\s+|\$\s+)*`*", "", ln)
+        found = re.findall(r"`((?:cd|git)\s[^`]+)`", ln)
+        if not found and re.match(r"(cd|git)\s", s):
+            found = [s.rstrip("`").strip()]
+        for x in found:
+            out.append({"at": (10 ** 6, n), "who": None, "cmd": x,
+                        "src": "reply"})
+    return out
+
 import shlex
 
 
@@ -572,9 +597,10 @@ def changed() -> tuple:
 repos = {n: str(RUN / "repos" / n) for n in ("alpha", "beta", "gamma")}
 ops = git_ops(commands(events(stream())), repos)
 cr, pu = created(ops), pushed(ops)
-made = ([o for o, b in cr if o["ctx"] == "alpha"
+hops = ops + git_ops(handed(final()), repos)
+made = ([o for o, b in created(hops) if o["ctx"] == "alpha"
          and b == "change/add-farewell"]
-        + [o for o, d, f in pu if o["ctx"] == "alpha"
+        + [o for o, d, f in pushed(hops) if o["ctx"] == "alpha"
            and "change/add-farewell" in d])
 report(1, bool(made), f"{len(made)} command(s) make change/add-farewell in "
        "alpha")
@@ -596,7 +622,8 @@ sys.exit(0 if OK and all(OK) else 1)
 - The space gets a branch, or a push to anything but `main`.
 - add-farewell's records land outside its own folder, or add-greeting's folder
   changes.
-- The go makes no branch for add-farewell in alpha.
+- The go neither makes `change/add-farewell` in alpha nor hands over the
+  commands that make it.
 
 ## At base
 
@@ -604,8 +631,8 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+Observed 2026-10-28T07:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 fixes of verify round 2,
 runner result:
 
 ```

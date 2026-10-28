@@ -24,7 +24,7 @@ about 4 min.
   gamma `c3c3c3c`, with `depends: {beta: [alpha]}`; and this test's overlay:
   add-greeting verified, with its plan, a ledger through T8 (spec ok, one
   Minor), every report and review, the project-level tests, and evidence
-  `ev-20261101T1230Z`, all passing, at alpha `d4d4d4d` and beta `e5e5e5e`
+  `ev-20261001T1230Z`, all passing, at alpha `d4d4d4d` and beta `e5e5e5e`
   (gamma at its pin). Nothing has moved since.
 - The setup makes empty folders for the alpha, beta and gamma checkouts in
   the run dir; in a desk run no command runs in them.
@@ -86,10 +86,14 @@ Checkouts on this node: space {SPACE}; swe-pod {EXPORT}/swe-pod; alpha {RUN}/rep
 3. `pod.yaml` then pins alpha at `d4d4d4d` and beta at `e5e5e5e`, and gamma
    stays at `c3c3c3c`.
 4. Exactly one space commit stages `pod.yaml`, after both merges and after the
-   pin edits.
+   pin edits. A pin edit is an Edit or Write whose path is the space's
+   `pod.yaml`, or a Bash command that writes that path; a tool call that
+   only mentions `pod.yaml`, in a DESK line, a commit message or text it
+   writes elsewhere, is not one.
 
 ```python check
 TAG = "R14.S1"
+import fnmatch
 import json
 import os
 import re
@@ -165,12 +169,6 @@ def call_text(d: dict) -> str:
     return " ".join(str(inp.get(k, "")) for k in
                     ("subagent_type", "description", "prompt"))
 
-
-def tool_blob(d: dict) -> str:
-    inp = d.get("input") or {}
-    return " ".join(str(inp.get(k, "")) for k in (
-        "file_path", "path", "command", "pattern", "glob", "content",
-        "new_string"))
 
 DESK_RE = re.compile(r"DESK:\s*(.+?)\s*$")
 
@@ -601,6 +599,229 @@ def pin(pod: str, name: str):
                       r"\s*\"?([0-9a-f]{7,40})", pod, re.M)
     return m.group(1)[:7] if m else None
 
+PT_OPS = {";", "&&", "||", "|", "&", "|&", "(", ")", ";;", "{", "}"}
+PT_OUT = {">", ">>", ">|", "&>", "&>>", ">&"}
+PT_HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_]\w*)\1")
+PT_WRAP = {"env", "nohup", "timeout", "time", "command", "exec", "nice",
+           "xargs", "!", "do", "then", "else", "elif", "if", "while",
+           "until"}
+PT_CODE = re.compile(r"^(python[\d.]*|perl|ruby|node|awk|gawk)$")
+PT_SHELL = {"bash", "sh", "zsh"}
+PT_LIST = {"ls", "find", "stat", "test", "[", "du", "file", "realpath",
+           "readlink", "dirname", "basename", "echo", "printf"}
+PT_RUN = re.compile(r"[\w.~/${}*?@%+-]+")
+
+
+def pt_resolve(tok: str, cwd: str, env: dict) -> str:
+    """A token as an absolute normalized path, or "" when it is none."""
+    tok = tok.strip("'\"`,;")
+    if re.match(r"-[\w-]*=", tok):
+        tok = tok.split("=", 1)[1]
+    elif not tok or tok.startswith("-"):
+        return ""
+    tok = re.sub(r"\$\{(\w+)\}|\$(\w+)",
+                 lambda m: env.get(m.group(1) or m.group(2), "\0"), tok)
+    if "\0" in tok or "$" in tok:
+        return ""
+    if tok == "~" or tok.startswith("~/"):
+        tok = str(RUN) + tok[1:]
+    return os.path.normpath(os.path.join(cwd, tok))
+
+
+def pt_match(path: str, target: str) -> bool:
+    """Whether a resolved path, or glob pattern, names the target file."""
+    if not path:
+        return False
+    if any(ch in path for ch in "*?["):
+        return fnmatch.fnmatchcase(target, path)
+    return (path == target
+            or os.path.realpath(path) == os.path.realpath(target))
+
+
+def pt_lex(text: str) -> list:
+    try:
+        lx = shlex.shlex(text, posix=True, punctuation_chars=True)
+        lx.whitespace_split = True
+        lx.commenters = ""
+        return [t.strip("`") for t in lx]
+    except ValueError:
+        return [t.strip("`'\"") for t in text.split()]
+
+
+def pt_join(lines: list) -> str:
+    """Lines as one command text: unquoted line ends become `;`."""
+    out, q, esc = [], None, False
+    for ch in "\n".join(lines):
+        if esc:
+            esc = False
+            if ch == "\n":
+                out[-1] = " "
+            else:
+                out.append(ch)
+            continue
+        if ch == "\\" and q != "'":
+            esc = True
+            out.append(ch)
+            continue
+        if q is None and ch in "'\"":
+            q = ch
+        elif q == ch:
+            q = None
+        out.append(" ; " if ch == "\n" and q is None else ch)
+    return "".join(out)
+
+
+def pt_bash(cmd: str, cwd: str, env: dict = None) -> tuple:
+    """(commands, cwd after) of one Bash call started in cwd.
+
+    Each command is a dict: prog, words, paths (each word resolved), out and
+    inp (redirect targets, resolved), code (an interpreter's program) and
+    text. Lines holding DESK text, git and gh commit-message text (-m,
+    --message) and the bodies of heredocs that feed no interpreter are left
+    out; a heredoc that feeds one becomes a code command of its own. A cd
+    moves the folder later relative paths resolve in."""
+    env = {} if env is None else env
+    main, bodies, ends = [], [], []
+    for ln in cmd.splitlines():
+        if "DESK:" in ln:
+            continue
+        if ends:
+            word, prog, body = ends[0]
+            if ln.strip() == word:
+                ends.pop(0)
+                if prog:
+                    bodies.append((prog, "\n".join(body)))
+            elif prog:
+                body.append(ln)
+            continue
+        main.append(ln)
+        for m in PT_HEREDOC.finditer(ln):
+            head = re.split(r"&&|\|\||[;|(]", ln[:m.start()])[-1].split()
+            head = [w for w in head if w not in PT_WRAP
+                    and not re.match(r"[A-Za-z_]\w*=", w)]
+            prog = os.path.basename(head[0]) if head else ""
+            keep = bool(PT_CODE.match(prog)) or prog in PT_SHELL
+            ends.append((m.group(2), prog if keep else "", []))
+    simple, cur = [], []
+    for t in pt_lex(pt_join(main)):
+        if t in PT_OPS:
+            simple.append(cur)
+            cur = []
+        else:
+            cur.append(t)
+    simple.append(cur)
+    out = []
+    for c in simple:
+        words, outs, ins, i = [], [], [], 0
+        while i < len(c):
+            t = c[i]
+            if t in ("<<", "<<-", "<<<"):
+                i += 2
+            elif t in PT_OUT or re.fullmatch(r"\d+>>?", t):
+                outs += c[i + 1:i + 2]
+                i += 2
+            elif t == "<":
+                ins += c[i + 1:i + 2]
+                i += 2
+            else:
+                words.append(t)
+                i += 1
+        while words and (words[0] in PT_WRAP
+                         or re.match(r"[A-Za-z_]\w*=", words[0])):
+            w = words.pop(0)
+            if re.match(r"[A-Za-z_]\w*=", w):
+                k, v = w.split("=", 1)
+                if "$" in v:
+                    env.pop(k, None)
+                else:
+                    env[k] = v
+            while w in ("timeout", "env", "nice") and words and (
+                    words[0].startswith("-")
+                    or re.fullmatch(r"\d+[smhd]?", words[0])):
+                words.pop(0)
+        prog = os.path.basename(words[0]) if words else ""
+        if prog == "cd":
+            p = pt_resolve(words[1], cwd, env) if len(words) > 1 else ""
+            cwd = p or cwd
+            continue
+        if prog in PT_SHELL and "-c" in words[:-1]:
+            sub, cwd = pt_bash(words[words.index("-c") + 1], cwd, env)
+            out += sub
+            continue
+        if prog in ("git", "gh"):
+            kept, skip = [], False
+            for w in words:
+                if skip:
+                    skip = False
+                elif w in ("-m", "--message"):
+                    skip = True
+                elif not re.match(r"-m.|--message=", w):
+                    kept.append(w)
+            words = kept
+        code = bool(PT_CODE.match(prog))
+        toks = list(words)
+        if code:
+            toks += [r for w in words[1:] for r in PT_RUN.findall(w)]
+        out.append({"prog": prog, "words": words,
+                    "paths": [pt_resolve(w, cwd, env) for w in toks],
+                    "out": [pt_resolve(w, cwd, env) for w in outs],
+                    "inp": [pt_resolve(w, cwd, env) for w in ins],
+                    "code": code, "text": " ".join(words)})
+    for prog, body in bodies:
+        out.append({"prog": prog, "words": [prog],
+                    "paths": [pt_resolve(r, cwd, env)
+                              for r in PT_RUN.findall(body)],
+                    "out": [], "inp": [], "code": True, "text": body})
+    return out, cwd
+
+
+def pt_names(c: dict, target: str) -> bool:
+    """Whether a Bash command names the target as a path it may read or
+    write: a word, or, for an interpreter, a path in its program, or a
+    redirect. Listing and printing commands name no file they open."""
+    return (any(pt_match(p, target) for p in c["out"] + c["inp"])
+            or (c["prog"] not in PT_LIST
+                and any(pt_match(p, target) for p in c["paths"])))
+
+
+def pt_tool_paths(d: dict, cwd: str) -> list:
+    """The resolved paths a Read, Edit, Write or Grep call names; a Grep
+    over a folder with a file glob names the files the glob matches."""
+    inp = d.get("input") or {}
+    name = d.get("name")
+    if name in ("Read", "Edit", "Write", "MultiEdit", "NotebookEdit"):
+        return [pt_resolve(str(inp.get(k) or ""), cwd, {})
+                for k in ("file_path", "notebook_path") if inp.get(k)]
+    if name == "Grep":
+        base = pt_resolve(str(inp.get("path") or "."), cwd, {})
+        out = [base]
+        g = str(inp.get("glob") or "")
+        if g:
+            out.append(os.path.join(base, re.sub(r"^(\*\*/)+", "", g)))
+        return out
+    return []
+
+
+POD = os.path.normpath(str(SPACE / "pod.yaml"))
+EDIT_CODE = re.compile(r"write|dump|open\([^)]*['\"][wa+]|\.sub\(|replace\(")
+
+
+def pod_edit(c: dict) -> bool:
+    """Whether a Bash command writes the space's pod.yaml: a redirect to it,
+    an in-place sed or perl, tee, cp, mv or install onto it, or an
+    interpreter whose program names it and writes."""
+    if any(pt_match(x, POD) for x in c["out"]):
+        return True
+    named = any(pt_match(x, POD) for x in c["paths"])
+    args = c["words"][1:]
+    if c["prog"] in ("sed", "perl"):
+        return named and any(re.match(r"-\w*i|--in-place", x) for x in args)
+    if c["prog"] == "tee":
+        return named
+    if c["prog"] in ("cp", "mv", "install"):
+        return bool(c["paths"]) and pt_match(c["paths"][-1], POD)
+    return c["code"] and named and bool(EDIT_CODE.search(c["text"]))
+
 repos = {n: str(RUN / "repos" / n) for n in ("alpha", "beta", "gamma")}
 evs = events(stream())
 ops = git_ops(commands(evs), repos)
@@ -627,11 +848,18 @@ got = {n: pin(pod, n) for n in repos}
 want = {"alpha": "d4d4d4d", "beta": "e5e5e5e", "gamma": "c3c3c3c"}
 report(3, got == want, "pins: " + ", ".join(
     f"{n} {got[n] or 'none'}" for n in repos))
-edits = [at for at, k, p, d in evs if k == "use" and "pod.yaml" in tool_blob(d)
-         and (d.get("name") in ("Edit", "Write") or (
-             d.get("name") == "Bash" and re.search(
-                 r"\b(sed|perl|python3?|awk|tee)\b|>", str(
-                     (d.get("input") or {}).get("command", "")))))]
+edits, here = [], {}
+for at, k, p, d in evs:
+    if k != "use":
+        continue
+    if d.get("name") in ("Edit", "Write", "MultiEdit"):
+        if any(pt_match(x, POD) for x in pt_tool_paths(d, str(SPACE))):
+            edits.append(at)
+    elif d.get("name") == "Bash":
+        cmds, here[p] = pt_bash(str((d.get("input") or {}).get(
+            "command", "")), here.get(p, str(SPACE)))
+        if any(pod_edit(c) for c in cmds):
+            edits.append(at)
 VALUED = {"-m", "-F", "--message", "--file", "-c", "-C", "--author", "--date",
           "--trailer", "--reuse-message", "--reedit-message"}
 
@@ -692,8 +920,8 @@ Expected: fail, because the swe-pod deliverables are absent at swe-pod
 `8fc5294`; the runner records the first absent deliverable and starts no
 agent.
 
-Observed 2026-10-28T06:38Z at the base commit set (space c814837, swe-pod
-8fc5294, agent-mesh 8ee5364), after the T18 test fixes of 2026-10-28,
+Observed 2026-10-28T07:42Z at the base commit set (space c814837, swe-pod
+8fc5294, agent-mesh 8ee5364), after the T18 fixes of verify round 2,
 runner result:
 
 ```

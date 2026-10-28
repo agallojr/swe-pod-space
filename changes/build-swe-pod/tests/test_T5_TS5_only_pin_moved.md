@@ -24,15 +24,15 @@ again"). Desk, as R15.S1 is (§3 OD1). The input differs from
   `space-librarian` and `mesh-post` skills installed, and `PROCESS.md` copied
   to the space root.
 - The demo bus, with the demo space mounted at `spaces/proj-demo`.
-- This test's overlay. add-farewell integrated on 2026-10-30, so `tests/`
+- This test's overlay. add-farewell integrated on 2026-09-30, so `tests/`
   already held `test_R1_S1_default_farewell.md` when change B, add-greeting
   (the verified change of `test_R15_S1_reverify_after_other_change`, copied), ran verify: its evidence
-  `ev-20261101T1230Z` passed every scenario, the regression test
+  `ev-20261001T1230Z` passed every scenario, the regression test
   `add-farewell/R1.S1` and both unit suites, at alpha `d4d4d4d` and beta
   `e5e5e5e`, on branches made from alpha `a1a1a1a` and beta `b2b2b2b`.
 - Then fix-farewell-newline, a five-line fix spec that cites add-farewell/R1
   in place of new requirements (spec §5.1), integrated at
-  2026-11-02T15:00Z. It added no test, so `tests/` did not move; its merge
+  2026-10-02T15:00Z. It added no test, so `tests/` did not move; its merge
   moved alpha.
 - The setup moves alpha's pin in `pod.yaml` from `a1a1a1a` to `f6f6f6f`, the
   fix's merge, and makes empty folders for the code checkouts.
@@ -70,8 +70,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 

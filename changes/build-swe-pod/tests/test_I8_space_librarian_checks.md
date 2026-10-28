@@ -20,9 +20,9 @@ about 4 min, so the lead asks the operator before it runs.
   from agent-mesh at the sha under test, and no other deliverable.
 - The demo bus, copied into the run dir, and the demo space mounted in it
   at `spaces/proj-demo`, which already holds
-  `notes/note-20261101T1100Z-a0b1-demo-context.md`.
+  `notes/note-20261001T1100Z-a0b1-demo-context.md`.
 - The clean record from this test's overlay,
-  `notes/note-20261101T1200Z-c1e4-clean-record.md`. It is shareable, and
+  `notes/note-20261001T1200Z-c1e4-clean-record.md`. It is shareable, and
   also holds the allowed cases: generic `~/` paths, a URL, a citation of
   `core` (listed in `may_reference`), a citation inside inline code, and an
   id-shaped example that no bus holds.
@@ -70,7 +70,7 @@ def field(path: Path, key: str) -> str:
 regs = sorted((bus / "agents").glob("*.yaml"))
 agent_id = field(regs[0], "agent_id")
 agent_host = field(regs[-1], "hostname")
-task_id = "2026" + "1101T1205-0007"
+task_id = "2026" + "1001T1205-0007"
 (bus / "status").mkdir(exist_ok=True)
 (bus / "status" / f"{task_id}.json").write_text(
     json.dumps({"task_id": task_id, "state": "done"}) + "\n")
@@ -90,7 +90,7 @@ def add(stem: str, rid: str, body: str, kind: str, line: int,
                   "secret": secret})
 
 
-p = "note-20261101T120"
+p = "note-20261001T120"
 add(p + "1Z-0a01-mac-home", p + "1Z-0a01",
     f"The log sits at {MAC}/demo-user/work/run.log for now.", "profile", 11,
     f"{MAC}/demo-user")
@@ -109,18 +109,18 @@ add(p + "1Z-0a06-local-host", p + "1Z-0a06",
 add(p + "1Z-0a07-home", p + "1Z-0a07",
     f"Notes are kept in {home}/demo-kept-notes for later.", "profile", 11,
     f"{home}/demo-kept-notes")
-dead = "note-20261101T0900Z-" + "dead"
+dead = "note-20261001T0900Z-" + "dead"
 add(p + "2Z-0b08-dead-ref", p + "2Z-0b08",
     "This record cites another record in its header.", "reference", 8,
     dead, related=f"[{dead}]")
-cross = "proj:elsewhere/note-20261101T0800Z-" + "beef"
+cross = "proj:elsewhere/note-20261001T0800Z-" + "beef"
 add(p + "2Z-0b09-cross-space", p + "2Z-0b09",
     f"See {cross} for the history.", "reference", 11, cross)
-add("note-2026-11-01-bad-id-form", "note-2026-11-01-bad",
+add("note-2026-10-01-bad-id-form", "note-2026-10-01-bad",
     "This record's id is not in the collision-free form.", "id", 3, None)
-add("note-20261101T1100Z-a0b1-duplicate", "note-20261101T1100Z-a0b1",
+add("note-20261001T1100Z-a0b1-duplicate", "note-20261001T1100Z-a0b1",
     "This record reuses the id of a record already present.", "id", 3, None)
-clean = "notes/note-20261101T1200Z-c1e4-clean-record.md"
+clean = "notes/note-20261001T1200Z-c1e4-clean-record.md"
 (run / "expected.json").write_text(json.dumps(
     {"clean": clean, "cases": cases}, indent=2))
 (run / "subst.json").write_text(json.dumps(

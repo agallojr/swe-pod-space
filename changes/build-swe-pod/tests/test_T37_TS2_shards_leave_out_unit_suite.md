@@ -63,8 +63,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -205,7 +205,7 @@ def finish_setup(expected: dict = None) -> None:
     (RUN / "expected.json").write_text(json.dumps(expected or {}, indent=1))
 
 t = (SPACE / "changes" / "add-greeting" / "evidence" /
-     "20261101T1426Z-T7b.md").read_text()
+     "20261001T1426Z-T7b.md").read_text()
 assert "unit: {}" in t, "setup: GIVEN"
 finish_setup()
 ```
@@ -905,7 +905,7 @@ def ran_commits(k: int = None) -> list:
     return out
 
 NAME = "test_T37_TS2_shards_leave_out_unit_suite"
-EVIDENCE = ["20261101T1412Z-T7a.md", "20261101T1426Z-T7b.md"]
+EVIDENCE = ["20261001T1412Z-T7a.md", "20261001T1426Z-T7b.md"]
 
 def sha_of(text: str, repo: str):
     m = re.search(r"\b" + repo + r"\b\W{0,3}([0-9a-f]{7,40})\b", text, re.I)

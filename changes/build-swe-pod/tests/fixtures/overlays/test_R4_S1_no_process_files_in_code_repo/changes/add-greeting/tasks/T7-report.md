@@ -6,11 +6,11 @@ DONE
 
 ## What I did
 
-Ran verify at the commit set; evidence ev-20261102T1412Z.
+Ran verify at the commit set; evidence ev-20261002T1412Z.
 
 ## Files
 
-- changes/add-greeting/evidence/20261102T1412Z.md
+- changes/add-greeting/evidence/20261002T1412Z.md
 
 ## Test output
 

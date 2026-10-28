@@ -19,9 +19,9 @@ step is desk, per the runner protocol. Heavy: one agent run of about 4 min.
 - A fresh default agent with only the `space-librarian` skill, exported
   read-only from agent-mesh at the sha under test.
 - The demo space alone: no bus, no core and no lore space. It holds
-  `notes/note-20261101T1100Z-a0b1-demo-context.md`.
+  `notes/note-20261001T1100Z-a0b1-demo-context.md`.
 - The clean record from this test's overlay,
-  `notes/note-20261101T1300Z-d2f5-single-seat.md`, which also holds the
+  `notes/note-20261001T1300Z-d2f5-single-seat.md`, which also holds the
   allowed cases: generic `~/` paths, a URL, a citation of `core` (listed in
   `may_reference`), a citation inside inline code, and an id-shaped example
   that no bus holds.
@@ -87,7 +87,7 @@ def add(stem: str, rid: str, body: str, kind: str, line: int,
                   "secret": secret})
 
 
-p = "note-20261101T130"
+p = "note-20261001T130"
 add(p + "1Z-0c01-mac-home", p + "1Z-0c01",
     f"The log sits at {MAC}/demo-user/work/run.log for now.", "profile", 11,
     f"{MAC}/demo-user")
@@ -99,18 +99,18 @@ add(p + "1Z-0c03-local-host", p + "1Z-0c03",
 add(p + "1Z-0c04-home", p + "1Z-0c04",
     f"Notes are kept in {home}/demo-kept-notes for later.", "profile", 11,
     f"{home}/demo-kept-notes")
-dead = "note-20261101T0900Z-" + "dead"
+dead = "note-20261001T0900Z-" + "dead"
 add(p + "2Z-0d05-dead-ref", p + "2Z-0d05",
     "This record cites another record in its header.", "reference", 8,
     dead, related=f"[{dead}]")
-cross = "proj:elsewhere/note-20261101T0800Z-" + "beef"
+cross = "proj:elsewhere/note-20261001T0800Z-" + "beef"
 add(p + "2Z-0d06-cross-space", p + "2Z-0d06",
     f"See {cross} for the history.", "reference", 11, cross)
-add("note-2026-11-01-bad-id-form-two", "note-2026-11-01-bad2",
+add("note-2026-10-01-bad-id-form-two", "note-2026-10-01-bad2",
     "This record's id is not in the collision-free form.", "id", 3, None)
-add("note-20261101T1100Z-a0b1-duplicate-two", "note-20261101T1100Z-a0b1",
+add("note-20261001T1100Z-a0b1-duplicate-two", "note-20261001T1100Z-a0b1",
     "This record reuses the id of a record already present.", "id", 3, None)
-clean = "notes/note-20261101T1300Z-d2f5-single-seat.md"
+clean = "notes/note-20261001T1300Z-d2f5-single-seat.md"
 (RUN / "expected.json").write_text(json.dumps(
     {"clean": clean, "cases": cases}, indent=2))
 (RUN / "subst.json").write_text(json.dumps(

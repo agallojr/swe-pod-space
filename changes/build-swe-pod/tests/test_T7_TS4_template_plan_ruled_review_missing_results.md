@@ -32,10 +32,10 @@ Heavy: one agent run of about 4 min.
   - `changes/add-greeting/tests/test_I1_greeting_docs.md`, an inspection
     test of the change, which the latest evidence has no result for;
   - `tests/test_R1_S1_default_farewell.md`, a regression test promoted when
-    add-farewell integrated on 2026-10-30 (archived under
-    `changes/archive/2026-10-30-add-farewell/`), which the latest evidence
+    add-farewell integrated on 2026-09-30 (archived under
+    `changes/archive/2026-09-30-add-farewell/`), which the latest evidence
     has no result for either.
-- The latest evidence, `ev-20261101T1230Z`, passes every scenario and both
+- The latest evidence, `ev-20261001T1230Z`, passes every scenario and both
   unit suites at the branch heads.
 
 ```python setup
@@ -71,8 +71,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 

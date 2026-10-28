@@ -27,8 +27,8 @@ anything. Heavy: one agent run of about 4 min.
   each git command of it as a `DESK: ` line and runs none.
 - The demo bus, with the demo space mounted at `spaces/proj-demo`.
 - Two shareable records built by the setup,
-  `notes/note-20261101T1600Z-2a01-first.md` and
-  `notes/note-20261101T1600Z-2a02-second.md`.
+  `notes/note-20261001T1600Z-2a01-first.md` and
+  `notes/note-20261001T1600Z-2a02-second.md`.
 
 ```python setup
 import hashlib
@@ -63,8 +63,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -206,13 +206,13 @@ def finish_setup(expected: dict = None) -> None:
 
 recs = []
 for stem, title in (("2a01-first", "First"), ("2a02-second", "Second")):
-    rid = "note-20261101T1600Z-" + stem.split("-")[0]
+    rid = "note-20261001T1600Z-" + stem.split("-")[0]
     lines = ["---", "schema_version: 1", f"id: {rid}",
              f"title: {title} record for the commit stage",
              "category: notes", "contexts: [macos-laptop]",
              "tags: [demo, librarian]", "related: []", "---", "",
              f"{title} of two shareable records, by demo-owner.", ""]
-    rel = f"notes/note-20261101T1600Z-{stem}.md"
+    rel = f"notes/note-20261001T1600Z-{stem}.md"
     (SPACE / rel).write_text("\n".join(lines))
     recs.append(rel)
 SUBST["RECORDS"] = " ".join(recs)

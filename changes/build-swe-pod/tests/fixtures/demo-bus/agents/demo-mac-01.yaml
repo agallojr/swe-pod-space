@@ -10,5 +10,5 @@ repo_commit: 0000000
 model: demo-model
 poll_interval_sec: 300
 credentials_available: []
-registered_at: 2026-11-01T08:00:00Z
-session_started: 2026-11-01T08:00:00Z
+registered_at: 2026-10-01T08:00:00Z
+session_started: 2026-10-01T08:00:00Z

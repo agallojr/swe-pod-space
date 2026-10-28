@@ -30,11 +30,11 @@ listed `core` to be accepted. Heavy: one agent run of about 5 min.
 - The demo bus, with the demo space mounted at `spaces/proj-demo`
   (`may_reference: [core]`). This test's overlay adds add-greeting's plan
   (from `test_R21_S1_suggestion_with_computed_value`, with T1) and an
-  archived change, `changes/archive/2026-10-20-add-banner/`.
+  archived change, `changes/archive/2026-09-20-add-banner/`.
 - Records built by the setup in the demo space, each shareable:
   - `1a01-same-space`: `related:` names the space's note
-    `note-20261101T1100Z-a0b1`, and the body cites it as
-    `proj:demo/note-20261101T1100Z-a0b1`;
+    `note-20261001T1100Z-a0b1`, and the body cites it as
+    `proj:demo/note-20261001T1100Z-a0b1`;
   - `1a02-change-and-task`: `related: [add-greeting, add-greeting/T1]`;
   - `1a03-archived-change`: `related: [add-banner]`;
   - `1a04-url-and-code`: a URL, and a qualified id of an unlisted space
@@ -79,8 +79,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -220,8 +220,8 @@ def finish_setup(expected: dict = None) -> None:
             dst.write_bytes((SPACE / rel).read_bytes())
     (RUN / "expected.json").write_text(json.dumps(expected or {}, indent=1))
 
-PARTNER = "proj:partner/note-20261101T0800Z-" + "c0de"
-ELSE = "proj:elsewhere/note-20261101T0800Z-" + "beef"
+PARTNER = "proj:partner/note-20261001T0800Z-" + "c0de"
+ELSE = "proj:elsewhere/note-20261001T0800Z-" + "beef"
 
 
 def rec(root: Path, stem: str, body: list, related: str = "[]") -> str:
@@ -234,10 +234,10 @@ def rec(root: Path, stem: str, body: list, related: str = "[]") -> str:
     return f"notes/{stem}.md"
 
 
-P = "note-20261101T1500Z-"
+P = "note-20261001T1500Z-"
 A = [rec(SPACE, P + "1a01-same-space",
-         ["It follows proj:demo/note-20261101T1100Z-a0b1, which says why the "
-          "greeting lives in alpha."], "[note-20261101T1100Z-a0b1]"),
+         ["It follows proj:demo/note-20261001T1100Z-a0b1, which says why the "
+          "greeting lives in alpha."], "[note-20261001T1100Z-a0b1]"),
      rec(SPACE, P + "1a02-change-and-task",
          ["It records why the task of add-greeting that builds the greeting "
           "puts the limit in alpha."], "[add-greeting, add-greeting/T1]"),

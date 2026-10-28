@@ -4,7 +4,7 @@
 - owner: demo-owner
 - repos: [gamma]
 - supersedes: []
-- approved: demo-owner 2026-11-01T12:30Z
+- approved: demo-owner 2026-10-01T12:30Z
 
 ## Why
 

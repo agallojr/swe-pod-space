@@ -33,8 +33,8 @@ and only T7b ran again. Heavy: one lead run of about 4 min.
   both shards dispatched at 13:30Z, T7a done and filed, `T7b BLOCKED` at
   14:20Z, a ruling, T7b's brief filed again at 14:35Z and T7b dispatched
   again, done and filed; T8 review spec ok with one Minor.
-- `evidence/20261101T1412Z-T7a.md`, at `{space: 7a7a7a7, alpha: d4d4d4d,
-  beta: f6f6f6f, gamma: c3c3c3c}`, and `evidence/20261101T1500Z-T7b.md`, at
+- `evidence/20261001T1412Z-T7a.md`, at `{space: 7a7a7a7, alpha: d4d4d4d,
+  beta: f6f6f6f, gamma: c3c3c3c}`, and `evidence/20261001T1500Z-T7b.md`, at
   `{space: 8b8b8b8, alpha: d4d4d4d, beta: f6f6f6f, gamma: c3c3c3c}`, both
   all pass. The space commit that holds the latest shard briefs is
   `8b8b8b8`, so T7a's record is out of date though no code moved.
@@ -72,8 +72,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -917,7 +917,7 @@ def ran_commits(k: int = None) -> list:
     return out
 
 NAME = "test_T37_TS1_shard_stale_by_space_commit"
-EVIDENCE = ["20261101T1412Z-T7a.md", "20261101T1500Z-T7b.md"]
+EVIDENCE = ["20261001T1412Z-T7a.md", "20261001T1500Z-T7b.md"]
 
 def sha_of(text: str, repo: str):
     m = re.search(r"\b" + repo + r"\b\W{0,3}([0-9a-f]{7,40})\b", text, re.I)

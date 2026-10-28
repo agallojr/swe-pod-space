@@ -22,7 +22,7 @@ severity). Heavy: one agent run of about 3 min.
 - A fresh default agent with the `swe-pod` skill from swe-pod at the sha
   under test, and that sha's `PROCESS.md` copied to the space root.
 - The demo space with this test's overlay: add-greeting from `test_R15_S1_reverify_after_other_change`, with
-  green evidence `ev-20261101T1230Z` at alpha `d4d4d4d` and beta `e5e5e5e`,
+  green evidence `ev-20261001T1230Z` at alpha `d4d4d4d` and beta `e5e5e5e`,
   and a whole-change review T8 whose front-matter has two diff lines, `diff:
   alpha a1a1a1a..d4d4d4d` and `diff: beta b2b2b2b..e5e5e5e`, verdict `fix`,
   one Important finding in beta and one Minor in alpha. The ledger's T8
@@ -62,8 +62,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 

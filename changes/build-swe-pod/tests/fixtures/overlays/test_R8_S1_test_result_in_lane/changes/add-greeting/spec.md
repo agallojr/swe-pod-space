@@ -4,7 +4,7 @@
 - owner: demo-owner
 - repos: [alpha, beta]
 - supersedes: []
-- approved: demo-owner 2026-11-01T09:00Z
+- approved: demo-owner 2026-10-01T09:00Z
 
 ## Why
 

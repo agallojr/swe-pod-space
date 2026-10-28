@@ -1,14 +1,14 @@
 # Status: proj:demo
 
-Generated from the records; never edited by hand. As of 2026-11-02T08:00Z.
+Generated from the records; never edited by hand. As of 2026-10-02T08:00Z.
 
 - pins: alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c
 - open changes: 2 (building: 1, approved: 1)
 
 ## add-greeting   state: building   owner: demo-owner
 
-- gates: spec approved by demo-owner 2026-11-01T09:00Z; go by demo-owner
-  2026-11-01T09:20Z
+- gates: spec approved by demo-owner 2026-10-01T09:00Z; go by demo-owner
+  2026-10-01T09:20Z
 - branches: alpha change/add-greeting d4d4d4d; beta change/add-greeting
   b2b2b2b
 - tasks:
@@ -31,7 +31,7 @@ Generated from the records; never edited by hand. As of 2026-11-02T08:00Z.
 
 ## add-farewell   state: approved   owner: demo-owner
 
-- gates: spec approved by demo-owner 2026-11-02T08:00Z
+- gates: spec approved by demo-owner 2026-10-02T08:00Z
 - branches: none
 - tasks: none; no plan yet
 - latest evidence: none

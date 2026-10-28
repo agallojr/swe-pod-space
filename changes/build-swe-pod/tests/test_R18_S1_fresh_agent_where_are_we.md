@@ -23,7 +23,7 @@ of about 2 min.
 - The demo space with this test's overlay, holding two open changes:
   - add-greeting, building: T1 done and reviewed, T3 done, and T2 (after
     T1) not yet dispatched, so T2 is next;
-  - add-farewell, approved at 2026-11-02T08:00Z, with no plan, so its plan is
+  - add-farewell, approved at 2026-10-02T08:00Z, with no plan, so its plan is
     next.
 - A `STATUS.md` that matches those records, in the format of contract §2.6.
 

@@ -75,7 +75,7 @@ regs = sorted((bus / "agents").glob("*.yaml"))
 lead = next(p for p in regs if "swe.lead" in field(p, "roles"))
 tester = next(p for p in regs if "swe.test" in field(p, "roles"))
 lead_id, test_id = field(lead, "agent_id"), field(tester, "agent_id")
-task = "2026" + "1101T0921-0003"
+task = "2026" + "1001T0921-0003"
 (bus / "spaces.yaml").write_text(
     "spaces:\n  - {id: proj:demo, path: spaces/proj-demo, access: rw, "
     "librarian: librarian}\n")
@@ -84,7 +84,7 @@ req.parent.mkdir(parents=True, exist_ok=True)
 req.write_text("\n".join([
     "---", "schema_version: 1", f"id: {task}", f"from: {lead_id}",
     "to: role:swe.test", "type: task.request",
-    "created: 2026-11-01T09:21:00Z", "priority: normal", "depends_on: []",
+    "created: 2026-10-01T09:21:00Z", "priority: normal", "depends_on: []",
     "timeout_min: 120", "project: proj:demo", "---", "",
     "## Goal",
     "Write the project-level tests of change add-greeting, task T3, from its",
@@ -195,7 +195,7 @@ BODIES['changes/add-greeting/tests/test_R2_S1_startup_line.md'] = "\n".join([
     '- Another first line, or 1 s or more.',
     '',
 ])
-BODIES['changes/add-greeting/evidence/20261101T1020Z-T3-report.md'] = "\n".join([
+BODIES['changes/add-greeting/evidence/20261001T1020Z-T3-report.md'] = "\n".join([
     '# T3 report',
     '',
     '## Status',
@@ -239,7 +239,7 @@ for path, text in BODIES.items():
                     "sha256": hashlib.sha256(text.encode()).hexdigest()})
 (out / f"{task}-result.md").write_text("\n".join(
     ["---", "schema_version: 1", f"task_id: {task}", f"agent_id: {test_id}",
-     "type: result", "state: done", "completed: 2026-11-01T10:20:00Z",
+     "type: result", "state: done", "completed: 2026-10-01T10:20:00Z",
      "files:"]
     + [f"  - {{path: {e['path']}, sha256: {e['sha256']}}}" for e in entries]
     + ["---", "", "## Result", "",
@@ -249,8 +249,8 @@ for path, text in BODIES.items():
 (bus / "status" / f"{task}.json").write_text(json.dumps({
     "schema_version": 1, "task_id": task, "agent_id": test_id,
     "hostname": field(tester, "hostname"), "state": "done",
-    "accepted": "2026-11-01T09:25:00Z", "started": "2026-11-01T09:25:10Z",
-    "updated": "2026-11-01T10:20:00Z", "progress": "done", "log_tail": [],
+    "accepted": "2026-10-01T09:25:00Z", "started": "2026-10-01T09:25:10Z",
+    "updated": "2026-10-01T10:20:00Z", "progress": "done", "log_tail": [],
     "artifacts": [], "error": None}, indent=2) + "\n")
 secrets = [task, lead_id, test_id, field(lead, "hostname"),
            field(tester, "hostname")]

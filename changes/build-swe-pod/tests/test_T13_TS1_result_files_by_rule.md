@@ -36,7 +36,7 @@ poller run with an executor, about 10 min.
 - Two tasks for `role:swe.test` with `project: proj:demo`, ids built from
   split literals:
   - task A asks for five files: a small note
-    (`notes/note-20261101T1305Z-5a01-small.md`); `notes/big.md`, exactly
+    (`notes/note-20261001T1305Z-5a01-small.md`); `notes/big.md`, exactly
     1048577 bytes; `notes/nul.md`, holding a NUL byte; `../escape.md`,
     holding a value made at run time; and `notes/link.md`, staged as a
     symbolic link to the stand-in;
@@ -75,8 +75,8 @@ GIT_ENV = {
     "GIT_AUTHOR_EMAIL": "demo-owner@example.invalid",
     "GIT_COMMITTER_NAME": "demo-owner",
     "GIT_COMMITTER_EMAIL": "demo-owner@example.invalid",
-    "GIT_AUTHOR_DATE": "2026-11-01T08:00:00Z",
-    "GIT_COMMITTER_DATE": "2026-11-01T08:00:00Z",
+    "GIT_AUTHOR_DATE": "2026-10-01T08:00:00Z",
+    "GIT_COMMITTER_DATE": "2026-10-01T08:00:00Z",
 }
 
 
@@ -222,7 +222,7 @@ def task(bus: Path, tid: str, project: str, goal: list, frm: str) -> Path:
     p.write_text("\n".join([
         "---", "schema_version: 1", f"id: {tid}", f"from: {frm}",
         "to: role:swe.test", "type: task.request",
-        "created: 2026-11-01T17:00:00Z", "priority: normal",
+        "created: 2026-10-01T17:00:00Z", "priority: normal",
         "depends_on: []", "timeout_min: 60", f"project: {project}", "---",
         "", "## Goal"] + goal + [
         "", "## Context", f"Project Space {project}.", "",
@@ -245,9 +245,9 @@ STANDIN = RUN / "node-secrets" / "credentials.env"
 nonce = "STANDIN" + secrets.token_hex(8)
 esc = "ESCAPE" + secrets.token_hex(8)
 write(STANDIN.parent, {STANDIN.name: f"DEMO_TOKEN={nonce}\n"})
-A = "2026" + "1101T1305-0011"
-B = "2026" + "1101T1306-0012"
-SMALL = "notes/note-20261101T1305Z-5a01-small.md"
+A = "2026" + "1001T1305-0011"
+B = "2026" + "1001T1306-0012"
+SMALL = "notes/note-20261001T1305Z-5a01-small.md"
 task(BUS, A, "proj:demo", [
     "Return these five files under files:, each as this task describes it:",
     f"- {SMALL}, holding the single line: a small text file;",

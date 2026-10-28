@@ -21,7 +21,7 @@
   unit suite passes
 
 A fix task from the T7 verify run, routed as "test agrees with the spec, code
-does not". Failing output, from evidence ev-20261102T1412Z:
+does not". Failing output, from evidence ev-20261002T1412Z:
 
     test_R1_S2_name_too_long fail (a 40-character name got the greeting
     "hello, xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"; expected an error
