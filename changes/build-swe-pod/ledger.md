@@ -588,4 +588,20 @@
 2026-10-28T06:25Z T7 review r2: spec issues; 3 Important, 2 Minor
 2026-10-28T06:25Z filed changes/build-swe-pod/tasks/V1-report.md, tasks/V1-review.md
 2026-10-28T06:25Z dispatch T7, T1 -> build (local, any), base swe-pod 2a01192: fix round 3
+2026-10-28T06:43Z T1 fix round 3/5: 1 addressed, 0 open, 2a01192..f1cf99c
+2026-10-28T06:43Z T5 fix round 3/5: 1 addressed, 0 open, f1cf99c..f833f72
+2026-10-28T06:43Z T7 fix round 3/5: 6 addressed, 0 open, f833f72..7572de9
+2026-10-28T06:43Z T2 fix round 2/5: 1 addressed, 0 open, 7572de9..3280728
+2026-10-28T06:43Z T1 review r3: spec ok; 1 Minor
+2026-10-28T06:43Z T2 review r2: spec ok; none
+2026-10-28T06:43Z T5 review r3: spec ok; none
+2026-10-28T06:43Z T7 review r3: spec ok; 1 Minor
+2026-10-28T06:43Z T6 review r2: spec issues; 1 Important
+2026-10-28T06:43Z Ruling: plan section 2.4's regression keys (qualified R ids only) are
+                  widened by the verify fixes to <change>/I<n> under x-checks: and
+                  <change>/T<n>.TS<k> under x-suggestions:, and promoted tests go to
+                  tests/<id>/; both meet spec section 5.6 and R5.S2; logged for T35;
+                  cost if wrong: a plan text that lags its deliverables
+2026-10-28T06:43Z filed changes/build-swe-pod/tasks/V1-review-r1.md
+2026-10-28T06:43Z dispatch T6, T1, T7 -> build (local, any), base swe-pod 3280728: fix round 4
 ```
