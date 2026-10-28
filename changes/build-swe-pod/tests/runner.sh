@@ -51,6 +51,7 @@ import socket
 import subprocess
 import sys
 import tarfile
+import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -61,13 +62,24 @@ FIXTURES = TESTS_DIR / "fixtures"
 # Union of the role tools of contract 2.3, plus Skill. Everything else is
 # denied by the dontAsk mode, which never prompts and is not a bypass mode.
 TOOLS = ["Read", "Grep", "Glob", "Bash", "Write", "Edit", "Agent", "Skill"]
+# git -C is checked by the runner's own hook (RUNNER_CHECK below), not by a
+# rule: it runs only at a literal path inside the run dir, and add, commit
+# and push are left to the installed git gate.
 DENY = [
-    "Bash(git -C:*)", "Bash(git branch:*)", "Bash(git checkout:*)",
-    "Bash(git reset:*)", "Bash(sudo:*)", "WebFetch", "WebSearch",
+    "Bash(git branch:*)", "Bash(git checkout:*)", "Bash(git reset:*)",
+    "Bash(sudo:*)", "WebFetch", "WebSearch",
 ]
-DESK_DENY = [
-    "Bash(git:*)", "Bash(gh:*)", "Bash(*mesh-post*)", "Bash(*mesh-scan-loop*)",
-]
+# In a desk run git and gh are denied by rule. The mesh scripts are denied
+# by RUNNER_CHECK only where they are the command, so a read of a file under
+# skills/mesh-post/ still works.
+DESK_DENY = ["Bash(git:*)", "Bash(gh:*)"]
+# Entries of the node's home linked into each agent run's scratch home (its
+# run dir), when present: the macOS login keychain, which holds a sign-in.
+HOME_LINKS = ["Library/Keychains"]
+# A run ends at its result event: the process gets this long to exit.
+RESULT_GRACE_S = 10
+# A run that gives no agent turn is retried once, after this pause.
+STARTUP_RETRY_PAUSE_S = 30
 MD_EXCLUDES = [
     "**/CLAUDE.md", "**/CLAUDE.local.md", "**/AGENTS.md", "**/.claude/rules/**",
 ]
@@ -103,13 +115,224 @@ DESK_PREAMBLE = (
     "Desk run. Run no git command, no mesh command (mesh-post, "
     "mesh-scan-loop) and no gh command. Wherever you would run one, print "
     "it instead on its own line starting with `DESK: `, and carry on as if "
-    "it had succeeded. Every other tool works as normal."
+    "it had succeeded. Your final reply must repeat every `DESK: ` line you "
+    "printed, each on its own line, in the order you printed them. Every "
+    "other tool works as normal."
 )
 LIBRARIAN_PREAMBLE = (
     "In this run the librarian's commit step is a desk step: print each git "
     "command of it (add, commit, fetch, rebase, push) on its own line "
-    "starting with `DESK: `, and run none of them."
+    "starting with `DESK: `, and run none of them. Your final reply must "
+    "repeat every `DESK: ` line you printed, each on its own line, in the "
+    "order you printed them."
 )
+
+# The runner's own PreToolUse check, written into the config's hooks/ at
+# every reset and run with the runner's interpreter beside the git gate. It
+# only ever denies.
+RUNNER_CHECK = r'''"""Runner check for an agent under test; runner.sh writes it.
+
+Denies: in a desk run, git, gh and the mesh scripts where they are the
+command; in every run, git branch, checkout and reset after any global
+options, and git -C at a path that is not a literal path inside the run
+dir; and any tool use that names a .agent-* file in the node's home.
+Everything else is left to the permission rules and the git gate.
+"""
+import json
+import os
+import re
+import shlex
+import sys
+
+KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "{", "}",
+            "!", "time"}
+WRAPPERS = {"env", "command", "exec", "nohup", "builtin", "xargs",
+            "timeout", "nice"}
+SHELLS = {"bash", "sh", "zsh", "dash", "ksh", "source", "."}
+MESH = ("mesh-post", "mesh-scan-loop")
+GIT_ARG_OPTS = {"-C", "-c", "--git-dir", "--work-tree", "--namespace",
+                "--config-env", "--super-prefix"}
+NO_BRANCH = {"branch", "checkout", "reset"}
+ASSIGN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
+DESK = ("desk run: this command is a desk step. Do not run it; print it on "
+        "its own line starting with `DESK: ` and carry on as if it had "
+        "succeeded")
+IDENTITY = "the node's .agent-* files are not part of this run"
+
+
+class Deny(Exception):
+    pass
+
+
+def options() -> dict:
+    o = {"desk": False, "run": [], "home": []}
+    for a in sys.argv[1:]:
+        if a == "--desk":
+            o["desk"] = True
+        elif a.startswith("--run="):
+            o["run"].append(a[len("--run="):].rstrip("/"))
+        elif a.startswith("--home="):
+            o["home"].append(a[len("--home="):].rstrip("/"))
+    return o
+
+
+def strip_heredocs(text: str) -> str:
+    """Drop here-document bodies, which are data, not commands."""
+    lines, out, i = text.split("\n"), [], 0
+    while i < len(lines):
+        out.append(lines[i])
+        i += 1
+        for m in re.finditer(r"(?<!<)<<-?(?!<)\s*(['\"]?)([A-Za-z_]\w*)\1",
+                             out[-1]):
+            while i < len(lines) and lines[i].strip() != m.group(2):
+                i += 1
+            i += 1
+    return "\n".join(out)
+
+
+def simple_commands(text: str):
+    """Yield the words of each simple command of a shell command line."""
+    text = text.replace("`", " ; ").replace("\n", " ; ")
+    try:
+        lex = shlex.shlex(text, posix=True, punctuation_chars=True)
+        lex.whitespace_split = True
+        tokens = list(lex)
+    except ValueError:
+        tokens = re.sub(r"([;&|()])", r" \1 ", text).split()
+    words = []
+    for t in tokens + [";"]:
+        if t and set(t) <= set(";&|()"):
+            if words:
+                yield words
+            words = []
+        else:
+            words.append(t)
+
+
+def inside(path: str, roots: list) -> bool:
+    return any(path == r or path.startswith(r + "/") for r in roots)
+
+
+def check_dir(path: str, o: dict, cwd: str) -> None:
+    if re.search(r"[$`~*?\[\]{}]", path):
+        raise Deny("git -C needs a literal path here (no variable, ~ or "
+                   "glob), so that the runner can see it is inside this "
+                   "run's folder")
+    full = os.path.normpath(os.path.join(cwd, path))
+    if not (inside(full, o["run"])
+            or inside(os.path.realpath(full), o["run"])):
+        raise Deny("git -C is denied outside this run's folder")
+
+
+def check_git(rest: list, o: dict, cwd: str) -> None:
+    i = 0
+    while i < len(rest) and rest[i].startswith("-"):
+        if rest[i] == "-C" and i + 1 < len(rest):
+            check_dir(rest[i + 1], o, cwd)
+        i += 2 if rest[i] in GIT_ARG_OPTS else 1
+    if i < len(rest) and rest[i] in NO_BRANCH:
+        raise Deny(f"git {rest[i]} is denied in every run of the runner")
+
+
+def check_words(words: list, o: dict, cwd: str, depth: int) -> None:
+    i = 0
+    while i < len(words):
+        w = words[i]
+        if ASSIGN.match(w) or w in KEYWORDS:
+            i += 1
+        elif os.path.basename(w) in WRAPPERS:
+            i += 1
+            while i < len(words) and (
+                    words[i].startswith("-") or ASSIGN.match(words[i])
+                    or re.match(r"^[0-9.]+[smhd]?$", words[i])):
+                i += 1
+        else:
+            break
+    if i >= len(words):
+        return
+    base = os.path.basename(words[i])
+    rest = words[i + 1:]
+    if base in SHELLS:
+        j = 0
+        while j < len(rest) and rest[j][:1] in ("-", "+"):
+            flag = rest[j]
+            if not flag.startswith("--") and "c" in flag[1:]:
+                if j + 1 < len(rest) and depth < 4:
+                    check_command(rest[j + 1], o, cwd, depth + 1)
+                return
+            j += 2 if flag in ("-o", "+o") else 1
+        if (o["desk"] and j < len(rest)
+                and os.path.basename(rest[j]).startswith(MESH)):
+            raise Deny(DESK)
+        return
+    if o["desk"] and (base in ("git", "gh") or base.startswith(MESH)):
+        raise Deny(DESK)
+    if base == "git":
+        check_git(rest, o, cwd)
+
+
+def check_command(cmd: str, o: dict, cwd: str, depth: int = 0) -> None:
+    for words in simple_commands(strip_heredocs(cmd)):
+        check_words(words, o, cwd, depth)
+
+
+def names_identity(text: str, o: dict) -> bool:
+    for h in o["home"]:
+        user = re.escape(os.path.basename(h))
+        for form in (re.escape(h), "~" + user):
+            if re.search(form + r"/+(?:\.?/+)*\.agent", text):
+                return True
+            if (re.search(form + r"(?=$|[\s'\";|&)])", text)
+                    and ".agent" in text):
+                return True
+    return False
+
+
+def check(ev: dict, o: dict) -> None:
+    tool = ev.get("tool_name") or ""
+    inp = ev.get("tool_input") or {}
+    cwd = ev.get("cwd") or os.getcwd()
+    if tool == "Bash":
+        cmd = str(inp.get("command") or "")
+        if names_identity(cmd, o):
+            raise Deny(IDENTITY)
+        check_command(cmd, o, cwd)
+        return
+    base = str(inp.get("path") or "")
+    paths = [inp.get("file_path"), inp.get("notebook_path"), base]
+    for key in ("pattern", "glob") if tool in ("Glob", "Grep") else ():
+        v = inp.get(key)
+        if tool == "Grep" and key == "pattern":
+            continue
+        if isinstance(v, str) and v:
+            paths.append(v if v.startswith("/") or not base
+                         else os.path.join(base, v))
+    for p in paths:
+        if isinstance(p, str) and p:
+            p = os.path.normpath(p) if p.startswith("/") else p
+            if names_identity(p, o):
+                raise Deny(IDENTITY)
+
+
+def main() -> int:
+    o = options()
+    ev = json.load(sys.stdin)
+    try:
+        check(ev, o)
+    except Deny as e:
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "PreToolUse", "permissionDecision": "deny",
+            "permissionDecisionReason": "runner: " + str(e)}}))
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except Exception as e:  # a bug here must not block or crash the call
+        sys.stderr.write(f"runner check: internal error ({e}); allowed\n")
+        sys.exit(0)
+'''
 
 
 def utc_stamp() -> str:
@@ -123,23 +346,55 @@ def say(line: str) -> None:
     print(REDACT[0](line), flush=True)
 
 
-def bus_cwds(bus: str | None) -> list:
-    """Each registered agent's working directory, read from the bus."""
-    out = []
+REGISTRY_KEYS = ("cwd", "agent_id", "agent_name", "hostname")
+
+
+def bus_registry(bus: str | None) -> dict:
+    """Each registered agent's cwd, id, name and hostname, from the bus."""
+    out = {k: [] for k in REGISTRY_KEYS}
     if bus and (Path(bus) / "agents").is_dir():
         for reg in sorted((Path(bus) / "agents").glob("*.yaml")):
-            m = re.search(r"^cwd:\s*(\S+)", reg.read_text(), re.M)
-            if m:
-                out.append(m.group(1).strip("'\""))
+            text = reg.read_text()
+            for k in REGISTRY_KEYS:
+                m = re.search(rf"^{k}:\s*(\S+)", text, re.M)
+                v = m.group(1).strip("'\"") if m else ""
+                if v and v not in out[k]:
+                    out[k].append(v)
     return out
 
 
-def make_redactor(args):
-    """Rewrite machine paths in kept output to placeholders.
+def dashed(path: str) -> str:
+    """A path in the CLI's dash encoding: each non-alphanumeric is a dash."""
+    return re.sub(r"[^A-Za-z0-9]", "-", path)
 
-    Longest first: the scratch root, the config dir, each registered
-    agent's cwd, $HOME; then any other per-user path under a home root,
-    and this node's hostname.
+
+def temp_paths() -> list:
+    """(path, placeholder) for this node's temp folder and the CLI's."""
+    out = [(f"/tmp/claude-{os.getuid()}", "<cli-tmp>")]
+    tmp = tempfile.gettempdir().rstrip("/")
+    if os.path.realpath(tmp) not in ("/tmp", "/private/tmp", "/var/tmp",
+                                     "/private/var/tmp"):
+        out.append((tmp, "<tmp>"))
+    return out
+
+
+def token_re(tokens: list):
+    """A pattern for whole-word tokens (ids, names, hostnames), or None."""
+    tokens = sorted({t for t in tokens if len(t) >= 3}, key=len, reverse=True)
+    if not tokens:
+        return None
+    return re.compile(r"(?<![\w.-])(" + "|".join(map(re.escape, tokens))
+                      + r")(?![\w-])")
+
+
+def make_redactor(args):
+    """Rewrite machine paths, agent ids and hostnames in kept output.
+
+    Paths, longest first, each also in its resolved form and in the CLI's
+    dash-encoded form (placeholder `<...-dashed>`): the scratch root, the
+    config dir, each registered agent's cwd, $HOME, the temp folders. Then
+    any other per-user path under a home root; then, as whole words, each
+    registered agent id, agent name and hostname, and this node's hostname.
     """
     pairs = []
 
@@ -147,29 +402,40 @@ def make_redactor(args):
         if not path:
             return
         for form in {str(path).rstrip("/"),
-                     str(Path(path).resolve()).rstrip("/")}:
+                     os.path.realpath(str(path)).rstrip("/")}:
             if len(form) > 1:
                 pairs.append((form, holder))
+            if len(dashed(form)) >= 8:
+                pairs.append((dashed(form), holder[:-1] + "-dashed>"))
 
+    reg = bus_registry(args.bus)
     add(args.scratch, "<scratch>")
     add(args.config, "<config>")
-    for c in bus_cwds(args.bus):
+    for c in reg["cwd"]:
         add(c, "<agent-cwd>")
     add(os.environ.get("HOME"), "<home>")
+    for path, holder in temp_paths():
+        add(path, holder)
     pairs.sort(key=lambda x: -len(x[0]))
     roots = re.compile("(?:/" + "Us" + "ers|/" + "ho" + "me)/[A-Za-z0-9._-]*")
     host = socket.gethostname()
-    hosts = [h for h in {host, host.split(".")[0]} if len(h) >= 4]
-    host_re = re.compile(r"(?<![\w.-])(" + "|".join(
-        re.escape(h) for h in sorted(hosts, key=len, reverse=True))
-        + r")(?![\w-])") if hosts else None
+    holders = {}
+    for k, holder in (("hostname", "<host>"), ("agent_name", "<agent-name>"),
+                      ("agent_id", "<agent-id>")):
+        for v in reg[k]:
+            holders[v] = holder
+    for h in {host, host.split(".")[0]}:
+        if len(h) >= 4:
+            holders[h] = "<host>"
+    words = token_re(list(holders))
 
     def redact(text: str) -> str:
         for a, b in pairs:
             text = text.replace(a, b).replace(a.replace("/", "\\/"), b)
         text = roots.sub("<user-home>", text)
-        if host_re:
-            text = host_re.sub("<host>", text)
+        if words:
+            text = words.sub(lambda m: holders.get(m.group(1), "<host>"),
+                             text)
         return text
 
     return redact
@@ -202,12 +468,46 @@ def in_git(path: Path) -> bool:
     return r.returncode == 0
 
 
-def child_env(config: Path | None) -> dict:
+def child_env(config: Path | None, home: Path | None = None,
+              cwd: Path | None = None) -> dict:
     env = {k: v for k, v in os.environ.items()
            if k not in DROP_VARS and not k.startswith("MESH_")}
     if config is not None:
         env["CLAUDE_CONFIG_DIR"] = str(config)
+    if home is not None:
+        # The agent's own scratch home; the config dir is passed explicitly
+        # above, so the sign-in does not depend on $HOME.
+        env["HOME"] = str(home)
+        for k in ("XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME",
+                  "XDG_STATE_HOME", "OLDPWD"):
+            env.pop(k, None)
+    if cwd is not None:
+        env["PWD"] = str(cwd)
     return env
+
+
+def make_home(run: Path) -> Path:
+    """The scratch home of one agent run: the run dir itself.
+
+    It must be an ancestor of the cwd: the CLI looks for .claude/ skill and
+    agent folders in every folder above the cwd up to $HOME, so a home
+    elsewhere lets that walk reach the node's own home. Links to the
+    HOME_LINKS entries of the node's home that exist are added for the run;
+    drop_home_links removes them when it ends.
+    """
+    real = Path(os.environ.get("HOME", "/nonexistent"))
+    for rel in HOME_LINKS:
+        link = run / rel
+        if (real / rel).exists() and not (link.exists() or link.is_symlink()):
+            link.parent.mkdir(parents=True, exist_ok=True)
+            link.symlink_to(real / rel)
+    return run
+
+
+def drop_home_links(home: Path) -> None:
+    for rel in HOME_LINKS:
+        if (home / rel).is_symlink():
+            (home / rel).unlink()
 
 
 # ---------------------------------------------------------------- test files
@@ -383,12 +683,24 @@ def lay_out(run: Path, test: dict) -> tuple:
 
 # -------------------------------------------------------------------- config
 
+def runner_check_cmd(desk: bool, run: Path | None, hook: Path) -> str:
+    """The settings command that runs RUNNER_CHECK for one run."""
+    argv = [sys.executable, "-I", str(hook)] + (["--desk"] if desk else [])
+    if run is not None:
+        argv += sorted({f"--run={run}", f"--run={os.path.realpath(run)}"})
+    home = os.environ.get("HOME")
+    if home:
+        argv += sorted({f"--home={home}", f"--home={os.path.realpath(home)}"})
+    return " ".join(shlex.quote(a) for a in argv)
+
+
 def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
-                 desk: bool, keep: list) -> list:
+                 desk: bool, keep: list, run: Path | None = None) -> list:
     """Reset the isolated config in place: agents, skills, settings, state.
 
     Keeps the stored sign-in and the settings keys named in keep; returns
-    the names of the keys it kept.
+    the names of the keys it kept. run is the run dir the runner's check
+    lets git -C work in; with none, it denies every git -C.
     """
     sp = config / "settings.json"
     old, mode = {}, 0o644
@@ -414,6 +726,9 @@ def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
     gate = config / "hooks" / "git-gate.py"
     shutil.copyfile(gate_src, gate)
     gate.chmod(0o755)
+    hook = config / "hooks" / "runner-check.py"
+    hook.write_text(RUNNER_CHECK)
+    hook.chmod(0o644)
     (config / "agents").mkdir()
     for a in agents:
         shutil.copyfile(a, config / "agents" / a.name)
@@ -431,8 +746,13 @@ def reset_config(config: Path, gate_src: Path, agents: list, skills: list,
             "allow": TOOLS,
             "deny": DENY + (DESK_DENY if desk else []),
         },
-        "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [
-            {"type": "command", "command": shlex.quote(str(gate))}]}]},
+        "hooks": {"PreToolUse": [
+            {"matcher": "Bash", "hooks": [
+                {"type": "command", "command": shlex.quote(str(gate))}]},
+            {"matcher": "Bash|Read|Grep|Glob|Edit|Write", "hooks": [
+                {"type": "command",
+                 "command": runner_check_cmd(desk, run, hook)}]},
+        ]},
         "claudeMdExcludes": MD_EXCLUDES,
     }
     settings.update(kept)
@@ -457,17 +777,108 @@ def check_config(config: Path) -> None:
 
 # ---------------------------------------------------------------- agent runs
 
-def kill_group(proc: subprocess.Popen) -> None:
-    for sig in (signal.SIGTERM, signal.SIGKILL):
-        try:
-            os.killpg(proc.pid, sig)
-        except ProcessLookupError:
+def tree_pids(pid: int) -> list:
+    """Every process under pid, from one ps listing."""
+    try:
+        ps = subprocess.run(["ps", "-A", "-o", "pid=,ppid="],
+                            capture_output=True, text=True, timeout=10).stdout
+    except (OSError, subprocess.SubprocessError):
+        return []
+    kids = {}
+    for line in ps.splitlines():
+        f = line.split()
+        if len(f) == 2 and f[0].isdigit() and f[1].isdigit():
+            kids.setdefault(int(f[1]), []).append(int(f[0]))
+    out, todo = [], [pid]
+    while todo:
+        for c in kids.get(todo.pop(), []):
+            if c not in out:
+                out.append(c)
+                todo.append(c)
+    return out
+
+
+def alive(pid: int, group: bool = False) -> bool:
+    try:
+        (os.killpg if group else os.kill)(pid, 0)
+    except (ProcessLookupError, PermissionError):
+        return False
+    return True
+
+
+def stop_tree(proc: subprocess.Popen) -> None:
+    """Stop the run's process group and every process under the agent.
+
+    Children that left the group (a backgrounded command in its own session)
+    are found by parent pid while the agent process still runs.
+    """
+    pids = tree_pids(proc.pid) if proc.poll() is None else []
+
+    def send(sig) -> None:
+        for pid, group in [(proc.pid, True)] + [(p, False) for p in pids]:
+            try:
+                (os.killpg if group else os.kill)(pid, sig)
+            except (ProcessLookupError, PermissionError):
+                pass
+
+    send(signal.SIGTERM)
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        if (proc.poll() is not None and not alive(proc.pid, group=True)
+                and not any(alive(p) for p in pids)):
             return
-        try:
-            proc.wait(timeout=5)
-            return
-        except subprocess.TimeoutExpired:
-            continue
+        time.sleep(0.2)
+    send(signal.SIGKILL)
+    try:
+        proc.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        pass
+
+
+def is_result(line: str) -> bool:
+    if '"result"' not in line:
+        return False
+    try:
+        return json.loads(line).get("type") == "result"
+    except (json.JSONDecodeError, AttributeError):
+        return False
+
+
+def wait_run(proc: subprocess.Popen, stream: Path, start: float,
+             cap_s: int) -> dict:
+    """Wait for one agent process; end the run at its result or its cap.
+
+    The run ends when the process exits, RESULT_GRACE_S after the stream's
+    result event, or at the cap when no result came by then. Whatever is
+    left of the process tree is then stopped.
+    """
+    out = {"capped": False, "result_s": None, "stopped_after_result": False}
+    buf = ""
+    with open(stream) as f:
+        while True:
+            try:
+                proc.wait(timeout=0.5)
+                exited = True
+            except subprocess.TimeoutExpired:
+                exited = False
+            if out["result_s"] is None:
+                buf += f.read()
+                lines = buf.split("\n")
+                buf = "" if exited else lines.pop()
+                if any(is_result(ln) for ln in lines):
+                    out["result_s"] = round(time.monotonic() - start, 1)
+            if exited:
+                break
+            now = time.monotonic() - start
+            if out["result_s"] is not None:
+                if now - out["result_s"] >= RESULT_GRACE_S:
+                    out["stopped_after_result"] = True
+                    break
+            elif now >= cap_s:
+                out["capped"] = True
+                break
+    stop_tree(proc)
+    return out
 
 
 def summarize(stream: Path) -> dict:
@@ -522,10 +933,14 @@ def summarize(stream: Path) -> dict:
 def run_agent(args, run: Path, k: int, cwd: Path, prompt: str, cap_s: int,
               add_dirs: list, session_agent: str | None = None,
               retry: bool = True) -> dict:
-    """One headless Claude Code process, stopped at its cap.
+    """One headless Claude Code process, ended at its result or its cap.
 
-    With retry, a startup failure or an API stall is retried once here; a
-    smoke case that retries on its own passes retry=False.
+    The agent's $HOME is the run dir (see make_home). With retry,
+    a run that gives no agent turn (an empty stream, a startup failure, or
+    only API retries) is retried once, after STARTUP_RETRY_PAUSE_S, and the
+    first attempt's stream and stderr are kept as stream-<k>-try1.jsonl and
+    stderr-<k>-try1.txt. A smoke case that retries on its own passes
+    retry=False.
     """
     cmd = [args.claude, "-p", "--output-format", "stream-json", "--verbose",
            "--no-session-persistence", "--permission-mode", "dontAsk",
@@ -541,36 +956,33 @@ def run_agent(args, run: Path, k: int, cwd: Path, prompt: str, cap_s: int,
     err = run / f"stderr-{k}.txt"
     record = {"step": k, "cap_s": cap_s, "retried": False}
     for attempt in ((1, 2) if retry else (1,)):
+        home = make_home(run)
         start = time.monotonic()
         with open(stream, "w") as so, open(err, "w") as se:
             proc = subprocess.Popen(
-                cmd, cwd=cwd, env=child_env(args.config),
+                cmd, cwd=cwd, env=child_env(args.config, home, cwd),
                 stdin=subprocess.PIPE, stdout=so, stderr=se,
                 start_new_session=True, text=True)
             proc.stdin.write(prompt)
             proc.stdin.close()
-            capped = False
-            while True:
-                try:
-                    proc.wait(timeout=0.5)
-                    break
-                except subprocess.TimeoutExpired:
-                    if time.monotonic() - start >= cap_s:
-                        capped = True
-                        kill_group(proc)
-                        break
+            ended = wait_run(proc, stream, start, cap_s)
+        drop_home_links(home)
         elapsed = time.monotonic() - start
         summary = summarize(stream)
-        record.update({"exit": proc.returncode, "capped": capped,
-                       "elapsed_s": round(elapsed, 1)})
-        startup_failure = (not capped and summary["result"] is None
-                           and elapsed < 20)
-        api_stall = (summary["assistant_events"] == 0
-                     and summary["api_retries"] > 0
-                     and summary["result"] is None)
+        record.update({"exit": proc.returncode, "elapsed_s": round(elapsed, 1),
+                       **ended})
+        no_turn = summary["assistant_events"] == 0
+        api_stall = (no_turn and summary["api_retries"] > 0
+                     and ended["capped"])
+        startup_failure = no_turn and not ended["capped"]
+        record["no_turn"] = no_turn
         if (startup_failure or api_stall) and retry and attempt == 1:
-            record["retried"] = ("startup failure" if startup_failure
-                                 else "API retries with no turn")
+            record["retried"] = (
+                "startup failure with no agent turn" if startup_failure
+                else "API retries with no agent turn")
+            os.replace(stream, run / f"stream-{k}-try1.jsonl")
+            os.replace(err, run / f"stderr-{k}-try1.txt")
+            time.sleep(STARTUP_RETRY_PAUSE_S)
             continue
         record["api_stall"] = api_stall
         break
@@ -612,12 +1024,22 @@ def run_script(args, run: Path, code: str, name: str, env: dict,
 
 
 def run_test(args, path: Path) -> str:
-    holder = {}
+    holder = {"notes": []}
     try:
-        return _run_test(args, path, holder)
+        res = _run_test(args, path, holder)
     finally:
         if holder.get("run"):
             redact_dir(holder["run"])
+    if holder["notes"] and res.endswith(")"):
+        res = res[:-1] + "; " + "; ".join(holder["notes"]) + ")"
+    return res
+
+
+def export_path(rel: str) -> str:
+    """What to export for a deliverable: a skill's SKILL.md brings its whole
+    skill directory, skills/<name>/, so files beside it are installed too."""
+    m = re.match(r"^(skills/[^/]+)/SKILL\.md$", rel)
+    return m.group(1) if m else rel
 
 
 def _run_test(args, path: Path, holder: dict) -> str:
@@ -643,7 +1065,7 @@ def _run_test(args, path: Path, holder: dict) -> str:
         sha = shas.setdefault(d["repo"], resolve(repo))
         meta["commit_set"][d["repo"]] = sha[:7]
         if git_has(repo, sha, d["path"]):
-            export(repo, sha, d["path"], exp / d["repo"])
+            export(repo, sha, export_path(d["path"]), exp / d["repo"])
         else:
             meta["absent"].append(f"{d['repo']} {sha[:7]} {d['path']}")
     (run / "meta.json").write_text(json.dumps(meta, indent=2))
@@ -707,7 +1129,7 @@ def _run_test(args, path: Path, holder: dict) -> str:
             role = roles[0]
             session_agent = f"swe-{role}" if role in POD_ROLES else None
             kept = reset_config(args.config, args.gate_file, agents, skills,
-                                desk, args.keep)
+                                desk, args.keep, run)
             meta["kept_settings"] = kept
             (run / "meta.json").write_text(json.dumps(meta, indent=2))
             remaining = int(deadline - time.monotonic())
@@ -720,10 +1142,16 @@ def _run_test(args, path: Path, holder: dict) -> str:
             env_vars[f"SUMMARY_{k}"] = run / f"summary-{k}.json"
             env_vars[f"FINAL_{k}"] = run / f"final-{k}.txt"
             env_vars[f"STREAM_{k}"] = run / f"stream-{k}.jsonl"
+            if s["run"].get("retried"):
+                holder["notes"].append(
+                    f"step {k} retried once after {s['run']['retried']}")
             if s["run"]["capped"]:
                 stall = ("; provider API retries, no agent turn"
                          if s["run"].get("api_stall") else "")
                 return f"not-run (cap {test['cap_s']} s{stall})"
+            if s["run"].get("no_turn"):
+                return (f"error (no agent turn in step {k}; see "
+                        f"stream-{k}.jsonl and stderr-{k}.txt)")
             if s["result"] is None:
                 return "error (no result from the agent process)"
         env_vars["STEPS"] = len(steps)
@@ -824,7 +1252,7 @@ def smoke(args) -> int:
                     raise Blocked("could not make the smoke code repo")
                 add_dirs = [run / "repos"]
             kept = reset_config(args.config, args.gate_file, [], [], desk,
-                                args.keep)
+                                args.keep, run)
             state["kept"] = kept
             preamble = DESK_PREAMBLE if desk else LIBRARIAN_PREAMBLE
             s = run_agent(args, run, k, space, preamble + "\n\n" + prompt_fn(
@@ -1087,36 +1515,55 @@ def smoke(args) -> int:
         "--allow-empty -m probe"), judge_s7, repos=True,
         attempted=attempted_s7)
 
-    # S8: kept output and logs carry placeholders, not machine paths. The
-    # agent prints the config dir, $HOME and its cwd; the prompt also holds
-    # each registered agent's cwd when --bus is given.
-    cwds = bus_cwds(args.bus)
+    # S8: kept output and logs carry placeholders, not machine paths, agent
+    # ids or agent names. The agent prints the config dir, its own $HOME (the
+    # case folder) and its cwd, then repeats the node's $HOME, the CLI's
+    # dash-encoded forms of the home, config and temp paths and, with --bus,
+    # each registered agent's cwd, id and name.
+    reg = bus_registry(args.bus)
+    cwds = reg["cwd"]
+    names = reg["agent_id"] + reg["agent_name"]
+    home = os.environ.get("HOME", "")
+    dash = [dashed(p) for p in (home, str(args.config), temp_paths()[0][0])
+            if p]
+    repeat = ([home] if home else []) + dash + cwds + names
 
     def judge_s8(s, space):
         run = space.parent
-        raw = [str(args.config), os.environ.get("HOME", ""),
-               str(args.scratch)] + cwds
-        raw = [r for r in raw if r]
+        raw = [r for r in [str(args.config), home, str(args.scratch)]
+               + dash + cwds if r]
         roots = re.compile("(?:/" + "Us" + "ers|/" + "ho" + "me)/")
         kept = [p for p in run.iterdir() if p.is_file()]
         text = "".join(p.read_text(errors="replace") for p in kept)
-        leaks = sum(1 for r in raw if r in text)
+        words = token_re(names)
+        leaks = (sum(1 for r in raw if r in text)
+                 + (len(set(words.findall(text))) if words else 0))
         stray = len(roots.findall(text))
-        holders = [h for h in ("<config>", "<home>", "<scratch>")
-                   if h in text]
-        need = ["<config>", "<scratch>"] + (["<agent-cwd>"] if cwds else [])
+        need = (["<config>", "<scratch>", "<home-dashed>", "<config-dashed>",
+                 "<cli-tmp-dashed>"]
+                + (["<agent-cwd>"] if cwds else [])
+                + (["<agent-id>"] if reg["agent_id"] else [])
+                + (["<agent-name>"] if reg["agent_name"] else []))
+        seen = [h for h in need + ["<home>", "<user-home>"] if h in text]
+        forms = {str(run), os.path.realpath(run)}
+        scratch_home = any(
+            ln.strip() in forms for u in s["tool_uses"] if u["name"] == "Bash"
+            for ln in str(u["output"] or "").splitlines())
         ok = (leaks == 0 and stray == 0 and all(h in text for h in need)
-              and ("<home>" in text or "<user-home>" in text))
-        return ok, (f"{len(kept)} kept files; machine paths left {leaks}, "
-                    f"home-root paths left {stray}; placeholders seen "
-                    f"{', '.join(holders) or 'none'}; agent cwds from the "
-                    f"bus {len(cwds)}")
+              and ("<home>" in text or "<user-home>" in text)
+              and scratch_home)
+        return ok, (f"{len(kept)} kept files; machine paths, ids and names "
+                    f"left {leaks}, home-root paths left {stray}; "
+                    f"placeholders seen {', '.join(seen) or 'none'}; from "
+                    f"the bus: agent cwds {len(cwds)}, ids "
+                    f"{len(reg['agent_id'])}, names {len(reg['agent_name'])};"
+                    f" agent $HOME is the case folder {scratch_home}")
 
     case("S8-redaction", False, lambda sp: (
         "Run this shell command once and reply with its output verbatim: "
-        "echo \"$CLAUDE_CONFIG_DIR\"; echo \"$HOME\"; pwd"
-        + ("" if not cwds else " Then repeat these paths back, one per "
-           "line: " + " ".join(cwds))), judge_s8, redact_first=True)
+        "echo \"$CLAUDE_CONFIG_DIR\"; echo \"$HOME\"; pwd Then repeat these "
+        "words back exactly, one per line: " + " ".join(repeat)),
+        judge_s8, redact_first=True)
 
     (run_root / "smoke.txt").write_text("\n".join(results) + "\n")
     return 0 if all(" pass " in r for r in results) else 1
