@@ -399,4 +399,7 @@
                   when done"; the heavy yes covers the verify shards, quoted in their
                   heavy: line; the merge word is for T36, once the change is verified and
                   the whole-change review has no open Critical or Important finding
+2026-10-28T03:18Z T42 DONE, agent-mesh e0f6af0..1367f65
+2026-10-28T03:18Z filed changes/build-swe-pod/tasks/T42-report.md
+2026-10-28T03:18Z T42.TS1 and T42.TS2 -> logged for T35, not T18, by the 03:07Z ruling
 ```
