@@ -1,0 +1,52 @@
+===== meta.json
+{
+  "test": "test_T4_TS5_just_draft_it_lists_defaults",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'd like beta to greet people by name when it starts. Call the change
+greet-by-name. Just draft it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T084225Z-test_T4_TS5_just_draft_it_lists_defaults-3e67/space
+swe-pod: <scratch>/runs/20261028T084225Z-test_T4_TS5_just_draft_it_lists_defaults-3e67/export/swe-pod
+alpha: <scratch>/runs/20261028T084225Z-test_T4_TS5_just_draft_it_lists_defaults-3e67/repos/alpha
+beta: <scratch>/runs/20261028T084225Z-test_T4_TS5_just_draft_it_lists_defaults-3e67/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've drafted the spec for greet-by-name at:
+
+`<scratch>/runs/20261028T084225Z-test_T4_TS5_just_draft_it_lists_defaults-3e67/space/changes/greet-by-name/spec.md`
+
+It's a draft and isn't approved yet. Your request didn't say where the name should come from, so I picked a `--name` option, as in `beta --name Ada`. With it, beta's first line is `hello, Ada`. Without it, beta still prints `hello, demo` as it does today, so the earlier greeting spec still holds and nothing in it is replaced. alpha can already make a greeting for any name up to 64 characters, so only beta changes.
+
+Please read it in this order:
+1. **Why and Scope:** is this the problem you meant? Picking up the name on its own, from the login account or a settings file, is left out. Both are listed with what they cost.
+2. **Requirements:** greet by the given name; keep `hello, demo` when no name is given; refuse a name that's missing, empty or over 64 characters. Does the case you care about most have an example?
+3. **Open calls:** these are the choices I made myself:
+   - The name comes from `--name`, not from the login account or a settings file.
+   - With no name, the start-up line stays `hello, demo`.
+   - The wording is alpha's existing `hello, <name>`, and the name is printed exactly as typed.
+   - The 64-character limit counts each letter as one, including accented ones.
+   - An empty name is refused.
+   - A bad name stops beta before it prints anything.
+   - Only `--name <name>` works: no `-n` and no `--name=<name>`.
+   - It's a small change, touching beta only.
+
+For the lead: the spec is at `changes/greet-by-name/spec.md` and is proposed, not approved. beta has no `SPEC.md` copy, so I didn't make one. I didn't print any `DESK: ` lines because I don't commit; the lead files the spec through the librarian.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS5.1 pass draft written
+T4.TS5.2 pass no approved: line
+T4.TS5.3 pass Open calls items: 8
+T4.TS5.4 fail named for the name: --count-lines, --name; missing from Open calls: --count-lines

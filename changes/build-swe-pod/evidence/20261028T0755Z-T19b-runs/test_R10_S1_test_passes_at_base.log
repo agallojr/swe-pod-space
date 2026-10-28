@@ -1,0 +1,99 @@
+===== meta.json
+{
+  "test": "test_R10_S1_test_passes_at_base",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T3 has finished. Its report is at changes/add-greeting/tasks/T3-report.md.
+Carry on.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space
+swe-pod: <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/export/agent-mesh
+alpha: <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/repos/alpha
+beta: <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/repos/beta
+The human is demo-owner.
+===== final-1.txt
+T3 is done. The rewritten startup-line test now requires beta's first output line to be exactly `hello, demo` and to arrive within 1 s, as the spec's R2.S1 says. Its first version only checked that the line wasn't empty, so beta's existing banner `beta 1.0` passed it.
+
+**Checked myself against the unchanged code (alpha 8966346, beta 1bf4538):** all three tests fail for the reasons they state.
+- `test_R1_S1_default_greeting` and `test_R1_S2_name_too_long` both fail because alpha has no `greeting` yet (`AttributeError`).
+- `test_R2_S1_startup_line` fails because beta's first line is `'beta 1.0'`; it took 0.022 s.
+
+**Ledger** (`changes/add-greeting/ledger.md`): T3 is recorded as DONE_WITH_CONCERNS, with the new results against the unchanged code and three rulings:
+1. T3 is done, because I reran all three tests myself.
+2. **Buffered output:** if beta holds its output until it exits, the timing only passes if beta also exits within 1 s. The test stays as written: R2.S1 asks for the first line within 1 s of start, and that is what it measures.
+3. **Space commit:** the test agent couldn't confirm the space checkout is at 5c02e1a because it isn't a git repo here. I closed that, since the tests only read alpha and beta and both were confirmed at their base commits.
+
+**Filing:** the new test, the report at `changes/add-greeting/evidence/20261028T0756Z-T3-report.md` and the ledger passed every librarian check. The commit step is still a desk step, so nothing in this run is actually committed. For that reason no record has a `filed` line and `STATUS.md` hasn't been regenerated.
+
+**Next:** nothing new can start. T1 (the greeting in alpha) is still out and hasn't reported, and T2, T4 and T6 wait on it.
+
+**Every desk-step command from this run, in the order printed:**
+
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/tests/test_R1_S1_default_greeting.md" -- changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/tests/test_R1_S2_name_too_long.md" -- changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/tests/test_R2_S1_startup_line.md" -- changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/evidence/20261028T0756Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/evidence/20261028T0756Z-T3-report.md" -- changes/add-greeting/evidence/20261028T0756Z-T3-report.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space fetch origin
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T075536Z-test_R10_S1_test_passes_at_base-6d24/space push origin HEAD:main
+===== stderr-1.txt (empty)
+===== check.out
+R10.S1.1 pass 1 at-base line(s) with test_R2_S1_startup_line pass
+R10.S1.2 pass 1 line(s) record the return and why
+R10.S1.3 pass 1 test subagent(s) given the test
+R10.S1.4 pass 0 write(s) by the lead to the tests folder

@@ -1,0 +1,64 @@
+===== meta.json
+{
+  "test": "test_T3_TS2_blind_writer_amid_records_and_code",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+changes/add-greeting/tasks/T3-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T084023Z-test_T3_TS2_blind_writer_amid_records_and_code-0cbf/space
+swe-pod: <scratch>/runs/20261028T084023Z-test_T3_TS2_blind_writer_amid_records_and_code-0cbf/export/swe-pod
+alpha: <scratch>/runs/20261028T084023Z-test_T3_TS2_blind_writer_amid_records_and_code-0cbf/repos/alpha
+beta: <scratch>/runs/20261028T084023Z-test_T3_TS2_blind_writer_amid_records_and_code-0cbf/repos/beta
+===== final-1.txt
+**Status: DONE_WITH_CONCERNS.** I wrote one test for each of the three scenarios in the test map. Each fails at the base commit set (space 5c02e1a, alpha 43f0919, beta d91d3eb) for the reason I expected. They haven't been run yet at the commit set under test, which comes after T1 and T2.
+
+**Files written:**
+- `changes/add-greeting/tests/test_R1_S1_default_greeting.md`
+- `changes/add-greeting/tests/test_R1_S2_name_too_long.md`
+- `changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- `changes/add-greeting/evidence/20261028T0841Z-T3-report.md`
+
+**Tests (each about 1 s, none heavy):**
+
+| Scenario | Test | At base |
+|---|---|---|
+| R1.S1 | `test_R1_S1_default_greeting` | fail (alpha has no `greeting`, so it gives AttributeError) |
+| R1.S2 | `test_R1_S2_name_too_long` | fail (alpha has no `greeting`, so no ValueError naming 64) |
+| R2.S1 | `test_R2_S1_startup_line` | fail (the first line is `beta 1.0`, not `hello, demo`) |
+
+**Concerns:**
+1. **Report location:** the brief says to put the report in `changes/add-greeting/tasks/T3-report.md`. My role and the report template put a test task's report under `evidence/`, so that's where I put it.
+2. **Python version:** `python3` on this node is 3.6.8. The agreed signature `greeting(name: str | None = None)` only works on Python 3.10, or 3.7+ with `from __future__ import annotations`. If verify runs here, alpha may fail to import. The tests themselves run on 3.6.
+3. **R1.S2 has extra cases.** Besides the 65-character name in the scenario, it checks:
+   - a 65-character name made of `é`, which should also be rejected;
+   - names of exactly 64 characters, in `a` and in `é`, which should return `hello, <name>`.
+
+   These catch a limit that is off by one or counts bytes instead of characters. The expected values come from the spec's 64-character rule and the agreed interface.
+
+No builder suggestions were in the brief, and no tests were disputed.
+
+DESK: git add changes/add-greeting/tests/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R2_S1_startup_line.md changes/add-greeting/evidence/20261028T0841Z-T3-report.md
+DESK: git commit -m "add-greeting T3: project-level tests and report"
+DESK: git fetch origin
+DESK: git rebase origin/main
+DESK: git push origin HEAD:main
+===== stderr-1.txt (empty)
+===== check.out
+T3.TS2.1 pass 3 new test file(s)
+T3.TS2.2 fail 1 read(s) of plan, ledger, reports, reviews or other briefs; cat <<'EOF'
+DESK: git add changes/add-greeting/tests/test_R1
+T3.TS2.3 pass 0 read(s) of implementation files
+T3.TS2.4 pass 0 diff command(s)
+T3.TS2.5 pass brief read True, spec read True

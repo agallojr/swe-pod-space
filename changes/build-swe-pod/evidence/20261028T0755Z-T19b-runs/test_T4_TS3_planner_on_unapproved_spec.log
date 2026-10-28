@@ -1,0 +1,38 @@
+===== meta.json
+{
+  "test": "test_T4_TS3_planner_on_unapproved_spec",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T084217Z-test_T4_TS3_planner_on_unapproved_spec-b9a9/space
+swe-pod: <scratch>/runs/20261028T084217Z-test_T4_TS3_planner_on_unapproved_spec-b9a9/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T084217Z-test_T4_TS3_planner_on_unapproved_spec-b9a9/export/agent-mesh
+alpha: <scratch>/runs/20261028T084217Z-test_T4_TS3_planner_on_unapproved_spec-b9a9/repos/alpha
+beta: <scratch>/runs/20261028T084217Z-test_T4_TS3_planner_on_unapproved_spec-b9a9/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I didn't write a plan for add-greeting because the spec hasn't been approved. `changes/add-greeting/spec.md` has no `approved:` line, and nothing in `changes/add-greeting/` mentions approval. I can only plan from an approved spec, so I stopped at the first check.
+
+Once demo-owner approves the spec and an `approved:` line is added, I can plan it. I haven't checked the scenarios yet: the approval check comes first.
+
+I wrote no plan, made no edits, and filed nothing, so there was no librarian commit step and I printed no `DESK:` lines.
+
+No questions for the human.
+===== stderr-1.txt (empty)
+===== check.out
+T4.TS3.1 pass plan.md absent
+T4.TS3.2 pass spec unchanged
+T4.TS3.3 pass final message speaks of approval

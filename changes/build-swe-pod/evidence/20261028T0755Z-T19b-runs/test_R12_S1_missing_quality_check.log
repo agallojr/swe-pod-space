@@ -1,0 +1,39 @@
+===== meta.json
+{
+  "test": "test_R12_S1_missing_quality_check",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Where are we on add-greeting?
+===== final-1.txt
+**add-greeting is still building, not verified.** The latest evidence leaves out quality check Q2, so verify isn't green yet. All nine build, test and review tasks (T1–T8) are done, and nothing is blocked.
+
+A caveat on how I read this: the space folder isn't a git checkout, so I read the files as they are on disk, not as committed. There's also no `STATUS.md` (or `AGENTS.md`), so I worked the status out from the records, and `STATUS.md` needs regenerating. The code remotes are `example.invalid` placeholders, so I took the branch heads from the ledger: alpha `d4d4d4d`, beta `e5e5e5e`.
+
+- **Why it isn't verified:** The spec declares two quality checks, Q1 (linter clean) and Q2 (docs build with `demo-docs --strict` in beta). The evidence `ev-20261001T1230Z` only has `quality: {Q1: pass}`. A missing result doesn't count as a pass. Everything else in that record passes: all three scenarios (R1.S1, R1.S2, R2.S1) and the alpha and beta unit tests. Its alpha and beta commits match the branch heads. I couldn't check its space commit `5d5d5d5` because there's no git here.
+- **Next task:** the progress rules make T9 Integrate next (lead, local, any), because T7 and T8 have both reported. My recommendation is not to integrate. Re-run T7 Verify at the current commits so that Q2 gets a result. The change becomes verified only once a new evidence record is green for Q1 and Q2 together. This gap also appears in the T7 report, which lists only Q1, even though T7's own "done when" names both Q1 and Q2.
+- **Blocked:** nothing.
+- **Open Critical or Important findings:** none. There is one Minor finding, at `beta/beta/__main__.py:3`: the path set-up line could say why it adds the alpha checkout. It was raised in the T2 review, carried into the whole-change review, and will go into the final report at integrate.
+
+Records worth opening:
+- `<scratch>/runs/20261028T075816Z-test_R12_S1_missing_quality_check-4c34/space/changes/add-greeting/evidence/20261001T1230Z.md`
+- `<scratch>/runs/20261028T075816Z-test_R12_S1_missing_quality_check-4c34/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261028T075816Z-test_R12_S1_missing_quality_check-4c34/space/changes/add-greeting/spec.md`
+- `STATUS.md`, once regenerated: `<scratch>/runs/20261028T075816Z-test_R12_S1_missing_quality_check-4c34/space/STATUS.md`
+
+A status check doesn't file anything, so the librarian's commit step never ran and I printed no `DESK: ` lines. There are none to repeat.
+===== stderr-1.txt (empty)
+===== check.out
+R12.S1.1 pass add-greeting reported not verified; STATUS.md state absent
+R12.S1.2 pass Q2 named
+R12.S1.3 pass 0 record(s) added, changed or removed besides STATUS.md

@@ -1,0 +1,98 @@
+===== meta.json
+{
+  "test": "test_R2_S1_first_change_no_specs",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I want beta to print a greeting when it starts, and the greeting text should
+come from alpha so other tools can share it. Call the change add-greeting.
+Just draft it. I approve it as you draft it, so record my approval as
+demo-owner.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/space
+swe-pod: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/export/swe-pod
+alpha: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/repos/alpha
+beta: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've drafted the spec and recorded your approval as you asked. It's at:
+
+`<scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/space/changes/add-greeting/spec.md`
+
+It's marked approved by demo-owner at 2026-10-28T08:12Z. It's sized as a project-size change because it touches both alpha and beta and adds something new that alpha offers to other tools. It covers only this change; no write-up of how the code works today was needed first.
+
+**What it asks for**
+- **alpha** gives any tool that uses it one line of greeting text, the same every time.
+- **beta** prints that text on the line right after its `beta 1.0` banner, every time it starts. The text has to come from alpha: if alpha's wording changes, beta prints the new wording without any change to beta.
+- **Done means** the unit tests pass in both alpha and beta.
+
+**Choices I made that you didn't specify.** Please check these first, since your approval covers them too:
+1. **The wording** is `Hello from demo!`. You didn't give one.
+2. **How alpha shares the text:** beta asks alpha for it when it runs. The other options were a separate text file that tools read, or beta keeping its own copy, which wouldn't let other tools share it.
+3. **Where it appears:** on the line after the banner, without replacing it.
+4. **It also prints with `--count-lines`.** The line count moves from the second line of output to the third. Anything that reads that output by line number will need to change.
+5. **It goes to normal output**, not the error output.
+6. **The name** other tools use to get the text from alpha is left to the plan.
+7. **alpha's changelog** gets one line about the greeting, as alpha's contributing rules ask. The version number stays the same.
+
+If you want to change any of these, tell me and I'll edit the spec. Changes to what counts as done will need your approval again.
+
+**For the lead:** the spec is at `changes/add-greeting/spec.md` and is approved. Neither alpha nor beta has a `SPEC.md` copy, so I made none. I printed no `DESK: ` lines, because committing is the librarian's step, not mine.
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/space
+swe-pod: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/export/swe-pod
+alpha: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/repos/alpha
+beta: <scratch>/runs/20261028T081200Z-test_R2_S1_first_change_no_specs-9206/repos/beta
+The human is demo-owner.
+===== final-2.txt
+I wrote the plan to `changes/add-greeting/plan.md`, and nothing else. The lead files it through the space's librarian.
+
+**The design:**
+- **alpha** gets one new public function, `greeting() -> str`, which returns exactly `Hello from demo!`. The spec left the name to the plan, so I picked a function: a tool asks for the text when it runs, and a test can swap it out.
+- **beta** prints `alpha.greeting()` on the line right after `beta 1.0`, before the line count. The banner, the counting and the exit status don't change.
+- **alpha's docs:** one changelog line under Unreleased with no version bump, and a README line for `greeting()`.
+- **beta's docs:** a README note that beta prints the greeting and needs alpha on Python's import path.
+
+**Tasks:**
+- **T1** builds the alpha function.
+- **T2** builds the beta change. It runs after T1 because it needs alpha's new function.
+- **T3** writes the project-level tests and starts at the go, in parallel with T1.
+- **T4** handles builders' test suggestions.
+- **T5** is one verify run on `linux-server`. It isn't split up, since the whole run takes under 60 s.
+- **T6 and T7** review T1 and T2, and **T8** reviews the whole change.
+- **T9** is the integrate task: alpha merges, then beta.
+
+No two tasks write the same file. The longest chain is T1 → T6 → T2 → T7 → T4 → T5 → T8 → T9. All six scenarios are in the test map, each with its test name and with T3 writing it.
+
+**Things to know:**
+- **No sha check:** none of the checkouts on this node is a git repo, so I couldn't confirm the pins. The plan uses the pins in `pod.yaml` (alpha `a1a1a1a`, beta `b2b2b2b`, gamma `c3c3c3c`), and the lead records the space sha at the go.
+- **How beta finds alpha:** neither repo has packaging files. I planned "alpha is installed" to mean alpha's checkout is on `PYTHONPATH`. That means the Q1 unit-test command in beta's folder only passes when `PYTHONPATH` points at the alpha checkout. It's listed under (b) for the spec author.
+- **Other defaults** the spec author can add to the spec's Open calls: the `linux-server` environment class for testing, and the README lines in both repos.
+
+No questions for the human.
+
+I printed no `DESK: ` lines. As planner I don't commit; the librarian's commit step belongs to the lead when it files the plan.
+===== stderr-2.txt (empty)
+===== check.out
+R2.S1.1 pass new spec files ['changes/add-greeting/spec.md']; 0 other file(s) with SHALL
+R2.S1.2 pass requirements cover only the change
+R2.S1.3 pass supersedes []
+R2.S1.4 pass approved line present
+R2.S1.5 pass plan self-review filled, 2 of 2 requirement ids

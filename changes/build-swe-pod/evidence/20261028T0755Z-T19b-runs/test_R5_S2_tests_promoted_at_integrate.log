@@ -1,0 +1,312 @@
+===== meta.json
+{
+  "test": "test_R5_S2_tests_promoted_at_integrate",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting. Then write the brief for T4, the verify task of
+add-farewell, and stop there: do not dispatch it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space
+swe-pod: <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/export/swe-pod
+agent-mesh: <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/export/agent-mesh
+The human is demo-owner.
+===== final-1.txt
+add-greeting is merged and integrated. The T4 verify brief for add-farewell is written but not dispatched, as you asked. Because this is a desk run, no git command actually ran: the merges, the space commits and the "filed" ledger lines all assume the printed commands succeeded.
+
+**Integrate of add-greeting**
+- **Checks before merging:** the latest test run (ev-20261002T1412Z) passed every scenario and both repos' unit tests. The whole-change review had no findings. The pins, and the space's `tests/` folder, had not moved since that run, assuming the printed checks show what the records say.
+- **Merge:** alpha merged first, as `pod.yaml` requires, then beta. Both are fast-forwards: alpha main is now d4d4d4d and beta main is e5e5e5e. I kept the `change/add-greeting` branches because you said merge, not delete.
+- **Space updates:**
+  - The pins in `pod.yaml` now point at alpha d4d4d4d and beta e5e5e5e.
+  - The spec author added `integrated: demo-owner 2026-10-28T08:21Z` to the spec.
+  - The change's three tests moved to `tests/add-greeting/`.
+  - The change folder moved to `changes/archive/2026-10-28-add-greeting/`.
+  - README.md is updated, and STATUS.md is regenerated with the skill.
+  - All 22 files to be committed passed the space's checks; none was refused.
+- **Final report:** <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space/changes/archive/2026-10-28-add-greeting/report.md
+  - **Scenarios:** R1.S1, R1.S2 and R2.S1 all pass in ev-20261002T1412Z. Both unit suites pass, and the spec declares no quality checks.
+  - **Ruling 1:** I integrated without updating the alpha and beta READMEs. The plan's integrate step names both, but the spec requires neither and no build task changed them. If that's wrong, those READMEs won't mention the greeting until a follow-up change.
+  - **Ruling 2:** the integrate lands as one space commit per file, each move committed together with its old path, rather than as one commit. The space's filing tool commits one file at a time, so the history shows several commits.
+  - **Deferred minor:** the T4 review found that alpha's module docstring (`alpha/alpha/__init__.py:5`) doesn't mention `greeting()`. It changes no behaviour, so I left it.
+  - **Test suggestions:** none were made.
+  - **Open questions:** whether to delete the branches, and whether to do the README follow-up.
+
+**T4 brief for add-farewell**
+- It is at <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space/changes/add-farewell/tasks/T4-brief.md and is not dispatched; the ledger has no dispatch line for it.
+- **What it tests:** gamma's branch at f6f6f6f, with alpha and beta at their new pins, d4d4d4d and e5e5e5e. The space side is the commit that files the brief.
+- **What it adds:** the test run must now also cover the three promoted add-greeting tests in `tests/`, as well as add-farewell's own test R1.S1 and gamma's unit tests. The add-farewell ledger records why.
+- **Status:** STATUS.md now shows add-farewell as building, with T4 as the next task to run, locally.
+
+**Decision for you:** should I delete the merged `change/add-greeting` branches in alpha and beta, or keep them?
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/gamma.git refs/heads/change/add-farewell
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log --oneline 5c02e1a..origin/main -- tests/ pod.yaml
+DESK: git clone https://example.invalid/demo/alpha.git <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/alpha
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/alpha push origin main
+DESK: git clone https://example.invalid/demo/beta.git <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/beta
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/work/beta push origin main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md changes/add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md" -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md changes/add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/evidence/20261002T1412Z.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/plan.md changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/plan.md" -- changes/archive/2026-10-28-add-greeting/plan.md changes/add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/plan.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/report.md" -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/spec.md changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/spec.md" -- changes/archive/2026-10-28-add-greeting/spec.md changes/add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T1-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T2-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md" -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md changes/add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T3-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md changes/add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T3-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T4-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md changes/add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T4-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md changes/add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T5-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md changes/add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T5-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md changes/add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T7-report.md" -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md changes/add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T7-report.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/tasks/T8-review.md" -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md changes/add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/tasks/T8-review.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- tests/add-greeting/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File tests/add-greeting/test_R1_S1_default_greeting.md" -- tests/add-greeting/test_R1_S1_default_greeting.md changes/add-greeting/tests/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- tests/add-greeting/test_R1_S1_default_greeting.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- tests/add-greeting/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File tests/add-greeting/test_R1_S2_name_too_long.md" -- tests/add-greeting/test_R1_S2_name_too_long.md changes/add-greeting/tests/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- tests/add-greeting/test_R1_S2_name_too_long.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- tests/add-greeting/test_R2_S1_startup_line.md changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File tests/add-greeting/test_R2_S1_startup_line.md" -- tests/add-greeting/test_R2_S1_startup_line.md changes/add-greeting/tests/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- tests/add-greeting/test_R2_S1_startup_line.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:pod.yaml
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File pod.yaml" -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- pod.yaml
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:README.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- README.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- README.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File README.md" -- README.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- README.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/add-farewell/tasks/T4-brief.md" -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- changes/archive/2026-10-28-add-greeting/ledger.md changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File changes/archive/2026-10-28-add-greeting/ledger.md" -- changes/archive/2026-10-28-add-greeting/ledger.md changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- changes/archive/2026-10-28-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space add -A -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space fetch origin
+DESK: git -C <scratch>/runs/20261028T082034Z-test_R5_S2_tests_promoted_at_integrate-fa1b/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R5.S2.1 pass 3 of 3 tests promoted to tests/
+R5.S2.2 pass T4 brief written
+R5.S2.3 pass T4 brief runs the regression suite
+R5.S2.4 pass add-farewell's test stays in its change folder

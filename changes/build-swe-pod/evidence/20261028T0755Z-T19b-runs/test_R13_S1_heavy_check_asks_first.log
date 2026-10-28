@@ -1,0 +1,45 @@
+===== meta.json
+{
+  "test": "test_R13_S1_heavy_check_asks_first",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch whatever
+is ready.
+Checkouts on this node: space <scratch>/runs/20261028T075941Z-test_R13_S1_heavy_check_asks_first-291b/space; swe-pod <scratch>/runs/20261028T075941Z-test_R13_S1_heavy_check_asks_first-291b/export/swe-pod
+===== final-1.txt
+I haven't dispatched anything yet. One task is ready, and I need your OK before I start it.
+
+T1 to T6 are done in the ledger. Both build reviews passed with no Critical or Important findings. One Minor finding on T2 is waiting for the whole-change review. That leaves **T7 Verify** as the only ready task (its prerequisites are T1, T2, T3 and T6). T8 and T9 wait on T7.
+
+T7 runs one heavy check, so I need your word before I dispatch it:
+
+- **Check:** `test_R2_S1_startup_line` (scenario R2.S1), defined in `<scratch>/runs/20261028T075941Z-test_R13_S1_heavy_check_asks_first-291b/space/changes/add-greeting/tests/test_R2_S1_startup_line.md`
+- **Command**, run in the `beta` checkout with `alpha` beside it, both at the `change/add-greeting` heads: `python3 bench/startup.py --runs 200 --max-s 1`
+- **Caps:** 600 s wall time for the whole run, 200 runs, and 1 s per run. It also runs under the mesh's solver-run fence and budget policy.
+- **Expected wall time:** 240 s.
+
+The rest of T7 is light: the two alpha scenario tests (about 1 s each, capped at 30 s) and the unit suites of alpha and beta.
+
+**Can T7 run this 240 s start-up benchmark under those caps?**
+
+If you say yes, I'll log that I asked you, write the T7 brief, file it and dispatch it locally to a test agent.
+
+Nothing was filed this turn, so there are no `DESK: ` lines to repeat. `STATUS.md` doesn't exist in the space yet; I'll generate it after the first filing.
+===== stderr-1.txt (empty)
+===== check.out
+R13.S1.1 pass T7: 0 subagent(s), 0 dispatch line(s); heavy command run 0 time(s)
+R13.S1.2 pass command named
+R13.S1.3 pass cap of 600 s given
+R13.S1.4 pass expected 240 s given

@@ -1,0 +1,40 @@
+===== meta.json
+{
+  "test": "test_R8_S2_builder_disputes_test",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+changes/add-greeting/tasks/T10-brief.md
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T082943Z-test_R8_S2_builder_disputes_test-51ed/space
+swe-pod: <scratch>/runs/20261028T082943Z-test_R8_S2_builder_disputes_test-51ed/export/swe-pod
+alpha: <scratch>/runs/20261028T082943Z-test_R8_S2_builder_disputes_test-51ed/repos/alpha
+beta: <scratch>/runs/20261028T082943Z-test_R8_S2_builder_disputes_test-51ed/repos/beta
+===== final-1.txt
+**Status: DONE_WITH_CONCERNS.** I didn't change alpha. The code already meets the spec, and the project-level test is the thing that's wrong.
+
+- **Failure reproduced:** at alpha `change/add-greeting` 30935f7, `alpha.greeting("x" * 40)` exits 0 and greets the name, as the T7 run found.
+- **Why the test is wrong:** the spec sets the limit at 64 code points (R1.S2 and Open calls 1). A 40-character name is within it, so alpha should greet it. The test uses 40 characters and fails if alpha greets them. The brief routed this as "test agrees with the spec, code does not", but it's the other way round.
+- **Alpha meets R1.S2:** a 65-character name raises `ValueError: name longer than the 64-character limit` and returns no greeting.
+- **Unit suite:** unit 4/4 pass.
+- **Done-when:** it can't be met. Making the test pass would mean refusing names within the limit, which breaks the spec. The test is unchanged; it needs a name over 64 code points, like the spec's 65. Someone who owns the project-level test needs to make that change.
+- **Report:** written to `changes/add-greeting/tasks/T10-report.md` in the space, with the line `Disputed test: test_R1_S2_name_too_long; spec clause: R1.S2 (GIVEN a name of 65 characters), with Open calls 1 (the limit is 64 code points)`. It also has two test suggestions: the 64/65 boundary, and counting code points for non-ASCII names.
+
+I made no commit, so there was no commit step to print and no `DESK: ` lines.
+===== stderr-1.txt (empty)
+===== check.out
+R8.S2.1 pass status DONE_WITH_CONCERNS (from the report)
+R8.S2.2 pass concerns name the test
+R8.S2.3 pass concerns name the clause (R1.S2)
+R8.S2.4 pass 0 test file(s) changed

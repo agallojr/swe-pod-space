@@ -1,0 +1,62 @@
+===== meta.json
+{
+  "test": "test_T37_TS3_report_among_evidence",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md, then tell me where add-greeting stands.
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+LATEST EVIDENCE add-greeting: <the id of its latest evidence record>
+===== final-1.txt
+Filing is a desk step, so I'm printing the librarian's git commands without running them:
+
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space commit -m "Regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space push origin HEAD
+
+## add-greeting is verified, and the next step is T9 Integrate
+
+I wrote a new `STATUS.md` but it isn't filed: the commit step was desk-only, so I ran none of the git commands above. There was no earlier `STATUS.md` to compare it with. File: `<scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space/STATUS.md`
+
+**Where it stands:**
+- **State:** verified. Tasks T1 to T8 are done. The latest evidence is green and the whole-change review (T8) found nothing Critical or Important.
+- **Next:** T9 Integrate (lead, local, any). It's ready now and needs your merge sign-off. Merge alpha before beta.
+- **Blocked:** nothing.
+- **Open findings:** no Critical or Important ones. There are 2 Minor findings, both at `beta/beta/__main__.py:3`: one from the T2 review and one from the T8 review. They're deferred to the final report.
+- **Latest evidence:** `ev-20261001T1230Z` (`changes/add-greeting/evidence/20261001T1230Z.md`). It passed 3/3 scenarios and the unit tests for both alpha and beta, and the spec declares no quality checks. There are no regression tests yet.
+- **Not evidence:** `evidence/20261001T1240Z-T7-report.md` is newer, but it's T7's task report and has no `id: ev-` line, so it isn't counted as evidence.
+
+**Things to know:**
+- **Space folder isn't a git repository.** I read the files as they are on disk, not "as committed."
+- **Test check not run:** the check that the tests haven't changed since the evidence's space commit (`5d5d5d5`) needs git, so I couldn't run it. The ledger shows no test filed after the evidence. I counted the evidence as current, so it isn't marked stale.
+- **Branch heads from the ledger:** both alpha and beta remotes are placeholder URLs at `example.invalid` and couldn't be reached. So the heads come from the ledger: alpha `d4d4d4d` and beta `e5e5e5e`, which match the evidence.
+- **Librarian skill missing:** agent-mesh's `space-librarian` skill isn't installed here. The desk lines above stand in for its commit step.
+
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space add STATUS.md
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space commit -m "Regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space fetch origin
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T083934Z-test_T37_TS3_report_among_evidence-9fbd/space push origin HEAD
+
+STATE add-greeting: verified
+LATEST EVIDENCE add-greeting: ev-20261001T1230Z
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS3.1 pass state given: 'verified'
+T37.TS3.2 pass latest evidence given: 'ev-20261001T1230Z'
+T37.TS3.3 pass STATUS.md state verified; evidence line '- latest evidence: ev-20261001T1230Z, macos-laptop, green: scenarios 3'
+T37.TS3.4 pass 0 other record(s) touched

@@ -1,0 +1,13 @@
+===== meta.json
+{
+  "test": "test_R16_S1_dispatch_line_names_no_machine",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": []
+}
+===== check.out
+R16.S1.1 pass swe-pod 4d5bfc7: 1 of 1 template dispatch line(s) in the form
+R16.S1.2 pass 229 agent-written dispatch line(s) in 59 ledger(s) of 93 other run(s)
+R16.S1.3 fail 13 agent-written dispatch line(s) not in the form; 20261028T053237Z-test_T7_TS3_ledger_written_in_words-9bd5:changes/add-greeting/ledger.md:7; space:changes/build-swe-pod/ledger.md:59; space:changes/build-swe-pod/ledger.md:127
+R16.S1.4 pass 0 machine value hit(s) in dispatch lines

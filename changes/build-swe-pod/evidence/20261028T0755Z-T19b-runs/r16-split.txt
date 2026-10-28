@@ -1,0 +1,16 @@
+round 3: 36 agent-written dispatch lines, 0 not in the form
+earlier: 160 agent-written dispatch lines, 1 not in the form
+  test_T7_TS3_ledger_written_in_words:changes/add-greeting/ledger.md:7 dispatch T1, T3 -> build and test (local, any)
+space: 33 agent-written dispatch lines, 12 not in the form
+  changes/build-swe-pod/ledger.md:59 dispatch T15 -> test (local, any); filed changes/build-swe-pod/tasks/T15-brief.md
+  changes/build-swe-pod/ledger.md:127 dispatch T2, T3, T9 again -> build (local, any): finish the refused commits
+  changes/build-swe-pod/ledger.md:129 dispatch T7, T12, T13, T14, T8 -> build (local, any), each when its after list closes
+  changes/build-swe-pod/ledger.md:570 dispatch T1, T2, T5, T7 -> build (local, any), base swe-pod 1cecea0: verify fixes
+  changes/build-swe-pod/ledger.md:571 dispatch T10 -> build (local, any), base agent-mesh 1367f65: verify fix
+  changes/build-swe-pod/ledger.md:572 dispatch T41 -> test (local, any): runner fixes from verify
+  changes/build-swe-pod/ledger.md:573 dispatch T18 -> test (local, any): test and fixture fixes from verify
+  changes/build-swe-pod/ledger.md:590 dispatch T7, T1 -> build (local, any), base swe-pod 2a01192: fix round 3
+  changes/build-swe-pod/ledger.md:606 dispatch T6, T1, T7 -> build (local, any), base swe-pod 3280728: fix round 4
+  changes/build-swe-pod/ledger.md:629 dispatch T1, T6, T7 -> build (local, any), base swe-pod 079cd89: fix round 5
+  changes/build-swe-pod/ledger.md:666 dispatch T41 -> test (local, any): run the gate under --python
+  changes/build-swe-pod/ledger.md:675 dispatch T18 -> test (local, any): fixture dates and three checks from round 2

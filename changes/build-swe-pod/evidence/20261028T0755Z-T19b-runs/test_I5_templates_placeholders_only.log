@@ -1,0 +1,18 @@
+===== meta.json
+{
+  "test": "test_I5_templates_placeholders_only",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": []
+}
+===== check.out
+I5.1 pass swe-pod 4d5bfc7: 20 template files
+I5.2 pass real values read: 3 registrations, 1 handle(s)
+I5.3 pass 0 hostname hit(s)
+I5.4 pass 0 agent id hit(s)
+I5.5 pass 0 home path hit(s)
+I5.6 pass 0 credential name hit(s)
+I5.7 pass 0 handle hit(s)
+I5.8 pass 0 mesh task id hit(s)
+I5.9 pass identity fields: placeholders only

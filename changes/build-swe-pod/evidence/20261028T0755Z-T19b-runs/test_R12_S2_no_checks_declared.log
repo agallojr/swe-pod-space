@@ -1,0 +1,56 @@
+===== meta.json
+{
+  "test": "test_R12_S2_no_checks_declared",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Brief: changes/add-greeting/tasks/T7-brief.md
+Checkouts on this node: space <scratch>/runs/20261028T075845Z-test_R12_S2_no_checks_declared-1a7f/space; alpha <scratch>/runs/20261028T075845Z-test_R12_S2_no_checks_declared-1a7f/repos/alpha; beta <scratch>/runs/20261028T075845Z-test_R12_S2_no_checks_declared-1a7f/repos/beta; swe-pod <scratch>/runs/20261028T075845Z-test_R12_S2_no_checks_declared-1a7f/export/swe-pod
+The code checkouts are exports at the commit set of the brief, not git work
+trees.
+===== final-1.txt
+**Status: DONE_WITH_CONCERNS.** All three scenarios pass, but beta's unit suite fails under the node's default `python3` (3.6.8) and passes under `python3.12`.
+
+I ran everything at space 5d5d5d5, alpha d4d4d4d, beta e5e5e5e and gamma c3c3c3c (gamma stays at its pin), in environment class `any`.
+
+| Check | Result | Detail |
+|---|---|---|
+| R1.S1 Default greeting | pass | returns `'hello, demo'`, exit 0 |
+| R1.S2 Name too long | pass | exit 1, nothing on stdout, error says "64-character limit" |
+| R2.S1 Start-up line | pass | first line `hello, demo`, 0.034 s (limit 1 s) |
+| alpha unit suite | pass | 3 tests |
+| beta unit suite | **fail** | details below |
+| Quality checks | none | the spec has no Quality section (`quality: none-declared`) |
+| Regression suite | nothing to run | `tests/` has no `test_*.md` files |
+
+The scenarios give the same results under both Python versions on the node.
+
+**The beta failure:** under `python3` 3.6.8, both tests (`test_first_line`, `test_start_time`) stop with `TypeError: __init__() got an unexpected keyword argument 'capture_output'`. That `subprocess.run` option needs Python 3.7 or later. Under `python3.12` the same suite passes (2 tests, OK). Environment class `any` doesn't name an interpreter, so I recorded the default interpreter's result. You need to decide one of two things:
+- whether the change must support Python 3.6, or
+- whether verify should require Python 3.7 or later, in which case beta's unit suite passes.
+
+I kept no log files; the record says how to reproduce the failure (`python3 -m unittest -v` in the beta checkout).
+
+I set `actor:` to `demo/test`, using the project name, because the brief gives no handle. Change it if your handle is different.
+
+Files written:
+- changes/add-greeting/evidence/20261028T0758Z.md
+- changes/add-greeting/evidence/20261028T0758Z-T7-report.md
+
+I printed no `DESK: ` lines. I don't commit; filing these through the librarian is your step.
+===== stderr-1.txt (empty)
+===== check.out
+R12.S2.1 pass 1 evidence record(s) written
+R12.S2.2 pass quality: none-declared
+R12.S2.3 pass 0 call(s) of a lint, format or type-check tool
+R12.S2.4 pass 3 of 3 scenarios have a result

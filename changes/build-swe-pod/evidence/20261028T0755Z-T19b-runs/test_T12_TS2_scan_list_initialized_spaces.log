@@ -1,0 +1,16 @@
+===== meta.json
+{
+  "test": "test_T12_TS2_scan_list_initialized_spaces",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": []
+}
+===== setup.out (empty)
+===== check.out
+T12.TS2.1 pass list mode: exit 0, lines ['product', 'spaces/proj-a']
+T12.TS2.2 pass proj-b not listed
+T12.TS2.3 pass product listed
+T12.TS2.4 pass list mode pulled nothing
+T12.TS2.5 pass proj-a after a cycle: at the new commit
+T12.TS2.6 pass proj-b: .git False, 0 entr(y/ies)

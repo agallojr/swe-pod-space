@@ -1,0 +1,62 @@
+===== meta.json
+{
+  "test": "test_T37_TS2_shards_leave_out_unit_suite",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+You are the lead of the Project Space at <scratch>/runs/20261028T083909Z-test_T37_TS2_shards_leave_out_unit_suite-9e58/space. This copy of the space has no git history, and neither the code repos nor the mesh can be reached from here, so take branch heads and commit sets from the records in the space, which you read with your tools. Do not dispatch, file or commit anything in this run.
+
+Where does the change add-greeting stand? Is it verified?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+VERIFY DISPATCHES: <each verify dispatch the ledger holds, as task id, local or mesh, and environment class, separated by semicolons>
+COMMIT SET: <the change's current commit set, as repo and sha7 pairs separated by commas>
+RERUN: <the task ids of any verify runs that must run again before add-greeting can count as verified, separated by commas, or none>
+MISSING: <each scenario, unit suite or declared quality check of the change with no passing result in the shard records, separated by commas, or none>
+===== final-1.txt
+**add-greeting is not verified.** Both verify shards passed everything they ran, but beta's unit suite was in neither shard, so the records don't cover every unit suite.
+
+**Where it stands**
+- The spec is approved (`approved: demo-owner 2026-10-01T09:00Z`), and the go was recorded with alpha branched at a1a1a1a and beta at b2b2b2b.
+- **T1** (alpha) is done: `a1a1a1a..d4d4d4d`, unit 3/3 pass. Its review, T4, found 1 Minor.
+- **T2** (beta) is done: `b2b2b2b..e5e5e5e`, unit 4/4 pass. Its review, T5, found 1 Important at `beta/main.py:14`. Fix round 1/5 closed it, moving beta to f6f6f6f with 0 open.
+- **T3** (project-level tests) is done. All three tests failed at base for their stated reasons. **T6** (test suggestions) is done.
+- **T7a** (local, macos-laptop) passed R1.S1 and R1.S2. Its record says the regression suite `tests/` holds no tests yet, and alpha's unit suite passed 3/3.
+- **T7b** (mesh, linux-server) passed R2.S1 at 0.21 s against the 1 s limit. Its record has `unit: {}`.
+- Both records name the same commit set: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c. That matches the current heads in the ledger and the briefs. No test files changed after the briefs were filed. This copy has no git history, so I took 8b8b8b8 as the shards' space commit from the records; I couldn't check it in git.
+- **T8** (whole-change review) passed with spec ok and 1 Minor at `alpha/greeting.py:9`. It is the same bare-literal-64 point T4 raised, so it stays a deferred minor.
+
+**Why it isn't verified**
+The two records are green together only if, between them, they give a result for every scenario, regression test, unit suite and declared quality check. Beta has a unit suite (T2 reported 4/4), but the plan's split gave T7a only alpha's suite and T7b only R2.S1, so no shard ran beta's. The plan's own done-when for T7 holds, so the gap is in the plan's split, not in the testers' work.
+
+Two side effects:
+- T8 was dispatched as if verify had its first green run, and it hadn't. Its verdict still stands, but it came early.
+- No `T2.TS<k>` or `T1.TS<k>` lines are in the ledger, so either the builders made no suggestions or their routing wasn't recorded. The builder reports aren't in the space to check.
+
+**Next step (nothing was dispatched or filed in this run)**
+I'd add beta's unit suite to T7b's brief, either by a `Ruling:` line or by a plan amendment from the planner. T7b is on linux-server, where beta's start-up test already runs. Filing the rewritten brief makes a new shards' space commit, which puts both records out of date, so T7a and T7b both run again at the new commit set. After that, T8's verdict needs confirming against the new evidence before integrate.
+
+I printed no `DESK:` lines, because nothing was filed or committed in this run.
+
+STATE add-greeting: verify incomplete, not verified (shards T7a and T7b each passed their part, but beta's unit suite has no result; T8 whole-change review passed with 1 Minor)
+VERIFY DISPATCHES: T7a, local, macos-laptop; T7b, mesh, linux-server
+COMMIT SET: space 8b8b8b8, alpha d4d4d4d, beta f6f6f6f, gamma c3c3c3c
+RERUN: T7a, T7b
+MISSING: beta unit suite
+===== stderr-1.txt (empty)
+===== check.out
+T37.TS2.1 pass state given: 'verify incomplete, not verified (shards T7a and T7b each passed their '
+T37.TS2.2 pass missing given: 'beta unit suite'
+T37.TS2.3 pass pod dispatches 0, mesh commands 0, commits 0, records changed 0, new evidence 0
+T37.TS2.4 pass STATUS.md not written

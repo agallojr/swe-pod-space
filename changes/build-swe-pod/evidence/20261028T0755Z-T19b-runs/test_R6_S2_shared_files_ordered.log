@@ -1,0 +1,59 @@
+===== meta.json
+{
+  "test": "test_R6_S2_shared_files_ordered",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Plan the change add-greeting in this space.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261028T082612Z-test_R6_S2_shared_files_ordered-0b56/space
+swe-pod: <scratch>/runs/20261028T082612Z-test_R6_S2_shared_files_ordered-0b56/export/swe-pod
+alpha: <scratch>/runs/20261028T082612Z-test_R6_S2_shared_files_ordered-0b56/repos/alpha
+beta: <scratch>/runs/20261028T082612Z-test_R6_S2_shared_files_ordered-0b56/repos/beta
+The human is demo-owner.
+===== final-1.txt
+I've written the plan for add-greeting at `changes/add-greeting/plan.md`. It is ready for you to file, and it has one question for the human.
+
+**Tasks:**
+- **Build:**
+  - T1 adds the greeting to alpha (R1).
+  - T2 adds the farewell to alpha (R3).
+  - T3 makes beta print the greeting as its first line (R2).
+- **Tests:** T4 writes the four project-level tests and can start at the go. T5 takes up the builders' test suggestions. T6 is a single verify run, not split up, in any environment, since the tests only need `python3`.
+- **Reviews:** T7, T8 and T9 review T1, T2 and T3. T10 is the whole-change review.
+- **Integrate:** T11 merges alpha first, then beta. gamma stays at its pin.
+
+**Files two tasks share, and how they're ordered:**
+- T1 and T2 both change the same four alpha files (`alpha/__init__.py`, `tests/test_alpha.py`, `CHANGELOG.md`, `README.md`), so T2 runs after T1.
+- T4 and T5 both write to `changes/add-greeting/tests/`, so T5 runs after T4. I first left this pair unordered and fixed it during self-review.
+- T3 runs after T1 because it needs the greeting function, not because they share a file. It touches only beta files, so T2 and T3 run in parallel.
+
+**Longest chain:** T1 → T7 → T2 → T8 → T5 → T6 → T10 → T11.
+
+**Question for the human (demo-owner):**
+1. What should the greeting be when a caller passes a valid name (1 to 64 characters)? The spec gives the default `hello, demo` and the error for a name that's too long, but has no scenario for a valid name. I planned `hello, <name>`, for example `hello, Ada`. A different answer changes T1's steps, the interface in the plan, and alpha's README and CHANGELOG lines.
+
+**Defaults the spec author can list under Open calls:**
+- A name that's too long raises `ValueError` with the message `name is longer than 64 characters`.
+- An empty name gives the default greeting.
+- A name of exactly 64 characters is accepted.
+- beta finds alpha through `PYTHONPATH`, and no packaging files are added to either repo.
+- alpha's version stays `1.0`, and the changelog lines go under Unreleased.
+
+I printed no `DESK: ` lines. The planner doesn't commit; the lead files the plan through the space's librarian.
+===== stderr-1.txt (empty)
+===== check.out
+R6.S2.1 pass plan written
+R6.S2.2 pass 3 build task(s); 1 pair(s) touch a common file
+R6.S2.3 pass unordered pairs: none

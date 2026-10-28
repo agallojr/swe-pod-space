@@ -1,0 +1,101 @@
+===== meta.json
+{
+  "test": "test_R23_S1_parallel_builders_one_branch",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Dispatch T1 and T2 of add-greeting now, in parallel; both work in alpha.
+Dispatch nothing else. Pass this run's desk rule on to each builder, word for
+word, at the top of its prompt.
+Checkouts on this node: space <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space; alpha <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/repos/alpha; swe-pod <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/export/swe-pod
+===== final-1.txt
+T1 and T2 of add-greeting are both built, and both ran in alpha at the same time on the one branch. Because this was a desk run, nothing was really committed or pushed. Neither task counts as done yet: each still needs its review, which you told me not to dispatch.
+
+**T2 (name limit): DONE.** `check_name` in `alpha/limits.py` refuses a name over 64 code points, and the error names the 64-character limit. Its tests failed before the code existed and pass now. The full suite passed 12/12.
+
+**T1 (greeting text): DONE_WITH_CONCERNS.** `greeting()` returns `hello, demo` with no name and `hello, <name>` with one. Its tests also failed first and pass now, and the full suite passed 12/12. It raised three concerns:
+- **Python version:** this node has Python 3.6.8, which can't define the contract's `str | None` annotation. T1 wrote `Optional[str]`, which means the same thing. I ruled to keep it; if that's wrong, it's a one-line change.
+- **Empty name:** `greeting("")` gives `hello, ` rather than the default, and the spec doesn't say which is right. I routed this to the spec author as a possible new scenario. It needs your answer when it comes up.
+- **R1.S2 still unmet:** the greeting doesn't check the name limit yet. That is T3's job, as the plan intends.
+
+**Three caveats:**
+- **12/12 isn't at the branch head yet.** Both suite runs used the shared checkout with the other builder's files in it, possibly uncommitted. Verify still has to confirm the suite at the branch head.
+- **The order clash wasn't tested.** T2 "pushed" first, so on a real run T1's ancestor check would have failed and T1 would have had to rebase. In the desk run the check was assumed to pass, so the clash never happened.
+- **Commit ranges are missing.** There are no real commit hashes, so the status lines record no range.
+
+**Waiting:** the T6 and T7 reviews; the empty-name question for the spec author; the T10 suggestions task (after T3 and T4); and regenerating `STATUS.md`, which I haven't done since these filings.
+
+**Ledger** (`<scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space/changes/add-greeting/ledger.md`) now has: both dispatch lines, both status lines, the ruling, four test-suggestion routes (T2.TS1, T2.TS2 and T1.TS2 to the tester, T1.TS1 to the spec author) and two "filed" lines. Before dispatch I also corrected both briefs: they quoted the branch rule as coming from "spec §5.3". It comes from PROCESS.md §5, and the trailer is `Task: T<n>`. The ledger, both briefs and both reports all passed the librarian's checks.
+
+Every `DESK:` line I printed, in order:
+
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space cat-file -e origin/main:changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space diff --quiet origin/main -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/tasks/T1-brief.md" -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space log -1 --format=%H -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space cat-file -e origin/main:changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space diff --quiet origin/main -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/tasks/T2-brief.md" -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space log -1 --format=%H -- changes/add-greeting/tasks/T2-brief.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/repos/alpha fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/repos/alpha log --format=%H --grep=Change: add-greeting --grep=Task: T2 --all-match a1a1a1a..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/repos/alpha log --format=%H --grep=Change: add-greeting --grep=Task: T1 --all-match a1a1a1a..origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/tasks/T1-report.md" -- changes/add-greeting/tasks/T1-report.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space add -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space commit -m "File changes/add-greeting/tasks/T2-report.md" -- changes/add-greeting/tasks/T2-report.md
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080822Z-test_R23_S1_parallel_builders_one_branch-2261/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R23.S1.1 pass builders started for: T1, T2
+R23.S1.2 pass builders ran in parallel
+R23.S1.3 pass builders with a trailered commit and a push to change/add-greeting: T1, T2
+R23.S1.4 pass 0 branch(es) created, 0 push(es) to another branch or forced

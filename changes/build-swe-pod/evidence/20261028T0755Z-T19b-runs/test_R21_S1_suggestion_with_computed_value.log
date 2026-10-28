@@ -1,0 +1,65 @@
+===== meta.json
+{
+  "test": "test_R21_S1_suggestion_with_computed_value",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+T1 of add-greeting is done and reviewed. Route the test suggestions in its
+report. Start no agent: I will pass on anything meant for a builder myself.
+Checkouts on this node: space <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space; swe-pod <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/export/swe-pod
+===== final-1.txt
+STATUS.md also passed the librarian's checks. Its commit-step commands, printed and not run:
+
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+
+---I've routed both test suggestions from T1's report. No agent was started and nothing was committed: both records passed the librarian's checks, but filing was a desk run, so they are written in the space checkout and not yet committed.
+
+**T1.TS1 (combining marks at the limit): returned to the builder.** Its tester part gives the error message the code itself produces (`limit 64, got 71`). A test agent must take expected values from the spec, not from the code, so I sent nothing to the test agent. Ledger: `T1.TS1 returned to builder: carries a computed value`.
+- **What to pass to the builder:** restate TS1 without the computed value or count. Name only the input (a 65-character name built from letters with combining marks) and the clause at risk (R1.S2, and Open call 1: the limit is counted in Unicode code points).
+- **Possible bug:** the builder says the code counts that name as "71 code units". The spec counts in code points, so the code may be counting the wrong unit. That points at `alpha/greeting.py:8`, and the T1 review (0 Important findings) didn't raise it. I'll carry TS1's "for the reviewer" part to the whole-change review (T8) so it isn't dropped.
+
+**T1.TS2 (a name of exactly 64 characters): routed to the test agent.** The spec covers this behaviour, since a 64-character name is allowed, but no scenario tests it. Ledger: `T1.TS2 -> test`. Only its "for the tester" part will go in the brief for T6, the suggestions task. T6 waits on T2, so neither the brief nor the task exists yet.
+
+**Records written:**
+- Ledger: `<scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space/changes/add-greeting/ledger.md`
+- Regenerated status: `<scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space/STATUS.md`
+
+The space checkout isn't a git repo and the code remotes can't be reached, so I built STATUS.md from the files on disk. The change is building; T1, T3 and T4 are done, and the next task is T2 (beta prints the greeting) for a builder. I haven't dispatched T2. A desk run gives no `FILED` result, so the ledger has no `filed` lines for these two records; I'll add them after the commands below are actually run.
+
+**Desk commands, in the order printed:**
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261028T080631Z-test_R21_S1_suggestion_with_computed_value-2458/space fetch origin
+===== stderr-1.txt (empty)
+===== check.out
+R21.S1.1 pass 1 line(s) return T1.TS1 to the builder
+R21.S1.2 pass T1.TS1 to test: 0 line(s), 0 file(s), 0 subagent prompt(s)
+R21.S1.3 pass 1 line(s) route T1.TS2 to the test agent

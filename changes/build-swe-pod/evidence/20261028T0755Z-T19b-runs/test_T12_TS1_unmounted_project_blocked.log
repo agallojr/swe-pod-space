@@ -1,0 +1,83 @@
+===== meta.json
+{
+  "test": "test_T12_TS1_unmounted_project_blocked",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-1.txt
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus add -A
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus commit -m "status 20261001T1701-0021 -> blocked"
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus push origin HEAD
+
+I ran one poll cycle as demo-linux-01 (roles swe.build and swe.test), then stopped. The only task in my queues was blocked because its project space isn't mounted on the bus.
+
+- **swe.build:** the queue is empty.
+- **swe.test:** one task, `20261001T1701-0021` from demo-mac-01. It asks for a probe note to be written in the `proj:demo` space. I claimed it by writing `status/20261001T1701-0021.json` as `accepted`. The task needs no credentials. It names `project: proj:demo`, but the bus has no `spaces.yaml` and no `.gitmodules`. There is a `spaces/proj-demo/` directory, but it isn't a registered submodule, so the space counts as not mounted. I set the status to `blocked` with `error: "NOT MOUNTED proj:demo"`. No executor ran and no result was written to the outbox.
+
+To unblock it, the operator needs to add the space to `spaces.yaml` and register it as a submodule; I didn't do that myself. A few other things I didn't do:
+- I replaced the scanner script (which runs git) with a direct look at the queue files, since git commands were off-limits.
+- I skipped the steps that need `PROTOCOL.md` or `guidance/CLAUDE.md`. Neither is on this bus because `product/` isn't checked out. That includes the layout check, so the status JSON fields are my best guess, not checked against the spec.
+- I didn't load `~/.agent-identity.env`, because it doesn't exist; I used the identity you gave me.
+
+DESK lines, in order:
+
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus pull --rebase
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus add -A
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus commit -m "status 20261001T1701-0021 -> accepted"
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus add -A
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus commit -m "status 20261001T1701-0021 -> blocked"
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/bus push origin HEAD
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-2.txt
+I printed these `DESK:` lines in this order. None of them actually ran:
+
+DESK: <config>/skills/mesh-on/mesh-scan-loop.sh <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two swe.build,swe.test demo-linux-01 300
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two commit -m "status 20261001T1702-0022 -> accepted"
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two push origin HEAD
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two add -A
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two commit -m "status 20261001T1702-0022 -> blocked, 20261001T1703-0023 -> accepted then blocked"
+DESK: git -C <scratch>/runs/20261028T083140Z-test_T12_TS1_unmounted_project_blocked-520c/repos/bus-two push origin HEAD
+
+I ran one poll cycle on bus-two as demo-linux-01 (swe.build, swe.test). The swe.build queue was empty. The swe.test queue had two unclaimed tasks, and both are now `blocked` because their project spaces aren't mounted:
+
+| Task | Project | Why it's not mounted | Status written |
+|---|---|---|---|
+| 20261001T1702-0022 | `proj:ghost` | No entry for it in `spaces.yaml` | `blocked`, error `NOT MOUNTED proj:ghost` |
+| 20261001T1703-0023 | `proj:other` | It has an entry in `spaces.yaml`, but the bus has no `.gitmodules`, so there's no submodule at `spaces/proj-other` | `blocked`, error `NOT MOUNTED proj:other` |
+
+- **No work was done on either task.** No executor ran, so there are no outbox results and no `runs` submissions. I didn't mount, clone or change any space; mounting is the operator's step.
+- **The claim for 0023 skipped a step.** I wrote its `accepted` and then `blocked` status on disk before the sync, so a single commit carries both its claim and its block. The skill wants the claim pushed first, to confirm no other node got it. In a live run, push the claim on its own first.
+- **I made up the status file format.** The bus has no `product/`, `guidance/CLAUDE.md` or existing `status/` files, so I couldn't load the operating rules or check the status format in PROTOCOL.md §6. The two files in `status/` use these fields: `schema_version`, `task_id`, `agent_id`, `state`, `updated`, `error`.
+- **Other things I skipped:** `~/.agent-identity.env` doesn't exist, so I took the identity from your brief and the existing `agents/demo-linux-01.yaml`. I didn't re-register the node or start a background poller, since you asked for exactly one cycle.
+
+To unblock the tasks, the operator needs to add `proj:ghost` to `spaces.yaml` and mount both spaces as submodules under `spaces/`.
+===== stderr-2.txt (empty)
+===== check.out
+T12.TS1.1 pass 0 executor subagent(s), 0 probe note(s)
+T12.TS1.2 pass 0 mount command(s); registries and mounts unchanged
+T12.TS1.3 pass statuses: each blocked on its project

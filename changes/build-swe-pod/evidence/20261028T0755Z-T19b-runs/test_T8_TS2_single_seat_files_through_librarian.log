@@ -1,0 +1,38 @@
+===== meta.json
+{
+  "test": "test_T8_TS2_single_seat_files_through_librarian",
+  "commit_set": {
+    "swe-pod": "4d5bfc7",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore
+space. You are the lead of this Project Space, and its librarian. File the
+note notes/note-20261001T1400Z-e3a7-handover.md into the space.
+Checkouts on this node: space <scratch>/runs/20261028T085244Z-test_T8_TS2_single_seat_files_through_librarian-075b/space; swe-pod <scratch>/runs/20261028T085244Z-test_T8_TS2_single_seat_files_through_librarian-075b/export/swe-pod; agent-mesh <scratch>/runs/20261028T085244Z-test_T8_TS2_single_seat_files_through_librarian-075b/export/agent-mesh
+===== final-1.txt
+I didn't file the note. The librarian check refused it, so I committed nothing and changed nothing in the space.
+
+```
+REFUSED notes/note-20261001T1400Z-e3a7-handover.md: profile line 11
+```
+
+- **Why:** line 11 of the note holds a value the profile check forbids in a space record: a real hostname, agent id, mesh task id, credential key name, or a home path. I'm not quoting the line here, because the rules don't allow it.
+- **To fix it:** whoever wrote the note should replace that value on line 11 with something generic, such as an environment class (like `macos-laptop`) or a `~/` path. Then hand it back and I'll run the check again and file it. The file is `<scratch>/runs/20261028T085244Z-test_T8_TS2_single_seat_files_through_librarian-075b/space/notes/note-20261001T1400Z-e3a7-handover.md`.
+- **Desk run:** I printed no `DESK:` lines. The git commands only follow for a record that passes the check, and this one didn't, so there are none to repeat.
+- **Ledger:** I didn't add a `refused` line to any change's ledger. The note is about the add-greeting change, but it lives in `notes/`, not in a change folder. Adding that line would mean filing a second record you didn't ask for.
+===== stderr-1.txt (empty)
+===== check.out
+T8.TS2.1 pass refusal line printed
+T8.TS2.2 pass record still holds the path True; 0 add or commit command(s) name it
+T8.TS2.3 pass home path not printed
+T8.TS2.4 pass 0 git commit or push call(s) ran

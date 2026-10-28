@@ -1,0 +1,61 @@
+===== meta.json
+{
+  "test": "test_T7_TS3_ledger_written_in_words",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Where are we?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+NEXT add-greeting: <the task ids it can dispatch now, separated by commas, or none>
+IN FLIGHT add-greeting: <the task ids dispatched and not yet reported, separated by commas, or none>
+===== final-1.txt
+**add-greeting** is in **building**. The spec was approved and the go given. T0 and T1 have both reported done, T3 is still out, and T4, the review of T1, is ready to dispatch now.
+
+There's no `STATUS.md` at the space root, so it is behind the records. I worked out its content from the records and didn't file anything. The space folder also isn't a git checkout, so I read the files on disk instead of reading them "as committed". The newest record is the ledger line at 2026-10-01T09:56Z.
+
+**add-greeting**, owner demo-owner (`changes/add-greeting/spec.md`)
+- **Gates:** spec approved by demo-owner at 2026-10-01T09:00Z; go by demo-owner at 2026-10-01T09:20Z.
+- **Branches:** neither remote could be reached (`example.invalid` doesn't resolve), so the heads come from the ledger:
+  - alpha: `d4d4d4d`, the end of T1's range.
+  - beta: `missing` under the strict rule. No ledger range or go line gives a beta sha, though the 09:25Z line says in words that the branch was made at `b2b2b2b`.
+- **Tasks:** 6 waiting, 1 ready, 2 dispatched, 1 done, 0 blocked.
+
+| task | role | state | latest |
+|---|---|---|---|
+| T0 | lead | done | 2026-10-01T09:25Z DONE (recorded in words: "so T0 is finished") |
+| T1 | build | dispatched | 2026-10-01T09:55Z DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass |
+| T2 | build | waiting | - |
+| T3 | test | dispatched | 2026-10-01T09:26Z dispatch -> test (local, any) |
+| T4 | review | **ready** | - |
+| T5 | review | waiting | - |
+| T6, T7, T8, T9 | test, test, review, lead | waiting | - |
+
+- **T1:** it has reported DONE (`changes/add-greeting/tasks/T1-report.md`), but it doesn't count as done until its review, T4, closes. T2 waits on T1.
+- **T3:** dispatched, with no report yet.
+- **Latest evidence:** none.
+- **Open findings:** Critical 0, Important 0, Minor 0. Nothing is blocked.
+- **Next:** T4 -> review (local, any).
+
+This was a status question only, so the librarian's commit step didn't run and I printed no `DESK:` lines.
+
+STATE add-greeting: building
+NEXT add-greeting: T4
+IN FLIGHT add-greeting: T3
+===== stderr-1.txt (empty)
+===== check.out
+T7.TS3.1 pass state given: 'building'
+T7.TS3.2 pass next given: T4
+T7.TS3.3 pass in flight given: T3
+T7.TS3.4 pass 0 other record(s) touched

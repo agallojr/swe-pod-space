@@ -1,0 +1,79 @@
+===== meta.json
+{
+  "test": "test_T7_TS1_same_minute_events",
+  "commit_set": {
+    "swe-pod": "4d5bfc7"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md.
+===== final-1.txt
+Filing step (desk only, none of these run):
+
+DESK: git add STATUS.md
+DESK: git commit -m "Regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/HEAD
+DESK: git push origin HEADI've written `STATUS.md` at the space root, but it isn't filed. The commit step was desk-only, so no `FILED` or `REFUSED` line exists. The space folder isn't a git repository either, so I read the records from the files on disk rather than from a commit, and there was no earlier `STATUS.md` to compare against.
+
+**What it shows** (as of 2026-10-02T08:00Z, the latest time in the records):
+- **add-farewell** (approved): the spec is approved but there is no plan yet. Next is the plan, by the plan role.
+- **add-greeting** (building): T1 to T5 are done and T6 (test suggestions) is ready to dispatch. T7 to T9 are waiting. No findings are open, because T2's one Important finding was addressed in fix round 1. There is no evidence yet.
+
+**Where the branch heads come from:** neither code repo's remote could be reached (`example.invalid` doesn't resolve). So the heads are the newest commit ranges in the ledger: alpha `d4d4d4d` and beta `f6f6f6f`. Three beta events share the time 11:05; the fix round comes out newest because it was written last, which follows the same-time rule.
+
+**One formatting call:** add-farewell has no plan, so it has no tasks. I kept its table header with no rows, since the format doesn't say what to print when a table is empty.
+
+The `DESK:` lines, in the order printed:
+
+DESK: git add STATUS.md
+DESK: git commit -m "Regenerate STATUS.md" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+DESK: git fetch origin
+DESK: git rebase origin/HEAD
+DESK: git push origin HEAD
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+In this run the librarian's commit step is a desk step: print each git command of it (add, commit, fetch, rebase, push) on its own line starting with `DESK: `, and run none of them. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Regenerate STATUS.md from the records, but write it to x-rebuild/STATUS.md in
+the space, not to the space root, and do not open the space's own STATUS.md: I
+want to compare the two.
+===== final-2.txt
+I rebuilt STATUS.md from the records and wrote it to `<scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space/x-rebuild/STATUS.md`. I never opened the space's own `STATUS.md`, so I haven't compared the two; that's yours to do. Nothing was filed, and none of the git commands were run.
+
+**Things that may explain differences when you compare:**
+- **No git repo.** The space isn't a git repository, so I read the records from the files on disk instead of from the last commit.
+- **Remotes unreachable.** Both code-repo addresses are placeholders that don't resolve (`example.invalid`), so I took the branch heads from the ledger:
+  - **alpha:** d4d4d4d, from T1's DONE line.
+  - **beta:** f6f6f6f, from T2's fix-round line (`e5e5e5e..f6f6f6f`). It shares the 11:05Z minute with T2's DONE line (`b2b2b2b..e5e5e5e`) but is written after it, so it counts as newer.
+- **Same-minute ordering elsewhere.** The same rule gives T2's latest event as the fix round, and T5's as the T2 review rather than its own dispatch.
+- **Empty task table.** add-farewell has no plan yet, so its task table is just the header row. The format doesn't say what to write for a change with no tasks; that's my reading.
+
+**What the rebuilt file says:**
+- **As of:** 2026-10-02T08:00Z, with 2 open changes.
+- **add-farewell:** approved, waiting on a plan.
+- **add-greeting:** building.
+  - **Tasks:** T1 to T5 done; T6 ready and next (test, local); T7, T8 and T9 waiting.
+  - **Evidence and findings:** no evidence yet, and no open findings. T2's one Important finding was fixed in fix round 1.
+
+The desk lines, in the order I printed them:
+
+DESK: git -C <scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space add x-rebuild/STATUS.md
+DESK: git -C <scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space commit -m "x-rebuild/STATUS.md: regenerate from the records"
+DESK: git -C <scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space fetch origin
+DESK: git -C <scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space rebase origin/main
+DESK: git -C <scratch>/runs/20261028T085038Z-test_T7_TS1_same_minute_events-8a2c/space push origin HEAD:main
+===== stderr-2.txt (empty)
+===== check.out
+T7.TS1.1 pass STATUS.md header and As-of right
+T7.TS1.2 pass step 2 touched STATUS.md 0 time(s); rebuild written
+T7.TS1.3 pass rebuild matches
+T7.TS1.4 pass T2 rows: '| T2 | build | local | done | 2026-10-01T11:05Z fix round 1/5: 1 addre'; '| T2 | build | local | done | 2026-10-01T11:05Z fix round 1/5: 1 addre'
