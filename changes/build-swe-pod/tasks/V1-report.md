@@ -321,3 +321,438 @@ unit: none-present. swe-pod has no unit suite.
 - for the reviewer: swe-pod/agents/swe-lead.md:258-268 (Checking and
   filing step 3) and swe-pod/skills/swe-pod/status-format.md:163-170 (task
   states 3 and 4).
+
+## Fix round 3
+
+Status: DONE. This round fixes the findings of the
+fix-mode review, `changes/build-swe-pod/tasks/V1-review.md`: c, three
+Important findings and three Minor ones. Nothing is pushed back.
+
+### What I did
+
+- **Important SKILL.md:193, no key for promoted inspection and suggestion
+  tests (c).** SKILL.md 1.6 now gives each regression test the key
+  `<change>/<value>`:
+  - `<change>` is the name of the folder `tests/<change>/` the test sits
+    in. For a test directly in `tests/`, it is the archived change whose
+    plan test map, or else whose final report, names the test, with the
+    folder that sorts last winning, else the change of a qualified
+    `scenario:` value.
+  - `<value>` is the scenario id in that change's archived test map or
+    report row, else the test's `scenario:` value without any `<change>/`
+    part, else the id its file name carries (section 5, step 4).
+  - `<change>/R<n>.S<m>` goes under `scenarios:`, `<change>/I<n>` under
+    `x-checks:` and `<change>/T<n>.TS<k>` under `x-suggestions:`.
+  - The writing side, PROCESS.md §7 (T1), states the same key for the test
+    agent.
+  - For the folder to exist, PROCESS.md §8 step 5 (T1) and swe-lead.md
+    "Merge and integrate" step 5 (T5) now move `changes/<id>/tests/` into
+    `tests/` as the folder `tests/<id>/`. This goes past "one line in T1":
+    without it the key rule's folder would not reliably exist, and a flat
+    promotion leaves inspection and suggestion tests with no key. A flat
+    `tests/` layout, as in the demo fixtures, is still read through the
+    archived records. R5.S2 accepts both layouts.
+- **Important SKILL.md:190, fixture files counted.** Only a `test_*.md`
+  directly in `tests/<change>/`, or directly in `tests/`, counts. A
+  `<change>` folder counts only when `changes/archive/<yyyy-mm-dd>-<change>/`
+  exists, so a folder such as `tests/fixtures/` is never taken for a
+  change. Nothing deeper counts: `tests/<change>/fixtures/` holds no test
+  of the suite. PROCESS.md §7 says the same: never fixture data below
+  them.
+- **Important SKILL.md:42 and "What it writes", the read-only rule against
+  the lead's Go step.**
+  - In SKILL.md 1.1, the never-commit, push or branch rule now holds in
+    sections 2, 3 and 5. In section 4 the lead's definition decides.
+  - Section 4 says the lead's Go step applies as written: the lead makes
+    and pushes each `change/<id>` when the pod commit scope allows it, and
+    otherwise gives the human the commands.
+  - "What it writes" scopes "nothing in a code repo" to the skill's own
+    steps, and says the lead's writes include the branches it makes at
+    the go.
+- **Minor SKILL.md:54, Branch head with a plan entry naming several
+  repos.**
+  - A range for a repo is one written `<repo> <sha7>..<sha7>` on any
+    task's line.
+  - A fix-round line's bare `<sha7>..<sha7>` counts only when the task's
+    plan entry names that repo alone in `repo:`.
+  - The bare range of a task whose entry names several repos counts for
+    none of them.
+- **Minor SKILL.md:312, ready rule.** Section 4 step 2 now says: not held,
+  no dispatch line yet, and the `after` tasks done. For the review of one
+  task, it says that task has reported and every other task in its `after`
+  list is done, as status-format.md says.
+- **Minor swe-lead.md:61.** It now reads: push to a code repo's `main`
+  other than the integrate merge the human asks for.
+- **Evidence template (T2), at the coordinator's request.** Only its
+  comments changed. The scenarios comment now names regression scenario
+  tests under `<change>/R<n>.S<m>`. The x-checks and x-suggestions comment
+  names `<change>/I<n>` under `x-checks:` and `<change>/T<n>.TS<k>` under
+  `x-suggestions:`. No key or other line changed.
+
+### Files
+
+| Task | Commit | Files |
+|---|---|---|
+| T1 | f1cf99c | swe-pod/PROCESS.md: §7, the regression key; §8 step 5, `tests/<id>/` |
+| T5 | f833f72 | swe-pod/agents/swe-lead.md: Never, `main`; integrate step 5, `tests/<id>/` |
+| T7 | 7572de9 | swe-pod/skills/swe-pod/SKILL.md: 1.1, 1.6, section 4 and "What it writes" |
+| T2 | 3280728 | swe-pod/templates/records/evidence.md: the regression key comments |
+
+The round's range is `swe-pod 2a01192..3280728`, pushed to
+`origin/change/build-swe-pod` in two pushes, the T2 commit last. Before
+each push, the merge-base check showed that the remote head (2a01192, then
+7572de9) was already in the branch, so I did not rebase.
+
+### Test output
+
+One script of 14 done-when checks, each a grep over the changed block with
+line breaks ignored. It ran from a scratch folder outside the space and the
+code repo, and has since been deleted. The last check is a guard: lines
+added to PROCESS.md since 2a01192 carry no bare requirement or decision id.
+
+- red, before the edits:
+
+```
+FAIL 1a SKILL 1.6: inspection and suggestion regression keys have a home
+FAIL 1b SKILL 1.6: change from the tests/<change>/ folder, value from scenario: or the file name
+FAIL 1c PROCESS 7: writing side states the same keys
+FAIL 1d PROCESS 7: old R-only rule gone
+FAIL 1e PROCESS 8 and swe-lead integrate move the tests to tests/<id>/
+FAIL 2a SKILL 1.6: only files directly in tests/ or tests/<change>/
+FAIL 2b SKILL 1.6: fixture data is not a test of the suite
+FAIL 3a SKILL 1.1: read-only rule limited to the skill's own sections
+FAIL 3b SKILL 4: the lead's Go step applies, branches included
+FAIL 3c What it writes: no blanket nothing-in-a-code-repo rule
+FAIL m1 Branch head case 3 says what a several-repo plan entry gives
+FAIL m2 SKILL 4 step 2 ready rule: not held, every other after task done
+FAIL m3 swe-lead Never reads as one item
+PASS guard: lines added to PROCESS since 2a01192 carry no bare requirement or decision id
+checks: 1/14 pass
+```
+
+- green, after the edits and before the commits:
+
+```
+PASS 1a SKILL 1.6: inspection and suggestion regression keys have a home
+PASS 1b SKILL 1.6: change from the tests/<change>/ folder, value from scenario: or the file name
+PASS 1c PROCESS 7: writing side states the same keys
+PASS 1d PROCESS 7: old R-only rule gone
+PASS 1e PROCESS 8 and swe-lead integrate move the tests to tests/<id>/
+PASS 2a SKILL 1.6: only files directly in tests/ or tests/<change>/
+PASS 2b SKILL 1.6: fixture data is not a test of the suite
+PASS 3a SKILL 1.1: read-only rule limited to the skill's own sections
+PASS 3b SKILL 4: the lead's Go step applies, branches included
+PASS 3c What it writes: no blanket nothing-in-a-code-repo rule
+PASS m1 Branch head case 3 says what a several-repo plan entry gives
+PASS m2 SKILL 4 step 2 ready rule: not held, every other after task done
+PASS m3 swe-lead Never reads as one item
+PASS guard: lines added to PROCESS since 2a01192 carry no bare requirement or decision id
+checks: 14/14 pass
+```
+
+- evidence template (T2), one grep per key, red and then green:
+
+```
+red:
+FAIL key <change>/R<n>.S<m> named
+FAIL key <change>/I<n> named
+FAIL key <change>/T<n>.TS<k> named
+FAIL old R-only wording gone
+green:
+PASS key <change>/R<n>.S<m> named
+PASS key <change>/I<n> named
+PASS key <change>/T<n>.TS<k> named
+PASS old R-only wording gone
+```
+
+  Every changed line of the template begins with `#`, and none is over 80
+  chars.
+- Round-1 checks c1 ("any folder below it") and f2 ("except the integrate
+  merge") would now fail. That is expected: this round replaces that
+  wording on purpose.
+- PROCESS.md line 1 and line 3 are unchanged, and it still has 15
+  level-2 headings. No added line has trailing spaces. No added prose line
+  is over 80 chars.
+- shareability, after committing and before pushing:
+
+```
+--task T1: shareability: 0 hits
+--task T5: shareability: 0 hits
+--task T7: shareability: 0 hits
+--task T2: shareability: 0 hits
+```
+
+- `git diff --stat 74d23f1 -- SPEC.md spec-process.d2 spec-process.svg
+  spec-process.png` gives no output.
+- push: `2a01192..7572de9  change/build-swe-pod -> change/build-swe-pod`,
+  then `7572de9..3280728  change/build-swe-pod -> change/build-swe-pod`.
+- unit: none-present. swe-pod has no unit suite.
+
+### Concerns
+
+- The evidence template concern raised earlier in this round is closed
+  by 3280728 (T2).
+- swe-test.md (T6) says only "regression results under qualified ids",
+  which does not contradict the new key. It points to PROCESS.md §7.
+- This change's own tests are the first to be promoted under the new rule.
+  At its integrate, they move to `tests/build-swe-pod/` with `fixtures/`
+  below. The 53 inspection and suggestion tests get keys from their
+  `scenario:` values, and the 107 fixture files are not counted.
+
+### Test suggestions
+
+#### T7.TS7, updated: regression tests in a folder, flat, and in fixtures
+- for the tester: R12 and R5.S2 are at risk. Integrate a change whose tests
+  include a scenario test, an inspection test, a suggestion test and a
+  fixture folder holding files named `test_*.md`. Then run verify for a
+  later change, with evidence that passes every result except the promoted
+  inspection test. The expected failure is that the later change reads
+  verified, that fixture files are asked for as results, or that the
+  inspection or suggestion result is looked for under `scenarios:`.
+- for the reviewer: swe-pod/skills/swe-pod/SKILL.md:193-215 (1.6, the
+  regression bullet) and swe-pod/PROCESS.md:531-544 (§7, the writing-side
+  key).
+
+#### T7.TS9 Go through the skill under the pod commit scope
+- for the tester: R23.S1 is at risk. Run the `swe-pod` skill on "go" in a
+  deployment whose guidance has the pod commit scope rule. The expected
+  failure is that it refuses to make the branches, or only prints them,
+  because of a read-only rule.
+- for the reviewer: swe-pod/skills/swe-pod/SKILL.md:39-44, 312-316 and
+  394-399 (the read-only rule's scope, and section 4's pointer to the
+  lead's Go step).
+
+## Fix round 4
+
+Status: DONE. This round fixes the three findings left by the review of
+round 3, all in the regression key rule. Nothing is pushed back.
+
+### What I did
+
+- **Important swe-pod/agents/swe-test.md:158 (T6).** I made two changes so
+  that an agent following swe-test.md writes regression results where
+  SKILL.md 1.6 looks for them.
+  - Verify step 2 now says what the regression suite is: each `test_*.md`
+    directly in `tests/`, or directly in `tests/<change>/` for an archived
+    change. It never counts fixture data or anything else below them.
+  - Step 4 now has a regression bullet. It gives the key
+    `<change>/<value>` by the rule of `PROCESS.md §7`, with
+    `<change>/R<n>.S<m>` under `scenarios:`, `<change>/I<n>` under
+    `x-checks:` and `<change>/T<n>.TS<k>` under `x-suggestions:`.
+    - It also gives the common case. For a test in `tests/<change>/`, the
+      change is the folder's name, and the value is its row's scenario id
+      in the archived test map or report, else its `scenario:` value.
+    - For the other cases it points to §7.
+  - The `scenarios:` bullet no longer carries the old `<change>/<Rn.Sm>`
+    rule. The optional `x-checks:` and `x-suggestions:` bullet now says
+    that its bare keys are for this change's tests, and the regression
+    keys sit beside them.
+- **Minor swe-pod/PROCESS.md:532 (T1).** §7 now states the key the way
+  SKILL.md 1.6 does, for the three edge cases the review named:
+  - A `tests/<change>/` folder counts only when
+    `changes/archive/<yyyy-mm-dd>-<change>/` exists. Nothing deeper counts.
+  - For a test directly in `tests/`: first the archived plan test map,
+    else the archived final report, with the archive folder name that sorts
+    last winning. Failing both, the change of a `scenario:` value written
+    `<change>/<value>`.
+  - `<value>` drops any `<change>/` part. The id a file name carries is
+    spelled out for all three name forms.
+  - A test with no key still counts, and the agent names it in the body.
+- **Minor swe-pod/skills/swe-pod/SKILL.md:354 (T7).** Trace step 2 now
+  looks for an integrated change's test in `tests/<id>/`.
+
+### Files
+
+| Task | Commit | Files |
+|---|---|---|
+| T1 | 7296598 | swe-pod/PROCESS.md: §7, the regression key in full |
+| T6 | 49f0a93 | swe-pod/agents/swe-test.md: verify steps 2 and 4 |
+| T7 | 079cd89 | swe-pod/skills/swe-pod/SKILL.md: trace step 2 |
+
+The round's range is `swe-pod 3280728..079cd89`, pushed to
+`origin/change/build-swe-pod`. Before the push, the merge-base check showed
+that the remote head 3280728 was already in the branch, so I did not
+rebase.
+
+### Test output
+
+One script of 9 done-when checks, each a grep over the changed block with
+line breaks ignored. It ran from a scratch folder outside the space and the
+code repo, and has since been deleted. The last check is a guard: lines
+added to PROCESS.md since 3280728 carry no bare requirement or decision id.
+
+- red, before the edits:
+
+```
+FAIL 1a swe-test step 2: only files directly in tests/<change>/ or tests/, never fixture data
+FAIL 1b swe-test step 4: the three regression keys
+FAIL 1c swe-test: old R-only key gone
+FAIL 1d swe-test points to PROCESS.md section 7 for the key rule
+FAIL 2a PROCESS 7: a tests/<change>/ folder counts only when the change is archived
+FAIL 2b PROCESS 7: tie-break and qualified-scenario fallback for a test directly in tests/
+FAIL 2c PROCESS 7: drops a <change>/ part from a scenario: value
+FAIL 3a SKILL trace step 2: integrated test in tests/<id>/
+PASS guard: lines added to PROCESS since 3280728 carry no bare requirement or decision id
+checks: 1/9 pass
+```
+
+- green, after the edits and before the commits:
+
+```
+PASS 1a swe-test step 2: only files directly in tests/<change>/ or tests/, never fixture data
+PASS 1b swe-test step 4: the three regression keys
+PASS 1c swe-test: old R-only key gone
+PASS 1d swe-test points to PROCESS.md section 7 for the key rule
+PASS 2a PROCESS 7: a tests/<change>/ folder counts only when the change is archived
+PASS 2b PROCESS 7: tie-break and qualified-scenario fallback for a test directly in tests/
+PASS 2c PROCESS 7: drops a <change>/ part from a scenario: value
+PASS 3a SKILL trace step 2: integrated test in tests/<id>/
+PASS guard: lines added to PROCESS since 3280728 carry no bare requirement or decision id
+checks: 9/9 pass
+```
+
+- PROCESS.md still has 15 level-2 headings. No added line has trailing
+  spaces or is over 80 chars.
+- shareability, after committing and before pushing:
+
+```
+--task T1: shareability: 0 hits
+--task T6: shareability: 0 hits
+--task T7: shareability: 0 hits
+```
+
+- `git diff --stat 74d23f1 -- SPEC.md spec-process.d2 spec-process.svg
+  spec-process.png` gives no output.
+- push: `3280728..079cd89  change/build-swe-pod -> change/build-swe-pod`.
+- unit: none-present. swe-pod has no unit suite.
+
+### Concerns
+
+None.
+
+### Test suggestions
+
+#### T6.TS6 Test agent writes the keys the skill reads
+- for the tester: R12 and R5.S2 are at risk. Use a space where an
+  integrated change left a scenario test, an inspection test and a
+  suggestion test in `tests/<change>/`, and fixture files named
+  `test_*.md` below that folder. Then run verify for a later change. The
+  expected failure is any of these:
+  - the evidence record gives a regression result under a bare id;
+  - it puts the inspection or suggestion result under `scenarios:`;
+  - it gives results for fixture files;
+  - the skill then reports a regression result as missing although the
+    test passed.
+- for the reviewer: swe-pod/agents/swe-test.md:141-143 and 163-169, and
+  swe-pod/PROCESS.md:531-552.
+
+## Fix round 5
+
+Status: DONE. This round fixes the findings of the review of round 4.
+Nothing is pushed back.
+
+### What I did
+
+- **Important: a test whose `scenario:` value lists several ids got no
+  key.** This was at PROCESS.md:546 (T1), SKILL.md:208-210 (T7) and
+  swe-test.md:168 (T6). Now, in all three places:
+  - With no archived row, `<value>` is the `scenario:` value, less any
+    `<change>/` part, only when that value is exactly one id.
+  - When it is not (it lists several ids, or the test has none), `<value>`
+    is the id the file name carries. That is the section 5, step 4
+    mapping in SKILL.md, spelled out in PROCESS.md §7.
+  - The `<change>` fallback for a test directly in `tests/` takes a
+    `scenario:` value only when it is one id written `<change>/<value>`.
+  - So each test has at most one key. For example,
+    `test_T1_TS5_<slug>` with `scenario: T1.TS5, T5.TS6` gets the value
+    `T1.TS5`.
+- **Minor swe-test.md:167 (T6).** The short form now gives the full order
+  for a test in `tests/<change>/`:
+  1. the archived plan test map;
+  2. else the archived final report;
+  3. else the `scenario:` value, less any `<change>/` part, when it is
+     exactly one id;
+  4. else the id the file name carries.
+
+  It points to §7 only for a test directly in `tests/`.
+- **Minor swe-test.md:40 (T6).** The verify-mode Reads paragraph now also
+  lists, for the regression keys, each archived change's folder,
+  `changes/archive/<yyyy-mm-dd>-<change>/`, and in it that change's plan
+  test map and final report.
+
+### Files
+
+| Task | Commit | Files |
+|---|---|---|
+| T1 | f7545b1 | swe-pod/PROCESS.md: §7, the value rule |
+| T6 | f3dabea | swe-pod/agents/swe-test.md: Reads (verify mode) and verify step 4 |
+| T7 | 4d5bfc7 | swe-pod/skills/swe-pod/SKILL.md: 1.6, the value rule |
+
+The round's range is `swe-pod 079cd89..4d5bfc7`, pushed to
+`origin/change/build-swe-pod`. Before the push, the merge-base check showed
+that the remote head 079cd89 was already in the branch, so I did not
+rebase.
+
+### Test output
+
+One script of 6 done-when checks, each a grep over the changed block with
+line breaks ignored. It ran from a scratch folder outside the space and the
+code repo, and has since been deleted. The last check is a guard: lines
+added to PROCESS.md since 079cd89 carry no bare requirement or decision id.
+
+- red, before the edits:
+
+```
+FAIL 1a PROCESS 7: a scenario: value that is not exactly one id falls back to the file name
+FAIL 1b SKILL 1.6: same rule
+FAIL 1c swe-test step 4: same rule
+FAIL 2 swe-test: test map before final report, and the <change>/ part dropped
+FAIL 3 swe-test Reads: verify mode lists the archived records
+PASS guard: lines added to PROCESS since 079cd89 carry no bare requirement or decision id
+checks: 1/6 pass
+```
+
+- green, after the edits and before the commits:
+
+```
+PASS 1a PROCESS 7: a scenario: value that is not exactly one id falls back to the file name
+PASS 1b SKILL 1.6: same rule
+PASS 1c swe-test step 4: same rule
+PASS 2 swe-test: test map before final report, and the <change>/ part dropped
+PASS 3 swe-test Reads: verify mode lists the archived records
+PASS guard: lines added to PROCESS since 079cd89 carry no bare requirement or decision id
+checks: 6/6 pass
+```
+
+- PROCESS.md still has 15 level-2 headings. No added line has trailing
+  spaces or is over 80 chars.
+- shareability, after committing and before pushing:
+
+```
+--task T1: shareability: 0 hits
+--task T6: shareability: 0 hits
+--task T7: shareability: 0 hits
+```
+
+- `git diff --stat 74d23f1 -- SPEC.md spec-process.d2 spec-process.svg
+  spec-process.png` gives no output.
+- push: `079cd89..4d5bfc7  change/build-swe-pod -> change/build-swe-pod`.
+- unit: none-present. swe-pod has no unit suite.
+
+### Concerns
+
+None.
+
+### Test suggestions
+
+#### T7.TS10 A promoted suggestion test that serves several suggestions
+- for the tester: R12 is at risk. Promote a suggestion test whose
+  `scenario:` value lists two suggestion ids into `tests/<change>/` of an
+  archived change whose records give it no row. Run verify for a later
+  change, and give that test a passing result under the key its file name
+  carries. The expected failure is that the later change does not read
+  verified, or that the evidence gives the test two results or a result
+  under the whole list.
+- for the reviewer: swe-pod/PROCESS.md:543-550,
+  swe-pod/skills/swe-pod/SKILL.md:205-212 and
+  swe-pod/agents/swe-test.md:166-174.
