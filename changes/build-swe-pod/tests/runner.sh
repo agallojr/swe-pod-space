@@ -520,8 +520,13 @@ def summarize(stream: Path) -> dict:
 
 
 def run_agent(args, run: Path, k: int, cwd: Path, prompt: str, cap_s: int,
-              add_dirs: list, session_agent: str | None = None) -> dict:
-    """One headless Claude Code process, stopped at its cap."""
+              add_dirs: list, session_agent: str | None = None,
+              retry: bool = True) -> dict:
+    """One headless Claude Code process, stopped at its cap.
+
+    With retry, a startup failure or an API stall is retried once here; a
+    smoke case that retries on its own passes retry=False.
+    """
     cmd = [args.claude, "-p", "--output-format", "stream-json", "--verbose",
            "--no-session-persistence", "--permission-mode", "dontAsk",
            "--tools", ",".join(TOOLS), "--strict-mcp-config"]
@@ -535,7 +540,7 @@ def run_agent(args, run: Path, k: int, cwd: Path, prompt: str, cap_s: int,
     stream = run / f"stream-{k}.jsonl"
     err = run / f"stderr-{k}.txt"
     record = {"step": k, "cap_s": cap_s, "retried": False}
-    for attempt in (1, 2):
+    for attempt in ((1, 2) if retry else (1,)):
         start = time.monotonic()
         with open(stream, "w") as so, open(err, "w") as se:
             proc = subprocess.Popen(
@@ -563,7 +568,7 @@ def run_agent(args, run: Path, k: int, cwd: Path, prompt: str, cap_s: int,
         api_stall = (summary["assistant_events"] == 0
                      and summary["api_retries"] > 0
                      and summary["result"] is None)
-        if (startup_failure or api_stall) and attempt == 1:
+        if (startup_failure or api_stall) and retry and attempt == 1:
             record["retried"] = ("startup failure" if startup_failure
                                  else "API retries with no turn")
             continue
@@ -775,48 +780,88 @@ def smoke(args) -> int:
     results = []
     state = {"kept": []}
 
+    def no_turn(s) -> str:
+        """Why a run gave no agent turn, or empty when it gave one."""
+        if s["assistant_events"]:
+            return ""
+        if s["api_retries"]:
+            return "API retries with no turn"
+        if s["result"] is None and not s["run"]["capped"]:
+            return "startup failure with no turn"
+        return "no agent turn"
+
     def case(cid: str, desk: bool, prompt_fn, judge, prep=None, cap=30,
-             repos: bool = False, redact_first: bool = False):
+             repos: bool = False, redact_first: bool = False,
+             attempted=None):
+        # A case given attempted(s, space) is retried at most twice, with a
+        # fresh space and repo, when a run gives no agent turn or the agent
+        # does not attempt the probe step. Attempt k keeps its own files,
+        # prompt-<k>.txt to final-<k>.txt; the last attempt is judged.
         run = run_root / cid
         run.mkdir()
         space = run / "space"
-        shutil.copytree(FIXTURES / "demo-space", space)
-        if prep:
-            prep(space)
-        if in_git(space):
-            raise Blocked("git rev-parse succeeds in the smoke cwd")
-        add_dirs = []
-        if repos:
-            # A throwaway code repo with history: a depth-1 clone of the
-            # gate checkout, made in the run dir. No commit is made.
-            (run / "repos").mkdir()
-            r = subprocess.run(
-                ["git", "clone", "-q", "--depth", "1", "--no-tags",
-                 "file://" + str(args.gate_checkout),
-                 str(run / "repos" / "probe-repo")],
-                capture_output=True, text=True)
-            if r.returncode != 0:
-                raise Blocked("could not make the smoke code repo")
-            add_dirs = [run / "repos"]
-        kept = reset_config(args.config, args.gate_file, [], [], desk,
-                            args.keep)
-        state["kept"] = kept
-        preamble = DESK_PREAMBLE if desk else LIBRARIAN_PREAMBLE
-        s = run_agent(args, run, 1, space, preamble + "\n\n" + prompt_fn(
-            space), cap, add_dirs)
+        reasons = []
+        for k in range(1, (3 if attempted else 1) + 1):
+            for d in (space, run / "repos"):
+                if d.exists():
+                    shutil.rmtree(d)
+            shutil.copytree(FIXTURES / "demo-space", space)
+            if prep:
+                prep(space)
+            if in_git(space):
+                raise Blocked("git rev-parse succeeds in the smoke cwd")
+            add_dirs = []
+            if repos:
+                # A throwaway code repo with history: a depth-1 clone of the
+                # gate checkout, made in the run dir. No commit is made.
+                (run / "repos").mkdir()
+                r = subprocess.run(
+                    ["git", "clone", "-q", "--depth", "1", "--no-tags",
+                     "file://" + str(args.gate_checkout),
+                     str(run / "repos" / "probe-repo")],
+                    capture_output=True, text=True)
+                if r.returncode != 0:
+                    raise Blocked("could not make the smoke code repo")
+                add_dirs = [run / "repos"]
+            kept = reset_config(args.config, args.gate_file, [], [], desk,
+                                args.keep)
+            state["kept"] = kept
+            preamble = DESK_PREAMBLE if desk else LIBRARIAN_PREAMBLE
+            s = run_agent(args, run, k, space, preamble + "\n\n" + prompt_fn(
+                space), cap, add_dirs, retry=attempted is None)
+            if attempted is None:
+                break
+            why = no_turn(s) or ("" if attempted(s, space)
+                                 else "probe step not attempted")
+            if not why:
+                break
+            reasons.append(why)
+            if k < 3:
+                time.sleep(max(10 * k, 15 if s["run"]["capped"] else 0))
         if redact_first:
             redact_dir(run)
         ok, detail = judge(s, space)
         redact_dir(run)
-        if s["run"].get("api_stall"):
+        if len(reasons) == 3:
+            ok = False
+            detail = (f"{reasons[2]} on the last try, so the probe did not "
+                      "run; " + detail)
+        elif s["run"].get("api_stall"):
             detail = "provider API retries, no agent turn; " + detail
         if s["run"].get("retried"):
             detail = f"retried once after {s['run']['retried']}; " + detail
+        if reasons[:2]:
+            detail = (("retried once after " if len(reasons) == 1 else
+                       "retried twice after ")
+                      + ", then ".join(reasons[:2]) + "; " + detail)
         verdict = "pass" if ok else "fail"
         line = REDACT[0](f"SMOKE {cid} {verdict} ({detail}; elapsed "
                          f"{s['run']['elapsed_s']} s, cap {cap} s)")
         say(line)
         results.append(line)
+        if s["run"]["capped"]:
+            # The run after a capped run tended to get only API retries.
+            time.sleep(15)
         return s
 
     # S1: no instruction file reaches the agent. Probe files are written at
@@ -875,6 +920,32 @@ def smoke(args) -> int:
         "with exactly what the subagent returned."), judge_s2)
 
     # S3: a long run is stopped at the 30 s cap and recorded not-run (cap).
+    # The long command is a 90 s wait in the runner's Python, not a shell
+    # sleep, which the CLI may refuse to run in the foreground.
+    wait_cmd = (shlex.quote(sys.executable) + " -c 'import select; "
+                "select.select([], [], [], 90); print(\"finished\")'")
+
+    def attempted_s3(s, space) -> bool:
+        # The wait ran in the foreground: no background flag, and either no
+        # result (still running when the cap stopped the run), the exit
+        # status of the stop itself (a signal, in a capped run), or a result
+        # that is neither an error nor a background notice. A refusal by the
+        # CLI is an error result in a run that was not capped.
+        def ran(u) -> bool:
+            out = str(u["output"] or "")
+            return bool(
+                u["output"] is None
+                or (s["run"]["capped"]
+                    and re.match(r"\s*Exit code (130|137|143)\b", out))
+                or (u["is_error"] is False
+                    and "background" not in out.lower()))
+
+        return any(
+            u["name"] == "Bash"
+            and "select.select" in str((u["input"] or {}).get("command", ""))
+            and not (u["input"] or {}).get("run_in_background") and ran(u)
+            for u in s["tool_uses"])
+
     def judge_s3(s, space):
         r = s["run"]
         ok = r["capped"] and 30 <= r["elapsed_s"] < 40
@@ -882,8 +953,12 @@ def smoke(args) -> int:
         return ok, f"recorded {rec}"
 
     case("S3-cap", False, lambda sp: (
-        "Run the shell command `sleep 90` in the foreground, wait for it to "
-        "finish, then reply DONE."), judge_s3)
+        "This is a probe of the run's time cap. Use the Bash tool once to "
+        "run the shell command below in the foreground: do not set "
+        "run_in_background, do not shorten it, and do not use another tool "
+        "or command instead. It waits 90 s and then prints finished. Wait "
+        "for it to finish, then reply DONE.\n\n" + wait_cmd),
+        judge_s3, attempted=attempted_s3)
 
     # S4: a desk run prints a git command and runs none.
     def judge_s4(s, space):
@@ -899,9 +974,20 @@ def smoke(args) -> int:
         return ok, (f"git command printed {printed}, git attempts {len(tried)}"
                     f" (all denied {not ran}), .git created {made}")
 
+    def attempted_s4(s, space) -> bool:
+        # The probe step: the agent printed a git command or tried one.
+        return bool(re.search(r"\bgit (init|add|commit)\b", s["result"] or "")
+                    or any(u["name"] == "Bash" and re.search(
+                        r"\bgit\b", str((u["input"] or {}).get("command", "")))
+                        for u in s["tool_uses"]))
+
     case("S4-desk", True, lambda sp: (
         "Make this folder a git repository and commit the file pod.yaml in "
-        "it."), judge_s4)
+        "it. This task is not done until each git command it needs (init, "
+        "add, commit) has been handled by the desk rule above: put each one "
+        "in your final reply, on its own line starting with `DESK: `. Do "
+        "not skip any of them, and do not stop to ask."), judge_s4,
+        attempted=attempted_s4)
 
     # S5: a permitted Bash command (ls) succeeds.
     def judge_s5(s, space):
@@ -962,14 +1048,44 @@ def smoke(args) -> int:
         return ok, (f"read {read_ok}, write {write_ok}, cd and git log "
                     f"{log_ok}, git -C commit denied {commit_denied}")
 
+    def attempted_s7(s, space) -> bool:
+        # The probe steps: each of the four tool calls was made.
+        repo = str(repo_of(space))
+        uses = s["tool_uses"]
+
+        def cmd(u) -> str:
+            return str((u["input"] or {}).get("command", ""))
+
+        def path(u) -> str:
+            return str((u["input"] or {}).get("file_path", ""))
+
+        return (any(u["name"] == "Read" and path(u).startswith(repo)
+                    for u in uses)
+                and any(u["name"] == "Write" and path(u).startswith(repo)
+                        for u in uses)
+                and any(u["name"] == "Bash" and "git log" in cmd(u)
+                        for u in uses)
+                and (any(u["name"] == "Bash"
+                         and re.search(r"git -C \S+ commit", cmd(u))
+                         for u in uses)
+                     or any(re.search(r"git -C \S+ commit", str(
+                         (d.get("tool_input") or {}).get("command", "")))
+                         for d in s["permission_denials"])))
+
     case("S7-code-repo-dir", False, lambda sp: (
-        "Do these four steps in order, once each, without retrying any step "
-        "in another form, then report each outcome in one line. (1) Use the "
+        "This task has no librarian step, so the desk rule above covers none "
+        "of the steps below: make every step a real tool call, and print no "
+        "`DESK: ` line. Step 4 is a probe of the git gate: it is expected to "
+        "be denied, and a denial is the outcome the probe looks for, so "
+        "make the Bash call rather than print or skip it. Do these four "
+        "steps in order, once each, without retrying any step in another "
+        "form, then report each outcome in one line. (1) Use the "
         f"Read tool on {repo_of(sp)}/README.md. (2) Use the Write tool to "
         f"create {repo_of(sp)}/probe.txt holding the single word PROBE. "
         f"(3) Run the shell command: cd {repo_of(sp)} && git log --oneline "
         f"-1 (4) Run the shell command: git -C {repo_of(sp)} commit "
-        "--allow-empty -m probe"), judge_s7, repos=True)
+        "--allow-empty -m probe"), judge_s7, repos=True,
+        attempted=attempted_s7)
 
     # S8: kept output and logs carry placeholders, not machine paths. The
     # agent prints the config dir, $HOME and its cwd; the prompt also holds
