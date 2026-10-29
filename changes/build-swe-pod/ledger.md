@@ -1023,4 +1023,26 @@
 2026-10-29T03:39Z T5 fix round 1/5: 1 addressed, 0 open, 70c46e5..b7fc257
 2026-10-29T03:39Z filed changes/build-swe-pod/tasks/T35-fix-report.md
 2026-10-29T03:39Z dispatch T35 -> review (local, any): re-review of the fix wave
+2026-10-29T03:53Z T35 review r2: spec ok; 3 Minor
+2026-10-29T03:53Z Ruling: on the re-review's Minors: agent-mesh
+                  guidance/agent-operating.md:219 ("one commit per record", no integrate
+                  exception) is deferred to the follow-up change with the other deferred
+                  Minors; integrate's filing is recorded in one ledger line, `filed by
+                  integrate: <n> paths, space <sha>`, in place of one line per path;
+                  skills/mesh-on/SKILL.md joins T12's touches for finding 14's edit; cost if
+                  wrong: none to the deliverables
+2026-10-29T03:53Z operator decisions: G1 and G2 go into the operator's overlay now ("Yes,
+                  add them now"); after the merges the lead bumps and pushes the bus's
+                  product/ and swe-pod/ gitlinks and research-notes' bus pin ("Yes, bump and
+                  push"); F13 and F14 are carried as reviewed only ("Yes, reviewed only");
+                  this node's poller stays off ("Leave it off"); and the operator granted
+                  the lead's harness merges into main and pushes of main, no force-push, in
+                  the operator's own repos
+2026-10-29T03:53Z T36 step 4 done: G1 and G2 are in the operator's overlay beside G3, before
+                  the first merge; the 03:30Z ruling's move of that step is void
+2026-10-29T03:53Z heavy: asked agallojr before T19c: runner.sh run; caps each run its cap_s,
+                  at most 1500 s, task 180 min; expected 3003 s
+2026-10-29T03:53Z dispatch T19c -> test (local, macos-laptop): round 2, the 11 tests the T35
+                  fix wave touches, at swe-pod b7fc257 and agent-mesh f27c611
+2026-10-29T03:53Z filed changes/build-swe-pod/tasks/T35-review-r1.md, tasks/T19c-brief.md
 ```
