@@ -938,4 +938,65 @@
 2026-10-29T02:58Z T35 review r1: spec issues; 3 Important, 27 Minor
 2026-10-29T02:58Z filed changes/build-swe-pod/tasks/T35-review.md; its proposed actions go to
                   the operator before any fix wave or run, by the 02:38Z directive
+2026-10-29T03:08Z operator decision, on T35's findings: "1. yes, make integrate work. 2.
+                  fix. 3. these are suggestions from the coder - we'll skip for now if so.
+                  4. minors - ... F13 fix. F16 see #1. you may run the plan A,B,C,D as you
+                  suggest unless it conflicts with my words here"
+2026-10-29T03:08Z Ruling: one fix wave, then one re-review (T35-review-r1.md), then a
+                  targeted re-run on macos-laptop of the tests the wave's fixes touch,
+                  test_R16_S1 last; the wave takes finding 1 by design (a), an integrate
+                  mode in space-librarian that makes one commit of renames and edits after
+                  the three checks, a moved record's id not counting as new, and finding 16
+                  inside it (fixtures skip the id and reference checks, keep the profile
+                  check); finding 2 (mesh-load's $2); finding 13 (the identity template's
+                  example role); and finding 14 (the poller prompt names a real node); cost
+                  if wrong: one more wave
+2026-10-29T03:08Z Ruling: findings 4 to 12 and 17 to 30 are deferred to a follow-up change,
+                  and the final report lists them; finding 15: T19c's record at agent-mesh
+                  bbd19a2 stands for 9de4f77 by the 02:36Z decision, and the final report
+                  lists 9de4f77 as an out-of-plan commit with no task; finding 20: T36 moves
+                  the tests to tests/build-swe-pod/, as PROCESS.md says; cost if wrong: none
+                  to the deliverables
+2026-10-29T03:08Z T1.TS7 -> test
+2026-10-29T03:08Z T5.TS7 -> test
+2026-10-29T03:08Z T5.TS8 -> test
+2026-10-29T03:08Z T5.TS9 -> test
+2026-10-29T03:08Z T7.TS5 -> test
+2026-10-29T03:08Z T7.TS6 -> test
+2026-10-29T03:08Z T7.TS7 -> test
+2026-10-29T03:08Z T7.TS8 -> test
+2026-10-29T03:08Z T10.TS9 -> test
+2026-10-29T03:08Z T10.TS10 -> test
+2026-10-29T03:08Z T1.TS7 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T5.TS7 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T5.TS8 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T5.TS9 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T7.TS5 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T7.TS6 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T7.TS7 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T7.TS8 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T10.TS9 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T10.TS10 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T42.TS1 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T42.TS2 outcome: declined: a builder's suggestion, skipped for now by the
+                  operator
+2026-10-29T03:08Z T39.TS1 outcome: declined: the tester's own, covered by the deliverable
+                  text (T35), skipped for now by the operator
+2026-10-29T03:08Z T39.TS2 outcome: declined: the tester's own, covered by the deliverable
+                  text (T35), skipped for now by the operator
+2026-10-29T03:08Z T39.TS3 outcome: declined: the tester's own, covered by the deliverable
+                  text (T35), skipped for now by the operator
+2026-10-29T03:08Z dispatch T10, T1, T5, T12, T9 -> build (local, any), base swe-pod 83eaef9,
+                  agent-mesh 9de4f77: T35 fix wave
 ```
