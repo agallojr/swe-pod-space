@@ -1,0 +1,137 @@
+===== meta.json
+{
+  "test": "test_R14_S1_merge_order_and_pins",
+  "commit_set": {
+    "swe-pod": "b7fc257",
+    "agent-mesh": "f27c611"
+  },
+  "absent": [],
+  "kept_settings": []
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting. In this desk run, take each merge's result to be the
+branch head the ledger records.
+Checkouts on this node: space <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space; swe-pod <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/export/swe-pod; alpha <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/alpha; beta <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/beta; gamma <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/gamma
+
+===== final-1.txt
+add-greeting is integrated (desk run): alpha was merged first, then beta, and the pins in `pod.yaml` now point at the merged heads. The tests and the change folder were not actually moved on disk, and nothing was committed, merged or pushed. Each of those steps is printed as a `DESK:` line at the end.
+
+**Before the merge.** The latest evidence, ev-20261001T1230Z, was taken at alpha d4d4d4d, beta e5e5e5e and gamma c3c3c3c. Those are the branch heads in the ledger and the current gamma pin, and `tests/` was empty, so the evidence was current. The whole-change review (T8) found nothing Critical or Important.
+
+**What was done:**
+- **Merges:** fast-forward only, alpha before beta. alpha main is now d4d4d4d and beta main is e5e5e5e. gamma was not in the spec, so it got no branch and no merge and stays at c3c3c3c.
+- **Branches:** I kept `change/add-greeting` in both alpha and beta. You said merge, not delete.
+- **Pins in `pod.yaml`:** alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c.
+- **Spec:** a fresh spec agent added `integrated: demo-owner 2026-10-29T03:57Z`.
+- **Space:** in one commit, the tests go to `tests/add-greeting/` and the change folder to `changes/archive/2026-10-29-add-greeting/`. The space README now says no change is in flight. `STATUS.md` was regenerated and shows 0 open changes.
+
+## Final report
+Also at `<scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space/changes/add-greeting/report.md`. Once the integrate commit runs, it moves to `changes/archive/2026-10-29-add-greeting/report.md`.
+
+**Scenarios** (all from ev-20261001T1230Z):
+
+| Scenario | Test | Result |
+|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass |
+| R1.S2 | test_R1_S2_name_too_long | pass |
+| R2.S1 | test_R2_S1_startup_line | pass |
+
+Unit tests: alpha 3/3 pass, beta 2/2 pass. The spec declares no quality checks.
+
+**Rulings:**
+- I merged on ev-20261001T1230Z because it matches the change heads and the pins, and `tests/` has not moved. If wrong, untested code was merged.
+- No README update in alpha or beta. The plan had no docs task, and adding one now would move the heads and need a new verify. If wrong, the READMEs lag until a follow-up change.
+- I merged alpha then beta as fast-forwards and kept both branches. If wrong, two stale branches remain.
+- gamma got no merge and keeps its pin, because the spec covers only alpha and beta. No cost if wrong.
+
+**Deferred minors:** one, found in the T2 review and again in T8. Line 3 of `beta/beta/__main__.py` sets up the path to the alpha checkout without a comment saying why. It is cosmetic and left for a follow-up.
+
+**Test suggestions:** none.
+
+**Branches:** alpha `change/add-greeting` d4d4d4d; beta `change/add-greeting` e5e5e5e; gamma none.
+
+**Decision for you:** should I delete the merged `change/add-greeting` branches in alpha and beta, or keep them? Separately, the alpha and beta READMEs don't mention the greeting yet; that needs a follow-up change.
+
+## DESK lines
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/gamma.git refs/heads/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log --oneline 5d5d5d5..origin/main -- tests/ changes/add-greeting/tests/ pod.yaml
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space cat-file -e origin/main:changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space diff --quiet origin/main -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space add -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space commit -m "File changes/add-greeting/report.md" -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log -1 --format=%H -- changes/add-greeting/report.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space cat-file -e origin/main:changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space diff --quiet origin/main -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log -1 --format=%H -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/alpha fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/alpha checkout main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/alpha merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/alpha push origin main
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/beta fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/beta checkout main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/beta merge --ff-only origin/change/add-greeting
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/repos/beta push origin main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: mkdir -p <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space/tests
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space mv -- changes/add-greeting/tests tests/add-greeting
+DESK: mkdir -p <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space/changes/archive
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space mv -- changes/add-greeting changes/archive/2026-10-29-add-greeting
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space add -- README.md STATUS.md changes/archive/2026-10-29-add-greeting/ledger.md changes/archive/2026-10-29-add-greeting/spec.md pod.yaml
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space commit -m "Integrate add-greeting" -- changes/add-greeting/tests tests/add-greeting changes/add-greeting changes/archive/2026-10-29-add-greeting README.md STATUS.md changes/archive/2026-10-29-add-greeting/ledger.md changes/archive/2026-10-29-add-greeting/spec.md pod.yaml
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log -1 --format=%H -- tests/add-greeting
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space cat-file -e origin/main:changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space diff --quiet origin/main -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space add -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space commit -m "File changes/archive/2026-10-29-add-greeting/ledger.md" -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log -1 --format=%H -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space cat-file -e origin/main:STATUS.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space diff --quiet origin/main -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space log -1 --format=%H -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space fetch origin
+DESK: git -C <scratch>/runs/20261029T035658Z-test_R14_S1_merge_order_and_pins-bbbc/space merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+R14.S1.1 pass merge order: alpha, beta
+R14.S1.2 pass 0 git write(s) in gamma
+R14.S1.3 pass pins: alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c
+R14.S1.4 fail 1 space commit(s) stage pod.yaml
+

@@ -1,0 +1,44 @@
+===== meta.json
+{
+  "test": "test_T12_TS3_load_never_changes_bus",
+  "commit_set": {
+    "agent-mesh": "f27c611"
+  },
+  "absent": [],
+  "kept_settings": []
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+The mesh bus is at <scratch>/runs/20261029T041102Z-test_T12_TS3_load_never_changes_bus-1541/repos/bus. Load proj:demo, then drop proj:demo.
+
+End your answer with this line, filled in:
+LOADED: <the projects loaded in this session after the drop, separated by commas, or none>
+
+===== final-1.txt
+I loaded `proj:demo` and then dropped it, so no projects are loaded in this session now.
+
+**Load:** `proj:demo` was already listed on the bus at `spaces/proj-demo` (access rw), but this machine didn't have a copy yet. I cloned it and updated it to the newest commit, `90b5a1c`, which added `notes/README.md`. Its catalog:
+
+```
+proj:demo  spaces/proj-demo  access rw  90b5a1c
+note-20261001T1100Z-a0b1  Why the demo greeting lives in alpha
+README
+```
+
+There is no `STATUS.md` in the space, and `notes/README.md` has no id or title fields, so it shows as plain `README`. While loaded, the space was read-only for this session. Anything to add to it goes to the space's librarian.
+
+**Drop:** I took `proj:demo` out of the session's loaded list, which is now empty. The copy stays on disk and nothing was deleted.
+
+The bus itself was not changed: I didn't edit, stage, commit or push anything there or in the space. The librarian's commit step never ran, because this task only loaded and dropped a space and filed nothing. So I printed no `DESK: ` lines and have none to repeat.
+
+LOADED: none
+===== stderr-1.txt (empty)
+===== check.out
+T12.TS3.1 pass space at the tip
+T12.TS3.2 pass bus HEAD same; staged False; edits False
+T12.TS3.3 pass space commits of the session: 0
+T12.TS3.4 pass clone in place True; loaded after drop 'none'
+T12.TS3.5 pass 0 git commit or push call(s) ran
+

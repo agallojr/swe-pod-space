@@ -1,0 +1,127 @@
+===== meta.json
+{
+  "test": "test_R5_S2_tests_promoted_at_integrate",
+  "commit_set": {
+    "swe-pod": "b7fc257",
+    "agent-mesh": "f27c611"
+  },
+  "absent": [],
+  "kept_settings": []
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Merge add-greeting. Then write the brief for T4, the verify task of
+add-farewell, and stop there: do not dispatch it.
+
+Checkouts on this node, one per line:
+Project Space proj:demo: <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space
+swe-pod: <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/export/swe-pod
+agent-mesh: <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/export/agent-mesh
+The human is demo-owner.
+
+===== final-1.txt
+add-greeting is merged and integrated. The T4 verify brief for add-farewell is written and filed, and T4 is not dispatched. This was a desk run: no git command ran, so every merge, commit and push below exists only as a printed `DESK:` line.
+
+**Before the merge:** the latest evidence (ev-20261002T1412Z: alpha d4d4d4d, beta e5e5e5e, gamma c3c3c3c) was still current. The pins and the space's `tests/` hadn't moved since that run, every review was closed, and nothing was open.
+
+**Merge:** alpha merged before beta, fast-forward only, and each `change/add-greeting` was deleted after its merge. You run these commands: this node has no checkout of alpha or beta, and nothing here lets the pod commit in the code repos.
+
+**Integrate commit** ("Integrate add-greeting"):
+- The tests moved from `changes/add-greeting/tests/` to `tests/add-greeting/` and are now part of the regression suite.
+- The change folder moved to `changes/archive/2026-10-29-add-greeting/`.
+- The pins advanced to alpha d4d4d4d and beta e5e5e5e; gamma stays at c3c3c3c.
+- The spec author added `integrated: demo-owner 2026-10-29T04:01Z` to the spec.
+- The space README is updated.
+- The ledger has `T9 DONE` and its `filed` line. Every record passed the librarian's checks.
+
+**Final report** (`changes/archive/2026-10-29-add-greeting/report.md`):
+
+| Scenario | Test | Result | Evidence id |
+|---|---|---|---|
+| R1.S1 | test_R1_S1_default_greeting | pass | ev-20261002T1412Z |
+| R1.S2 | test_R1_S2_name_too_long | pass | ev-20261002T1412Z |
+| R2.S1 | test_R2_S1_startup_line | pass | ev-20261002T1412Z |
+
+- **Unit suites:** alpha and beta pass. No quality checks were declared.
+- **Rulings:** none.
+- **Deferred minor:** the T4 review found that alpha's module docstring (`alpha/__init__.py:5`) doesn't mention `greeting()`.
+- **Test suggestions:** none.
+- **Branches:** alpha `change/add-greeting` at d4d4d4d, beta `change/add-greeting` at e5e5e5e.
+- **Open question:** the plan says the alpha and beta READMEs ship with the code and should be updated, but no build task updated them before the merge. Do you want a follow-up change for them?
+
+**add-farewell T4 brief** (`changes/add-farewell/tasks/T4-brief.md`):
+- **Ready:** T1 and T2 are done, and the T3 review is closed with no findings.
+- **No rebase:** gamma's pin didn't move.
+- **Commit set:**
+  - gamma `change/add-farewell` at f6f6f6f;
+  - alpha d4d4d4d and beta e5e5e5e at their new pins, because the spec doesn't name them;
+  - space main at the commit that files the brief. A desk run produces no commit sha, so the brief names the commit instead of giving its sha.
+- **What it runs:** `test_R1_S1_farewell_line`, the three `tests/add-greeting/` regression tests and gamma's unit suite. None of them is heavy (each takes 1 s), so you don't need to approve anything before it runs.
+- **State:** there's no dispatch line, so `STATUS.md` shows T4 as ready.
+- **STATUS.md:** I regenerated and filed it once at the end, instead of after each filing.
+
+Every `DESK:` line, in the order printed:
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <alpha checkout> fetch origin
+DESK: git -C <alpha checkout> checkout main
+DESK: git -C <alpha checkout> merge --ff-only origin/change/add-greeting
+DESK: git -C <alpha checkout> push origin main
+DESK: git -C <alpha checkout> push origin --delete change/add-greeting
+DESK: git -C <beta checkout> fetch origin
+DESK: git -C <beta checkout> checkout main
+DESK: git -C <beta checkout> merge --ff-only origin/change/add-greeting
+DESK: git -C <beta checkout> push origin main
+DESK: git -C <beta checkout> push origin --delete change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/main
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space mv -- changes/add-greeting/tests tests/add-greeting
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space mv -- changes/add-greeting changes/archive/2026-10-29-add-greeting
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space add -- README.md pod.yaml changes/archive/2026-10-29-add-greeting/ledger.md changes/archive/2026-10-29-add-greeting/report.md changes/archive/2026-10-29-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space commit -m "Integrate add-greeting" -- changes/add-greeting/tests tests/add-greeting changes/add-greeting changes/archive/2026-10-29-add-greeting README.md pod.yaml changes/archive/2026-10-29-add-greeting/ledger.md changes/archive/2026-10-29-add-greeting/report.md changes/archive/2026-10-29-add-greeting/spec.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space log -1 --format=%H -- tests/add-greeting
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space add -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space commit -m "File changes/archive/2026-10-29-add-greeting/ledger.md" -- changes/archive/2026-10-29-add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space add -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space commit -m "File changes/add-farewell/tasks/T4-brief.md" -- changes/add-farewell/tasks/T4-brief.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space push origin HEAD:main
+DESK: git ls-remote https://example.invalid/demo/gamma.git refs/heads/change/add-farewell
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space add -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space commit -m "File changes/add-farewell/ledger.md" -- changes/add-farewell/ledger.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space add -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space fetch origin
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space push origin HEAD:main
+
+Files are in <scratch>/runs/20261029T040018Z-test_R5_S2_tests_promoted_at_integrate-1182/space:
+- changes/archive/2026-10-29-add-greeting/report.md
+- changes/add-farewell/tasks/T4-brief.md
+- STATUS.md
+===== stderr-1.txt (empty)
+===== check.out
+R5.S2.1 pass 3 of 3 tests promoted to tests/
+R5.S2.2 pass T4 brief written
+R5.S2.3 pass T4 brief runs the regression suite
+R5.S2.4 pass add-farewell's test stays in its change folder
+

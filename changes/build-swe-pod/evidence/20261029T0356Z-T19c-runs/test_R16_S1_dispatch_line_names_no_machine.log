@@ -1,0 +1,14 @@
+===== meta.json
+{
+  "test": "test_R16_S1_dispatch_line_names_no_machine",
+  "commit_set": {
+    "swe-pod": "b7fc257"
+  },
+  "absent": []
+}
+===== check.out
+R16.S1.1 pass swe-pod b7fc257: 1 of 1 template dispatch line(s) in the form
+R16.S1.2 pass 61 agent-written dispatch line(s) in 4 ledger(s) of 10 other run(s)
+R16.S1.3 pass 0 agent-written dispatch line(s) not in the form
+R16.S1.4 pass 0 machine value hit(s) in dispatch lines
+

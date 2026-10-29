@@ -1,0 +1,23 @@
+API stops scan of each agent step stream: api_retry events, rate-limit status, a safeguard (refusal) stop, a 429 or spend-limit result, and an error result.
+test_R14_S1_merge_order_and_pins: 1 agent step(s)
+  step 1: 45 assistant messages, 24 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_R5_S2_tests_promoted_at_integrate: 1 agent step(s)
+  step 1: 46 assistant messages, 23 tool calls, api retries 1, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_I8_space_librarian_checks: 1 agent step(s)
+  step 1: 6 assistant messages, 3 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_R17_S2_single_seat_librarian: 1 agent step(s)
+  step 1: 6 assistant messages, 3 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_T10_TS1_reference_rule: 1 agent step(s)
+  step 1: 5 assistant messages, 2 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_T10_TS6_commit_stage_order: 1 agent step(s)
+  step 1: 9 assistant messages, 4 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_T10_TS8_joined_and_registry_values: 2 agent step(s)
+  step 1: 7 assistant messages, 3 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+  step 2: 9 assistant messages, 5 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_T12_TS1_unmounted_project_blocked: 2 agent step(s)
+  step 1: 15 assistant messages, 8 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+  step 2: 13 assistant messages, 6 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_T12_TS3_load_never_changes_bus: 1 agent step(s)
+  step 1: 9 assistant messages, 5 tool calls, api retries 0, rate-limit status allowed, safeguard stop False, 429 or spend limit False, api error False
+test_I7_agent_mesh_documents: 0 agent step(s)
+test_R16_S1_dispatch_line_names_no_machine: 0 agent step(s)

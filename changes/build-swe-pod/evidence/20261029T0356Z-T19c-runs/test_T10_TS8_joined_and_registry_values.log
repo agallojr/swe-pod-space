@@ -1,0 +1,159 @@
+===== meta.json
+{
+  "test": "test_T10_TS8_joined_and_registry_values",
+  "commit_set": {
+    "agent-mesh": "f27c611"
+  },
+  "absent": [],
+  "kept_settings": []
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo. The mesh bus is at <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus. The records, as space paths: notes/note-20261001T1800Z-3a01-archive-name.md notes/note-20261001T1800Z-3a02-task-prefix.md notes/note-20261001T1800Z-3a03-node-prefix.md notes/note-20261001T1800Z-3a04-task-underscore.md notes/note-20261001T1800Z-3a05-agent-underscore.md notes/note-20261001T1800Z-3a06-cwd-root.md notes/note-20261001T1800Z-3b07-utc-record-id.md notes/note-20261001T1800Z-3b08-sha256.md
+
+===== final-1.txt
+I ran the checks for real. Two of the eight records passed and six were refused. Because the commit step was a desk step, I printed each git command below instead of running it, so nothing was committed, pushed or filed. I also re-ran the check on each passing record by itself at the point in step 3 where the skill does that, and both passed again.
+
+```
+REFUSED notes/note-20261001T1800Z-3a01-archive-name.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a02-task-prefix.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a03-node-prefix.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a04-task-underscore.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a05-agent-underscore.md: profile line 11
+REFUSED notes/note-20261001T1800Z-3a06-cwd-root.md: profile line 11
+```
+
+**Desk steps for `notes/note-20261001T1800Z-3b07-utc-record-id.md`:**
+
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b07-utc-record-id.md" -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+**Desk steps for `notes/note-20261001T1800Z-3b08-sha256.md`:**
+
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b08-sha256.md" -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+There are no `FILED` lines because the commits, pushes and confirmations were not actually run. Two notes:
+- The 3a03 "node-prefix" record was refused for profile. Going by its name, it may be meant to pass: the rules allow a hostname joined into a longer name by `-` or `_`. The check script still refused it, so something on line 11 matches as a whole word. Look at that line if the record was meant to be filed.
+- I left `<commit>` as a placeholder because the `log` command that would fill it in wasn't run.
+
+All `DESK: ` lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b07-utc-record-id.md" -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1800Z-3b07-utc-record-id.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo add -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo commit -m "File notes/note-20261001T1800Z-3b08-sha256.md" -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1800Z-3b08-sha256.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+This is a single-seat session: there is no mesh bus, and no core or lore space. Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space. The records, as space paths: notes/note-20261001T1800Z-3c09-registry-agent.md notes/note-20261001T1800Z-3c10-registry-task.md notes/note-20261001T1800Z-3c11-home-path.md
+
+===== final-2.txt
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space add -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c09-registry-agent.md" -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space add -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c10-registry-task.md" -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space merge-base --is-ancestor <commit> origin/main
+
+Result:
+
+```
+REFUSED notes/note-20261001T1800Z-3c11-home-path.md: profile line 11
+```
+
+This was a desk run, so I printed the git commands and ran none of them. That means no `FILED` lines, and nothing was committed or pushed.
+
+- **Check results:** `3c09-registry-agent` and `3c10-registry-task` passed all three checks, so their filing commands are listed above. `3c11-home-path` failed the profile check at line 11 because it contains a home path. It needs that path removed or changed to a generic `~/` path before it can be filed.
+- **Registry values weren't checked:** this session has no bus, so the profile check had no agent or task registry to compare against. It only used values from this machine (its hostname, credential key names and home paths). The two registry notes passed on that basis. If they contain agent ids or task ids from a real mesh, this check would not have caught them.
+- **A real run would fail:** `repos/solo-space` isn't a git repository (`git -C … rev-parse` says "not a git repository"). So it has no `origin` to fetch from or push to, and the first `fetch` would fail. Before a real filing, it needs to be a clone of the space's remote.
+- **Commands left out:** I didn't list the ones that only run in some cases: the skip-path `log -1 … origin/main`, `reset -q HEAD~1` after a failed re-check, and `rebase --abort` after a conflict. The re-check after the rebase runs `check.sh`, not git, so it isn't in the list either.
+
+All DESK lines, in the order printed:
+
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space add -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c09-registry-agent.md" -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c09-registry-agent.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space merge-base --is-ancestor <commit> origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space cat-file -e origin/main:notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space diff --quiet origin/main -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space add -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space commit -m "File notes/note-20261001T1800Z-3c10-registry-task.md" -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space log -1 --format=%H -- notes/note-20261001T1800Z-3c10-registry-task.md
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space fetch origin
+DESK: git -C <scratch>/runs/20261029T040753Z-test_T10_TS8_joined_and_registry_values-e719/repos/solo-space merge-base --is-ancestor <commit> origin/main
+===== stderr-2.txt (empty)
+===== check.out
+T10.TS8.1 pass 6 of 6 joined or root values refused as profile line 11
+T10.TS8.2 pass 2 of 2 id-shaped texts filed
+T10.TS8.3 pass 0 refused value(s) printed
+T10.TS8.4 pass home path record: [('profile', 11)]; path printed False
+T10.TS8.5 pass 2 of 2 registry-only values filed
+T10.TS8.6 pass 0 git commit or push call(s) ran
+

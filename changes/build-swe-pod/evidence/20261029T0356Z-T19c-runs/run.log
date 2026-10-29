@@ -1,0 +1,13 @@
+gate: agent-mesh f27c611 hooks/git-gate.py, no allowlist
+RESULT test_R14_S1_merge_order_and_pins fail (check R14.S1.4: 1 space commit(s) stage pod.yaml)
+RESULT test_R5_S2_tests_promoted_at_integrate pass (all 4 checks pass)
+RESULT test_I8_space_librarian_checks pass (all 7 checks pass)
+RESULT test_R17_S2_single_seat_librarian fail (check R17.S2.1: 0 of 8 built records refused exactly once)
+RESULT test_T10_TS1_reference_rule pass (all 5 checks pass)
+RESULT test_T10_TS6_commit_stage_order fail (check T10.TS6.1: 3 commit(s), covering notes/note-20261001T1600Z-2a02-second.md; notes/note-20261001T1600Z-2a01-first.md; notes/note-20261001T1600Z-2a02-second.md)
+RESULT test_T10_TS8_joined_and_registry_values pass (all 6 checks pass)
+RESULT test_T12_TS1_unmounted_project_blocked pass (all 3 checks pass)
+RESULT test_T12_TS3_load_never_changes_bus pass (all 5 checks pass)
+RESULT test_I7_agent_mesh_documents pass (all 7 checks pass)
+RESULT test_R16_S1_dispatch_line_names_no_machine pass (all 4 checks pass)
+exit status 1

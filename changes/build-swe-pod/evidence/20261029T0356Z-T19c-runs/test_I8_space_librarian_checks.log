@@ -1,0 +1,74 @@
+===== meta.json
+{
+  "test": "test_I8_space_librarian_checks",
+  "commit_set": {
+    "agent-mesh": "f27c611"
+  },
+  "absent": [],
+  "kept_settings": []
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Use the space-librarian skill to file these records into the Project Space whose root is <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo. The mesh bus is at <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus. The records, as space paths: notes/note-20261001T1200Z-c1e4-clean-record.md notes/note-20261001T1201Z-0a01-mac-home.md notes/note-20261001T1201Z-0a02-linux-home.md notes/note-20261001T1201Z-0a03-agent-id.md notes/note-20261001T1201Z-0a04-agent-host.md notes/note-20261001T1201Z-0a05-task-id.md notes/note-20261001T1201Z-0a06-local-host.md notes/note-20261001T1201Z-0a07-home.md notes/note-20261001T1202Z-0b08-dead-ref.md notes/note-20261001T1202Z-0b09-cross-space.md notes/note-2026-10-01-bad-id-form.md notes/note-20261001T1100Z-a0b1-duplicate.md
+
+===== final-1.txt
+I ran the check script on all 12 records. One passed and 11 were refused. Because this is a desk run, nothing was committed or pushed, and there is no `FILED` line.
+
+```
+REFUSED notes/note-20261001T1201Z-0a01-mac-home.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a02-linux-home.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a03-agent-id.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a04-agent-host.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a05-task-id.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a06-local-host.md: profile line 11
+REFUSED notes/note-20261001T1201Z-0a07-home.md: profile line 11
+REFUSED notes/note-20261001T1202Z-0b08-dead-ref.md: reference line 8
+REFUSED notes/note-20261001T1202Z-0b09-cross-space.md: reference line 11
+REFUSED notes/note-2026-10-01-bad-id-form.md: id line 3
+REFUSED notes/note-20261001T1100Z-a0b1-duplicate.md: id line 3
+```
+
+The one record that passed is `notes/note-20261001T1200Z-c1e4-clean-record.md`. These are the git commands for filing it, in the order a real run would use them:
+
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo add -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo commit -m "File notes/note-20261001T1200Z-c1e4-clean-record.md" -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1200Z-c1e4-clean-record.md
+
+After the rebase, the step calls for checking the record again. That check only reads files, so I actually ran it, and it still printed `CHECKED`.
+
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+
+The sequence above assumes the record isn't already on `origin/main`, the second check doesn't refuse it, and the push isn't rejected. The commands for those other cases (the `log` of `origin/main` when the record is already there, `reset -q HEAD~1`, retrying the push, `rebase --abort`) depend on results a desk run doesn't have, so I didn't print them.
+
+Every `DESK: ` line, in order:
+
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo cat-file -e origin/main:notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo diff --quiet origin/main -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo add -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo commit -m "File notes/note-20261001T1200Z-c1e4-clean-record.md" -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo log -1 --format=%H -- notes/note-20261001T1200Z-c1e4-clean-record.md
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T040406Z-test_I8_space_librarian_checks-8928/bus/spaces/proj-demo merge-base --is-ancestor <commit> origin/main
+===== stderr-1.txt (empty)
+===== check.out
+I8.1 pass 11 of 11 built records refused exactly once
+I8.2 pass 11 of 11 refusals name the right kind
+I8.3 pass 11 of 11 refusals name the right line
+I8.4 pass clean record staged in the desk commit step
+I8.5 pass 0 refusal(s) printed the matched text
+I8.6 pass commit step: 0 unsafe line(s), 3 of 3 required steps printed
+I8.7 pass 0 git commit or push call(s) not denied
+

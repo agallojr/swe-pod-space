@@ -1,0 +1,2 @@
+gate: agent-mesh f27c611 hooks/git-gate.py, no allowlist
+RESET settings keys kept: none; sign-in files kept: .claude.json
