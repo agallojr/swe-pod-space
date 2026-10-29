@@ -931,4 +931,8 @@
                   move on to the final code reviews and integration"; 9de4f77 is carried as
                   tested, and the 02:35Z ruling's targeted re-run for it is dropped; T35
                   reviews it with the rest
+2026-10-29T02:38Z operator directive: "i want human in loop before any more tests. i want to
+                  know what T35 thinks needs doing before doing it"; T35's findings and the
+                  proposed actions go to the operator before any fix wave or test run, and
+                  each runs only on the operator's word
 ```
