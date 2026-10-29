@@ -1011,4 +1011,16 @@
                   Important finding in the re-review, or a failing test, stops the run
                   before any merge; cost if wrong: until G1 is in the overlay, a future pod
                   change needs temporary allow rules, as this one did
+2026-10-29T03:39Z T35 fix wave DONE_WITH_CONCERNS: tasks/T35-fix-report.md; agent-mesh
+                  9de4f77..f27c611 (T10 integrate mode and fixture rule, T12 mesh-load and
+                  the poller's cost text, T9 the template example), swe-pod 83eaef9..b7fc257
+                  (T1, T5 cite integrate mode); its checks green; integrate mode not yet run
+                  on this space
+2026-10-29T03:39Z T10 fix round 1/5: 2 addressed, 0 open, 9de4f77..3cf692a
+2026-10-29T03:39Z T12 fix round 1/5: 2 addressed, 0 open, 3cf692a..f27c611
+2026-10-29T03:39Z T9 fix round 1/5: 1 addressed, 0 open, 2d3f283..95fdbdb
+2026-10-29T03:39Z T1 fix round 1/5: 1 addressed, 0 open, 83eaef9..70c46e5
+2026-10-29T03:39Z T5 fix round 1/5: 1 addressed, 0 open, 70c46e5..b7fc257
+2026-10-29T03:39Z filed changes/build-swe-pod/tasks/T35-fix-report.md
+2026-10-29T03:39Z dispatch T35 -> review (local, any): re-review of the fix wave
 ```
