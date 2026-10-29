@@ -861,4 +861,39 @@
 2026-10-28T12:40Z dispatch T19a -> test (local, macos-laptop)
 2026-10-28T12:40Z dispatch T19b -> test (mesh, linux-server)
 2026-10-28T12:40Z filed changes/build-swe-pod/tasks/T19a-brief.md, tasks/T19b-brief.md
+2026-10-29T01:55Z T19a BLOCKED: round 6 stopped at 2026-10-28T13:04Z, when the operator
+                  account reached its daily API spend limit; 12 results before it, all pass;
+                  no record written
+2026-10-29T01:55Z T19b BLOCKED: round 6 stopped at 2026-10-28T13:04Z by the same spend
+                  limit; of 47, 23 pass before it and 24 fail after it on an empty agent
+                  reply, not an answer; no files returned, none filed
+2026-10-29T01:55Z operator decision: verify is rewritten "to focus on the important things"
+                  ("i do not need perfection"): what has passed consistently is assumed, and
+                  only what remains is tested, as if it were a new change, because a full
+                  regression run is expensive and is run only when one is needed; the mesh
+                  demonstration, local and remote pod agents joined by the mesh, is proven
+                  and is not redone; T35 is kept, with a cost estimate; T36 is kept
+2026-10-29T01:55Z operator directive: the remaining tests run on the linux-server node
+                  through the mesh
+2026-10-29T01:55Z Ruling: under that decision, verify is one shard, T19c, on linux-server
+                  through the mesh, at swe-pod 83eaef9 and agent-mesh bbd19a2, tests changed
+                  at 31e5e2d; it runs 9 tests: the 5 that did not pass in round 4 and have
+                  not passed consistently since (R23.S2, T1.TS4, T10.TS6, T13.TS1 with
+                  T13.TS2, T7.TS3), the 3 others whose deliverable text changed after round
+                  4 (I1, R13.S1, T8.TS3, the heavy-rule fix), and test_R16_S1 last; expected
+                  2193 s
+2026-10-29T01:55Z Ruling: the other 81 tests are established: 80 passed in round 4, R19.S1
+                  passed in round 6 at this commit set, and the runner's desk-step wording
+                  that changed after round 4 was proven by T41's live runs; R7.S1 and R17.S1
+                  live stand on rounds 3 to 5; verified, for this change, is T19c's 9 tests
+                  passing with the 81 carried from their filed evidence, in place of every
+                  result at one commit set (R24); cost if wrong: a regression in an
+                  established test is found later, by a full run
+2026-10-29T01:55Z Ruling: a T19c run stopped by an API error (provider safeguard, gateway
+                  outage), not an agent's answer, re-runs after the main pass, at most twice
+                  more, inside the shard cap; a spend-limit stop ends the shard at once as
+                  BLOCKED, with the results so far, and scores no test after it; cost if
+                  wrong: up to about 40 min more shard time
+2026-10-29T01:55Z plan revision 4.4 to a fresh planner: T19c replaces T19a and T19b as
+                  verify; T35 and T36 wait for it
 ```
