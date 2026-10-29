@@ -999,4 +999,16 @@
                   text (T35), skipped for now by the operator
 2026-10-29T03:08Z dispatch T10, T1, T5, T12, T9 -> build (local, any), base swe-pod 83eaef9,
                   agent-mesh 9de4f77: T35 fix wave
+2026-10-29T03:30Z operator directive: "i want this as automated as possible. I'm going to
+                  sleep"; and before it: "these fixes and tests will run here, and then you
+                  will be committing the branch(es) and promoting them to main"
+2026-10-29T03:30Z Ruling: the wave, its re-review, the targeted re-run on macos-laptop and
+                  T36 run unattended to the merges, which the operator's words authorize;
+                  T36 step 4 (G1 and G2 into the operator's overlay) moves to after the
+                  merges and stays the operator's, since it widens what agents may do
+                  unasked and nothing in this change depends on it; the bus gitlink bumps
+                  and the settings steps of step 6 also wait for the operator; a Critical or
+                  Important finding in the re-review, or a failing test, stops the run
+                  before any merge; cost if wrong: until G1 is in the overlay, a future pod
+                  change needs temporary allow rules, as this one did
 ```
