@@ -9,6 +9,7 @@ discovered_by: agallojr/librarian
 discovered_on: 2026-10-26
 discovered_in: build-swe-pod
 retention: until-superseded
+superseded_by: https://github.com/agallojr/agent-mesh/blob/main/spec/memory-spaces.md
 ---
 
 # Agent Mesh memory spaces — design concept

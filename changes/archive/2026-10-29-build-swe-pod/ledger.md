@@ -1073,4 +1073,17 @@
                   space 640996c; step 2: the spec matches the deliverables by T35 and its
                   re-review, and T0's check (3) holds, SPEC.md's requirements section
                   identical to the spec's
+2026-10-29T11:17Z merged agent-mesh change/build-swe-pod into main, fast-forward
+                  8ee5364..f27c611, on the operator's word
+2026-10-29T11:17Z merged swe-pod change/build-swe-pod into main, fast-forward
+                  8fc5294..b7fc257, on the operator's word
+2026-10-29T11:17Z deleted swe-pod change/build-swe-pod on its remote; agent-mesh
+                  change/build-swe-pod is left, equal to main, as the harness refused its
+                  delete, for the operator
+2026-10-29T11:17Z T36 step 3: report.md written; step 7: PROCESS.md copied in, pod.yaml at
+                  swe-pod-process@1 with both pins at the merged heads, AGENTS.md's interim
+                  paragraph replaced by the test-agent exception, the memory-spaces note
+                  superseded_by agent-mesh spec/memory-spaces.md, the spec marked
+                  integrated; filed with the tests' move to tests/build-swe-pod/ and the
+                  archive move, in one integrate commit
 ```

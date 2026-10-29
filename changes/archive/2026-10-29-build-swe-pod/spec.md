@@ -9,6 +9,7 @@
 - Status: revision 3, 2026-10-27 (UTC), approved.
 - approved: agallojr 2026-10-27T21:36Z
 - approved: agallojr 2026-10-28T00:31Z (amendment: R24 added, with the scaling bullet in §7)
+- integrated: agallojr 2026-10-29T11:17Z
 - Replaces two earlier drafts kept in the operator's private library: a design
   concept (revision 2, 2026-10-26) and an engineering process (draft 1,
   2026-10-27). Both used OpenSpec and superpowers as plug-ins. This revision

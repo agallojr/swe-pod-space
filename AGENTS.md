@@ -12,8 +12,10 @@ Read in this order:
    `ledger.md`.
 4. Your task's brief, if you have one: `changes/<id>/tasks/<n>-brief.md`.
 
-Until `PROCESS.md` exists (deliverable D1 of `build-swe-pod`), sections 4 to 9
-of `changes/build-swe-pod/spec.md` are the process.
+**Exception.** A test-writing agent reads only its brief and `spec.md`.
+While it writes project-level tests it skips the read order above: no
+`STATUS.md`, `plan.md` or `ledger.md`, no other brief, report or review, and
+no code-repo diff or implementation body.
 
 Standing rules:
 
