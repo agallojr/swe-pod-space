@@ -46,6 +46,23 @@ built the pod before any standing rule existed.
   a space librarian's commits to its space's main.
 - With that in place, a new project's change needs no permission edit.
 
+## A model for each role, set per project and recorded
+
+The operator agreed (2026-10-29) to make the model each pod role runs on
+explicit and auditable. Today PROCESS.md gives only guidance (a cheaper model
+for mechanical work with a complete brief, the most capable for design
+judgment and the whole-change review, a stronger model for fix rounds 4 and
+5), every role file says `model: inherit`, and the lead picks per dispatch
+with nothing recorded.
+
+- Proposed: `pod.yaml` gains an optional `models:` map, one entry per role
+  (and one for the whole-change review), which the lead follows. A role with
+  no entry keeps `model: inherit`.
+- Every dispatch line names the model:
+  `dispatch T<n> -> <role> (<local|mesh>, <env class|any>, <model>)`.
+- On a mesh, the dispatch carries the model to the executor; the node's
+  poller model stays its own.
+
 ## Also for that change
 
 - The three test-check fixes ruled at build-swe-pod's integrate:
