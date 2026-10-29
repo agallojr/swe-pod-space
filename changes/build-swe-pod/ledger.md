@@ -913,4 +913,18 @@
                   read of the T19b round 5 record and report, past its brief's last line, is
                   accepted, as it took only their layout and no result; next T35 on the most
                   capable model; cost if wrong: none to the results
+2026-10-29T02:35Z agent-mesh change/build-swe-pod moved to 9de4f77 at 2026-10-29T02:13Z,
+                  after T19c had started: the poller's cost change (the scanner's idle
+                  deadline cut under the prompt-cache TTL, and the poller given its own
+                  model), made by another agent the operator started, on the operator's
+                  notice ("another agent to make a change to the agent mesh poller", "for
+                  cost improvement")
+2026-10-29T02:35Z Ruling: 9de4f77 joins the change as an out-of-plan commit, with no Task
+                  trailer; T35 reviews it with the rest, agent-mesh 8ee5364..9de4f77 and
+                  swe-pod 8fc5294..83eaef9; after T35's fixes, one targeted re-run on
+                  linux-server runs the tests whose deliverables name a changed file, for
+                  9de4f77 I7, T11.TS5, T11.TS7, T12.TS1, T12.TS2, T13.TS1, T9.TS1 and
+                  T9.TS2, then test_R16_S1; T19c's evidence stands at agent-mesh bbd19a2;
+                  cost if wrong: one more targeted run
+2026-10-29T02:35Z dispatch T35 -> review (local, any)
 ```
