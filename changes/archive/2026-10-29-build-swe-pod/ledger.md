@@ -1086,4 +1086,7 @@
                   superseded_by agent-mesh spec/memory-spaces.md, the spec marked
                   integrated; filed with the tests' move to tests/build-swe-pod/ and the
                   archive move, in one integrate commit
+2026-10-29T11:20Z filed by integrate: 1755 paths, space c8e2126
+2026-10-29T11:20Z integrated: the change is archived at changes/archive/2026-10-29-build-swe-pod/,
+                  its tests at tests/build-swe-pod/
 ```
