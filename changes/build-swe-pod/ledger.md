@@ -896,4 +896,10 @@
                   wrong: up to about 40 min more shard time
 2026-10-29T01:55Z plan revision 4.4 to a fresh planner: T19c replaces T19a and T19b as
                   verify; T35 and T36 wait for it
+2026-10-29T02:03Z plan.md revision 4.4 filed: T19c, the targeted verify, replaces T19a and
+                  T19b (OD8); T35 and T36 wait on T19c
+2026-10-29T02:03Z heavy: asked agallojr before T19c: runner.sh run; caps each run its cap_s,
+                  at most 1800 s, task 120 min; expected 2193 s
+2026-10-29T02:03Z dispatch T19c -> test (mesh, linux-server)
+2026-10-29T02:03Z filed changes/build-swe-pod/tasks/T19c-brief.md
 ```
