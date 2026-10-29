@@ -1045,4 +1045,20 @@
 2026-10-29T03:53Z dispatch T19c -> test (local, macos-laptop): round 2, the 11 tests the T35
                   fix wave touches, at swe-pod b7fc257 and agent-mesh f27c611
 2026-10-29T03:53Z filed changes/build-swe-pod/tasks/T35-review-r1.md, tasks/T19c-brief.md
+2026-10-29T04:17Z T19c DONE_WITH_CONCERNS: ev-20261029T0356Z-T19c, macos-laptop, round 2 at
+                  space 640996c, swe-pod b7fc257, agent-mesh f27c611; 8 pass, 3 fail, 0
+                  not-run of 11; run 891 s against 3003 s expected; smoke 8 of 8; no API
+                  stop
+2026-10-29T04:17Z filed changes/build-swe-pod/evidence/20261029T0356Z-T19c.md, its -runs/
+                  and its -report.md
+2026-10-29T04:17Z triage of the 3 fails, by the lead from the run logs: R14.S1.4 counts a
+                  later ledger append whose text names pod.yaml as a pin edit, which its own
+                  Then 4 excludes, while merge order, pins and the one integrate commit are
+                  right; R17.S2.1 counts each REFUSED line twice because the agent's reply
+                  repeats the block, while each of the 8 is refused once with the right kind
+                  and line; T10.TS6.1 counts 3 commits because the reply prints one commit
+                  step in interim text and again in its closing block, while the sequencing
+                  checks pass; all three are test-side, not deliverable faults
+2026-10-29T04:17Z held: no merge before the operator's word on the 3 fails, by the 03:30Z
+                  ruling and the 02:38Z directive
 ```
