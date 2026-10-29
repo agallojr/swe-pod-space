@@ -63,6 +63,23 @@ with nothing recorded.
 - On a mesh, the dispatch carries the model to the executor; the node's
   poller model stays its own.
 
+## Right-size quality assurance
+
+The operator (2026-10-29): "we need to get to right size on our quality
+assurance processes." build-swe-pod ran one review per build task, many fix
+rounds, and full regression rounds; its verify cost was cut only by the
+operator's targeted-verify decision. The next project's first plan again had
+one review per build task (14 reviews for about 20 tasks), and the operator
+chose one review per wave.
+
+- Proposed: PROCESS.md sizes review and verify to risk, not to task count:
+  one review per wave by default, a per-task review only where the plan marks
+  a task as risky, and a targeted verify (the tests that read a changed
+  deliverable, plus the dispatch check) by default, with a full regression run
+  only on the operator's word or before a release.
+- The plan template asks the planner to state each wave's review and the
+  verify scope, with an estimated cost, so the operator's skim can trim it.
+
 ## Also for that change
 
 - The three test-check fixes ruled at build-swe-pod's integrate:
