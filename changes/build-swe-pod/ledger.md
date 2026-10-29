@@ -927,4 +927,8 @@
                   T9.TS2, then test_R16_S1; T19c's evidence stands at agent-mesh bbd19a2;
                   cost if wrong: one more targeted run
 2026-10-29T02:35Z dispatch T35 -> review (local, any)
+2026-10-29T02:36Z operator decision: "include the poller change, assume it is tested, and
+                  move on to the final code reviews and integration"; 9de4f77 is carried as
+                  tested, and the 02:35Z ruling's targeted re-run for it is dropped; T35
+                  reviews it with the rest
 ```
