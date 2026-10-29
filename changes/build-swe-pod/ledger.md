@@ -902,4 +902,15 @@
                   at most 1800 s, task 120 min; expected 2193 s
 2026-10-29T02:03Z dispatch T19c -> test (mesh, linux-server)
 2026-10-29T02:03Z filed changes/build-swe-pod/tasks/T19c-brief.md
+2026-10-29T02:33Z T19c DONE: ev-20261029T0211Z-T19c, linux-server, at space 082b1c3, swe-pod
+                  83eaef9, agent-mesh bbd19a2; 9 pass, 0 fail, 0 not-run of 9; run 512 s
+                  against 2193 s expected; smoke 8 of 8; no API stop; the result's 21 files
+                  match their sha256
+2026-10-29T02:33Z filed changes/build-swe-pod/evidence/20261029T0211Z-T19c.md, its -runs/
+                  and its -report.md, from the remote node's result
+2026-10-29T02:33Z Ruling: the change is verified by OD8: T19c's 9 tests pass at swe-pod
+                  83eaef9 and agent-mesh bbd19a2, with the other 81 carried; the tester's
+                  read of the T19b round 5 record and report, past its brief's last line, is
+                  accepted, as it took only their layout and no result; next T35 on the most
+                  capable model; cost if wrong: none to the results
 ```
