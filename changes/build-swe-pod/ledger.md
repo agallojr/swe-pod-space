@@ -1061,4 +1061,16 @@
                   checks pass; all three are test-side, not deliverable faults
 2026-10-29T04:17Z held: no merge before the operator's word on the 3 fails, by the 03:30Z
                   ruling and the 02:38Z directive
+2026-10-29T11:13Z operator decision on the 3 fails: "Rule test-side, merge"
+2026-10-29T11:13Z Ruling: R14.S1.4, R17.S2.1 and T10.TS6.1 failed on the check, not the
+                  deliverable (03:59Z triage); R14.S1, R17.S2 and T10.TS6 count as passing
+                  at swe-pod b7fc257 and agent-mesh f27c611 for this change, and the three
+                  check fixes (the pin-edit heuristic, and counting output the agent
+                  repeats) go to the follow-up change; the change is verified by OD8 at
+                  those heads; cost if wrong: a fault in the merge, refusal or commit-order
+                  text ships, to be found by the follow-up change's run
+2026-10-29T11:13Z T36 step 1: no tests/, pin or branch head moved since T19c round 2 at
+                  space 640996c; step 2: the spec matches the deliverables by T35 and its
+                  re-review, and T0's check (3) holds, SPEC.md's requirements section
+                  identical to the spec's
 ```
