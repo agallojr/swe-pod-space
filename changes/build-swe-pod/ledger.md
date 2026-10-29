@@ -935,4 +935,7 @@
                   know what T35 thinks needs doing before doing it"; T35's findings and the
                   proposed actions go to the operator before any fix wave or test run, and
                   each runs only on the operator's word
+2026-10-29T02:58Z T35 review r1: spec issues; 3 Important, 27 Minor
+2026-10-29T02:58Z filed changes/build-swe-pod/tasks/T35-review.md; its proposed actions go to
+                  the operator before any fix wave or run, by the 02:38Z directive
 ```
