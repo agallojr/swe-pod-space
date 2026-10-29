@@ -115,16 +115,18 @@ T40 is dropped (PC1 (a)), and its id is not reused.
 T19a and T19b are superseded by T19c (§3 OD8), and their ids are not
 reused.
 
-This task runs these 9 tests, serially, in this order (expected 2193 s in all):
+This task runs these 11 tests, serially, in this order (expected 3003 s in all):
 
-- test_I1_process_md
-- test_R13_S1_heavy_check_asks_first
-- test_T1_TS4_heavy_from_recorded_run_time
-- test_T8_TS3_heavy_verify_with_g3_overlay
-- test_R23_S2_unnamed_repo_no_branch
+- test_R14_S1_merge_order_and_pins
+- test_R5_S2_tests_promoted_at_integrate
+- test_I8_space_librarian_checks
+- test_R17_S2_single_seat_librarian
+- test_T10_TS1_reference_rule
 - test_T10_TS6_commit_stage_order
-- test_T13_TS1_result_files_by_rule
-- test_T7_TS3_ledger_written_in_words
+- test_T10_TS8_joined_and_registry_values
+- test_T12_TS1_unmounted_project_blocked
+- test_T12_TS3_load_never_changes_bus
+- test_I7_agent_mesh_documents
 - test_R16_S1_dispatch_line_names_no_machine
 
 ## Spec
@@ -609,24 +611,24 @@ declares no Quality section; the standard close covers it.
 ## Rulings
 
 - Use the runner and its protocol in `changes/build-swe-pod/tests/README.md`. First `runner.sh reset`, then `runner.sh smoke`. A smoke failure, or a managed policy of a kind not ruled on, stops the task as BLOCKED before any test runs. Kinds ruled on: the node's gateway login and provider environment (00:05Z); a gateway settings drop-in, and the gateway's remote managed settings (02:59Z). The evidence body records the smoke result.
-- Time: each run is capped at its own `cap_s`, and the task at 120 min in all. A run that reaches its cap is `not-run`, with the cap. If the task reaches 120 min, stop, record every test not yet run as `not-run (task cap)`, and file what you have.
-- heavy: approved by agallojr ("yes to heavy", 2026-10-28T03:10Z; "be permissive on time", 02:49Z; "fire at it the remaining 9 tests", 2026-10-29) for runner.sh run over these 9 tests; caps: each run its own cap_s, at most 1800 s, and the task 120 min; expected: 2193 s. Pass `--allow-heavy`.
+- Time: each run is capped at its own `cap_s`, and the task at 180 min in all. A run that reaches its cap is `not-run`, with the cap. If the task reaches 180 min, stop, record every test not yet run as `not-run (task cap)`, and file what you have.
+- heavy: approved by agallojr (the T35 proposals A to D, "you may run the plan A,B,C,D as you suggest", 2026-10-29T03:08Z; "these fixes and tests will run here", 03:30Z) for runner.sh run over these 11 tests; caps: each run its own cap_s, at most 1500 s, and the task 180 min; expected: 3003 s. Pass `--allow-heavy`.
 - API errors (2026-10-29T01:55Z): a run stopped by an API error (provider safeguard, gateway outage), not an agent's answer, re-runs after the main pass, at most twice more, inside the task cap, then test_R16_S1 again last; each test's result is its last run's, and one still stopped is `not-run (environment)`. A spend-limit stop ends the task at once as BLOCKED, with the results so far, and scores no test after it.
 - Use a scratch root new for this task, so that test_R16_S1 reads only this task's runs.
-- Run only these 9 tests, serially, in the order listed, each once apart from the re-runs above. Write the record with every key of plan section 2.4, `shard: T19c` and `tests:` included, `unit: {swe-pod: none-present, agent-mesh: none-present}`, `quality: none-declared` and `wall_time_s`, and results only for the tests this task ran. Log pointers go only into its `-runs/` folder.
+- Run only these 11 tests, serially, in the order listed, each once apart from the re-runs above. Write the record with every key of plan section 2.4, `shard: T19c` and `tests:` included, `unit: {swe-pod: none-present, agent-mesh: none-present}`, `quality: none-declared` and `wall_time_s`, and results only for the tests this task ran. Log pointers go only into its `-runs/` folder.
 - This brief grants, and only this brief: read-only git (clone, fetch, archive) into a scratch directory outside the bus, and running the runner; no `git init`, as T19c runs no I6. Cite the PC2 authority in the report.
-- Return on a pre-M3 node: write each file body under `outbox/<your agent id>/T19c-files/<space path>`, which the poller's sync carries, and put the `files:` list, with each file's sha256, in the result body.
+- Round 2, by the 2026-10-29T03:08Z ruling: this round runs local, on macos-laptop, at the new branch heads, and runs the 11 tests the T35 fix wave touches, in place of the 9 that plan.md lists; the rest of the T19c entry holds. Write the record, its `-runs/` folder and its report into the space's working tree at the paths below, and commit nothing; the lead files them.
 
 ## Start from
 
 - base commit set: space c814837, swe-pod 8fc5294, agent-mesh 8ee5364
-- commit set under test: swe-pod 83eaef9, agent-mesh bbd19a2
+- commit set under test: swe-pod b7fc257, agent-mesh f27c611
 - tests changed at: 31e5e2d
 - space commit: given at dispatch, on its own line
 
 ## Result goes to
 
-- evidence: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>-T19c.md, id `ev-<YYYYMMDDTHHMMZ>-T19c`, `env: linux-server`
+- evidence: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>-T19c.md, id `ev-<YYYYMMDDTHHMMZ>-T19c`, `env: macos-laptop`
 - runs: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>-T19c-runs/
 - report: changes/build-swe-pod/evidence/<YYYYMMDDTHHMMZ>-T19c-report.md
 
