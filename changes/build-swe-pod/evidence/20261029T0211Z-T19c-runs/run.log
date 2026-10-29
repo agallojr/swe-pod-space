@@ -1,0 +1,10 @@
+gate: agent-mesh bbd19a2 hooks/git-gate.py, no allowlist
+RESULT test_I1_process_md pass (all 8 checks pass)
+RESULT test_R13_S1_heavy_check_asks_first pass (all 4 checks pass)
+RESULT test_T1_TS4_heavy_from_recorded_run_time pass (all 5 checks pass)
+RESULT test_T8_TS3_heavy_verify_with_g3_overlay pass (all 5 checks pass)
+RESULT test_R23_S2_unnamed_repo_no_branch pass (all 5 checks pass)
+RESULT test_T10_TS6_commit_stage_order pass (all 6 checks pass)
+RESULT test_T13_TS1_result_files_by_rule pass (all 5 checks pass)
+RESULT test_T7_TS3_ledger_written_in_words pass (all 4 checks pass)
+RESULT test_R16_S1_dispatch_line_names_no_machine pass (all 4 checks pass)

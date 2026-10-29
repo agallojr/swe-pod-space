@@ -1,0 +1,66 @@
+===== meta.json
+{
+  "test": "test_T7_TS3_ledger_written_in_words",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+Where are we?
+
+End your answer with these lines, filled in from the records:
+STATE add-greeting: <its state>
+NEXT add-greeting: <the task ids it can dispatch now, separated by commas, or none>
+IN FLIGHT add-greeting: <the task ids sent out whose own report has not come back, separated by commas, or none>
+===== final-1.txt
+**add-greeting is building.** T1 has reported, and its review (T4) is the next thing to dispatch. T3 is still out.
+
+There is no `STATUS.md` in the space, so I worked this out from the records and didn't file anything. The space folder isn't a git checkout either, so I read the files as they are on disk rather than as committed.
+
+**Records as of 2026-10-01T09:56Z**
+- Gates passed: the spec was approved by demo-owner at 2026-10-01T09:00Z, and demo-owner gave the go at 09:20Z.
+- Branches: the remotes on `example.invalid` don't resolve, so the heads come from the ledger.
+  - **alpha:** `change/add-greeting` is at `d4d4d4d`, the end of T1's range.
+  - **beta:** counts as missing. The ledger says in words that beta's branch was made at `b2b2b2b`. But that line isn't a range and the go line gives no sha, so the branch-head rule can't use it.
+- Tasks: 6 waiting, 1 ready, 2 dispatched, 1 done, 0 blocked.
+
+| task | role | state | latest |
+|---|---|---|---|
+| T0 | lead | done | 09:25Z DONE (the ledger says in words "T0 is finished") |
+| T1 | build | dispatched | 09:55Z DONE, alpha a1a1a1a..d4d4d4d, unit 3/3 pass |
+| T2 | build | waiting | - (needs T1 done, which needs its review closed) |
+| T3 | test | dispatched | 09:26Z dispatch -> test (local, any) |
+| T4 | review | **ready** | - |
+| T5–T9 | | waiting | - |
+
+- **Next:** T4, the review of T1 -> review (local, any).
+- **Blocked:** nothing.
+- **Open findings:** none (Critical 0, Important 0, Minor 0). There are no review lines yet.
+- **Evidence:** none yet.
+
+T1 counts as dispatched rather than done because a build task is done only once its review is closed. T2 waits on that.
+
+**Records worth opening**
+- `<scratch>/runs/20261029T021922Z-test_T7_TS3_ledger_written_in_words-3602/space/changes/add-greeting/ledger.md`
+- `<scratch>/runs/20261029T021922Z-test_T7_TS3_ledger_written_in_words-3602/space/changes/add-greeting/tasks/T1-report.md`
+- `STATUS.md` would be at `<scratch>/runs/20261029T021922Z-test_T7_TS3_ledger_written_in_words-3602/space/STATUS.md`. Ask me to regenerate it if you want it filed.
+
+Answering this question reaches no librarian commit step, so I printed no `DESK: ` lines.
+
+STATE add-greeting: building
+NEXT add-greeting: T4
+IN FLIGHT add-greeting: T3
+===== stderr-1.txt (empty)
+===== check.out
+T7.TS3.1 pass state given: 'building'
+T7.TS3.2 pass next given: T4
+T7.TS3.3 pass in flight given: T3
+T7.TS3.4 pass 0 other record(s) touched

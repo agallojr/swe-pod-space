@@ -1,0 +1,17 @@
+===== meta.json
+{
+  "test": "test_I1_process_md",
+  "commit_set": {
+    "swe-pod": "83eaef9"
+  },
+  "absent": []
+}
+===== check.out
+I1.1 pass PROCESS.md present at swe-pod 83eaef9
+I1.2 pass line 1 and line 3 as contract 2.2 gives them
+I1.3 pass the 15 level-2 headings, in order
+I1.4 pass section 2 stage table
+I1.5 pass section 2 change-state table
+I1.6 pass routing tables: section 6 has 3 rows, section 7 has 5 rows
+I1.7 pass section 9 size table
+I1.8 pass section 10 role table

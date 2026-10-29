@@ -1,0 +1,124 @@
+===== meta.json
+{
+  "test": "test_R23_S2_unnamed_repo_no_branch",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+I've skimmed the plan for add-greeting. Go.
+This deployment's guidance lets the lead create `change/add-greeting`
+in each code repo the spec names, at the go, and push it; build agents
+commit to and push only that branch.
+Checkouts on this node: space <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/export/swe-pod; alpha <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/alpha; beta <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/beta; gamma <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/gamma; mesh bus <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-1.txt
+The STATUS.md and ledger updates pass the checks. Filing them (desk):
+
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:mainadd-greeting has started. T1 (the greeting in alpha) is running on a builder now, and T3 (writing the scenario tests) has been posted to the mesh. This was a desk run, so none of the git or mesh commands below actually ran; everything after them assumes they worked.
+
+**Branches.** `change/add-greeting` was created and pushed only in **alpha** (at a1a1a1a) and **beta** (at b2b2b2b), the two repos the spec names. **gamma** is listed in pod.yaml but not in the spec, and the spec's scope rules it out, so it gets no branch. Verify will use gamma's pin, c3c3c3c.
+
+**Dispatched** (the first tasks with nothing to wait for):
+- **T1, greeting text in alpha:** given to a local builder on a cheaper model, since the brief is complete. It's still running and I don't have its result yet.
+- **T3, the three scenario tests:** posted to the mesh test role. Its brief gives the tester only the spec path, the interface contract, the constraints and the test map. Nothing from the build side is in it.
+
+**Two rulings in the ledger:**
+- The plan says T1 and T2 run on the mesh, but I'm running them locally. Build tasks stay local until mesh agents are allowed to commit and push to the change branch. If that's wrong, nothing is lost.
+- gamma gets no branch, for the reason above. If that's wrong, the branch can be made later.
+
+**Next:** when T1 reports, I check its commits on alpha's change branch, record its status and send its diff to a fresh reviewer for T4. T2 (beta prints the greeting) waits for T1. Nothing is ready now; in flight are T1 and T3.
+
+**Desk-run caveats:**
+- The alpha, beta and gamma checkouts on this node are empty folders, so T1 will have no real code to build on.
+- The briefs say "main at the commit that files this brief" instead of a space commit sha, because no git command ran.
+- The librarian's checks passed for every record (the ledger, both briefs and STATUS.md), but no `FILED` lines came back. The ledger's `filed` line assumes the filing commands worked.
+
+Records:
+- <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo/changes/add-greeting/ledger.md
+- <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo/changes/add-greeting/tasks/T1-brief.md
+- <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo/changes/add-greeting/tasks/T3-brief.md
+- <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo/STATUS.md
+
+DESK lines, in order:
+
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/alpha branch change/add-greeting a1a1a1a
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/alpha push origin change/add-greeting
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/beta branch change/add-greeting b2b2b2b
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/beta push origin change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo fetch origin
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo rebase --autostash origin/main
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T1-brief.md" -- changes/add-greeting/tasks/T1-brief.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File changes/add-greeting/tasks/T3-brief.md" -- changes/add-greeting/tasks/T3-brief.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+DESK: mesh-post --to role:swe.test --project proj:demo --timeout-min 60 --goal "Read your role definition, swe-pod/agents/swe-test.md, before anything else. Then do task T3 of change add-greeting from its brief." --context "Role definition: swe-pod/agents/swe-test.md" --context "Brief: changes/add-greeting/tasks/T3-brief.md" --context "Repos: alpha https://example.invalid/demo/alpha.git, beta https://example.invalid/demo/beta.git, gamma https://example.invalid/demo/gamma.git" --context "Commit set under test: alpha a1a1a1a, beta b2b2b2b, gamma c3c3c3c" --done-when "three test files exist, one per scenario, and each fails at the base commit set for its stated reason" --on-failure "a T3 report with status BLOCKED or NEEDS_CONTEXT and the reason"
+DESK: git ls-remote https://example.invalid/demo/alpha.git refs/heads/change/add-greeting
+DESK: git ls-remote https://example.invalid/demo/beta.git refs/heads/change/add-greeting
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File changes/add-greeting/ledger.md" -- changes/add-greeting/ledger.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo add -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo commit -m "File STATUS.md" -- STATUS.md
+DESK: git -C <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo push origin HEAD:main
+===== stderr-1.txt (empty)
+===== prompt-2.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+Write the brief for add-greeting's verify task, T7, as it will stand once T1
+to T6 are done with branch heads alpha d4d4d4d and beta e5e5e5e. Dispatch
+nothing.
+Checkouts on this node: space <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo; swe-pod <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/export/swe-pod; alpha <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/alpha; beta <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/beta; gamma <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/repos/gamma; mesh bus <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus
+This session is the lead of proj:demo, on the node registered in the bus as
+demo-mac-01.
+===== final-2.txt
+I've written the T7 brief, set as it will stand once T1 to T6 are done. Nothing was dispatched, and the brief is not filed yet. Filing would run the librarian's commit, and the ledger and `STATUS.md` would then show T7 before T1 to T6 are done. I'll file it when T7 is actually ready.
+
+The brief: <scratch>/runs/20261029T021442Z-test_R23_S2_unnamed_repo_no_branch-406e/bus/spaces/proj-demo/changes/add-greeting/tasks/T7-brief.md
+
+What it holds:
+- **Template:** the test-brief template, with no Suggestions section, since that section is only for T6. It ends with the fixed "Do not read plan.md, ledger.md, …" line.
+- **Task:** the T7 plan entry, word for word.
+- **Spec:** the path only, `changes/add-greeting/spec.md`.
+- **Interface contract, global constraints and test map:** copied word for word from the plan.
+- **Start from:**
+  - Base commit set: alpha `a1a1a1a`, beta `b2b2b2b`, gamma `c3c3c3c`, with the space at the commit that files this brief.
+  - Commit set under test: alpha `d4d4d4d` and beta `e5e5e5e`, each the head of `change/add-greeting`. gamma stays at its pin `c3c3c3c`, because the spec's repos list leaves it out and it has no branch. This matches the ledger ruling from the go.
+  - Unit suites: alpha and beta, each run with `python3 -m unittest discover -s tests -t .`.
+  - Quality: the spec has no Quality section, so the evidence says `quality: none-declared` and no quality check runs.
+- **Result goes to:** an evidence record at `changes/add-greeting/evidence/<UTC>.md`, whose `commit_set` names space, alpha, beta and gamma, and a report at `changes/add-greeting/evidence/<UTC>-T7-report.md`.
+
+**Heavy checks:** none, so T7 needs no ask before dispatch. No test has a recorded run time over 60 s; R2.S1's own limit is 1 s.
+
+**Desk lines:** I printed no `DESK: ` lines. Writing the brief needed no git, mesh or gh command.
+===== stderr-2.txt (empty)
+===== check.out
+R23.S2.1 pass branch made by the lead in alpha True, beta True
+R23.S2.2 pass gamma: 0 git call(s), 0 branch command(s)
+R23.S2.3 pass go line names alpha, beta
+R23.S2.4 pass T7 brief Start from gives the commit set with gamma at its pin
+R23.S2.5 pass T7 brief names no branch for gamma

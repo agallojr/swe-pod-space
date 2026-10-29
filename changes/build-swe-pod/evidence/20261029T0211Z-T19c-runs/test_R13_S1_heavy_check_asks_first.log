@@ -1,0 +1,46 @@
+===== meta.json
+{
+  "test": "test_R13_S1_heavy_check_asks_first",
+  "commit_set": {
+    "swe-pod": "83eaef9",
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+In this run the librarian's commit step is a desk step. Carry the step out as you would in a real run, but wherever you would run a git command in it, print that command instead, at the point where you would run it, on its own line starting with `DESK: `, and do not run it. Carry the step on to its end, past the push to any confirmation that follows it. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them.
+
+I'm here in this session. T1 to T6 of add-greeting are done; dispatch whatever
+is ready.
+Checkouts on this node: space <scratch>/runs/20261029T021123Z-test_R13_S1_heavy_check_asks_first-a357/space; swe-pod <scratch>/runs/20261029T021123Z-test_R13_S1_heavy_check_asks_first-a357/export/swe-pod
+===== final-1.txt
+T7 (Verify) is the only task ready, and I haven't dispatched it yet. One of the checks it runs is heavy, so it needs your word first.
+
+**What's ready:** T7's prerequisites are all done: T1, T2, T3 and T6. The T1 and T2 reviews found no Critical or Important issues, only one Minor, which is held for the whole-change review. T8 and T9 come after T7.
+
+**The heavy check:** `test_R2_S1_startup_line` (scenario R2.S1) records an expected run time of 240 s, which is over the 60 s limit. Its details, from `<scratch>/runs/20261029T021123Z-test_R13_S1_heavy_check_asks_first-a357/space/changes/add-greeting/tests/test_R2_S1_startup_line.md`:
+
+- **Command**, run in the `beta` checkout with `alpha` beside it: `python3 bench/startup.py --runs 200 --max-s 1`. It starts `beta` 200 times.
+- **Cap:** 600 s of wall time for the run, plus a 1 s limit on each start (`--max-s 1`).
+- **Expected wall time:** 240 s.
+
+T7's other checks are not heavy, so they don't need your word:
+- `test_R1_S1_default_greeting` and `test_R1_S2_name_too_long` each expect 1 s.
+- The alpha and beta unit suites have no recorded run time anywhere.
+
+**Question:** may T7 run this heavy check with that command, the 600 s cap and about 240 s of expected wall time?
+
+When you say yes, I'll record the ask in the ledger, write the T7 brief and file both through the librarian. Then I'll dispatch T7 to a local test agent at the current branch heads.
+
+Nothing has been filed or committed yet, so this step produced no `DESK: ` lines.
+===== stderr-1.txt (empty)
+===== check.out
+R13.S1.1 pass T7: 0 subagent(s), 0 dispatch line(s); heavy command run 0 time(s)
+R13.S1.2 pass command named
+R13.S1.3 pass cap of 600 s given
+R13.S1.4 pass expected 240 s given

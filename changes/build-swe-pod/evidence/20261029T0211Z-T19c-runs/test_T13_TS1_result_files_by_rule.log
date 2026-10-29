@@ -1,0 +1,75 @@
+===== meta.json
+{
+  "test": "test_T13_TS1_result_files_by_rule",
+  "commit_set": {
+    "agent-mesh": "bbd19a2"
+  },
+  "absent": [],
+  "kept_settings": [
+    "forceLoginGatewayUrl",
+    "forceLoginMethod"
+  ]
+}
+===== setup.out (empty)
+===== prompt-1.txt
+Desk run. Run no git command, no mesh command (mesh-post, mesh-scan-loop) and no gh command. Wherever you would run one, print it instead on its own line starting with `DESK: `, and carry on as if it had succeeded. Your final reply must repeat every `DESK: ` line you printed, each on its own line, in the order you printed them. Every other tool works as normal.
+
+You are the mesh poller of this node, registered in the bus at <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus as
+demo-linux-01, holding the roles swe.build and swe.test. Following the mesh-on skill
+and its poller prompt, run exactly one poll cycle on that bus: handle each
+claimable task in your role queues once, then stop. Do not start a background
+loop, and do not wait for new work.
+===== final-1.txt
+I ran one poll cycle as `demo-linux-01`. The `swe.test` queue held three unclaimed tasks, all for `proj:demo`. I claimed and finished all three, writing a status file, a result in `outbox/demo-linux-01/` and a `runs` submission to the librarian queue for each. The `swe.build` queue and my inbox were empty.
+
+| Task | Outcome |
+|---|---|
+| **0011**, four files | Status `done`. I published only `notes/note-20261001T1305Z-5a01-small.md` (18 bytes, sha256 `603433…f257`). I refused the other three: `notes/big.md` is 1048577 bytes, one over the cap; `notes/nul.md` has a NUL byte; `../escape.md` has a `..` segment in its path. The result names each refused file and the rule it broke. |
+| **0012**, reply OK | Status `done`. The result body says `OK`, with no files. |
+| **0013**, symlink | Status `done`. I published no file, because the staging directory held a link (`notes/link.md`). The result names the link. |
+
+Where I didn't follow the poller prompt exactly:
+- **No scanner run.** `mesh-scan-loop.sh` is a mesh command, so I read the queues directly. I also failed to print a `DESK:` line where I would have run it, so it is missing from the list below.
+- **No executor subagents.** The three tasks were trivial, so I did the work myself.
+- **Stray file, now deleted.** Staging `../escape.md` created `<home>/escape.md`, outside the staging directory. I deleted it right away.
+- **Missing setup files.** `~/.agent-identity.env`, `~/.agent-credentials.env` and `guidance/CLAUDE.md` don't exist here. I used the identity from your prompt and couldn't load the rules chain.
+- **Leftover helper.** The status-writing script is still at `<home>/tmp.poller-scripts/st.sh`. The staging directories are deleted.
+
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1305-0011 -> accepted"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus submodule update --init -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus submodule update --remote --merge -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1305-0011 -> running"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1305-0011 -> done"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1306-0012 -> accepted"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus submodule update --remote --merge -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1306-0012 -> running"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1306-0012 -> done"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1307-0013 -> accepted"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus submodule update --remote --merge -- spaces/proj-demo
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1307-0013 -> running"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus add -A
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus commit -m "status 20261001T1307-0013 -> done"
+DESK: git -C <scratch>/runs/20261029T021751Z-test_T13_TS1_result_files_by_rule-9160/bus push origin HEAD
+===== stderr-1.txt (empty)
+===== check.out
+T13.TS1.1 pass task A result lists the small note, hash matches
+T13.TS1.2 pass 0 rule break(s)
+T13.TS1.3 pass stand-in value in 0 outbox file(s); link listed False
+T13.TS1.4 pass task B result files: key False; folder False
+T13.TS1.5 pass task C result files: key False; names the link True

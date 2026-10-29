@@ -1,0 +1,2 @@
+gate: agent-mesh bbd19a2 hooks/git-gate.py, no allowlist
+RESET settings keys kept: forceLoginGatewayUrl, forceLoginMethod; sign-in files kept: .claude.json, .credentials.json
