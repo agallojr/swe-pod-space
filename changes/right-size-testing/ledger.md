@@ -36,4 +36,16 @@
 2026-10-30T16:25Z dispatch T1 -> build (local, any), base swe-pod b7fc257
 2026-10-30T16:25Z dispatch T2 -> test (local, macos-laptop)
 2026-10-30T16:25Z dispatch T3 -> test (local, any)
+2026-10-30T16:26Z filed STATUS.md
+2026-10-30T16:31Z filed changes/right-size-testing/tasks/T1-brief.md, changes/right-size-testing/tasks/T2-brief.md,
+                  changes/right-size-testing/tasks/T3-brief.md (plan section 2 whole; the first
+                  copies stopped inside 2.9)
+2026-10-30T16:31Z T3 DONE
+2026-10-30T16:31Z T3 at base: test_I1_process_md fail (I1.2: PROCESS.md line 3 is
+                  swe-pod-process@1), test_I3_d3_templates fail (I3.14: the template pod.yaml
+                  pins swe-pod-process@1)
+2026-10-30T16:31Z T3 cost: actual 1 s, 0 USD; estimate 2 s, 0 USD
+2026-10-30T16:31Z filed changes/right-size-testing/tests/test_I1_process_md.md,
+                  changes/right-size-testing/tests/test_I3_d3_templates.md,
+                  changes/right-size-testing/evidence/20261030T1628Z-T3-report.md
 ```
