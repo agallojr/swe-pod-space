@@ -123,4 +123,13 @@
                   template alone may skip that check
 2026-10-30T17:33Z filed changes/right-size-testing/tasks/T1-report.md
 2026-10-30T17:33Z dispatch T4 -> review (local, any)
+2026-10-30T17:40Z T1 review r1: spec ok; 1 Minor swe-pod/agents/swe-plan.md:103
+2026-10-30T17:40Z T4 review r1: spec ok; 1 Minor; Q1 pass
+2026-10-30T17:40Z Ruling: T4's re-review Minor, the reflow defect at swe-pod/agents/swe-plan.md:103
+                  and two short lines at swe-pod/PROCESS.md:367 and :484, is parked; why: a
+                  Minor finding starts no fix round (R11) and the one whole-change fix wave
+                  has run; cost if wrong: three unevenly wrapped lines ship in
+                  swe-pod-process@2
+2026-10-30T17:40Z filed changes/right-size-testing/tasks/T4-review-r1.md
+2026-10-30T17:41Z dispatch T5 -> test (local, macos-laptop)
 ```
