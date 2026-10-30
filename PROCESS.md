@@ -1,6 +1,6 @@
 # SWE Pod process
 
-process: swe-pod-process@1
+process: swe-pod-process@2
 
 This is the SWE Pod process, written as instructions to the agent doing the
 work. Each rule names the role it binds; where a section says "you", it means
@@ -44,7 +44,7 @@ project-level test to the Project Space.
 ```yaml
 pod: 1
 project: fvm-vqls
-process: swe-pod-process@1         # pinned PROCESS.md version
+process: swe-pod-process@2         # pinned PROCESS.md version
 repos:
   qutil: {remote: "<url>", pin: "<sha>"}
   fvm:   {remote: "<url>", pin: "<sha>"}
@@ -113,10 +113,10 @@ The process runs five stages, in order:
 | Stage | Role | Reads | Writes | Done when | Gate |
 |---|---|---|---|---|---|
 | **spec** | spec, with the human | the request, the code, earlier specs it touches | `spec.md` | every requirement has a scenario; the human approved | human approves |
-| **plan** | plan | the approved spec, the code | `plan.md` | every requirement traces to a build task and every scenario to a test; self-review passes | human skims (project size) |
-| **build** | build; review per task | its brief | code and unit tests on `change/<id>` | each task passes its done-when and its review | none |
-| **verify** | test; review | spec, project-level tests, the commit set | evidence, whole-change review | every project-level test, unit suite and declared quality check passes at the commit set; no open Critical or Important finding | none |
-| **integrate** | human, lead | everything above | merges, pins, docs, plans, final report, archive | merged in dependency order; tests promoted; report filed | human merges |
+| **plan** | plan | the approved spec, the code | `plan.md` | every requirement traces to a build task and every scenario to a test that names the risk it covers; self-review passes | human skims (project size) |
+| **build** | build; review per wave | its brief | code and unit tests on `change/<id>` | each task passes its done-when and the review that covers it | none |
+| **verify** | test; review | spec, project-level tests, the commit set | evidence, whole-change review | the latest evidence is green by the green rule (§7) at the commit set; no open Critical or Important finding | none |
+| **integrate** | human, lead | everything above | merges, pins, docs, plans, final report, archive | merged in dependency order; kept tests promoted; report filed | human merges |
 
 A commit set is one commit per affected code repo plus the Project Space
 commit. It is what verify runs against.
@@ -125,9 +125,11 @@ commit. It is what verify runs against.
   `approved:` line. Given "go" on such a change, dispatch nothing and say,
   exactly:
   `Not dispatched: the spec at changes/<id>/spec.md awaits approval.`
-- Writing the project-level tests is a test task that starts at the go, in
-  parallel with build, from the spec alone. Builders add to those tests only
-  by suggesting tests, which the test agent takes up or declines (§6).
+- Writing the blind project-level tests of the requirements the plan marks
+  at risk is a test task that starts at the go, in parallel with build, from
+  the spec alone (§4, §6). Builders add to those tests only by suggesting
+  tests, which the lead routes to the test agent only when they cover a risk
+  no planned test covers (§6).
 - Read a change's state from its records. Never set it by hand.
 
 | State | Read from |
@@ -136,7 +138,7 @@ commit. It is what verify runs against.
 | approved | `spec.md` has `approved:` |
 | planned | `plan.md` exists with its self-review filled in |
 | building | the ledger has a dispatch |
-| verified | the latest evidence is green at the current commit set, or for a sharded verify every shard's latest record is (§7), and the whole-change review has no open Critical or Important finding |
+| verified | the latest evidence is green by the green rule (§7) at the current commit set, or for a sharded verify its shards' latest records are green together (§7), and the whole-change review has no open Critical or Important finding |
 | integrated | `spec.md` has `integrated:`; the folder is under `changes/archive/` |
 | abandoned | `spec.md` has `abandoned:` with a reason |
 
@@ -212,7 +214,9 @@ The changed code SHALL pass the repo's linter with the repo's configuration.
 - Ids are local to the spec (`R1`, `R1.S1`) and qualified outside it
   (`add-vqls-backend/R1.S1`). When later work changes behavior an integrated
   spec requires, list those qualified ids under `supersedes`; the plan then
-  has a test task that updates the old tests in `tests/`.
+  has a test task that writes their replacements in `changes/<id>/tests/`,
+  verify gives the old tests `superseded by <key>`, and integrate moves them
+  out of `tests/` (§7, §8).
 - A fix that restores behavior an integrated spec already requires may cite
   that requirement in place of new ones: a five-line spec.
 - **Quality checks** go in the Quality section, one per tool or review: what
@@ -273,36 +277,115 @@ code it describes has written the code instead.
    - runs: local             # local | mesh
    - needs: any              # environment class, or any
    - serves: [R1]
+   - risk: at risk: a wrong solve shows only in the converged solution
    - touches: qutil/linsolve/vqls.py, qutil/tests/test_vqls.py
    - consumes: LinearSolver protocol from T1
    - produces: VQLSSolver(ansatz: str, layers: int)
    - steps: failing test, watch it fail, minimal code, watch it pass, commit
    - done when: the unit tests in qutil/tests/test_vqls.py pass at the branch
-     head (command and expected output given) and the task review has no
-     Critical or Important finding
+     head (command and expected output given) and the review that covers it
+     has no Critical or Important finding
    ```
 
    A build task is the smallest unit with its own test cycle that a
    reviewer could reject while approving its neighbor. Steps pin exact
    values and assertions. They give a function body only for an algorithm
-   the signature and tests leave open. Build tasks run `local` for now
+   the signature and tests leave open. Each build task entry has
+   `- risk: <at risk|small>: <reason>`. Build tasks run `local` for now
    (§11).
-6. **Test tasks:** the project-level tests to write (role test, `after: []`,
-   so they start at the go); a suggestions task (role test, after every
-   build task) that takes up the builders' test suggestions, if any; and the
-   verify run (role test, after every build and test task, with `needs:`
-   naming the environment class the tests require), whole or in shards,
-   each shard with its own `needs:`. A spec with entries under `supersedes`
-   also gets a test task that updates the matching tests in `tests/`.
-7. **Review tasks:** one per build task, plus the whole-change review after
-   verify's first green run.
+6. **Test tasks:** first the risk table and the expensive runs ("Risk and
+   the tests it calls for", below); then the test-writing task, which
+   writes the blind project-level tests of the requirements marked at risk
+   (role test, `after: []`, so it starts at the go); a suggestions task
+   (role test, after every build task), which runs only when the lead
+   routes a builder's suggestion to the test agent (§6); and the verify run
+   (role test, after every build and test task, with `needs:` naming the
+   environment class the tests require), whole or in shards, each shard
+   with its own `needs:`. A spec with entries under `supersedes` also gets a
+   test task that writes their replacements in `changes/<id>/tests/`;
+   verify gives the old tests `superseded by <key>`, and integrate moves
+   them out of `tests/` (§7, §8).
+7. **Review tasks:** the plan has one review per wave of build tasks, a
+   review of one build task only where its entry has `- risk: at risk`, and
+   the whole-change review. A wave is a group of build tasks the dependency
+   summary runs together, and its review covers those of them not reviewed
+   alone. A plan whose build tasks form one wave has one review, the
+   whole-change review. It covers every build task, those marked at risk
+   included; its `after:` list names them, and it comes before verify. A
+   wave whose build tasks are all marked at risk has no wave review: their
+   own reviews cover it.
 8. **Integrate task:** role lead, after verify and the whole-change review;
    it lists the docs and open plans this change touches.
-9. **Test map:** every scenario id to its project-level test name and the
-   task that writes it, plus any unit tests that also cover it.
+9. **Test map:** one row per scenario, with these columns, in this order:
+   `| Scenario | Test | Class | Risk it covers | Expected (s) | Keep | Written by | Unit tests that also cover it |`.
+   Keep is `keep` or `not kept: <reason>`. A scenario checked in a build
+   task's done-when has Test `T<n> done-when`, Written by `T<n>`, and needs
+   no test file. A regression test the plan names for a risk has a row
+   whose Scenario cell is its key (`<change>/<value>`, §7) and whose Test
+   cell is its test name.
 10. **Dependency summary:** which tasks run in parallel, and the longest
     chain. Two tasks that touch a common file never run at the same time:
     make one `after` the other.
+
+### Risk and the tests it calls for
+
+Every test the plan lists names the risk it covers, and the plan lists no
+test without one.
+
+- **Risk table.** Section 6 opens with a risk table, one row per
+  requirement. The plan marks each requirement `at risk` or `small`, with
+  its reason, where the human sees it: at the skim at project size, and in
+  the plan itself at small size. A requirement is at risk when a fault in
+  it would be costly or would show only late, such as a fix for a reported
+  defect seen only in a live session, or a rule that decides whether a
+  change is verified; otherwise it is small.
+
+  ```
+  | Requirement | Risk | Reason |
+  |---|---|---|
+  | R<n> | <at risk|small> | <the reason> |
+  ```
+
+- **Independent tests.** Risk, not size, decides independent tests: a
+  requirement the plan marks at risk gets blind project-level tests,
+  written by a test agent that never saw the build, at any size; a
+  requirement not at risk gets none beyond its builder's tests, which the
+  review checks against its scenarios. A part of the change with small risk
+  gets no test beyond its builder's own and the repo's unit suite, unless
+  the plan names a further risk that test covers. A test planned for a
+  requirement at risk names the part of that risk it covers. A builder's
+  test is a unit test or, in a repo with no unit suite, a check in the
+  build task's done-when. A plan that marks no requirement at risk has no
+  test-writing task. A small, less risky change has few requirements at
+  risk, and so few independent tests.
+- **Expensive runs.** The plan gives each agent-class or live-class run it
+  lists its wall time in s, its spend in USD and the caps the budget policy
+  asks for, with the totals of those estimates; a script-class check gives
+  its expected run time only. Cost classes are those of §7. An estimate is
+  not a quota. The lead asks the operator only about an agent-class or
+  live-class run the plan does not list, or one past twice the estimate
+  (§11). Section 6 gives every agent-class
+  or live-class run the plan lists in this table, with a Total row:
+
+  ```
+  | Run | Class | Task | Runs | Wall time (s) | Spend (USD) | Caps |
+  |---|---|---|---|---|---|---|
+  | <run> | <agent|live> | T<n> | <k> | <s> | <USD> | <caps> |
+  | Total | | | <k> | <s> | <USD> | |
+  ```
+
+- **Live and heavy tests.** The plan lists a live-class test, or a test
+  that is heavy by the 60 s fence (§11), only to reproduce a reported
+  defect and confirm its fix: one run at base and one at the branch head,
+  each with its reason; or where it gives the reason no cheaper check can
+  show the behavior. Where a script-class check can show the behavior, its
+  test is script class, and the plan lists no agent-class or live-class run
+  for it.
+- **Which tests are kept.** A scenario test of a lasting requirement is
+  kept; a suggestion test only when it guards a boundary no kept test
+  covers; a test of a one-time event, such as a migration, is not, and nor
+  is a builder's done-when check, which verify reruns but integrate does
+  not promote (§8).
 
 ### Parallel tasks and shards
 
@@ -332,14 +415,19 @@ planned, or (c) for the human.
 Before handing over, check: every requirement maps to a build task; every
 scenario maps to a test; no step says "TBD", "handle edge cases" or "add
 tests"; names and types agree across tasks; every task has role, after, runs
-and done-when. Fill in the self-review section with the result.
+and done-when; every planned test names the risk it covers; every agent- and
+live-class run has its wall time, spend and caps, with the totals; a live or
+heavy test is listed only to reproduce a reported defect and confirm its
+fix, or with the reason no cheaper check can show the behavior; the reviews
+follow item 7. The self-review fails on any planned test that names no risk.
+Fill in the self-review section with the result.
 
 ### The go
 
 At project size the human skims the plan before any dispatch: every task
-traces to a requirement, nothing reaches outside the approved scope, and no
-task hides the real decisions. Then the human says go. At small size,
-approving the spec is the go.
+traces to a requirement, nothing reaches outside the approved scope, no
+task hides the real decisions, and each risk mark and estimate gives its
+reason. Then the human says go. At small size, approving the spec is the go.
 
 ## 5 Build
 
@@ -357,6 +445,9 @@ sha, and where the result goes.
 - Work each step test first: write the failing test, watch it fail, write
   the minimal code, watch it pass. Run the repo's full unit suite once
   before reporting.
+- A builder's test is a unit test or, in a repo with no unit suite, a check
+  in the build task's done-when. Such a check is one command with its
+  expected output, red at base and green at the head, and verify reruns it.
 - White-box tests are unit tests. Anything that depends on internals, such
   as an internal routine's convergence order or a branch the public surface
   cannot reach, you test in the code repo, in the same task.
@@ -383,53 +474,75 @@ A report is a claim; output and diffs are evidence. Record the result as:
 T<n> <DONE|DONE_WITH_CONCERNS|BLOCKED|NEEDS_CONTEXT>[, <repo> <sha7>..<sha7>][, unit <p>/<n> pass]
 ```
 
-Record the task review as
+**Reviews.** The plan has one review per wave of build tasks, a review of one
+build task only where its entry has `- risk: at risk`, and the whole-change
+review (§4). Dispatch a wave's review once every build task it covers has
+reported, and an at-risk task's own review once that task reports. A plan
+whose build tasks form one wave has one review, the whole-change review. It
+covers every build task, those marked at risk included, and is then their
+review (§7). A wave whose build tasks are all marked at risk has no wave
+review: their own reviews cover it. Record the review
+that covers a build task under that task's number, one line per build task
+it covers, as
 `T<n> review: <spec ok|spec issues>; <k> <Severity> [<repo>/<path>:<line>]`.
 
-**Reviewer.** You are a fresh agent. You get the brief, the report and the
-diff from base to head, never the builder's session. Where other builders
-commit to the same branch, the task's diff is its own commits, found by its
-`Task: T<n>` trailer. Write `changes/<id>/tasks/T<n>-review.md` from
-`templates/records/review.md`.
+**Reviewer.** You are a fresh agent. You get the briefs, the reports and
+the diffs from base to head of the build tasks your review covers, never a
+builder's session. Where other builders commit to the same branch, a task's
+diff is its own commits, found by its `Task: T<n>` trailer. Write
+`changes/<id>/tasks/T<n>-review.md` from `templates/records/review.md`,
+under your review's own task number.
 
 - Return spec compliance (missing, extra, misread) and quality (structure,
   error handling, whether the tests check real behavior).
+- For each scenario of a requirement not at risk, the review checks that its
+  builder's test exercises it, and records an Important finding where one
+  does not.
 - Mark each finding Critical, Important or Minor, with file and line:
   `- <Critical|Important|Minor> <repo>/<path>:<line> <text>`.
 - Trust the diff over the report. Change nothing you review.
 
-**Fix loop.** Critical or Important findings start it, at most 5 rounds per
-task:
+**Fix loop.** Only Critical and Important findings start a fix round, and a
+fix round carries only those. At most 5 rounds per task:
 
-- Rounds 1 to 3 go to the same builder; rounds 4 and 5 to a fresh builder on
-  a stronger model. Each round ends with a review of the fix diff only.
+- Rounds 1 to 3 go to the same builder; rounds 4 and 5 go to a fresh builder
+  on the same model. Each round ends with a review of the fix diff only.
 - Lead: record each round as
   `T<n> fix round <r>/5: <a> addressed, <o> open, <sha7>..<sha7>`. Past
   round 5, rule on each open finding (§13).
-- Minor findings go to the ledger for the whole-change review.
+- A review whose open findings are all Minor starts no fix round: its Minor
+  findings are fixed in the whole-change fix wave or parked by a ruling.
+  The same holds for a fix round's re-review.
 
-**Models.** Pick the model for the work: a cheaper one for a mechanical task
-with a complete brief, the most capable one for design judgment and for the
-whole-change review.
+**Models.** Every role runs on the most capable model available. Each role
+definition says `model: inherit`, so every role, task and fix round runs on
+the session's model, the most capable available; the lead never picks a
+lesser model to save cost.
 
 ## 6 Project-level tests
 
-You are the test agent writing the change's project-level tests. Write them
-from the spec, the interface contract, the global constraints and the test
-map. Do not read implementation bodies, diffs, builder reports or build-task
-steps. Once code exists you may use its public surface, such as `--help`
-output or signatures.
+You are the test agent writing the change's blind project-level tests: those
+of the requirements the plan marks at risk (§4). Write them from the spec,
+the interface contract, the global constraints and the test map. Do not read
+implementation bodies, diffs, builder reports or build-task steps. Once code
+exists you may use its public surface, such as `--help` output or
+signatures.
 
 **Lead.** Write the test-writing brief from `templates/records/test-brief.md`.
 It carries only what this section allows: the test task's own entry, the
 spec's path, and the interface contract, global constraints and test map
-copied from the plan, with the commit sets to start from. It never holds an
-implementation body, a diff, a builder report or a build-task step.
+copied from the plan, with the commit sets to start from, and under its
+global constraints the plan's rows for the expensive runs the task makes.
+Its task entry covers the scenarios of the requirements the plan marks at
+risk, and no others. It never holds an implementation body, a diff, a
+builder report or a build-task step.
 
 **Test agent:**
 
-- Write at least one test per scenario, named with the scenario id, such as
-  `test_R1_S1_converges_subsonic`.
+- Write at least one test per scenario of each requirement the plan marks at
+  risk, as the test map gives them, named with the scenario id, such as
+  `test_R1_S1_converges_subsonic`. Each names the part of the risk it
+  covers.
 - Take expected values from outside the code under test: literals,
   hand-checked fixtures, analytical or manufactured solutions, published
   references.
@@ -438,16 +551,19 @@ implementation body, a diff, a builder report or a build-task step.
 - Before writing a test, name the change in behavior that would make it
   fail. A test only an intentional decision could fail, such as a message's
   wording, is a change detector; test the behavior instead.
-- Give numbers units and tolerances. Record each test's expected run time;
-  a test over 60 s is marked heavy (§11).
+- Give numbers units and tolerances. Each test declares its cost class, its
+  `expected_s:` (its expected run time in s) and its
+  `deliverables: [<repo>:<path>[ as <name>], ...]` (what it reads). Cost
+  classes are those of §7; a test over 60 s is marked heavy (§11).
 - Put tests in `changes/<id>/tests/`. They stay there until integrate moves
-  them into `tests/`. Never put them in a code repo.
+  the kept ones into `tests/`. Never put them in a code repo.
 
 **Watch them fail.** Run the new tests at the base commit set first. A test
 for added or changed behavior must fail there, for the stated reason. Record
 each result as `T<n> at base: <test name> <fail|pass> (<reason>)[, ...]`.
 Lead: if such a test passes at base, return it to the test agent and record
-`T<n> returned to test: <test name> passed at base`.
+`T<n> returned to test: <test name> passed at base`. A run that ends as a
+harness error is no result at base; it follows the harness-error rule (§7).
 
 ### Test suggestions from builders
 
@@ -472,28 +588,35 @@ where to look from the builder, never what the answer is.
   and no expected value the code computed.
 - Write the "for the reviewer" part as a code location.
 
-**Lead.** Route each suggestion and record where it went, as
-`T<n>.TS<k> -> <test|spec|builder>`:
+**Lead.** Triage each suggestion by risk. The lead routes a suggestion to
+the test agent only when it covers a risk no planned test covers, naming
+that risk; a suggestion whose input and failure a planned test already
+exercises is declined, naming the test that covers it, and nothing of it
+reaches the test agent. Route each suggestion and record where it went, as
+`T<n>.TS<k> -> test: covers <risk>` or `T<n>.TS<k> -> <spec|builder>`:
 
 | Suggestion | Goes to | Outcome |
 |---|---|---|
-| Behavior the spec covers, on an input no scenario exercises | the test agent, with the "for the tester" part only | a project-level test whose expected value comes from the spec; or declined, with a reason |
+| Behavior the spec covers, with a risk no planned test covers | the test agent, with the "for the tester" part only, which names the risk it covers | a project-level test whose expected value comes from the spec; or declined, with a reason |
+| Behavior the spec covers, with a risk a planned test already covers | nowhere: the lead declines it | `declined: covered by <test name>` |
 | Behavior the spec does not state | the spec author, as a proposed scenario | approved by the human and then tested; or dropped |
 | Internal only, nothing observable | back to the builder | a unit test in the code repo |
 
 - If a "for the tester" part gives an expected value the code computed,
   return it to the builder to restate, send nothing to the test agent, and
   record `T<n>.TS<k> returned to builder: carries a computed value`.
-- Send the "for the reviewer" part to the task review and the whole-change
-  review, which check that the builder's unit tests cover it. The test agent
-  never sees it.
+- Send the "for the reviewer" part to the review that covers the task and to
+  the whole-change review, which check that the builder's unit tests cover
+  it. The test agent never sees it.
 - Record each outcome as:
 
   ```
   T<n>.TS<k> outcome: <tested <test name>|proposed as scenario|unit-tested|declined: <reason>|dropped>
   ```
 
-  The final report lists every suggestion and its outcome (§8).
+  A suggestion the lead declines because a planned test covers it is
+  `T<n>.TS<k> outcome: declined: covered by <test name>`. The final report
+  lists every suggestion and its outcome (§8).
 
 ## 7 Verify
 
@@ -501,12 +624,15 @@ You are the test agent running verify. When the build tasks are done, or at
 a checkpoint the lead picks, run at the commit set and in the environment
 class the task names:
 
-- the change's project-level tests and the space's regression suite
-  `tests/`;
+- the change's own project-level tests, and the build tasks' done-when
+  checks that the test map names as `T<n> done-when`;
+- the regression tests its selection picks (Selection, below);
 - each affected repo's unit tests;
 - every quality check in the spec's Quality section.
 
-A repo in `pod.yaml` that the spec does not name is used at its pin.
+Verify runs, besides the change's own tests, unit suites and declared
+quality checks, only the regression tests its selection picks. A repo in
+`pod.yaml` that the spec does not name is used at its pin.
 
 Return an evidence record, `changes/<id>/evidence/<YYYYMMDDTHHMMZ>.md`, from
 `templates/records/evidence.md`:
@@ -518,7 +644,9 @@ change: add-vqls-backend
 commit_set: {space: 5c02e1a, qutil: 77b01d4, fvm: 3f9c2ab}
 env: linux-server
 actor: <handle>/test
-scenarios: {R1.S1: pass, R1.S2: fail}
+selection: targeted
+touched: [qutil:linsolve/vqls.py, qutil:tests/test_vqls.py]
+scenarios: {R1.S1: pass, R1.S2: fail, add-solver-api/R2.S1: pass, add-solver-api/R3.S1: not-selected}
 unit: {qutil: pass, fvm: pass}
 quality: {Q1: pass}
 wall_time_s: 212
@@ -528,6 +656,8 @@ Failure output for R1.S2; pointers to logs, never the logs themselves.
 
 - `commit_set` names every repo in `pod.yaml`. `env` is an environment
   class. `wall_time_s` is the run's wall time in s.
+- `selection:` and `touched:` state the selection rule (Selection, below),
+  and `harness:` the harness a rerun used (Harness errors, below).
 - Give a result for every scenario, every unit suite and every declared
   quality check, and for every regression test. A regression test is a
   `test_*.md` directly in `tests/`, or directly in a folder
@@ -554,11 +684,88 @@ Failure output for R1.S2; pointers to logs, never the logs themselves.
     with no key still counts: name it in the body as having none.
 - A repo with no unit tests is `none-present`. A spec with no Quality
   section gets `quality: none-declared`, and you run no quality check. A
-  `not-run (cap)` result names its cap.
+  `not-run (cap <n> s)` result names its cap.
 - Put failure summaries in the body. Logs appear only as pointers:
   space-relative paths or URLs, never a machine path.
-- A change is not verified while any project-level test, regression test,
-  unit suite or declared quality check lacks a passing result.
+- A change is not verified while its latest evidence is not green by the
+  green rule (below).
+
+### Selection
+
+The evidence states verify's selection rule in two front-matter keys:
+
+- `selection: targeted`, the default, or `selection: full`. A full
+  regression, `selection: full`, runs only on the operator's word. A record
+  with no `selection:` key is read as `full`.
+- `touched: [<repo>:<path>, ...]` lists every file the change's diff from
+  base to head changes, in each repo of the spec's `repos:`.
+
+Under `selection: targeted`, a regression test is picked when either holds:
+
+- it is script class and one of its deliverable paths (less any
+  ` as <name>`) is a `touched` path of the same repo, or a folder that holds
+  one;
+- it is agent or live class and the plan's test map has a row whose Test
+  cell is its test name (the plan names it for a risk).
+
+Under `selection: full`, every regression test is picked. Tests in another
+project's space are never picked. Where a code repo can be read, the picks
+follow its diff from the go line's base to the branch head, and a record
+whose `touched` leaves out a file of that diff is not green; where it cannot
+(a fixture's placeholder remote), they follow `touched`. Verify runs every
+picked test and gives every other regression test `not-selected`; it starts
+no session for a test it does not pick.
+
+### Cost classes
+
+Every test has one of three cost classes: `script` (starts no agent session:
+inspection checks, scripts, unit suites), `agent` (starts an agent session),
+`live` (drives an interactive session or a running node). A test's cost
+class is its front-matter `class:` value when it has one. Else it comes from
+`mode:`: `inspect` or `script` is script class; a mode that begins `agent`
+or `desk` is agent class; a mode that begins `live` is live class. A test
+with neither is live class, and the evidence names it under
+`## Undeclared cost class`. A test needs no edit to have a class: one with a
+`mode:` has it already.
+
+### Results and the green rule
+
+A result is one of `pass`, `fail`, `not-run (cap <n> s)`, `harness-error`,
+`not-selected` or `superseded by <key>`, where `<key>` is a result key of
+this change in the same record (`R1.S1`, `I1`).
+
+The latest evidence is green when every result verify must give is a pass,
+with two results that are no bar:
+
+- `not-selected`, when the record's `selection:` is `targeted` and the test
+  is not picked (Selection, above);
+- `superseded by <key>`, when `<key>` holds `pass` in the same record and
+  the spec's `supersedes` lists the superseded test's requirement:
+  `<change>/R<n>` for a test keyed `<change>/R<n>.S<m>`, and for a test
+  keyed `<change>/I<n>` or `<change>/T<n>.TS<k>`, any requirement
+  `<change>/R<n>`.
+
+Every other result is a bar: `fail`, `not-run`, `harness-error`, a missing
+result, a `not-selected` test that the selection picks, and a
+`superseded by` result that lacks either condition. The two results that can
+be no bar are regression-test results: on a scenario of the spec, a unit
+suite, a quality check or a test in `changes/<id>/tests/`, either one is a
+bar. A sharded verify applies the same rule over its shards' latest records
+together (Sharded verify, below).
+
+### Harness errors
+
+A run that starts an agent session is aborted 120 s after launch when its
+session has not reached the test's first step, and ends as `harness-error`,
+naming where it stopped, with no pass or fail for its tests. The abort is a
+mechanism that stops a stuck run, not a time limit on the test. A rerun
+after a harness fix that changes no expected value needs no ask; the
+evidence gives `harness: <space sha7>`, the space commit holding the harness
+the run used. After a third harness error in one task, the task stops and
+reports BLOCKED to the lead. Lead: record each one as
+`T<n> harness error: <test name>, attempt <k>/3, stopped at <where>`.
+
+### Failures and the whole-change review
 
 **Lead.** Route each failure:
 
@@ -569,17 +776,26 @@ Failure output for R1.S2; pointers to logs, never the logs themselves.
 | Spec ambiguous, intent settles it | the lead, as a ruling | the clause and the reading chosen |
 | Spec ambiguous or wrong, only the human can say | the human, through the spec author | a proposed edit to the spec |
 | Flaky or environmental | the test agent, debugging per §13 | the runs that disagree |
+| A harness error | the test agent, who fixes the harness and reruns, at most three attempts in the task | where the session stopped |
 
-**Whole-change review.** After the first green run (for a sharded verify,
-the first time its shards' records are green together, below), dispatch a
-fresh reviewer on the most capable model available. It reviews the whole
-change: the spec, the plan, every repo's diff, the latest evidence, and the
-ledger's deferred minors and rulings. It checks completeness (every
-requirement has code and a passing test), correctness (the code does what
-the spec means, edge cases included) and coherence (the plan's decisions
-show in the code). It uses the review format of §5, under its own task
-number. Its findings go to one builder in one fix wave, then one re-review.
-The lead rules on what remains.
+**Whole-change review.** Dispatch a fresh reviewer. In a plan whose build
+tasks form one wave, it is the one review: dispatch it once those build
+tasks report, before verify, and it is their review too (§5). Otherwise
+dispatch it after the first green run (for a sharded verify, the first time
+its shards' records are green together, below). It reviews the whole
+change: the spec, the plan, every repo's diff, the latest evidence when
+there is one, and the ledger's deferred minors and rulings. It checks
+completeness (every requirement has code and a test that covers it),
+correctness (the code does what the spec means, edge cases included) and
+coherence (the plan's decisions show in the code), and that each builder's
+test exercises its scenario (§5). It uses the review format of §5, under
+its own task number. The whole-change fix wave runs only when the
+whole-change review has a Critical or Important finding, and then also
+takes the batched Minor findings; with none, they are parked by one ruling
+and listed in the final report. The fix wave goes to one builder, then one
+re-review. The lead rules on what remains. In a plan whose build tasks form
+one wave, a fix that lands after the whole-change review, such as one routed
+from a verify failure, gets a review of its fix diff only.
 
 ### Sharded verify
 
@@ -606,9 +822,11 @@ that commit. Take each shard's latest record. The records are green
 together only when all three hold:
 
 - every one of them is at the current commit set;
-- every result in every one of them is a pass;
-- together they give a result for every scenario, regression test, unit
-  suite and declared quality check.
+- none of them gives a result that is a bar by the green rule (above), with
+  each `superseded by <key>` result's `<key>` looked for in all of them;
+- together they give a pass for every scenario, unit suite, declared
+  quality check and test of the change, and for every regression test a
+  pass or a result that is no bar.
 
 The change is verified only when they are green together and the
 whole-change review has no open Critical or Important finding. A shard with
@@ -644,21 +862,48 @@ space's current pins and `tests/`.
    `templates/records/final-report.md`: a table of scenario, test, result
    and evidence id; then every ruling made on the human's behalf with its
    cost if wrong (the list is exhaustive: every `Ruling:` line in the
-   ledger); then deferred minors, every test suggestion and its outcome,
-   open questions, and each repo's branch and head.
+   ledger); then deferred minors, each fixed in the whole-change fix wave
+   or parked by a ruling; every test suggestion and its outcome; open
+   questions; each repo's branch and head; then the test cost, the tests
+   kept, and the costly regression tests not run.
+   - The final report's `## Test cost` gives the plan's estimate beside the
+     actual wall time in s and spend in USD of the expensive runs, with the
+     ratio of actual to estimate, rounded to 0.1, the total test wall time
+     in s, and the counts of test agents, review agents, fix rounds and
+     asks to the operator about tests. Spend that no one estimated or no one
+     knows is unknown, never 0 USD: the cell gives the known sum and
+     `unknown for <k> of <n> runs`, or `unknown` with none known.
+   - `## Tests kept` lists each test kept, not kept or moved out, with its
+     reason.
+   - `## Costly regression tests not run` lists each agent-class or
+     live-class regression test not run since its last pass, so the human
+     can call a full regression (§7).
 4. **Merge**, only on the human's word: merge each `change/<id>` and delete
    it, open a pull request, or keep the branch. Repos merge in `depends`
    order. Discard work only when the human asks in so many words, after you
    confirm.
-5. **Update**, after the merge, in one space commit: move
-   `changes/<id>/tests/` into `tests/`, as the folder `tests/<id>/`;
-   advance every affected pin; mark
-   `integrated:` on the spec; move the folder to
-   `changes/archive/<yyyy-mm-dd>-<id>/`. The librarian makes that commit in
-   its integrate mode (agent-mesh `skills/space-librarian/SKILL.md`, section
-   3): the two moves are its renames, the tests' move first, and each edited
-   or new file is a record, named by its path after the moves.
-   Docs that ship with the code are
+5. **Update**, after the merge, in one space commit, so the space's
+   `tests/` holds only tests of lasting behavior that is still required:
+   - Promote only the change's tests the plan's test map marks `keep`: they
+     move, with the fixtures they use, from `changes/<id>/tests/` into
+     `tests/<id>/`, and the others stay in the change's folder, which moves
+     to its archive folder below. Each kept test gives its cost class, its
+     expected run time in s and the deliverables it reads (§7); one that
+     does not goes back to the test agent before the move.
+   - Move out of `tests/`, into the archive folder of the change that wrote
+     them, under `superseded-tests/`, the tests and fixtures of each
+     requirement the spec supersedes, and each test the change made stale
+     that no test task updated (one that fails only because the change
+     removed what it relies on), so no test left in `tests/` is known to
+     fail.
+   - Advance every affected pin, mark `integrated:` on the spec, and move
+     the folder to `changes/archive/<yyyy-mm-dd>-<id>/`.
+
+   The librarian makes that commit in its integrate mode (agent-mesh
+   `skills/space-librarian/SKILL.md`, section 3): the moves are its
+   renames, the tests' moves first and the folder's last, and each edited or
+   new file is a record, named by its path after the moves. Docs that ship
+   with the code are
    updated by a build task before the merge; project docs in the space
    (README, decisions) are updated by you here. Give each open plan that
    depended on this change a ledger line naming what moved.
@@ -680,6 +925,8 @@ Every size starts with a spec. Pick the size when the spec is written:
 - If a change grows mid-flight, whoever notices says so, and it steps up a
   size.
 - A change that needs "and also" is two changes.
+- Size sets the gates and the plan's length, not the tests: risk, not size,
+  decides independent tests (§4).
 
 ## 10 Roles
 
@@ -699,9 +946,10 @@ Each pod role is held by an agent, local or on the mesh, where the role is
 **Independence.** These must be different agents: test and build, test and
 spec, review and build, and spec and plan at project size. A different agent
 means at least a fresh context started from a brief, never another agent's
-session. Where a mistake would be costly, use a different model or node too,
-so blind spots are not shared. One node may hold several roles if each task
-runs as its own agent.
+session. Independence between agents comes from a fresh session or another
+node, never from a lesser model. Every role runs on the most capable model
+available. One node may hold several roles if each task runs as its own
+agent.
 
 **Placement.**
 
@@ -710,8 +958,8 @@ runs as its own agent.
 | spec, lead | local, with the human |
 | plan | local, or remote at project size |
 | build | local or remote; several at once when the plan allows |
-| test | remote, on a node of the environment class the checks need; tests are heavy |
-| review | anywhere, on the most capable model available for the whole-change review |
+| test | remote, on a node of the environment class the checks need; agent-class and live-class tests are costly |
+| review | anywhere |
 
 Remote build waits on the executor git exception (§11); until then, build
 runs local.
@@ -821,11 +1069,13 @@ goes. Machine paths never go in a brief. Each role's definition is
 - **Ordering.** Dispatch a task once every task in its `after` list is done,
   its review included, so independent tasks run in parallel. In a review
   task, `after: [T<k>]` means T<k> has reported and its commit exists; T<k>
-  is done only when that review closes. On the mesh this is a workflow you
-  drive (PROTOCOL §8.1), and its record lives in the bus. Mesh workflows do
-  not yet take steps with `after` lists (PROTOCOL §8.1 advances one cursor),
-  so until they do, follow the interim rule: each cycle, the lead dispatches
-  every task whose `after` tasks are all done.
+  is done only when that review closes. A wave's review lists each build
+  task it covers, and each of them is done only when that review closes.
+  On the mesh this is a workflow you drive (PROTOCOL §8.1), and its record
+  lives in the bus. Mesh workflows do not yet take steps with `after` lists
+  (PROTOCOL §8.1 advances one cursor), so until they do, follow the interim
+  rule: each cycle, the lead dispatches every task whose `after` tasks are
+  all done.
 - **What the space records.** Record each dispatch as
   `dispatch T<n> -> <role> (<local|mesh>, <env class|any>)[, base <repo> <sha7>]`.
   The line names the role, `local` or `mesh`, and the environment class, and
@@ -839,13 +1089,30 @@ goes. Machine paths never go in a brief. Each role's definition is
   check that records no expected run time, such as a unit suite or a
   declared quality check, takes it from its brief or from the record of its
   last run when either gives one, and is heavy only when that time is over
-  60 s. With no known time, it is not heavy for the lead's ask, and the
-  running agent's own fence still binds the run. In a session with the
-  human present, before you dispatch a task that includes a heavy check,
-  give the human the command, the caps and the expected wall time in s of
-  each heavy check, and of no other check, and record
-  `heavy: asked <handle> before T<n>: <command name>; caps <caps>; expected <s> s`
-  for each. A task with no heavy check needs no such ask.
+  60 s. With no known time, the running agent's own fence still binds the
+  run.
+- **Asks about test runs.** The lead asks the operator about a test run
+  only when it is an agent-class or live-class run the plan does not list,
+  or when it would take the expensive runs past twice the plan's estimate
+  in wall time or in spend, counting their actuals so far plus the estimate
+  of the run to dispatch. Every other run the plan lists goes ahead with no
+  ask. With no operator present, a run past that point is not dispatched.
+  The budget policy's own ask points still hold.
+  - An ask gives the operator the run, why it is asked about, and the
+    expensive runs' actuals so far and what remains of twice the estimate.
+    Record it as
+    `ask: <handle> before T<n>: <run>; <unlisted|past twice the estimate>; spent <s> s, <USD> USD of <s> s, <USD> USD estimated`,
+    and a run held for want of an operator as
+    `T<n> not dispatched: <run>; past twice the estimate, no operator present`.
+  - The brief of a test task quotes the plan's rows for the expensive runs
+    it makes, with their caps and estimates: under `## Global constraints`
+    in a test-writing brief, and in `## Task` in a verify brief. The rows
+    hold nothing of the build.
+  - After each test task, the lead records the actual wall time in s and
+    spend in USD of its runs beside the plan's estimate, as
+    `T<n> cost: actual <s> s, <USD|unknown> USD; estimate <s> s, <USD> USD`.
+  - A rerun after a harness fix that changes no expected value needs no
+    ask (§7).
 
 ## 12 The Project Space
 
@@ -859,7 +1126,7 @@ The space has one branch, `main`; work in flight is kept apart by folder
   PROCESS.md              this process, pinned by version
   AGENTS.md               read order for an agent or human arriving cold
   STATUS.md               generated, never edited (§15)
-  tests/                  regression suite: tests of integrated specs
+  tests/                  regression suite: the kept tests of integrated specs
   changes/<id>/
     spec.md
     plan.md
@@ -948,9 +1215,9 @@ The template lists every event form:
 - **Stop and ask** only for: an irreversible or destructive action; a
   security-sensitive one; an effect outside the change's branches and
   folder (merging, pushing a shared branch, publishing, spending money or a
-  shared allocation, a run past the mesh fence); a question only the human
-  can answer that changes what gets built; or a plan so broken that every
-  way forward is a guess.
+  shared allocation, a run past the mesh fence); a test run that needs an
+  ask (§11); a question only the human can answer that changes what gets
+  built; or a plan so broken that every way forward is a guess.
 - **Handoff.** At any stage boundary, the giver marks done only what has
   evidence and writes `handoffs/<utc>-<id>.md` from
   `templates/records/handoff.md`: state, half-done work, open questions,

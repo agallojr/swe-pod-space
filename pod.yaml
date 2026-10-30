@@ -1,8 +1,8 @@
 pod: 1
 project: swe-pod
-process: swe-pod-process@1
+process: swe-pod-process@2
 repos:
-  swe-pod:    {remote: "https://github.com/agallojr/swe-pod", pin: "b7fc25791b677f37ebc25bac615683ef3580b015"}
+  swe-pod:    {remote: "https://github.com/agallojr/swe-pod", pin: "3b22a1b29aa4cae7fcaf6e317f25152ae0460981"}
   agent-mesh: {remote: "https://github.com/agallojr/agent-mesh", pin: "f27c61155ecac426d789bdb6d00d156a8cb6f732"}
 depends: {swe-pod: [agent-mesh]}    # merge order: agent-mesh before swe-pod
 gates: {spec: human, plan: human-skim, merge: human}

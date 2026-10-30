@@ -156,4 +156,12 @@
                   unchanged and flagged as suspect; why: the operator's word, keep 3; cost if
                   wrong: a later targeted verify that picks one may fail on a stale
                   expectation, routed then as a stale test
+2026-10-30T19:20Z merge: swe-pod main b7fc257..3b22a1b, fast-forward, pushed; annotated tag
+                  archive/right-size-testing at 3b22a1b, pushed; change/right-size-testing kept
+2026-10-30T19:20Z spec integrated: agallojr 2026-10-30T19:20Z, recorded by the spec author
+2026-10-30T19:21Z integrate: changes/right-size-testing/tests to tests/right-size-testing; six
+                  build-swe-pod tests and four overlays to build-swe-pod's superseded-tests;
+                  the change folder to changes/archive/2026-10-30-right-size-testing; pod.yaml
+                  process swe-pod-process@2 and swe-pod pin 3b22a1b; PROCESS.md from swe-pod at
+                  3b22a1b; open plans that depend on this change: none
 ```

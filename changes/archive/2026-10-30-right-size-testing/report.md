@@ -7,7 +7,9 @@
 Verified: the latest evidence, ev-20261030T1742Z, is green at the current
 commit set (space 3a2a91b for the tests, swe-pod 3b22a1b, agent-mesh
 f27c611), and the whole-change review, T4, has no open Critical or Important
-finding. Not merged: merge is the operator's word.
+finding. Merged on the operator's word at 2026-10-30T19:18Z ("merge, keep
+3"): swe-pod main fast-forwarded b7fc257..3b22a1b, annotated tag
+archive/right-size-testing at 3b22a1b, branch kept.
 
 ## Scenarios
 Selection `targeted`: `touched:` is the 17 files of swe-pod's diff
@@ -102,14 +104,14 @@ script class that read only agent-mesh files). Unit: swe-pod none-present.
 - Follow-up, not fixed here: the runner has no built-in 120 s abort for a session that never reaches the test's first step (R9); T2 and T5 ran a watcher beside it. The reusable live-session harness the spec leaves out is the place for it: the operator.
 - The operator's guidance overlay still cites the retired `heavy:` approval line and the old G3 title; swe-pod's INSTALL.md G3 now covers every run the plan lists. Rewording the overlay is the operator's.
 - swe-pod's SPEC.md keeps the old G3 wording with no note (open call 18 names only R5, R12, R13, R21 and the model lines): the operator.
-- Three agent-class regression tests may be stale under the new rules and were not run: `test_R2_S2_supersedes_and_test_update` (expects the supersedes test task to name a path in `tests/`), `test_R6_S1_complete_test_map` (expects every scenario mapped to a test-role task) and `test_T1_TS6_review_dispatched_before_successor` (a review per build task). About 1500 s expected, about 3 USD. Run them, or move them out at integrate: the operator.
+- Suspect, kept by the operator's word ("keep 3"): three agent-class regression tests may be stale under the new rules and were not run: `test_R2_S2_supersedes_and_test_update` (expects the supersedes test task to name a path in `tests/`), `test_R6_S1_complete_test_map` (expects every scenario mapped to a test-role task) and `test_T1_TS6_review_dispatched_before_successor` (a review per build task). They stay in `tests/build-swe-pod/` unchanged. A targeted run of them, about 1500 s expected and about 3 USD, or a later change that updates them: the operator.
 - Follow-up, not fixed here: STATUS.md's open-findings count adds the Minor counts of every review line, and a review recorded under both the build task's and its own number (PROCESS.md §5) is counted twice; this change shows Minor 38 for 19 distinct Minor findings, all fixed or parked. A later skill change: the operator.
 - Follow-up, not fixed here: STATUS.md shows the integrate task ready with no word of the merge gate it waits on. A later skill change: the operator.
 
 ## Branches
 | Repo | Branch | Head |
 |---|---|---|
-| swe-pod | change/right-size-testing | 3b22a1b |
+| swe-pod | change/right-size-testing (kept; merged to main, tag archive/right-size-testing) | 3b22a1b |
 | agent-mesh | none (not in the spec's repos) | pin f27c611 |
 
 ## Test cost

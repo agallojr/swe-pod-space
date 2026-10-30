@@ -5,6 +5,7 @@
 - repos: [swe-pod]
 - supersedes: [build-swe-pod/R5, build-swe-pod/R12, build-swe-pod/R13, build-swe-pod/R21]
 - approved: agallojr 2026-10-30T16:03Z
+- integrated: agallojr 2026-10-30T19:20Z
 
 ## Why
 
