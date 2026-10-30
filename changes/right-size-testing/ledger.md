@@ -144,4 +144,9 @@
                   cost if wrong: none, the first review's Q1 fail was closed by the fix wave
 2026-10-30T17:59Z filed changes/right-size-testing/evidence/20261030T1742Z.md,
                   changes/right-size-testing/evidence/20261030T1742Z-T5-report.md
+2026-10-30T18:05Z filed changes/right-size-testing/report.md, STATUS.md
+2026-10-30T18:05Z Ruling: at integrate, change/right-size-testing is kept, not deleted, and an
+                  annotated tag archive/right-size-testing is pushed at the merged head; why:
+                  the operator's standing preference, relayed with the go to integrate;
+                  cost if wrong: one tag and one kept branch to remove by hand
 ```
