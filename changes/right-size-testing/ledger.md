@@ -30,4 +30,10 @@
                   head once T1 lands, and with the installed skill until then; why: this
                   change runs under its own rules from the go; cost if wrong: STATUS.md
                   reads this change's evidence by the old rule until T1 lands
+2026-10-30T16:24Z filed changes/right-size-testing/ledger.md
+2026-10-30T16:24Z filed changes/right-size-testing/tasks/T1-brief.md, changes/right-size-testing/tasks/T2-brief.md,
+                  changes/right-size-testing/tasks/T3-brief.md
+2026-10-30T16:25Z dispatch T1 -> build (local, any), base swe-pod b7fc257
+2026-10-30T16:25Z dispatch T2 -> test (local, macos-laptop)
+2026-10-30T16:25Z dispatch T3 -> test (local, any)
 ```
