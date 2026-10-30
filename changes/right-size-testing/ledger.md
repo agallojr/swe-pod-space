@@ -48,4 +48,27 @@
 2026-10-30T16:31Z filed changes/right-size-testing/tests/test_I1_process_md.md,
                   changes/right-size-testing/tests/test_I3_d3_templates.md,
                   changes/right-size-testing/evidence/20261030T1628Z-T3-report.md
+2026-10-30T16:51Z T2 DONE_WITH_CONCERNS
+2026-10-30T16:51Z T2 at base: test_R5_S1_not_selected_green fail (no not-selected count or
+                  rule at base), test_R5_S2_superseded_with_replacement fail (no superseded
+                  count or rule at base), test_R5_S3_superseded_without_replacement fail (the
+                  control, R5.S2's record, is not green under the base rule),
+                  test_R5_S4_picked_test_not_passed fail (the control, a targeted record, is
+                  not green under the base rule)
+2026-10-30T16:51Z T2 cost: actual 266 s, 1.34 USD; estimate 570 s, 2.45 USD
+2026-10-30T16:51Z Ruling: the managed policy T2's smoke reports, the gateway settings drop-in
+                  and the remote managed settings, is accepted under test isolation, as
+                  build-swe-pod ruled at 2026-10-28T02:59Z; why: it pins the model, adds
+                  denials and gateway variables, adds no instruction file and loosens no
+                  fence; cost if wrong: an agent-class result reflects node policy
+2026-10-30T16:51Z Ruling: T2's two script-class tests read the rule's words together in one
+                  paragraph and contract 2.5's status form, and stand as written; a correct
+                  rule they fail goes back to the test agent with the spec clause; why: 2.5
+                  is the contract, and T4 reads them for a change detector; cost if wrong: a
+                  false fail at verify and one test fix
+2026-10-30T16:51Z filed changes/right-size-testing/tests/test_R5_S1_not_selected_green.md,
+                  changes/right-size-testing/tests/test_R5_S2_superseded_with_replacement.md,
+                  changes/right-size-testing/tests/test_R5_S3_superseded_without_replacement.md,
+                  changes/right-size-testing/tests/test_R5_S4_picked_test_not_passed.md,
+                  changes/right-size-testing/evidence/20261030T1649Z-T2-report.md
 ```
