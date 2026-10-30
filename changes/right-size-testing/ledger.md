@@ -71,4 +71,23 @@
                   changes/right-size-testing/tests/test_R5_S3_superseded_without_replacement.md,
                   changes/right-size-testing/tests/test_R5_S4_picked_test_not_passed.md,
                   changes/right-size-testing/evidence/20261030T1649Z-T2-report.md
+2026-10-30T16:58Z T1 DONE_WITH_CONCERNS, swe-pod b7fc257..0debc5a
+2026-10-30T16:58Z filed changes/right-size-testing/tasks/T1-report.md
+2026-10-30T16:59Z T1.TS1 outcome: declined: covered by test_R5_S3_superseded_without_replacement,
+                  whose supersedes check is the one an I-check key takes, and by T5's own
+                  record, which gives build-swe-pod/I1 and build-swe-pod/I3 superseded by I1
+                  and superseded by I3
+2026-10-30T16:59Z T1.TS2 outcome: declined: no fixture has a readable code repo; the lead
+                  checks T5's touched list against swe-pod's diff from b7fc257 to the head
+                  before the verified call, and T4 reads the skill's diff check
+2026-10-30T16:59Z T1.TS3 outcome: declined: covered by test_R5_S4_picked_test_not_passed and by
+                  T5's own picks, I2 to I5 and test_R12_S1_missing_quality_check, whose
+                  deliverables are folders and aliases
+2026-10-30T16:59Z T1.TS4 outcome: declined: this change's verify is not sharded and the spec
+                  gives R5's sharded clause no scenario; T4 reads the combined-records rule
+2026-10-30T16:59Z T1.TS5 outcome: declined: a change's own scenarios, unit suites and quality
+                  checks still need a pass, a rule this change keeps and
+                  test_R12_S1_missing_quality_check guards; T4 reads the sentence that limits
+                  the no-bar results to regression tests
+2026-10-30T16:59Z dispatch T4 -> review (local, any)
 ```
