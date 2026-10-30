@@ -115,4 +115,12 @@
                   that runs for an Important finding also takes the batched Minors; cost if
                   wrong: a longer fix wave
 2026-10-30T17:19Z dispatch T1 -> build (local, any), base swe-pod 0debc5a
+2026-10-30T17:33Z T1 DONE_WITH_CONCERNS, swe-pod 0debc5a..3b22a1b
+2026-10-30T17:33Z T1 fix round 1/5: 21 addressed, 1 open, 0debc5a..3b22a1b
+2026-10-30T17:33Z Ruling: T4's Minor at swe-pod/templates/records/review.md:18 is parked; why:
+                  the review template is outside the plan's file map, and swe-review's Quality
+                  section now names the R6 check; cost if wrong: a reviewer working from the
+                  template alone may skip that check
+2026-10-30T17:33Z filed changes/right-size-testing/tasks/T1-report.md
+2026-10-30T17:33Z dispatch T4 -> review (local, any)
 ```
