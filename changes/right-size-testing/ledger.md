@@ -10,4 +10,24 @@
                   why: open call 2 of the approved spec, and the operator's go at small
                   size; cost if wrong: one change verified under rules the space has not
                   yet pinned, which integrate pins as swe-pod-process@2
+2026-10-30T16:22Z filed changes/right-size-testing/ledger.md
+2026-10-30T16:22Z filed changes/right-size-testing/plan.md
+2026-10-30T16:22Z Ruling: the one review, T4, runs after T1 and its fix wave and before
+                  verify, which then runs once at the final commit set and takes Q1 from
+                  the review; why: open call 2 orders build, test, review, verify, and a
+                  review after verify would need a second verify after its fix wave;
+                  cost if wrong: a code fault verify finds needs a fix and a review of
+                  that fix diff alone
+2026-10-30T16:22Z Ruling: build-swe-pod's checks I1.2 and I3.14 go stale when swe-pod
+                  moves to swe-pod-process@2 (open call 16); T3 writes replacements at
+                  @2, verify gives build-swe-pod/I1 and build-swe-pod/I3 superseded by I1
+                  and superseded by I3 under plan 2.4, and integrate moves the two old
+                  tests to build-swe-pod's superseded-tests; why: both are picked
+                  script-class tests, and neither may hold the evidence red nor be ruled
+                  green by hand; cost if wrong: the green rule's superseded case also
+                  takes I-check keys, which R5's tests and the review must accept
+2026-10-30T16:22Z Ruling: STATUS.md is regenerated with the swe-pod skill at the branch
+                  head once T1 lands, and with the installed skill until then; why: this
+                  change runs under its own rules from the go; cost if wrong: STATUS.md
+                  reads this change's evidence by the old rule until T1 lands
 ```
