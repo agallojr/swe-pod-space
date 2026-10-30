@@ -1,9 +1,10 @@
 # right-size-testing: each change runs the right tests for its risk, and no test without a stated risk
 
-- size: project
+- size: small
 - owner: agallojr
 - repos: [swe-pod]
 - supersedes: [build-swe-pod/R5, build-swe-pod/R12, build-swe-pod/R13, build-swe-pod/R21]
+- approved: agallojr 2026-10-30T16:03Z
 
 ## Why
 
@@ -18,15 +19,20 @@ In short, after this change:
 - Verify runs the change's own tests and the regression tests the change
   could break, not the whole suite. A test it rightly skipped does not hold
   up green.
-- Blind tests only for requirements at risk; one review per wave; Minor
-  findings never start a fix round; a builder's test suggestion is taken up
-  only when it covers a risk no planned test covers.
+- Risk, not size, decides independent tests: a requirement at risk gets
+  blind tests from a test agent that never saw the build, at any size; one
+  not at risk gets only its builder's tests. A small, less risky change has
+  few requirements at risk, so few independent tests.
+- One review per wave; Minor findings never start a fix round; a builder's
+  test suggestion is taken up only when it covers a risk no planned test
+  covers.
 - Live tests only to reproduce and confirm a reported defect, or where
   nothing cheaper can show the behavior.
 - At integrate, only tests worth keeping join the regression suite.
-- No model is lowered. Every role keeps its current model (`model:
-  inherit`, the operator's own). The savings come from running fewer,
-  better-targeted tests, never from weaker agents.
+- No pod role ever runs on a lesser model to save cost. Every role runs on
+  the most capable model available, and the lead never picks a cheaper one.
+  The savings come from running fewer, better-targeted tests, never from
+  weaker agents.
 
 The operator, 2026-10-30: "I want us to do a better job right sizing the
 testing effort - its costing a lot to do purist testing. I need something
@@ -34,7 +40,10 @@ more practical and cost effective - not test for test sake, but the
 targetted tests." On a draft that set test counts: "i don't like this '10
 tests' thing - i dont want to say a number, like 'do it in 10 tests', i
 want to say do the RIGHT tests for the risk". And: "i hope there's no
-dumbing down of claude agents to haiku or something." On 2026-10-29: "we
+dumbing down of claude agents to haiku or something." At 16:03Z: "i want
+riskier things to have independent test. but a small / less risky project
+should have fewer risky requirements. and i dont want to dumb down llm
+agents". On 2026-10-29: "we
 need to get to right size on our quality assurance processes", and of one
 small change: "i think this is way too heavy a test for this small poller
 change."
@@ -91,13 +100,13 @@ In:
   the fix loop (`PROCESS.md` §5, §6; the build, test, review and lead roles).
 - Integrate's promotion of tests, each test's cost class, and the final
   report's cost section (`PROCESS.md` §8; the final-report template).
+- Every role on the most capable model: the model, fix-loop and
+  independence lines of `PROCESS.md` §5 and §10 and of the lead's role.
 - The docs that ship with swe-pod and state these rules.
 
 Out:
 
-- **Model choice.** This change lowers no model and gives no reason to pick
-  a cheaper one; every role keeps `model: inherit`. The per-role model map
-  in the follow-up note is its own change.
+- The per-role model map in the follow-up note: its own change.
 - Archiving branches at delivery and one-time permissions, from the same
   note: a separate change. So are the note's three test-check fixes and
   build-swe-pod's deferred Minors.
@@ -233,25 +242,29 @@ verify's records taken together.
 - WHEN `STATUS.md` is regenerated
 - THEN the evidence is not green
 
-### R6 Blind tests are written only for requirements at risk
-Blind project-level tests SHALL be written only at project size and only for
-the scenarios of requirements the plan marks at risk; every other scenario
-maps to a test its builder writes, which the review checks against it.
+### R6 Risk, not size, decides independent tests
+A requirement the plan marks at risk SHALL get blind project-level tests,
+written by a test agent that never saw the build, at any size; a requirement
+not at risk gets none beyond its builder's tests, which the review checks
+against its scenarios. A small, less risky change should have few
+requirements at risk, and so few independent tests.
 
-#### R6.S1 A small change has no blind test task
-- GIVEN an approved small spec
-- WHEN its plan is written and its review done
-- THEN the plan has no test-writing task, its test map maps every scenario
-  to a builder's test (a unit test or, in a repo with no unit suite, a check
-  in the build task's done-when), and the review records an Important
-  finding for any scenario that test does not exercise
+#### R6.S1 Blind tests for the requirement at risk only
+- GIVEN an approved small spec with R1 to R3, of which the plan marks only
+  R2 at risk
+- WHEN the plan is written and its test-writing task dispatched
+- THEN that task's brief covers R2's scenarios and no others and holds
+  nothing of the build; the scenarios of R1 and R3 map to builders' tests;
+  and the review records an Important finding for any of those scenarios
+  its builder's test does not exercise
 
-#### R6.S2 Blind tests for the requirement at risk only
-- GIVEN an approved project-size spec with R1 to R4, of which the plan marks
-  only R2 at risk
-- WHEN the test-writing task is dispatched
-- THEN its brief covers R2's scenarios and no others, and the scenarios of
-  R1, R3 and R4 map to builders' tests
+#### R6.S2 Nothing at risk, at any size
+- GIVEN an approved spec, small or project size, whose plan marks no
+  requirement at risk
+- WHEN its plan is written
+- THEN it has no test-writing task, and every scenario maps to a builder's
+  test: a unit test or, in a repo with no unit suite, a check in the build
+  task's done-when
 
 ### R7 Builder test suggestions are triaged by risk
 The lead SHALL route a builder's test suggestion to the test agent only when
@@ -409,6 +422,22 @@ rounds and asks to the operator about tests.
 - THEN its spend shows as unknown, not as 0 USD, and the total says how many
   runs it leaves out
 
+### R15 Every pod role runs on the most capable model
+The SWE Pod SHALL run every role, every task and every fix round on the most
+capable model available, and never on a lesser one to save cost: each role
+file says `model: inherit`, with the session on the most capable model, the
+lead never picks a cheaper model, and independence between agents comes from
+a fresh session or another node, never from a lesser model.
+
+#### R15.S1 No text allows a lesser model
+- GIVEN swe-pod's `PROCESS.md`, role definitions, skill, templates, README
+  and INSTALL at the branch head
+- WHEN every passage about models is read
+- THEN none lets a role, a task, a fix round or an independence check run on
+  a lesser or cheaper model, none implies that a later round needs a
+  stronger model than the first, every role file says `model: inherit`, and
+  the text says every role runs on the most capable model available
+
 ## Quality
 
 ### Q1 One rule, one wording
@@ -418,8 +447,8 @@ wherever they state it.
   rule this change alters (risk-named tests, estimates and asks, verify's
   selection, the green rule, blind tests, suggestion triage, live tests,
   harness errors, reviews and the fix loop, integrate's promotion, cost
-  classes, the cost report) and compares them; passing is no Critical or
-  Important finding on a disagreement
+  classes, the cost report, models) and compares them; passing is no
+  Critical or Important finding on a disagreement
 
 ## Approaches
 
@@ -451,12 +480,11 @@ For verify's selection, within approach 1:
 
 ## Open calls
 
-1. **Size: project**, by `PROCESS.md` §9: the evidence, plan and test record
-   formats change, and every later change relies on the green rule. The
-   alternative is small: no fresh planner and no plan skim, but the
-   operator would not see the plan's risk marks before work starts.
+1. **Size: small**, the operator's decision at 2026-10-30T16:03Z. The
+   spec's approval is also the go, the plan is short and the lead or the
+   spec author writes it, and there is no plan skim.
 2. **This change runs under its own rules from the go**, by one lead ruling,
-   though the space still pins the old process. Its test plan: R5, the
+   though the space still pins the old process. Its short plan: R5, the
    green rule, is the one requirement marked at risk, so one blind test
    task writes R5's scenario tests as script-class fixture checks, with an
    agent-class run of the swe-pod skill only where a fixture check cannot
@@ -471,7 +499,7 @@ For verify's selection, within approach 1:
 3. **Small risk** (R1): the builder's own tests and the repo's unit suite,
    and nothing more unless the plan names a further risk. The planner
    judges risk and gives its reasons in the plan, where the operator sees
-   them at the skim.
+   them at the skim at project size, or in the plan itself at small size.
 4. **"Well past the estimate" is twice it**, in wall time or spend (R3).
    With no operator present, the lead dispatches no run past that point and
    records why. The budget policy's ask points (about 6 h of agent test
@@ -491,14 +519,10 @@ For verify's selection, within approach 1:
    can call one.
 9. **A `superseded` result** is added beside `not-selected` (R5.S2), beyond
    the brief, since heartbeat-every-15-min's evidence already needed it.
-10. **No blind test at small size, even for a requirement at risk** (R6.S1);
-    the review checks the builder's test for it with that mark in view. In
-    a repo with no unit suite, such as swe-pod, a builder's test is a
-    done-when check, rerun by verify and not promoted. Blind script-class
-    tests were cheap (heartbeat-every-15-min's took one test agent about
-    12 min); the costs came from live and agent runs, reviews, fix rounds
-    and suggestion passes. Alternative: keep a blind task at small size for
-    script-class tests.
+10. **A builder's test in a repo with no unit suite** (R6), such as
+    swe-pod, is a check in the build task's done-when, rerun by verify and
+    not promoted, so such a repo's regression suite grows from the blind
+    tests of requirements at risk.
 11. **A small change's one review is the whole-change review** (R10.S2), as
     keep-poller-parked's and heartbeat-every-15-min's leads ruled.
 12. **Fix rounds carry only Critical and Important findings** (R11). The
@@ -521,10 +545,12 @@ For verify's selection, within approach 1:
     not asked about one by one) and R21 (not every suggestion reaches the
     test agent). agent-mesh is not in `repos`: its librarian's integrate
     mode already takes any list of renames.
-18. **swe-pod's SPEC.md** gets a short note beside R5, R12, R13 and R21
-    naming this change, from a build task.
-19. **The existing model line stays as it is.** `PROCESS.md` §5 and the
-    lead's role already let the lead pick "a cheaper one for a mechanical
-    task with a complete brief". This change leaves that text alone, as
-    model choice is out of scope. If the operator wants it gone, the
-    per-role model map change can remove it.
+18. **swe-pod's SPEC.md** gets a short note beside R5, R12, R13 and R21,
+    and beside its model lines in §5.3 and §6, naming this change, from a
+    build task.
+19. **R15 supersedes no requirement.** build-swe-pod's model lines (a
+    cheaper model for a mechanical task, a stronger model for fix rounds 4
+    and 5, a different model for independence) are in its process text,
+    not its numbered requirements. The fix loop keeps its 5 rounds, with
+    rounds 4 and 5 going to a fresh builder on the same, most capable
+    model.
