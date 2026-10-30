@@ -5,7 +5,7 @@
 - actor: agallojr/build
 
 ## Status
-DONE_WITH_CONCERNS
+DONE_WITH_CONCERNS (first build at 0debc5a; fix round 1 at 3b22a1b, see `## Fix round 1`)
 
 ## What I did
 1. Wrote the 26 done-when checks (R1.S1 to R15.S1, R5 excepted) first, each
@@ -35,7 +35,8 @@ DONE_WITH_CONCERNS
    a fast-forward: the remote head was already in the branch).
 
 ## Files
-All in swe-pod, commit range `swe-pod b7fc257..0debc5a`:
+All in swe-pod, commit range `swe-pod b7fc257..0debc5a` (fix round 1:
+`swe-pod 0debc5a..3b22a1b`, listed under `## Fix round 1`):
 
 - `PROCESS.md`: changed. Line 3 and §1's `pod.yaml` at `@2`; §2 stage and
   state tables, blind tests at risk; §4 risk table, `- risk:` line, review
@@ -218,40 +219,7 @@ ok templates/records/plan.md map-columns
 
 ### R1.S2 done-when check
 
-- command (run with `SWE` a swe-pod checkout and `REV` a sha):
-
-```sh
-h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h PROCESS.md marks-reason 'marks each requirement `at risk` or `small`, with its reason'; h agents/swe-plan.md marks-reason 'marks each requirement `at risk` or `small`, with its reason'; h templates/records/plan.md risk-row '| R<n> | <at risk|small> | <the reason> |'; h templates/records/plan.md task-risk '- risk: <at risk|small>: <reason>'; h PROCESS.md part-of-risk 'A test planned for a requirement at risk names the part of that risk it covers.'; h agents/swe-plan.md part-of-risk 'A test planned for a requirement at risk names the part of that risk it covers.'; h PROCESS.md selfreview-fails 'The self-review fails on any planned test that names no risk.'; h agents/swe-plan.md selfreview-fails 'The self-review fails on any planned test that names no risk.'; h templates/records/plan.md selfreview-item '- [ ] every planned test names the risk it covers'
-```
-
-- expected output: every line begins `ok`. Red at b7fc257: no risk marks, no `- risk:` task line, and no self-review item that fails a test naming no risk.
-- red at b7fc257 (0 of 9 lines ok):
-
-```text
-MISSING PROCESS.md marks-reason
-MISSING agents/swe-plan.md marks-reason
-MISSING templates/records/plan.md risk-row
-MISSING templates/records/plan.md task-risk
-MISSING PROCESS.md part-of-risk
-MISSING agents/swe-plan.md part-of-risk
-MISSING PROCESS.md selfreview-fails
-MISSING agents/swe-plan.md selfreview-fails
-MISSING templates/records/plan.md selfreview-item
-```
-
-- green at 0debc5a (9 of 9 lines ok):
-
-```text
-ok PROCESS.md marks-reason
-ok agents/swe-plan.md marks-reason
-ok templates/records/plan.md risk-row
-ok templates/records/plan.md task-risk
-ok PROCESS.md part-of-risk
-ok agents/swe-plan.md part-of-risk
-ok PROCESS.md selfreview-fails
-ok agents/swe-plan.md selfreview-fails
-ok templates/records/plan.md selfreview-item
-```
+In fix round 1 two lines were added. The current command, with its red output at b7fc257 and its green output at 3b22a1b, is under `## Fix round 1`, `### R1.S2 done-when check`.
 
 ### R2.S1 done-when check
 
@@ -939,40 +907,7 @@ ok agents/swe-lead.md kept-carry
 
 ### R13.S2 done-when check
 
-- command (run with `SWE` a swe-pod checkout and `REV` a sha):
-
-```sh
-h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h PROCESS.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h agents/swe-test.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h skills/swe-pod/SKILL.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h PROCESS.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h agents/swe-test.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h skills/swe-pod/SKILL.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h PROCESS.md undeclared 'A test with neither is live class, and the evidence names it under `## Undeclared cost class`.'; h agents/swe-test.md undeclared 'A test with neither is live class, and the evidence names it under `## Undeclared cost class`.'; h templates/records/evidence.md undeclared-section '## Undeclared cost class'
-```
-
-- expected output: every line begins `ok`. Red at b7fc257: no mapping from `mode:` to a cost class, and no `## Undeclared cost class`.
-- red at b7fc257 (0 of 9 lines ok):
-
-```text
-MISSING PROCESS.md class-key
-MISSING agents/swe-test.md class-key
-MISSING skills/swe-pod/SKILL.md class-key
-MISSING PROCESS.md from-mode
-MISSING agents/swe-test.md from-mode
-MISSING skills/swe-pod/SKILL.md from-mode
-MISSING PROCESS.md undeclared
-MISSING agents/swe-test.md undeclared
-MISSING templates/records/evidence.md undeclared-section
-```
-
-- green at 0debc5a (9 of 9 lines ok):
-
-```text
-ok PROCESS.md class-key
-ok agents/swe-test.md class-key
-ok skills/swe-pod/SKILL.md class-key
-ok PROCESS.md from-mode
-ok agents/swe-test.md from-mode
-ok skills/swe-pod/SKILL.md from-mode
-ok PROCESS.md undeclared
-ok agents/swe-test.md undeclared
-ok templates/records/evidence.md undeclared-section
-```
+In fix round 1 the check was rewritten. The current command, with its red output at b7fc257 and its green output at 3b22a1b, is under `## Fix round 1`, `### R13.S2 done-when check`.
 
 ### R14.S1 done-when check
 
@@ -1202,3 +1137,461 @@ lines-allowing-another-model 0
   green.
 - for the reviewer: swe-pod/skills/swe-pod/SKILL.md:277-283, the sentence
   that limits the two no-bar results to regression tests.
+
+## Fix round 1
+
+The whole-change fix wave (T4's review, 4 Important and 18 Minor findings,
+under the 17:19Z rulings).
+
+- status: DONE_WITH_CONCERNS
+- range: `swe-pod 0debc5a..3b22a1b`, one commit with trailers
+  `Change: right-size-testing` and `Task: T1`, pushed. The remote head is
+  `3b22a1b29aa4cae7fcaf6e317f25152ae0460981`.
+- files changed (12, all in plan section 4): `PROCESS.md`, `README.md`,
+  `INSTALL.md`, `agents/swe-build.md`, `agents/swe-lead.md`,
+  `agents/swe-plan.md`, `agents/swe-review.md`, `agents/swe-spec.md`,
+  `agents/swe-test.md`, `skills/swe-pod/SKILL.md`,
+  `skills/swe-pod/status-format.md`, `templates/records/plan.md`.
+
+### Findings
+
+Line numbers are at 3b22a1b.
+
+Important:
+
+1. **Addressed.** swe-pod/PROCESS.md:723, the regression-only limit. The
+   sentence from SKILL.md §1.6 now appears, in the same words, in:
+   - PROCESS.md:750-753, §7 Results and the green rule;
+   - agents/swe-lead.md:423-426, the Sharded verify bullet;
+   - README.md:51-54, stage 4.
+
+   The sharded "together" rule now reads, in the same words, "a pass for
+   every scenario, unit suite, declared quality check and test of the
+   change, and for every regression test a pass or a result that is no bar".
+   It appears in PROCESS.md:827-829, agents/swe-lead.md:420-422,
+   skills/swe-pod/SKILL.md §1.7 and README.md:57-59. Evidence: the
+   `Evidence for Important 1` command below.
+2. **Addressed.** swe-pod/skills/swe-pod/status-format.md:178, the one-wave
+   whole-change review that was never ready.
+   - skills/swe-pod/SKILL.md:112-127 (§1.3): a review task reviews the build
+     tasks its `after:` list names. The whole-change review of a one-wave
+     plan names them, so it reviews them.
+   - status-format.md:184-188: a review task that reviews build tasks is
+     ready once each of them has reported. status-format.md:171-175 says
+     when it is done.
+   - SKILL.md:404-408: Go's ready rule matches.
+   - PROCESS.md:313-315 and agents/swe-plan.md:101-104 now say that review's
+     `after:` list names the build tasks and that it comes before verify,
+     as the plan template already did.
+
+   Traced by hand on this change's plan: T4 is `Whole-change review`, with
+   `after: [T1]` and T1 a build task. So T4 reviews T1, and it is ready
+   once T1 has reported (the 16:58Z DONE_WITH_CONCERNS line), so Go
+   dispatches it and `next:` names it. T4 is done once `T1 review:` and
+   `T4 review:` both close.
+3. **Addressed.** swe-pod/skills/swe-pod/SKILL.md:114, the wave review that
+   was never ready or done (in scope by the 17:19Z ruling). The same §1.3
+   rule 3 applies: a `### T<n> Review of wave <w>` reviews every build task
+   its `after:` list names. It is ready once they report
+   (status-format.md:184-188), and it is done when each of their
+   `T<n> review:` lines is closed (status-format.md:171-173), which is
+   where PROCESS.md and swe-lead record its findings. The Reviews-cell rule,
+   rule 1, which reads the first id, is unchanged: that part is out of
+   scope. A whole-change review whose `after:` list names only the verify
+   task reviews no build task and still counts its own review lines
+   (status-format.md:174-175). That is the shape of T2's R5.S3 and R5.S4
+   fixtures, so their reading is unchanged. Evidence: the
+   `Evidence for Important 2 and 3` command below.
+4. **Addressed.** space/changes/right-size-testing/tasks/T1-report.md:940,
+   the R13.S2 check. It is rewritten (below): it maps every test in the
+   space's `tests/build-swe-pod/` by the rule as swe-pod states it at
+   `$REV`. It is red at b7fc257 (90 of 90 tests have no class) and green at
+   3b22a1b (16 script, 74 agent, 0 live; none lacks `expected_s:` or
+   `deliverables:`).
+
+Minor:
+
+1. **Addressed.** agents/swe-build.md:154. It now says the lead declines a
+   suggestion bound for the test agent whose risk a planned test covers, and
+   that the spec-author and builder routes stay (agents/swe-build.md:152-158,
+   per the 17:19Z R7 ruling).
+2. **Addressed.** PROCESS.md:355. It now reads "only about an agent-class or
+   live-class run the plan does not list, or one past twice the estimate"
+   (PROCESS.md:365-367), matching §11 and the 17:19Z R3 ruling.
+3. **Addressed.** PROCESS.md:302, the supersedes test task. In all five
+   places it now writes the replacements in `changes/<id>/tests/`, verify
+   gives the old tests `superseded by <key>`, and integrate moves them out:
+   PROCESS.md:215-219 (§3), PROCESS.md:304-307 (§4 item 6),
+   agents/swe-plan.md:92-95, agents/swe-plan.md:191 ("replacement-test
+   task") and agents/swe-spec.md:104-107.
+4. **Addressed.** SKILL.md:248. A deliverable path that ends in `/` holds a
+   touched path that begins with it, and an empty path or `.` names the
+   whole repo (SKILL.md:254-258).
+5. **Addressed.** status-format.md:125. A shard's own line now looks for a
+   `superseded by <key>` result's `<key>` in every shard's latest record,
+   as the combined line does (status-format.md:124-130). The broken line at
+   127 is reflowed.
+6. **Addressed.** status-format.md:186, the new ledger forms. SKILL.md §1.4
+   (lines 156-158) reads harness-error and not-dispatched lines. A task with
+   a not-dispatched line and no newer dispatch line is `blocked`
+   (status-format.md:177-179), so `next:` lists it under `blocked:`. Both
+   lines are task events, with cell texts in the Latest table
+   (status-format.md:191-194 and 207-208).
+7. **Not addressed in the template.** templates/records/review.md:18. That
+   template is outside T1's touches: plan section 4 lists no review
+   template, and a builder may not stage a file outside its touches.
+   Instead, the `## Quality` part of agents/swe-review.md (lines 84-88) now
+   names the check, which is the text the reviewer reads: for each scenario
+   of a requirement not at risk, whether its builder's test exercises it,
+   with an Important finding where one does not. The template line needs
+   the file map to grow, or a ruling. See Concerns, below.
+8. **Addressed.** templates/records/plan.md:174. The regression row's Keep
+   cell is now `keep`, and the comment says a regression test's row is keep
+   because it stays in `tests/` (templates/records/plan.md:166-178). This
+   change's own `plan.md` §9 still writes `already in tests/` for
+   `build-swe-pod/R12.S1`. That is the plan's text, not mine to edit; the
+   skill does not read the Keep cell of a regression row.
+9. **Addressed.** templates/records/plan.md:146. It now reads "the latest
+   evidence when there is one" (templates/records/plan.md:148-150).
+10. **Addressed.** PROCESS.md:765. In a one-wave plan, a fix that lands
+    after the whole-change review, such as one routed from a verify
+    failure, gets a review of its fix diff only (PROCESS.md:795-798,
+    agents/swe-lead.md:387-390).
+11. **Addressed, with a choice.** PROCESS.md:304, the two unsettled cases.
+    - A one-wave plan with a build task marked at risk: the one review, the
+      whole-change review, covers every build task, those marked at risk
+      included. Reason: R10.S2's THEN ("there is one") is unconditional for
+      a plan whose build tasks form one wave, and R10's "a review of a
+      single build task only where it marks that task at risk" permits a
+      single-task review but does not require one.
+    - A wave whose build tasks are all marked at risk has no wave review:
+      their own reviews cover it. Reason: R10.S1 defines a wave's review as
+      "covering its tasks other than" the one reviewed alone, so with none
+      left it would cover nothing.
+
+    Both sentences appear in the same words in PROCESS.md:310-317 (§4 item
+    7), PROCESS.md:479-484 (§5), agents/swe-plan.md:97-106,
+    agents/swe-lead.md:346-352 and templates/records/plan.md:118-126.
+12. **Addressed.** PROCESS.md:1087. A test-writing brief carries the plan's
+    expensive-run rows under its global constraints (PROCESS.md:530-537,
+    agents/swe-lead.md:154-156). §11 and swe-lead say where they go: under
+    `## Global constraints` in a test-writing brief, in `## Task` in a
+    verify brief (PROCESS.md:1107-1110, agents/swe-lead.md:463-466). The
+    rows hold nothing of the build, so the blind rule holds.
+    `templates/records/test-brief.md` needs no change, since the rows go in
+    its existing Global constraints section.
+13. **Addressed.** INSTALL.md:134. G3 is now "A listed test run after the go
+    counts as operator-posted": for every run the plan lists, the runs a
+    test-writing task makes at base included (INSTALL.md:134-139). See
+    Concerns, below.
+14. **Addressed.** agents/swe-test.md:190. Verify step 3 now has the
+    readable-diff and not-green clause in PROCESS.md's words
+    (agents/swe-test.md:199-202).
+15. **Addressed.** PROCESS.md:328. It now names the cases that are at risk:
+    "A requirement is at risk when a fault in it would be costly or would
+    show only late, such as a fix for a reported defect seen only in a live
+    session, or a rule that decides whether a change is verified; otherwise
+    it is small" (PROCESS.md:338-341, agents/swe-plan.md:120-123). The
+    R1.S2 check gains two lines for it (below).
+16. **Addressed.** README.md:39. It now reads "a review of a build task of
+    its own" (README.md:39-40).
+17. **Addressed.** PROCESS.md:1055. The Ordering bullet is reflowed
+    (PROCESS.md:1072-1078).
+18. **Addressed.** agents/swe-build.md:106. Reflowed.
+
+### Checks whose text changed
+- R13.S2: rewritten (Important 4).
+- R1.S2: two lines added (Minor 15).
+- No other check's expected sentence changed: all 26 pass at 3b22a1b with
+  their first-round lines.
+
+### Regression and change tests at 3b22a1b
+
+The command is as in `### Done-when: the six script-class regression tests`
+above, with `--repo swe-pod=<swe-pod checkout>@3b22a1b`. To it I added T2's
+two script-class R5 tests and T3's two replacements, from
+`changes/right-size-testing/tests/` (read-only runs; nothing edited). Wall
+time was 5.9 s.
+
+```text
+RESULT test_I1_process_md fail (check I1.2: line 1 and line 3 as contract 2.2 gives them)
+RESULT test_I2_role_definitions pass (all 4 checks pass)
+RESULT test_I3_d3_templates fail (check I3.14: pod.yaml keys and pinned process)
+RESULT test_I4_swe_pod_skill pass (all 6 checks pass)
+RESULT test_I5_templates_placeholders_only pass (all 9 checks pass)
+RESULT test_R16_S1_dispatch_line_names_no_machine pass (all 4 checks pass)
+RESULT test_R5_S1_not_selected_green pass (all 4 checks pass)
+RESULT test_R5_S2_superseded_with_replacement pass (all 4 checks pass)
+RESULT test_I1_process_md pass (all 8 checks pass)
+RESULT test_I3_d3_templates pass (all 14 checks pass)
+```
+
+The first six are build-swe-pod's tests: I2, I4, I5 and R16.S1 pass, and I1
+and I3 fail only on I1.2 and I3.14 (in each run's `check.out` every other
+check passes). The last four are this change's: T2's R5.S1 and R5.S2, and
+T3's I1 and I3 at `@2`, all pass. I did not run T2's R5.S3 and R5.S4, which
+are agent class. Their fixtures have a one-wave plan whose whole-change
+review comes after verify (`after: [T3]`), which the new §1.3 reads exactly
+as before, and their checks read only the latest-evidence lines and the
+states. I see no fix here that would make either fail. There is no
+disputed test.
+
+### Concerns from fix round 1
+- templates/records/review.md (Minor 7) is outside T1's touches, so I left
+  it unchanged. The reviewer's role file now carries the R6 line. Adding it
+  to the template needs the file map to grow, or a ruling to park it.
+- G3 changed its title and scope in INSTALL.md (Minor 13). The operator's
+  overlay, which is out of scope, still quotes the old title ("a verify
+  after the go counts as operator-posted"). SPEC.md:1105 keeps the old G3
+  wording, with no note, since open call 18 does not name it. The operator
+  may want to align the overlay.
+- This change's `plan.md` §9 uses `already in tests/` as a Keep value
+  (Minor 8). That is for the lead to fix in the plan, if wanted.
+- The R13.S2 check now needs two more variables, `SPACE` and `SREV`. The
+  verify agent sets them to the space checkout and the space sha of the
+  commit set. Any sha from 6982fb5 to the current space head gives the same
+  `tests/build-swe-pod/` tree.
+
+### R13.S2 done-when check (rewritten in fix round 1)
+
+The check now applies the rule to the suite, as the review asked. It reads the cost-class rule from swe-pod's `PROCESS.md` at `$REV`: a `class:` value, the `inspect` or `script` mode, a mode that begins `agent` or `desk`, and one that begins `live`. It applies that rule to the front matter of every `test_*.md` directly in the space's `tests/build-swe-pod/` at `$SREV`. It fails on any test that maps to no class, declares neither `class:` nor `mode:`, or lacks `expected_s:` or `deliverables:`. A mapping the text at `$REV` does not state is not applied. The nine rule-text lines of the first version stay.
+
+- command (run with `SWE` a swe-pod checkout, `REV` a swe-pod sha, `SPACE` a Project Space checkout and `SREV` a space sha; I used `SREV=6f1e4e0`, the brief's space commit, whose `tests/build-swe-pod/` tree is the same object at 6982fb5 and at the space head):
+
+```sh
+h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h PROCESS.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h agents/swe-test.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h skills/swe-pod/SKILL.md class-key $'A test\'s cost class is its front-matter `class:` value when it has one.'; h PROCESS.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h agents/swe-test.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h skills/swe-pod/SKILL.md from-mode '`inspect` or `script` is script class; a mode that begins `agent` or `desk` is agent class; a mode that begins `live` is live class'; h PROCESS.md undeclared 'A test with neither is live class, and the evidence names it under `## Undeclared cost class`.'; h agents/swe-test.md undeclared 'A test with neither is live class, and the evidence names it under `## Undeclared cost class`.'; h templates/records/evidence.md undeclared-section '## Undeclared cost class'; P=$(git -C "$SWE" show "$REV:PROCESS.md" 2>/dev/null | tr '\n' ' ' | tr -s ' '); ms=0; ma=0; ml=0; ck=0; case "$P" in *'`inspect` or `script` is script class'*) ms=1;; esac; case "$P" in *'a mode that begins `agent` or `desk` is agent class'*) ma=1;; esac; case "$P" in *'a mode that begins `live` is live class'*) ml=1;; esac; case "$P" in *'is its front-matter `class:` value when it has one'*) ck=1;; esac; [ "$ck$ms$ma$ml" = 1111 ] && echo "ok rule-at-REV maps class: and every mode prefix" || echo "MISSING rule-at-REV class-key $ck, inspect-or-script $ms, agent-or-desk $ma, live $ml"; for f in $(git -C "$SPACE" ls-tree --name-only "$SREV" tests/build-swe-pod/ | grep -E '^tests/build-swe-pod/test_[^/]*[.]md$'); do echo "@@FILE $f"; git -C "$SPACE" show "$SREV:$f" | awk 'NR==1 && /^---$/ {fm=1; next} fm && /^---$/ {exit} fm {print}'; done | awk -v ms=$ms -v ma=$ma -v ml=$ml -v ck=$ck 'function flush() { if (f == "") return; n++; c = "none"; if (cls != "" && ck) { if (cls ~ /^(script|agent|live)$/) c = cls } else if (mode != "") { if ((mode == "inspect" || mode == "script") && ms) c = "script"; else if (mode ~ /^(agent|desk)/ && ma) c = "agent"; else if (mode ~ /^live/ && ml) c = "live" } else if (cls == "") c = "undeclared"; k[c]++; if (!es) ne++; if (!dl) nd++; if (c == "none" || c == "undeclared" || !es || !dl) { bad++; if (bad <= 3) print "BAD " f " class " c (es ? "" : ", no expected_s") (dl ? "" : ", no deliverables") } } /^@@FILE / {flush(); f = $2; cls = ""; mode = ""; es = 0; dl = 0; next} /^class:/ {sub(/^class:[ ]*/, ""); cls = $0} /^mode:/ {sub(/^mode:[ ]*/, ""); mode = $0} /^expected_s:/ {es = 1} /^deliverables:/ {dl = 1} END {flush(); s = sprintf("suite %d tests: script %d, agent %d, live %d, no class %d, undeclared %d, no expected_s %d, no deliverables %d", n, k["script"], k["agent"], k["live"], k["none"], k["undeclared"], ne, nd); print ((n > 0 && bad == 0) ? "ok " : "FAIL ") s}'
+```
+
+- expected output: every line begins `ok`, and the last line is `ok suite 90 tests: script 16, agent 74, live 0, no class 0, undeclared 0, no expected_s 0, no deliverables 0`. At b7fc257 the rule text is absent, so no test maps to a class.
+- red at b7fc257 (0 of 14 lines ok):
+
+```text
+MISSING PROCESS.md class-key
+MISSING agents/swe-test.md class-key
+MISSING skills/swe-pod/SKILL.md class-key
+MISSING PROCESS.md from-mode
+MISSING agents/swe-test.md from-mode
+MISSING skills/swe-pod/SKILL.md from-mode
+MISSING PROCESS.md undeclared
+MISSING agents/swe-test.md undeclared
+MISSING templates/records/evidence.md undeclared-section
+MISSING rule-at-REV class-key 0, inspect-or-script 0, agent-or-desk 0, live 0
+BAD tests/build-swe-pod/test_I1_process_md.md class none
+BAD tests/build-swe-pod/test_I2_role_definitions.md class none
+BAD tests/build-swe-pod/test_I3_d3_templates.md class none
+FAIL suite 90 tests: script 0, agent 0, live 0, no class 90, undeclared 0, no expected_s 0, no deliverables 0
+```
+
+- at 0debc5a, the first head (11 of 11 lines ok):
+
+```text
+ok PROCESS.md class-key
+ok agents/swe-test.md class-key
+ok skills/swe-pod/SKILL.md class-key
+ok PROCESS.md from-mode
+ok agents/swe-test.md from-mode
+ok skills/swe-pod/SKILL.md from-mode
+ok PROCESS.md undeclared
+ok agents/swe-test.md undeclared
+ok templates/records/evidence.md undeclared-section
+ok rule-at-REV maps class: and every mode prefix
+ok suite 90 tests: script 16, agent 74, live 0, no class 0, undeclared 0, no expected_s 0, no deliverables 0
+```
+
+- green at 3b22a1b (11 of 11 lines ok):
+
+```text
+ok PROCESS.md class-key
+ok agents/swe-test.md class-key
+ok skills/swe-pod/SKILL.md class-key
+ok PROCESS.md from-mode
+ok agents/swe-test.md from-mode
+ok skills/swe-pod/SKILL.md from-mode
+ok PROCESS.md undeclared
+ok agents/swe-test.md undeclared
+ok templates/records/evidence.md undeclared-section
+ok rule-at-REV maps class: and every mode prefix
+ok suite 90 tests: script 16, agent 74, live 0, no class 0, undeclared 0, no expected_s 0, no deliverables 0
+```
+
+- the mapping on synthetic front matter (a sanity check of the awk program alone, all four mapping flags on). Input: a test with `mode: manual`, one with `class: weird`, one with neither, one with no `expected_s`, and one with no `deliverables`, beside clean tests. Output:
+
+```text
+BAD b.md class none
+BAD c.md class none
+BAD d.md class undeclared
+FAIL suite 6 tests: script 1, agent 1, live 1, no class 2, undeclared 1, no expected_s 1, no deliverables 1
+```
+
+### R1.S2 done-when check (two lines added in fix round 1)
+
+Two lines are added for the at-risk criterion the review asked for (PROCESS.md:328): the sentence naming cases that are at risk, in `PROCESS.md` and `agents/swe-plan.md`. The first nine lines are unchanged.
+
+- command:
+
+```sh
+h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h PROCESS.md marks-reason 'marks each requirement `at risk` or `small`, with its reason'; h agents/swe-plan.md marks-reason 'marks each requirement `at risk` or `small`, with its reason'; h templates/records/plan.md risk-row '| R<n> | <at risk|small> | <the reason> |'; h templates/records/plan.md task-risk '- risk: <at risk|small>: <reason>'; h PROCESS.md part-of-risk 'A test planned for a requirement at risk names the part of that risk it covers.'; h agents/swe-plan.md part-of-risk 'A test planned for a requirement at risk names the part of that risk it covers.'; h PROCESS.md selfreview-fails 'The self-review fails on any planned test that names no risk.'; h agents/swe-plan.md selfreview-fails 'The self-review fails on any planned test that names no risk.'; h templates/records/plan.md selfreview-item '- [ ] every planned test names the risk it covers'; h PROCESS.md at-risk-cases 'such as a fix for a reported defect seen only in a live session, or a rule that decides whether a change is verified'; h agents/swe-plan.md at-risk-cases 'such as a fix for a reported defect seen only in a live session, or a rule that decides whether a change is verified'
+```
+
+- expected output: every line begins `ok`.
+- red at b7fc257 (0 of 11 lines ok):
+
+```text
+MISSING PROCESS.md marks-reason
+MISSING agents/swe-plan.md marks-reason
+MISSING templates/records/plan.md risk-row
+MISSING templates/records/plan.md task-risk
+MISSING PROCESS.md part-of-risk
+MISSING agents/swe-plan.md part-of-risk
+MISSING PROCESS.md selfreview-fails
+MISSING agents/swe-plan.md selfreview-fails
+MISSING templates/records/plan.md selfreview-item
+MISSING PROCESS.md at-risk-cases
+MISSING agents/swe-plan.md at-risk-cases
+```
+
+- at 0debc5a (9 of 11 lines ok):
+
+```text
+ok PROCESS.md marks-reason
+ok agents/swe-plan.md marks-reason
+ok templates/records/plan.md risk-row
+ok templates/records/plan.md task-risk
+ok PROCESS.md part-of-risk
+ok agents/swe-plan.md part-of-risk
+ok PROCESS.md selfreview-fails
+ok agents/swe-plan.md selfreview-fails
+ok templates/records/plan.md selfreview-item
+MISSING PROCESS.md at-risk-cases
+MISSING agents/swe-plan.md at-risk-cases
+```
+
+- green at 3b22a1b (11 of 11 lines ok):
+
+```text
+ok PROCESS.md marks-reason
+ok agents/swe-plan.md marks-reason
+ok templates/records/plan.md risk-row
+ok templates/records/plan.md task-risk
+ok PROCESS.md part-of-risk
+ok agents/swe-plan.md part-of-risk
+ok PROCESS.md selfreview-fails
+ok agents/swe-plan.md selfreview-fails
+ok templates/records/plan.md selfreview-item
+ok PROCESS.md at-risk-cases
+ok agents/swe-plan.md at-risk-cases
+```
+
+
+### All 26 checks at the new head
+
+The other 24 checks are unchanged. The counts below come from one run of every check at each sha. Every line at 3b22a1b is `ok`, and the R15.S1 check prints `lines-allowing-another-model 0` there (4 at b7fc257).
+
+| Check | b7fc257 | 0debc5a | 3b22a1b |
+|---|---|---|---|
+| R1.S1 | 0 of 7 lines ok | 7 of 7 lines ok | 7 of 7 lines ok |
+| R1.S2 | 0 of 11 lines ok | 9 of 11 lines ok | 11 of 11 lines ok |
+| R2.S1 | 0 of 7 lines ok | 7 of 7 lines ok | 7 of 7 lines ok |
+| R3.S1 | 0 of 10 lines ok | 10 of 10 lines ok | 10 of 10 lines ok |
+| R3.S2 | 0 of 10 lines ok | 10 of 10 lines ok | 10 of 10 lines ok |
+| R4.S1 | 0 of 12 lines ok | 12 of 12 lines ok | 12 of 12 lines ok |
+| R4.S2 | 0 of 11 lines ok | 11 of 11 lines ok | 11 of 11 lines ok |
+| R6.S1 | 0 of 9 lines ok | 9 of 9 lines ok | 9 of 9 lines ok |
+| R6.S2 | 0 of 7 lines ok | 7 of 7 lines ok | 7 of 7 lines ok |
+| R7.S1 | 0 of 4 lines ok | 4 of 4 lines ok | 4 of 4 lines ok |
+| R7.S2 | 1 of 6 lines ok | 6 of 6 lines ok | 6 of 6 lines ok |
+| R8.S1 | 0 of 5 lines ok | 5 of 5 lines ok | 5 of 5 lines ok |
+| R8.S2 | 0 of 3 lines ok | 3 of 3 lines ok | 3 of 3 lines ok |
+| R9.S1 | 0 of 6 lines ok | 6 of 6 lines ok | 6 of 6 lines ok |
+| R9.S2 | 0 of 9 lines ok | 9 of 9 lines ok | 9 of 9 lines ok |
+| R10.S1 | 0 of 8 lines ok | 8 of 8 lines ok | 8 of 8 lines ok |
+| R10.S2 | 0 of 6 lines ok | 6 of 6 lines ok | 6 of 6 lines ok |
+| R11.S1 | 0 of 7 lines ok | 7 of 7 lines ok | 7 of 7 lines ok |
+| R11.S2 | 0 of 6 lines ok | 6 of 6 lines ok | 6 of 6 lines ok |
+| R12.S1 | 0 of 11 lines ok | 11 of 11 lines ok | 11 of 11 lines ok |
+| R12.S2 | 0 of 9 lines ok | 9 of 9 lines ok | 9 of 9 lines ok |
+| R13.S1 | 0 of 6 lines ok | 6 of 6 lines ok | 6 of 6 lines ok |
+| R13.S2 | 0 of 14 lines ok | 11 of 11 lines ok | 11 of 11 lines ok |
+| R14.S1 | 0 of 10 lines ok | 10 of 10 lines ok | 10 of 10 lines ok |
+| R14.S2 | 0 of 5 lines ok | 5 of 5 lines ok | 5 of 5 lines ok |
+| R15.S1 | 6 of 17 lines ok | 16 of 17 lines ok | 16 of 17 lines ok |
+
+### Evidence for Important 1 (PROCESS.md:723)
+
+The regression-only sentence and the sharded rule, in the same words in every file that states them; the old sharded wording is gone.
+
+- command:
+
+```sh
+h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h PROCESS.md regression-only 'The two results that can be no bar are regression-test results: on a scenario of the spec, a unit suite, a quality check or a test in `changes/<id>/tests/`, either one is a bar.'; h agents/swe-lead.md regression-only 'The two results that can be no bar are regression-test results: on a scenario of the spec, a unit suite, a quality check or a test in `changes/<id>/tests/`, either one is a bar.'; h README.md regression-only 'The two results that can be no bar are regression-test results: on a scenario of the spec, a unit suite, a quality check or a test in `changes/<id>/tests/`, either one is a bar.'; h skills/swe-pod/SKILL.md regression-only 'The two results that can be no bar are regression-test results: on a scenario of the spec, a unit suite, a quality check or a test in `changes/<id>/tests/`, either one is a bar.'; h PROCESS.md sharded-together 'a pass for every scenario, unit suite, declared quality check and test of the change, and for every regression test a pass or a result that is no bar'; h agents/swe-lead.md sharded-together 'a pass for every scenario, unit suite, declared quality check and test of the change, and for every regression test a pass or a result that is no bar'; h README.md sharded-together 'a pass for every scenario, unit suite, declared quality check and test of the change, and for every regression test a pass or a result that is no bar'; h skills/swe-pod/SKILL.md sharded-together 'a pass for every scenario, unit suite, declared quality check and test of the change, and for every regression test a pass or a result that is no bar'; n PROCESS.md old-together 'together they give, for every scenario, regression test, unit suite and declared quality check, a pass or a result that is no bar'; n agents/swe-lead.md old-together 'together they give, for every scenario, regression test, unit suite and declared quality check, a pass or a result that is no bar'
+```
+
+- red at 0debc5a (1 of 10 lines ok):
+
+```text
+MISSING PROCESS.md regression-only
+MISSING agents/swe-lead.md regression-only
+MISSING README.md regression-only
+ok skills/swe-pod/SKILL.md regression-only
+MISSING PROCESS.md sharded-together
+MISSING agents/swe-lead.md sharded-together
+MISSING README.md sharded-together
+MISSING skills/swe-pod/SKILL.md sharded-together
+STILL PROCESS.md old-together
+STILL agents/swe-lead.md old-together
+```
+
+- green at 3b22a1b (10 of 10 lines ok):
+
+```text
+ok PROCESS.md regression-only
+ok agents/swe-lead.md regression-only
+ok README.md regression-only
+ok skills/swe-pod/SKILL.md regression-only
+ok PROCESS.md sharded-together
+ok agents/swe-lead.md sharded-together
+ok README.md sharded-together
+ok skills/swe-pod/SKILL.md sharded-together
+ok PROCESS.md no-old-together
+ok agents/swe-lead.md no-old-together
+```
+
+
+### Evidence for Important 2 and 3 (status-format.md:178, SKILL.md:114)
+
+The skill's new reading of review tasks, readiness and done; the old wording is gone.
+
+- command:
+
+```sh
+h(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "ok $1 $2" || echo "MISSING $1 $2"; }; n(){ git -C "$SWE" show "$REV:$1" 2>/dev/null | tr '\n' ' ' | tr -s ' ' | grep -q -F -- "$3" && echo "STILL $1 $2" || echo "ok $1 no-$2"; }; h skills/swe-pod/SKILL.md reviews-after '3. its `after:` list: every build task it names, one or more.'; h skills/swe-pod/SKILL.md wave-and-one-wave 'So a wave'"'"'s review, `### T<n> Review of wave <w>`, reviews every build task its `after:` list names, and so does the whole-change review, the one whose heading title is `Whole-change review`, in a plan whose build tasks form one wave'; h skills/swe-pod/SKILL.md go-ready 'for a review task that reviews build tasks (1.3), whose build tasks have all reported and every other task in its `after` list is done'; h skills/swe-pod/status-format.md ready 'A review task that reviews build tasks (`SKILL.md` section 1.3) is ready instead once each of them has reported and every other task in its `after` list is done'; h skills/swe-pod/status-format.md ready-cases 'So a wave'"'"'s review is ready once its build tasks report, and so is the whole-change review of a plan whose build tasks form one wave.'; h skills/swe-pod/status-format.md done 'A review task that reviews build tasks (`SKILL.md` section 1.3): the review of each of them is closed.'; h PROCESS.md after-names 'its `after:` list names them, and it comes before verify'; n skills/swe-pod/SKILL.md old-whole-change 'The whole-change review, the one whose heading title is `Whole-change review`, reviews no single task.'; n skills/swe-pod/status-format.md old-ready 'A review task that reviews one task is ready instead once that task has reported'
+```
+
+- red at 0debc5a (0 of 9 lines ok):
+
+```text
+MISSING skills/swe-pod/SKILL.md reviews-after
+MISSING skills/swe-pod/SKILL.md wave-and-one-wave
+MISSING skills/swe-pod/SKILL.md go-ready
+MISSING skills/swe-pod/status-format.md ready
+MISSING skills/swe-pod/status-format.md ready-cases
+MISSING skills/swe-pod/status-format.md done
+MISSING PROCESS.md after-names
+STILL skills/swe-pod/SKILL.md old-whole-change
+STILL skills/swe-pod/status-format.md old-ready
+```
+
+- green at 3b22a1b (9 of 9 lines ok):
+
+```text
+ok skills/swe-pod/SKILL.md reviews-after
+ok skills/swe-pod/SKILL.md wave-and-one-wave
+ok skills/swe-pod/SKILL.md go-ready
+ok skills/swe-pod/status-format.md ready
+ok skills/swe-pod/status-format.md ready-cases
+ok skills/swe-pod/status-format.md done
+ok PROCESS.md after-names
+ok skills/swe-pod/SKILL.md no-old-whole-change
+ok skills/swe-pod/status-format.md no-old-ready
+```
+
