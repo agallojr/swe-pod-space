@@ -132,4 +132,16 @@
                   swe-pod-process@2
 2026-10-30T17:40Z filed changes/right-size-testing/tasks/T4-review-r1.md
 2026-10-30T17:41Z dispatch T5 -> test (local, macos-laptop)
+2026-10-30T17:59Z T5 DONE_WITH_CONCERNS
+2026-10-30T17:59Z T5 cost: actual 416 s, 2.00 USD; estimate 720 s, 3.20 USD
+2026-10-30T17:59Z Ruling: T5's third smoke, a rerun after a false fail in the runner's smoke
+                  judge S4, counts as a rerun of a listed run and needed no ask; why: the
+                  change's expensive runs stood at 682 s and 3.34 USD, within twice the
+                  1260 s and 5.65 USD estimate (R3); cost if wrong: one unlisted 96 s,
+                  0.41 USD run went ahead with no word from the operator
+2026-10-30T17:59Z Ruling: Q1 is read from the re-review, T4-review-r1.md, as T5 did, though
+                  its brief named T4-review.md; why: the latest review of T4 decides Q1;
+                  cost if wrong: none, the first review's Q1 fail was closed by the fix wave
+2026-10-30T17:59Z filed changes/right-size-testing/evidence/20261030T1742Z.md,
+                  changes/right-size-testing/evidence/20261030T1742Z-T5-report.md
 ```
