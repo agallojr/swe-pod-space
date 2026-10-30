@@ -171,6 +171,44 @@ After a third harness error in one task, the task stops and reports BLOCKED.
 `templates/records/final-report.md` gains three sections:
 
 ```
+## Test cost
+| Expensive runs | Estimate | Actual | Actual / estimate |
+|---|---|---|---|
+| wall time (s) | <s> | <s> | <ratio, to 0.1> |
+| spend (USD) | <USD> | <USD, or unknown> | <ratio, to 0.1, or unknown> |
+
+- total test wall time: <s> s
+- test agents: <n>
+- review agents: <n>
+- fix rounds: <n>
+- asks to the operator about tests: <n>
+
+## Tests kept
+- kept: <test name>: <reason>
+- not kept: <test name>: <reason>
+
+## Costly regression tests not run
+- <test name>: last pass <ev id>
+```
+
+When some expensive runs have no known spend, the Actual spend cell gives
+the known sum and `unknown for <k> of <n> runs`; with none known, `unknown`.
+Never 0 USD for a run whose spend no one knows.
+
+### 2.10 Models (R15)
+
+Each role file says `model: inherit`. `PROCESS.md`, `agents/swe-lead.md` and
+`README.md` each hold the sentence `Every role runs on the most capable model
+available.` No text lets a role, task, fix round or independence check run on
+a lesser or cheaper model, or says a later round needs a stronger model:
+rounds 4 and 5 go to a fresh builder on the same model, and independence
+comes from a fresh session or another node.
+
+### 2.11 Process version (open call 16)
+
+`PROCESS.md` line 3 and `templates/space/pod.yaml` say
+`process: swe-pod-process@2`, as does the illustrative `pod.yaml` in
+`PROCESS.md` §1.
 
 ## Global constraints
 From the spec, verbatim where it states them:
