@@ -149,4 +149,11 @@
                   annotated tag archive/right-size-testing is pushed at the merged head; why:
                   the operator's standing preference, relayed with the go to integrate;
                   cost if wrong: one tag and one kept branch to remove by hand
+2026-10-30T19:18Z merge by agallojr: "merge, keep 3"; swe-pod fast-forward to 3b22a1b, tag
+                  archive/right-size-testing, change/right-size-testing kept
+2026-10-30T19:19Z Ruling: test_R2_S2_supersedes_and_test_update, test_R6_S1_complete_test_map and
+                  test_T1_TS6_review_dispatched_before_successor stay in tests/build-swe-pod/
+                  unchanged and flagged as suspect; why: the operator's word, keep 3; cost if
+                  wrong: a later targeted verify that picks one may fail on a stale
+                  expectation, routed then as a stale test
 ```
