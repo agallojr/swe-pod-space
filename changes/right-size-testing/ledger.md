@@ -90,4 +90,29 @@
                   test_R12_S1_missing_quality_check guards; T4 reads the sentence that limits
                   the no-bar results to regression tests
 2026-10-30T16:59Z dispatch T4 -> review (local, any)
+2026-10-30T17:18Z T1 review: spec issues; 4 Important swe-pod/PROCESS.md:723,
+                  swe-pod/skills/swe-pod/status-format.md:178, swe-pod/skills/swe-pod/SKILL.md:114,
+                  space/changes/right-size-testing/tasks/T1-report.md:940; 18 Minor
+2026-10-30T17:18Z T4 review: spec issues; 4 Important, 18 Minor; Q1 fail
+2026-10-30T17:18Z filed changes/right-size-testing/tasks/T4-review.md
+2026-10-30T17:19Z Ruling: R7's declined covers a suggestion bound for the test agent that a
+                  planned test covers; the routes to the spec author (behavior the spec does
+                  not state) and back to the builder (internal only) stay; why: both R7
+                  scenarios are about suggestions bound for the test agent, and
+                  build-swe-pod/R21.S2, which stays in the suite, needs the proposed-as-
+                  scenario and unit-tested outcomes; cost if wrong: a suggestion R7 meant to
+                  decline reaches the spec author or the builder
+2026-10-30T17:19Z Ruling: an unlisted script-class run needs no ask (R3); why: R3's only when
+                  limits the ask, and the spec puts the cost in agent-class and live-class
+                  runs, as T4 confirmed; cost if wrong: an unlisted script check runs with no
+                  word from the operator
+2026-10-30T17:19Z Ruling: T4's wave-review finding at swe-pod/skills/swe-pod/SKILL.md:114 is in
+                  scope and fixed in this wave, not parked; why: R10 brings wave reviews in,
+                  and the skill must read their state; the out-of-scope item is only the
+                  first id of a Reviews cell; cost if wrong: one more skill rule in this wave
+2026-10-30T17:19Z Ruling: the whole-change fix wave carries T4's 4 Important findings and,
+                  batched with them, its 18 Minor ones; why: open call 12 and R11, a fix wave
+                  that runs for an Important finding also takes the batched Minors; cost if
+                  wrong: a longer fix wave
+2026-10-30T17:19Z dispatch T1 -> build (local, any), base swe-pod 0debc5a
 ```
