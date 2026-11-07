@@ -19,6 +19,9 @@ no code-repo diff or implementation body.
 
 Standing rules:
 
+- No pod unless asked. The pod runs only when the operator asks for one
+  ("start a pod", "a small pod for ..."; PROCESS.md §2a). Any other request
+  is ordinary work, done directly with no spec or records.
 - Specs first. Nothing is planned, built or tested for a change whose spec has
   no `approved:` line.
 - This space has one branch, `main`. Code work happens only on `change/<id>`

@@ -16,8 +16,10 @@ retention: until-superseded
 On 2026-11-07 the operator asked for the changes below to be made straight
 to swe-pod, **not through the pod**: no spec, plan, briefs, tests or reviews.
 This note is the only record of it in the space. Where it is: swe-pod `main`
-at `e67ab5a` (commits `1dbc81f` and `e67ab5a` on top of `7168579`, main
-after `add-size-gauge`), fast-forwarded on the operator's word.
+at `93426ee`, fast-forwarded on the operator's word from `7168579` (main
+after `add-size-gauge`): `1dbc81f` (the lighter process), `e67ab5a` and its
+revert `5da65a6` (a misread, trivial-only-when-asked), and `93426ee` (the
+pod only when asked).
 
 ## Why
 
@@ -36,9 +38,8 @@ always a plan, even if it is terse.
 
 ## What changed (swe-pod, process @3 -> @4)
 
-1. **Trivial size**, below small, only when the operator asks for it; the
-   spec author never suggests it, and it still runs the pod (spec author,
-   builder and test agent are three different agents). It is for a
+1. **Trivial size**, below small. The spec author may suggest it and the
+   operator confirms it, or the operator names it ("a trivial pod"). It is for a
    typo, a rename, a one-line fix or a doc edit: one repo, one or two
    requirements, a fault that is cheap and shows at once. The spec has only
    Why, Requirements and Open calls. The plan is a stub written by the spec
@@ -67,7 +68,15 @@ always a plan, even if it is terse.
 6. **The swe-pod skill:** a build task that no review covers (the trivial
    stub) is done once it has reported, and "verified" needs the whole-change
    review only where the plan has one.
-7. **Medium and large did not change**, apart from item 5. The reviewer's
+7. **The pod runs only when asked** (`PROCESS.md` §2a, added after the
+   rest). In ordinary conversation, a question, a fix or a bare "go" is
+   done directly, with no spec or records. "Start a pod", "pod this" or "a
+   trivial / small / medium / large pod for …" starts one, and a size named
+   there is the change's size. The role and skill descriptions now say they
+   apply only to a pod the operator asked for, so Claude does not pick them
+   for ordinary requests. The space's `AGENTS.md` has the same standing
+   rule.
+8. **Medium and large did not change**, apart from item 5. The reviewer's
    check that builder tests exercise their scenarios now applies to small as
    well.
 
@@ -79,7 +88,7 @@ templates `brief.md`, `test-brief.md`, `plan.md`, `spec.md`, `ledger.md` and
 ## Open, for the operator
 
 - **Pins moved by hand, not by integrate.** On the operator's word this
-  space now pins `swe-pod-process@4` and swe-pod `e67ab5a`, and its
+  space now pins `swe-pod-process@4` and swe-pod `93426ee`, and its
   `PROCESS.md` is the @4 copy. `add-size-gauge` was merged without its fix
   re-review, verify or integrate (ledger, 2026-11-07T18:41Z), so it is still
   open: not archived, tests not promoted, no final report.

@@ -148,10 +148,30 @@ commit. It is what verify runs against.
 | integrated | `spec.md` has `integrated:`; the folder is under `changes/archive/` |
 | abandoned | `spec.md` has `abandoned:` with a reason |
 
+## 2a Only when asked
+
+The pod runs only when the operator asks for one, in so many words: "start
+a pod for …", "pod this", "use the pod", "a trivial pod to fix …", "a small
+pod for …". Everything else in a conversation, a question, a request for a
+change, a fix, even "go" or "do it", is ordinary work: answer it or do it
+directly, outside the pod, with no spec, plan, branch, brief, dispatch or
+record. This holds in a session opened in a Project Space too, and for every
+role: no agent starts the spec author, the lead or the `swe-pod` skill's go
+on its own judgment. When a request looks big enough to want a pod, do it
+directly or say in one line that a pod is available, and start one only on
+the operator's word. Once a pod is asked for, its change runs as this file
+says until it is integrated or abandoned; "go", "approved" and "where are
+we?" about that change then speak to the pod.
+
+A size named in the ask, such as "a trivial pod", is the operator's word
+for the change's size (§9): write it on the spec's `- size:` line and
+suggest no other. With no size named, the spec author suggests one (§3).
+
 ## 3 Spec
 
-You are the spec author, and you work with the human. Describe the work to be
-done and nothing else. A spec covers its own change only. No spec of existing
+You are the spec author, started only when the operator has asked for a pod
+(§2a), and you work with the human. Describe the work to be done and nothing
+else. A spec covers its own change only. No spec of existing
 behavior is a precondition: a project starts with its first change, and its
 first spec covers only that change. Only you edit a spec, and only the human
 approves one.
@@ -240,6 +260,9 @@ The changed code SHALL pass the repo's linter with the repo's configuration.
 The size sets how much process the change runs (§9). You suggest it; only
 the human sets or changes it.
 
+- A size the operator named in asking for the pod, such as "a trivial pod",
+  is the size (§2a). Write it on the `- size:` line and suggest no other.
+
 - A change is small unless its approved spec says another size. Write the
   size you suggest on the `- size:` line. State the size you suggest and the
   reason in one line under Open calls, and ask the human to confirm it or
@@ -252,11 +275,9 @@ the human sets or changes it.
   A low-risk change in one repo that needs more requirements may stay small,
   with Open calls saying it is over the guide, or you may suggest medium;
   neither refuses the spec.
-- Never suggest trivial. A change is trivial only when the operator asks
-  for it, and it still runs the pod: an approved spec, a builder and a test
-  agent, three different agents. It fits a change to one repo with one or
-  two requirements whose fault would be cheap and would show at once, such
-  as a typo, a rename, a one-line fix or a doc edit.
+- Suggest trivial only for a change to one repo with one or two
+  requirements whose fault would be cheap and would show at once, such as a
+  typo, a rename, a one-line fix or a doc edit.
 - A spike is outside the gauge (§9).
 
 ### Human review and approval
@@ -1078,7 +1099,7 @@ spec is written (§3):
 
 | Size | When | Spec | Plan | Blind tests | Test agents | Reviews | Fix rounds | Human gates |
 |---|---|---|---|---|---|---|---|---|
-| trivial (only when the operator asks) | one repo, one or two requirements, a fault cheap and seen at once: a typo, a rename, a one-line fix, a doc edit | Why, Requirements, Open calls | stub, by the spec author | none | one, verify only | none | 2 | spec approval (also the go), merge |
+| trivial (on the operator's word) | one repo, one or two requirements, a fault cheap and seen at once: a typo, a rename, a one-line fix, a doc edit | Why, Requirements, Open calls | stub, by the spec author | none | one, verify only | none | 2 | spec approval (also the go), merge |
 | small (default) | one intent, about 3 requirements, one repo, low risk | short | terse, with the risk table; the spec author may write it | requirements the plan marks at risk | one, which writes them and runs verify | the whole-change review, Critical and Important findings only | 2 | spec approval (also the go), merge |
 | medium | several requirements, or one repo with moderate risk | full | short, with the risk table; the spec author may write it | requirements the plan marks at risk | a test-writing task, verify, and a suggestions task when one is routed | one per wave when there is more than one wave, and the whole-change review | 3 | spec approval (also the go), merge |
 | large | several repos, an interface or data-format change, anything costly to get wrong | full | full, by a fresh planner, with the risk and expensive-runs tables | requirements the plan marks at risk | as medium | one per wave, one per build task marked at risk, and the whole-change review | 3 | spec approval, plan skim, merge |
@@ -1089,8 +1110,8 @@ per
 task (§5).
 
 - A change is small unless its approved spec says another size. Trivial
-  is below the default, only when the operator asks for it; the spec
-  author never suggests it, and the pod still runs. The spec
+  is below the default: the spec author may suggest it, and a change is
+  trivial only when the operator confirms it. The spec
   author states the size it suggests and the reason in Open calls and asks
   the operator to confirm or name another (§3). The signs to suggest more
   than small: more than one repo, an interface or data-format change, well
@@ -1155,7 +1176,8 @@ several roles if each task runs as its own agent.
 Remote build waits on the executor git exception (§11); until then, build
 runs local.
 
-**Single seat.** Without a mesh, one interactive session is spec author,
+**Single seat.** Without a mesh, one interactive session is, once the
+operator asks for a pod (§2a), its spec author,
 planner, lead and the space's librarian, and dispatches fresh local
 subagents for build, test and review. For a large change it plans through a
 fresh local subagent too, since a large change's spec and plan must be
@@ -1432,11 +1454,15 @@ The template lists every event form:
 
 ## 14 Talking to the pod
 
-There are no commands. These are examples, not syntax.
+There are no commands. These are examples, not syntax. Only an ask for a
+pod starts one (§2a); the rest of this table speaks to a pod already asked
+for.
 
 | The human says | What happens |
 |---|---|
-| "I want the nozzle solver to take a VQLS backend" | The spec author reads the code, plays the request back, asks the one question that matters most |
+| "Fix the typo in the README" / "Why does the solver diverge?" | No pod: ordinary work, done or answered directly, with no records (§2a) |
+| "Start a pod: I want the nozzle solver to take a VQLS backend" | The spec author reads the code, plays the request back, asks the one question that matters most |
+| "A trivial pod to fix the typo in the README" / "A small pod for …" | A pod at the size named: the spec's size line says it, and the spec author suggests no other (§2a, §9) |
 | "Just draft it" / "Approved" | Draft with defaults listed / approval recorded |
 | "Go" | The lead dispatches every task with nothing left in its `after` list; on an unapproved spec it dispatches nothing and says the spec awaits approval (§2); on a large change whose plan has not been skimmed, it dispatches nothing and says the plan awaits the operator's skim (§4) |
 | "Make it medium" | The spec author amends the spec's size line on your word. Approval reopens for the amendment only, and the operator's word that names the new size is its approval: no task is held, and no `approval reopened` line is written, since a size line is not a requirement. The lead records the size event and adds the steps medium adds from there (§9) |
