@@ -215,15 +215,26 @@ checks expect 1 s to 5 s each, about 90 s in all.
   and any size name the checks read; each `mode: inspect`; each run at the
   base commit set and failing there only on those checks
 
+### T7 Builder test suggestions
+- role: test
+- after: [T1]
+- runs: local
+- needs: any
+- serves: [R13]
+- done when: T1.TS1, routed by the lead for a risk no planned test covers
+  (a cap ruling the status view must read as closing the finding), is tested
+  in `changes/add-size-gauge/tests/` as a script-class test, run at the base
+  commit set with its result in the ledger, or declined with a reason
+
 ### T5 Verify (macos-laptop)
 - role: test
-- after: [T1, T2, T3, T4]
+- after: [T1, T2, T3, T4, T7]
 - runs: local
 - needs: macos-laptop
 - done when: an evidence record at the current commit set with
   `selection: targeted` and `touched:`, giving: a result for every scenario
   (R4, R10 and R13 from T2's tests, R12.S2 from T3's, the rest by rerunning
-  T1's checks C1 to C8 from its report); `I1`, `I2` and `I3` from T3's tests,
+  T1's checks C1 to C8 from its report); `I1`, `I2` and `I3` from T3's tests, `T1.TS1` from T7's test,
   with `right-size-testing/I1`, `right-size-testing/I3` and
   `build-swe-pod/I2` given `superseded by I1`, `I3` and `I2`; a pass or
   `not-selected` for every regression test, by the selection, picking the
@@ -300,7 +311,7 @@ covers T1, comes before verify, and runs Q1.
 
 ## 10. Dependency summary
 
-- parallel: T1, T2 and T3 start at the go
+- parallel: T1, T2 and T3 start at the go; T4 and T7 start when T1 reports
 - longest chain: T1 -> T4 -> T5 -> T6
 - shared files: none; T2 and T3 write only under `changes/add-size-gauge/tests/`
 
