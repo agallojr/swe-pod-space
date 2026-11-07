@@ -3,7 +3,7 @@
 - size: small
 - owner: agallojr
 - repos: [swe-pod]
-- supersedes: [right-size-testing/R6, right-size-testing/R10, right-size-testing/R15]
+- supersedes: [right-size-testing/R6, right-size-testing/R10, right-size-testing/R15, build-swe-pod/R9]
 - approved: agallojr 2026-11-07T17:23Z
 
 ## Why
@@ -458,3 +458,10 @@ Within approach 1, for a small change's plan:
     Opus). The kept tests of those three requirements: none is in `tests/`
     today, so nothing is moved out for them. The fix loop is not a numbered
     requirement of an earlier spec, so R13 supersedes none.
+12. **`build-swe-pod/R9` (blind tests) is also listed in `supersedes`**, added
+    by the spec author at planning, a header edit that changes no requirement
+    text. Its kept test `tests/build-swe-pod/test_I2_role_definitions.md`
+    pins `model: inherit`, so R10 makes it stale; this change writes its
+    replacement `I2` (R12), and verify can then give the old one
+    `superseded by I2` only if the spec lists a requirement that test serves.
+    R5 changes who gets blind tests, which is what R9 requires.
