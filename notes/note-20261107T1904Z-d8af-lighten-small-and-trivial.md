@@ -15,9 +15,9 @@ retention: until-superseded
 
 On 2026-11-07 the operator asked for the changes below to be made straight
 to swe-pod, **not through the pod**: no spec, plan, briefs, tests or reviews.
-This note is the only record of it in the space. Where it is: swe-pod branch
-`lighten-small-and-trivial`, commit `1dbc81f`, on top of `7168579` (main
-after `add-size-gauge`).
+This note is the only record of it in the space. Where it is: swe-pod `main`
+at `e67ab5a` (commits `1dbc81f` and `e67ab5a` on top of `7168579`, main
+after `add-size-gauge`), fast-forwarded on the operator's word.
 
 ## Why
 
@@ -36,7 +36,9 @@ always a plan, even if it is terse.
 
 ## What changed (swe-pod, process @3 -> @4)
 
-1. **Trivial size**, below small, only on the operator's word. It is for a
+1. **Trivial size**, below small, only when the operator asks for it; the
+   spec author never suggests it, and it still runs the pod (spec author,
+   builder and test agent are three different agents). It is for a
    typo, a rename, a one-line fix or a doc edit: one repo, one or two
    requirements, a fault that is cheap and shows at once. The spec has only
    Why, Requirements and Open calls. The plan is a stub written by the spec
@@ -76,13 +78,11 @@ templates `brief.md`, `test-brief.md`, `plan.md`, `spec.md`, `ledger.md` and
 
 ## Open, for the operator
 
-- **Not merged.** swe-pod `main` is still `7168579` (@3) until the operator
-  fast-forwards it to the branch.
-- **This space still pins @2.** `pod.yaml` pins `swe-pod-process@2` and
-  swe-pod `3b22a1b`, and the space's `PROCESS.md` copy is @2.
-  `add-size-gauge` was merged without its fix re-review, verify or integrate
-  (ledger, 2026-11-07T18:41Z), so it is not archived and its tests are not
-  promoted.
+- **Pins moved by hand, not by integrate.** On the operator's word this
+  space now pins `swe-pod-process@4` and swe-pod `e67ab5a`, and its
+  `PROCESS.md` is the @4 copy. `add-size-gauge` was merged without its fix
+  re-review, verify or integrate (ledger, 2026-11-07T18:41Z), so it is still
+  open: not archived, tests not promoted, no final report.
 - **Tests that @4 breaks.** In `changes/add-size-gauge/tests/`, `test_I1`
   and `test_I3` check for `@3`, and `test_R4_S1` checks the @3 terse-plan
   sections. They will fail against @4. Nothing was run here, and the
