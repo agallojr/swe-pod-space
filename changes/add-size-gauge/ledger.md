@@ -46,4 +46,37 @@
 2026-11-07T17:55Z T1.TS1 -> test: covers a cap ruling the status view must read as closing the finding
 2026-11-07T17:55Z filed changes/add-size-gauge/tasks/T1-report.md, changes/add-size-gauge/tasks/T4-brief.md, changes/add-size-gauge/tasks/T7-brief.md, changes/add-size-gauge/plan.md, the 8 tests of T2 and changes/add-size-gauge/evidence/20261107T1753Z-T2-report.md
 2026-11-07T17:55Z dispatch T7 -> test (local, any)
+2026-11-07T18:07Z T1 review: spec issues; 2 Important swe-pod/PROCESS.md:879, swe-pod/agents/swe-lead.md:424, 13 Minor
+2026-11-07T18:07Z T4 review: spec issues; 2 Important, 15 Minor; Q1 fail
+2026-11-07T18:07Z Ruling: T4's Minor findings in swe-pod are fixed in the whole-change fix
+                  wave with its Important ones, not parked; why: under
+                  swe-pod-process@2 the wave takes the batched Minors, and they
+                  are wording disagreements that Q1 counts; cost if wrong: one
+                  more round of doc edits
+2026-11-07T18:07Z Ruling: for a size amendment, the operator's word that names the new size
+                  is the approval of the amendment; no task is held and no
+                  approval reopened line is written, as a size line is no
+                  requirement; why: R3.S2 reopens approval for the amendment
+                  only and the skill holds tasks only for a requirement; cost
+                  if wrong: the text says one sentence more than the spec
+2026-11-07T18:07Z Ruling: at small, the one review's fix round carries the Critical and
+                  Important findings only, the Minor findings are parked by one
+                  ruling and listed in the final report, and the cap ruling
+                  begins Ruling: T<n> open findings; at medium and large the
+                  whole-change fix wave takes the batched Minors as before;
+                  why: R6.S1, R13.S1 and T1.TS1; cost if wrong: a small change
+                  carries Minors to the final report instead of fixing them
+2026-11-07T18:07Z Ruling: T4's Minor at plan.md:289 is fixed in the plan, not in swe-pod:
+                  R4.S3 is T1's check C4, and T2 tests R4.S1 and R4.S2; why: it
+                  is a lead behavior that does not carry R4's risk with the
+                  skill; cost if wrong: one scenario of an at-risk requirement
+                  has no blind test
+2026-11-07T18:07Z Ruling: T4's Minor on the kept test fixtures (size: project and fix round
+                  1/5 lines) is parked, nothing edited; why: they are inputs of
+                  agent-class tests that verify does not pick, the skill reads
+                  fix round lines by their prefix and reads no size name, and
+                  only test_T1_TS3 asserts the removed wording (ruled
+                  17:54Z); cost if wrong: an agent-class test fails when
+                  someone runs it
+2026-11-07T18:07Z filed changes/add-size-gauge/tasks/T4-review.md, changes/add-size-gauge/plan.md
 ```
