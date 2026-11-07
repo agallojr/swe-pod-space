@@ -92,4 +92,15 @@
                   cost if wrong: a skill line says size where a stricter reading
                   wanted a pointer to the lead
 2026-11-07T18:18Z dispatch T4 -> review (local, any), base swe-pod 61d67db
+2026-11-07T18:41Z Ruling: swe-pod change/add-size-gauge merged into main by fast-forward,
+                  3b22a1b..7168579, on the operator's word to check quickly and
+                  merge, before the re-review of the fix diff (stopped) and
+                  verify T5 and without integrate; why: the operator is short
+                  of tokens; the 12 tests of this change pass at 7168579, and
+                  so do kept I4, R5.S1 and R5.S2; kept I5 and R16.S1 fail the
+                  same way at 3b22a1b and 7168579 (no handles or agent-run
+                  ledgers in the harness inputs); cost if wrong: a wording
+                  disagreement unreviewed in main until a follow-up fix; the
+                  space still pins swe-pod 3b22a1b and process @2, the change
+                  is not archived, its tests are not promoted, no final report
 ```
