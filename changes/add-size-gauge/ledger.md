@@ -84,4 +84,12 @@
 2026-11-07T18:10Z T1.TS1 outcome: tested test_T1_TS1_cap_ruling_closes_finding
 2026-11-07T18:10Z T7 at head: test_T1_TS1_cap_ruling_closes_finding fail at swe-pod 61d67db (check T1.TS1.4: PROCESS.md section 13 Rulings item and one unit of agents/swe-lead.md give the cap ruling only in the general form); routed to T1 fix round 1 as a further finding
 2026-11-07T18:10Z filed changes/add-size-gauge/tests/test_T1_TS1_cap_ruling_closes_finding.md, changes/add-size-gauge/evidence/20261107T1809Z-T7-report.md
+2026-11-07T18:18Z T1 fix round 1/5: 15 addressed, 0 open, 61d67db..7168579
+2026-11-07T18:18Z Ruling: the plan's done-when "skills/swe-pod/ names no size" is read as
+                  names no size name (small, medium, large, spike, project
+                  size), not as banning the word size; why: R4.S2 check 4 needs
+                  the skill's skim lines to say the skim depends on the size;
+                  cost if wrong: a skill line says size where a stricter reading
+                  wanted a pointer to the lead
+2026-11-07T18:18Z dispatch T4 -> review (local, any), base swe-pod 61d67db
 ```
