@@ -195,8 +195,10 @@ checks expect 1 s to 5 s each, about 90 s in all.
 - runs: local
 - needs: any
 - serves: [R4, R10, R13]
-- done when: one test per scenario of R4, R10 and R13 in
-  `changes/add-size-gauge/tests/`, named in the test map, each script class
+- done when: one test per scenario of R4.S1, R4.S2, R10 and R13 in
+  `changes/add-size-gauge/tests/` (R4.S3, the lead's go with no skim, does not
+  carry R4's risk with the skill, so it is T1's check C4), named in the test
+  map, each script class
   with `expected_s`, `deliverables` and the risk it covers, each run at the
   base commit set and failing there for the stated reason, with its result in
   the ledger
