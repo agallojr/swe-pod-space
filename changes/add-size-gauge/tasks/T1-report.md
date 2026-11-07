@@ -595,3 +595,358 @@ EOF
   and swe-pod/agents/swe-lead.md:529-533, the Size subsection, which reads
   the size from the spec's header with no rule for an open spec written
   under the old names.
+
+## Fix round 1
+
+Fix round 1 for the whole-change review T4 (2 Important, 13 Minor swe-pod
+findings), the lead's four rulings that bear on it, and the coordinator's
+T1.TS1 item. One commit, swe-pod 61d67db..7168579, "Fix round 1 of the
+whole-change review for add-size-gauge", trailers `Change: add-size-gauge`
+and `Task: T1`, pushed to `change/add-size-gauge` (the remote head was
+already in the branch, so no rebase). The remote head is 7168579. Line
+numbers below are at 7168579. The two findings that name the space
+(plan.md:289 and the kept-test fixtures) are the lead's and were not
+touched.
+
+Status of this round: DONE. All 15 swe-pod findings are addressed and none
+is left open. Two further fixes outside the findings are listed under
+"Beyond the findings".
+
+### Per finding
+
+1. Important PROCESS.md:879 (the whole-change fix wave at small). §7 now
+   has one paragraph by size (PROCESS.md:884-896), in the wording of ruling
+   1. At small, the whole-change review is the one review and its findings
+   run the §5 fix loop: Critical and Important only, same builder, cap 2.
+   Minor findings are parked by one ruling and listed in the final report,
+   and no fix wave batches them. At medium and large, the whole-change fix
+   wave takes the batched Minor findings as before, and its rounds count
+   toward the cap of 3. At either cap the lead rules in a line that begins
+   `Ruling: T<n> open findings`. "The lead rules on what remains" is gone.
+2. Important agents/swe-lead.md:424 (the same, in the lead's Whole-change
+   review paragraph). The same text is at swe-lead.md:423-436, inside the
+   paragraph, citing `PROCESS.md §5`.
+3. Minor SPEC.md:490. The same text replaces "Its findings go to one
+   builder in one fix wave ... the lead rules on what remains"
+   (SPEC.md:490-500, citing §5.3).
+4. Minor agents/swe-build.md:174. "Minor findings wait for the whole-change
+   fix wave" is gone; the same text is a paragraph of its own
+   (swe-build.md:178-188).
+5. Minor templates/records/ledger.md:39. The template now lists
+   `Ruling: T<n> open findings <what>; <why>; <cost if wrong>` beside the
+   general form (ledger.md:43). Its comment says this is the form that
+   closes the findings at a task's cap. The same line was added to the
+   lead's event forms (swe-lead.md:661).
+6. Minor agents/swe-lead.md:540 (the size amendment's approval). Following
+   ruling 2, one sentence in the same words is at PROCESS.md §9
+   (1035-1038), PROCESS.md §14's "Make it medium" row (1363),
+   swe-lead.md:547-550 and swe-spec.md:117-120: "Approval reopens for the
+   amendment only, and the operator's word that names the new size is its
+   approval: no task is held, and no `approval reopened` line is written,
+   since a size line is not a requirement." R3.S2's wording "approval
+   reopens for the amendment only" is kept, so C3 still finds it.
+7. Minor PROCESS.md:1030 (four agents "at every size" against the spike).
+   Following ruling 3: "Every size of the gauge keeps ..." (PROCESS.md:1044),
+   "At every size of the gauge, the spec author, ..." (PROCESS.md:1067) and
+   README.md:33. SPEC.md:565 Independence gets the same phrase, for one
+   wording. C8's phrase moves with it (see Checks).
+8. Minor PROCESS.md:877 (the builder's-test check with no size). §7 now
+   reads "and, in a medium or large change, that each builder's test of a
+   requirement not at risk exercises its scenario (§5)" (PROCESS.md:879-881).
+9. Minor PROCESS.md:1010 ("cost tables"). Following ruling 4, the large
+   row reads "with the risk and expensive-runs tables" in PROCESS.md:1021
+   and SPEC.md:537. No "cost table" is left in swe-pod.
+10. Minor PROCESS.md:369 (the terse plan's section 6). It now keeps "the
+    blind-test task and verify, and the suggestions task and the
+    replacements task of a spec with `supersedes` when the change needs
+    them, with no risk table and no expensive-runs table". This is in
+    PROCESS.md:369-372, swe-plan.md:140-142 and the plan template's comment
+    (plan.md:19-21).
+11. Minor templates/records/test-brief.md:25. The Global constraints
+    placeholder adds "for a terse plan, which has none: none in the plan;
+    the spec is the source" (test-brief.md:25-26). The lead's prompt asked
+    for this fix, so the file joins T1's files for this round.
+12. Minor agents/swe-plan.md:26 (Reads). It now reads "the approved spec.
+    As the fresh planner of a large change, read nothing of the
+    conversation that produced it; the spec author who writes a small or
+    medium plan by this definition already has that conversation"
+    (swe-plan.md:26-29).
+13. Minor SPEC.md:157. The stage table's build row now reads "build; the
+    reviews of the change's size" and "each task passes its done-when and
+    the review that covers it", as PROCESS §2 does.
+14. Minor SPEC.md:558. Independence now says "started from a brief or the
+    operator's request" (SPEC.md:565-569).
+15. Minor PROCESS.md:334 and 1026 (unwrapped lines). §4 item 6 was
+    rewrapped (PROCESS.md:325-337), and the old line 1026 went with
+    ruling 2's rewrite. No line this change adds outside a table or a code
+    block is over 81 chars.
+
+The coordinator's T1.TS1 item: PROCESS.md §13's Rulings item named the cap
+and gave only the general form. It now gives "At a task's fix-round cap,
+rule on each open finding in a line of the form
+`Ruling: T<n> open findings <what>; <why>; <cost if wrong>`, which closes it
+in the status view (§5)" (PROCESS.md:1339-1341). The lead's unit was its
+ledger event-forms block, which listed only the general form; item 5 adds
+the cap form there. I also checked every other unit of PROCESS.md,
+swe-lead.md, SPEC.md and the ledger template that tells the lead to rule at
+the cap: §5 (PROCESS.md:586-588), §7 and swe-lead's fix-loop and
+Whole-change review units all give the `Ruling: T<n> open findings` form,
+and none gives a different one. The test itself was not edited.
+
+### Beyond the findings
+
+While self-checking I ran the change's own tests in
+`changes/add-size-gauge/tests/` on the export. Two T2 tests of R4 failed at
+61d67db on text my T1 commit wrote. Both are small fixes in T1's files, so
+they are in this commit. I report them here so you can route or rule on
+them.
+
+- `test_R4_S1_terse_plan_sections` check 4: the plan template named the
+  left-out sections by number only ("leave out 3, 4, 10 and Questions for
+  the spec"). It now names them, "leave out 3 Global constraints, 4 File
+  map, 10 Dependency summary and Questions for the spec" (plan.md:23-24),
+  as PROCESS.md and swe-plan.md do.
+- `test_R4_S2_terse_plan_meets_skill_rules` check 4: the two skill units I
+  added that name the plan skim named no size word, so they read as if
+  every change waits on the skim. Each now says the skim is where "the
+  change's size calls for" it (SKILL.md:405-407 and 420-422). They still
+  name no size: C8 reads size names, below.
+
+### Checks
+
+C6 is extended as the lead asked. It still reads §5 and §9, and now also
+reads PROCESS.md §7, the lead's Whole-change review paragraph, SPEC.md and
+swe-build.md, for the one wording of ruling 1. It also fails any of them
+that still says the lead "rules on what remains". C8's §10 phrase follows
+ruling 3, "at every size of the gauge". C8's skill test now looks for size
+names only (small, medium, large, spike, "project size"), as the done-when
+says ("names no size"), rather than for the word "size" too. That lets the
+skill's skim units say "the change's size" for R4.S2. C1 to C5 and C7 are
+unchanged from the first part. All checks run as the first part says, in an
+export of the sha.
+
+#### C6, extended, at 61d67db (red)
+
+```
+C6 fail: PROCESS.md s7 lacks 6 of 6; PROCESS.md s7 still rules on what remains with no form; agents/swe-lead.md Whole-change review lacks 6 of 6; agents/swe-lead.md Whole-change review still rules on what remains with no form; SPEC.md lacks 6 of 6; SPEC.md still rules on what remains with no form; agents/swe-build.md lacks 6 of 6
+exit 1
+```
+
+#### C1 to C8 at 7168579 (green; C6 extended, C8 updated)
+
+```
+C1 pass
+exit 0
+C2 pass
+exit 0
+C3 pass
+exit 0
+C4 pass
+exit 0
+C5 pass
+exit 0
+C6 pass
+exit 0
+C7 pass
+exit 0
+C8 pass
+exit 0
+```
+
+C8, updated, at 61d67db, for the record: it fails on its new phrase, as
+it should.
+
+```
+C8 fail: section 10 lacks the four different fresh agents at every size of the gauge
+exit 1
+```
+
+#### Q2 text search at 7168579
+
+The same command as in the first part, in an export of 7168579:
+
+```
+PROCESS.md:1043:  `size: project` as large; archived files are not edited.
+```
+
+The one match is the legacy-names note Q2 allows.
+
+#### T1.TS1 and the R4 tests with the runner
+
+Run as `tests/build-swe-pod/README.md` says, from the space root:
+`bash tests/build-swe-pod/runner.sh run changes/add-size-gauge/tests/<test>.md --python <tooling venv python> --scratch <pods scratch> --repo swe-pod=<swe-pod checkout>@<sha>`.
+
+```
+61d67db: RESULT test_T1_TS1_cap_ruling_closes_finding fail (check T1.TS1.4: status view closes on ruling: t<> open findings, ruling: t<> open findings parked: <>; <>; <>; lead's side gives it (PROCESS.md: ruling: t<> open findings); an at-cap unit gives another form, PROCESS.md: ruling: <>; <>; <> (in: - rulings. lead: when the spec supports an answer, decide and keep ...))
+7168579: RESULT test_T1_TS1_cap_ruling_closes_finding pass (all 4 checks pass)
+61d67db: RESULT test_R4_S1_terse_plan_sections fail (check R4.S1.4: plan template marks for a small plan: cost table, questions for the spec, risk table; missing dependency summary, file map, global constraints)
+7168579: RESULT test_R4_S1_terse_plan_sections pass (all 5 checks pass)
+61d67db: RESULT test_R4_S2_terse_plan_meets_skill_rules fail (check R4.S2.4: skill units naming the plan skim: 2, 2 with no size, first: where the lead's go step holds the go for the operator's skim of the plan, dispa)
+7168579: RESULT test_R4_S2_terse_plan_meets_skill_rules pass (all 4 checks pass)
+```
+
+#### Other tests, as a self-check at 7168579
+
+I ran each test's `python check` block with `EXPORT_SWE_POD` at the export:
+
+- every test in `changes/add-size-gauge/tests/` passes: I1, I2, I3,
+  R4.S1, R4.S2, R10.S1, R10.S2, R13.S1 to R13.S4 and T1.TS1;
+- the kept `right-size-testing/test_I1_process_md` (checks 2 and 7),
+  `right-size-testing/test_I3_d3_templates` (check 14) and
+  `build-swe-pod/test_I2_role_definitions` (check 2) fail as planned,
+  since T3's replacements supersede them;
+- `build-swe-pod/test_I4_swe_pod_skill`,
+  `right-size-testing/test_R5_S1_not_selected_green` and
+  `right-size-testing/test_R5_S2_superseded_with_replacement` pass.
+
+swe-pod has no unit suite: `unit: none-present`.
+
+#### C6, extended
+
+```
+cd <dir> && python3 - <<'EOF'
+# C6 (R6.S1, R6.S2, R7.S1, R7.S2, R8.S2, R13.S1): review sets and findings, in PROCESS.md sections 5, 7 and 9, the lead's Whole-change review paragraph, SPEC.md and swe-build
+import re, sys
+from pathlib import Path
+F = "`" * 3
+def body(p):
+    out, fen = [], False
+    for ln in Path(p).read_text().splitlines():
+        if ln.lstrip().startswith(F):
+            fen = not fen
+            continue
+        if not fen:
+            out.append(ln)
+    return out
+def sec(lines, n):
+    out, on = [], False
+    for ln in lines:
+        if ln.startswith("## "):
+            on = ln.split()[1] == str(n)
+        elif on:
+            out.append(ln)
+    return out
+def para(lines, start):
+    out, on = [], False
+    for ln in lines:
+        if ln.startswith(start):
+            on = True
+        elif on and not ln.strip():
+            break
+        if on:
+            out.append(ln)
+    return out
+def norm(lines):
+    return re.sub(r"\s+", " ", " ".join(lines).replace("`", "")).lower()
+def cells(ln):
+    return [c.strip().replace("*", "").replace("`", "") for c in ln.strip().strip("|").split("|")]
+proc = body("PROCESS.md")
+bad = []
+rows = [cells(l) for l in sec(proc, 9) if l.strip().startswith("|")]
+col = rows[0].index("Reviews") if rows and "Reviews" in rows[0] else None
+got = [r[col] for r in rows[2:5]] if col is not None else None
+if got != ["the whole-change review",
+           "one per wave when there is more than one wave, and the whole-change review",
+           "one per wave, one per build task marked at risk, and the whole-change review"]:
+    bad.append(f"section 9 Reviews column {got}")
+want5 = [
+    "a small change has one review, the whole-change review",
+    "a medium change has one review per wave of build tasks when it has more than one wave, and the whole-change review",
+    "a large change has one review per wave of build tasks, a review of each build task marked at risk, and the whole-change review",
+    "only critical and important findings start a fix round",
+    "minor findings never start one",
+    "listed in the final report",
+]
+text = norm(sec(proc, 5))
+miss = [w for w in want5 if w not in text]
+if miss:
+    bad.append(f"section 5 lacks {miss}")
+# the whole-change review's findings by size, in one wording in four places
+want_wc = [
+    "for a small change, the whole-change review is its one review, and its findings run the fix loop",
+    "only critical and important findings start a fix round, every round goes to the same builder, and the cap is 2 rounds",
+    "its minor findings are parked by one ruling and listed in the final report; no fix wave batches them",
+    "for a medium or large change, the whole-change fix wave runs only when the whole-change review has a critical or important finding, and then also takes the batched minor findings",
+    "its rounds count toward the cap of 3",
+    "at either cap the lead rules on each open finding in a line that begins ruling: t<n> open findings",
+]
+places = [("PROCESS.md s7", norm(sec(proc, 7))),
+          ("agents/swe-lead.md Whole-change review",
+           norm(para(body("agents/swe-lead.md"), "**Whole-change review.**"))),
+          ("SPEC.md", norm(body("SPEC.md"))),
+          ("agents/swe-build.md", norm(body("agents/swe-build.md")))]
+for name, t in places:
+    miss = [w for w in want_wc if w not in t]
+    if miss:
+        bad.append(f"{name} lacks {len(miss)} of {len(want_wc)}")
+    if "rules on what remains" in t or "rule on what remains" in t:
+        bad.append(f"{name} still rules on what remains with no form")
+print("C6 pass" if not bad else "C6 fail: " + "; ".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+```
+
+#### C8, updated
+
+```
+cd <dir> && python3 - <<'EOF'
+# C8 (R9.S1, R11.S2): four fresh agents in section 10, the legacy-names note in section 9, no size in the skill
+import re, sys
+from pathlib import Path
+F = "`" * 3
+def body(p):
+    out, fen = [], False
+    for ln in Path(p).read_text().splitlines():
+        if ln.lstrip().startswith(F):
+            fen = not fen
+            continue
+        if not fen:
+            out.append(ln)
+    return out
+def sec(lines, n):
+    out, on = [], False
+    for ln in lines:
+        if ln.startswith("## "):
+            on = ln.split()[1] == str(n)
+        elif on:
+            out.append(ln)
+    return out
+def norm(lines):
+    return re.sub(r"\s+", " ", " ".join(lines).replace("`", "")).lower()
+proc = body("PROCESS.md")
+bad = []
+if ("at every size of the gauge, the spec author, the builder, the test agent and "
+        "the reviewer are four different fresh agents") not in norm(sec(proc, 10)):
+    bad.append("section 10 lacks the four different fresh agents at every size of the gauge")
+if ("legacy names: an archived spec's size: small reads as medium and size: project "
+        "as large; archived files are not edited") not in norm(sec(proc, 9)):
+    bad.append("section 9 lacks the legacy-names note")
+hits = []
+for p in sorted(Path("skills/swe-pod").rglob("*")):
+    if p.is_file():
+        for i, ln in enumerate(p.read_text().splitlines(), 1):
+            if re.search(r"\b(small|medium|large|spike)\b|project size", ln, re.I):
+                hits.append(f"{p}:{i}")
+if hits:
+    bad.append(f"skill names a size at {hits}")
+print("C8 pass" if not bad else "C8 fail: " + "; ".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+```
+
+### Concerns for this round
+- C8 now reads size names only, not the word "size". The plan's done-when
+  says "names no size", and R4.S2's check 4 needs the skill's skim units to
+  name a size or the word size. If you read "names no size" as also
+  forbidding the word, R4.S2.4 and C8 cannot both pass, and that is a test
+  to rule on.
+- Ruling 1 scopes the fix-wave rule by size, so a medium change whose
+  build tasks form one wave keeps the batched-Minor fix wave, though its
+  whole-change review is also its one review. I wrote it as ruled.
+- Ruling 3 covers the four agents only. "At every size, a test agent runs
+  verify" (the C5 phrase, in PROCESS §4, §6, swe-plan, swe-test, README and
+  the plan template) and "runs on Opus, at every size" are unchanged,
+  though a spike has neither tests nor reviews.
+
+### Test suggestions for this round
+none
