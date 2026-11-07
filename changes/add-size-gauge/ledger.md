@@ -79,4 +79,9 @@
                   17:54Z); cost if wrong: an agent-class test fails when
                   someone runs it
 2026-11-07T18:07Z filed changes/add-size-gauge/tasks/T4-review.md, changes/add-size-gauge/plan.md
+2026-11-07T18:10Z T7 DONE
+2026-11-07T18:10Z T7 at base: test_T1_TS1_cap_ruling_closes_finding fail (check T1.TS1.4: the base status view closes findings only on a Ruling: T<n> open findings line, and the base text gives only the general Ruling form)
+2026-11-07T18:10Z T1.TS1 outcome: tested test_T1_TS1_cap_ruling_closes_finding
+2026-11-07T18:10Z T7 at head: test_T1_TS1_cap_ruling_closes_finding fail at swe-pod 61d67db (check T1.TS1.4: PROCESS.md section 13 Rulings item and one unit of agents/swe-lead.md give the cap ruling only in the general form); routed to T1 fix round 1 as a further finding
+2026-11-07T18:10Z filed changes/add-size-gauge/tests/test_T1_TS1_cap_ruling_closes_finding.md, changes/add-size-gauge/evidence/20261107T1809Z-T7-report.md
 ```
